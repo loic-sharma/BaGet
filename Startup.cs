@@ -37,6 +37,16 @@ namespace BaGet
             app.UseMvc(routes =>
             {
                 routes.MapRoute("index", "v3/index.json", defaults: new { controller = "Index", action = "Get"});
+
+                routes.MapRoute(
+                    "registration-index",
+                    "v3/registration/{id}.json",
+                    defaults: new { controller = "Registration", action = "GetRegistrationIndex"});
+
+                routes.MapRoute(
+                    "registration-leaf",
+                    "v3/registration/{id}/{version}.json",
+                    defaults: new { controller = "Registration", action = "GetRegistrationLeaf"});
             });
         }
     }

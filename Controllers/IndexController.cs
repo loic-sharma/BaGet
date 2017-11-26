@@ -1,6 +1,6 @@
 using System;
-using System.Runtime.Serialization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace BaGet.Controllers
 {
@@ -43,10 +43,10 @@ namespace BaGet.Controllers
                 Comment = comment ?? string.Empty;
             }
 
-            [DataMember(Name = "@id")]
+            [JsonProperty(PropertyName = "@id")]
             public Uri Id { get; }
 
-            [DataMember(Name = "@type")]
+            [JsonProperty(PropertyName = "@type")]
             public string Type { get; }
 
             public string Comment { get; }
