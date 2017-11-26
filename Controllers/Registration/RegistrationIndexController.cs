@@ -3,14 +3,19 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace BaGet.Controllers
+namespace BaGet.Controllers.Registration
 {
-    // Documentation: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
-    public class RegistrationController
+    /// <summary>
+    /// The API to retrieve the metadata of a specific package.
+    /// </summary>
+    public class RegistrationIndexController
     {
+        // GET v3/registration/{id}.json
         [HttpGet]
-        public object GetRegistrationIndex(string id)
+        public object Get(string id)
         {
+            // Documentation: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
+
             // TODO: Paging of registration items.
             // "Un-paged" example: https://api.nuget.org/v3/registration3/newtonsoft.json/index.json
             // Paged example: https://api.nuget.org/v3/registration3/fake/index.json
@@ -46,18 +51,6 @@ namespace BaGet.Controllers
             };
         }
 
-        [HttpGet]
-        public RegistrationLeaf GetRegistrationLeaf(string id, string version)
-        {
-            return new RegistrationLeaf(
-                registrationUri: new Uri("https://api.nuget.org/v3/registration3/newtonsoft.json/9.0.1.json"),
-                listed: true,
-                packageContent: new Uri("https://api.nuget.org/v3-flatcontainer/newtonsoft.json/9.0.1/newtonsoft.json.9.0.1.nupkg"),
-                published: DateTimeOffset.Now,
-                registrationIndexUri: new Uri("https://api.nuget.org/v3/registration3/newtonsoft.json/index.json"));
-        }
-
-#region Registration Index Items
         private class RegistrationIndexItem
         {
             public RegistrationIndexItem(
@@ -126,37 +119,5 @@ namespace BaGet.Controllers
 
             public string Version { get; }
         }
-#endregion
-
-#region Registration Leaf Items
-        public class RegistrationLeaf
-        {
-            public RegistrationLeaf(
-                Uri registrationUri,
-                bool listed,
-                Uri packageContent,
-                DateTimeOffset published,
-                Uri registrationIndexUri)
-            {
-                RegistrationUri = registrationUri ?? throw new ArgumentNullException(nameof(registrationIndexUri));
-                Listed = listed;
-                Published = published;
-                PackageContent = packageContent ?? throw new ArgumentNullException(nameof(packageContent));
-                RegistrationIndexUri = registrationIndexUri ?? throw new ArgumentNullException(nameof(registrationIndexUri));
-            }
-
-            [JsonProperty(PropertyName = "@id")]
-            public Uri RegistrationUri { get; }
-
-            public bool Listed { get; }
-
-            public Uri PackageContent { get; }
-
-            public DateTimeOffset Published { get; }
-
-            [JsonProperty(PropertyName = "registration")]
-            public Uri RegistrationIndexUri { get; }
-        }
-#endregion
     }
 }

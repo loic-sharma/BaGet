@@ -41,12 +41,12 @@ namespace BaGet
                 routes.MapRoute(
                     "registration-index",
                     "v3/registration/{id}.json",
-                    defaults: new { controller = "Registration", action = "GetRegistrationIndex"});
+                    defaults: new { controller = "RegistrationIndex", action = "Get"});
 
                 routes.MapRoute(
                     "registration-leaf",
                     "v3/registration/{id}/{version}.json",
-                    defaults: new { controller = "Registration", action = "GetRegistrationLeaf"});
+                    defaults: new { controller = "RegistrationLeaf", action = "Get"});
             });
         }
     }
