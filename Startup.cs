@@ -39,6 +39,11 @@ namespace BaGet
                 routes.MapRoute("index", "v3/index.json", defaults: new { controller = "Index", action = "Get"});
 
                 routes.MapRoute(
+                    "search",
+                    "v3/search",
+                    defaults: new { controller = "Search", action = "Get"});
+
+                routes.MapRoute(
                     "registration-index",
                     "v3/registration/{id}.json",
                     defaults: new { controller = "RegistrationIndex", action = "Get"});
