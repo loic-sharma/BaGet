@@ -32,17 +32,21 @@ namespace BaGet
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseStatusCodePages();
             }
 
             app.UseMvc(routes =>
             {
+                // Service index
                 routes.MapRoute("index", "v3/index.json", defaults: new { controller = "Index", action = "Get"});
 
+                // Search
                 routes.MapRoute(
                     "search",
                     "v3/search",
                     defaults: new { controller = "Search", action = "Get"});
 
+                // Registration
                 routes.MapRoute(
                     "registration-index",
                     "v3/registration/{id}.json",
@@ -52,6 +56,22 @@ namespace BaGet
                     "registration-leaf",
                     "v3/registration/{id}/{version}.json",
                     defaults: new { controller = "RegistrationLeaf", action = "Get"});
+
+                // Package Content
+                routes.MapRoute(
+                    "package-versions",
+                    "v3/package/{id}/index.json",
+                    defaults: new { controller = "Package", action = "Versions"});
+
+                routes.MapRoute(
+                    "package-download",
+                    "v3/package/{id}/{version}/{idVersion}.nupkg",
+                    defaults: new { controller = "Package", action = "DownloadPackage"});
+
+                routes.MapRoute(
+                    "package-download-manifest",
+                    "v3/package/{id}/{version}/{id2}.nuspec",
+                    defaults: new { controller = "Package", action = "DownloadNuspec"});
             });
         }
     }
