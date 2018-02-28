@@ -9,13 +9,8 @@ namespace BaGet.Controllers
             return new[] { "1.0.0" };
         }
 
-        public object DownloadPackage(string id, string version, string idVersion)
+        public object DownloadPackage(string id, string version)
         {
-            if (idVersion != $"{id}.{version}")
-            {
-                throw new Exception("Todo - 404");
-            }
-
             // TODO: Will redirect work??
             return "Download package";
         }
