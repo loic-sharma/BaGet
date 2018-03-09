@@ -70,7 +70,7 @@ namespace BaGet
                 // Registration
                 routes.MapRoute(
                     "registration-index",
-                    "v3/registration/{id}.json",
+                    "v3/registration/{id}/index.json",
                     defaults: new { controller = "RegistrationIndex", action = "Get" });
 
                 routes.MapRoute(
