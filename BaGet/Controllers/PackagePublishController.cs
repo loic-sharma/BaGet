@@ -1,9 +1,9 @@
-﻿using BaGet.Core.Entities;
+﻿using System;
+using System.Linq;
+using BaGet.Core.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Packaging;
-using System;
-using System.Linq;
 
 namespace BaGet.Controllers
 {
