@@ -1,15 +1,19 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using BaGet.Core;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using NuGet.Versioning;
 
 namespace BaGet.Controllers.Registration
 {
     /// <summary>
     /// The API to retrieve the metadata of a specific package.
     /// </summary>
-    public class RegistrationIndexController
+    public class RegistrationIndexController : Controller
     {
         private readonly BaGetContext _context;
 
@@ -20,40 +24,32 @@ namespace BaGet.Controllers.Registration
 
         // GET v3/registration/{id}.json
         [HttpGet]
-        public object Get(string id)
+        public async Task<object> Get(string id)
         {
             // Documentation: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
+            var packages = await _context.Packages.Where(p => p.Id == id).ToListAsync();
+            var versions = packages.Select(p => NuGetVersion.Parse(p.Version)).ToList();
 
             // TODO: Paging of registration items.
             // "Un-paged" example: https://api.nuget.org/v3/registration3/newtonsoft.json/index.json
             // Paged example: https://api.nuget.org/v3/registration3/fake/index.json
             return new
             {
-                Count = 1,
+                Count = packages.Count,
                 Items = new[]
                 {
                     new RegistrationIndexItem(
-                        packageId: "Newtonsoft.Json",
-                        items: new List<RegistrationIndexLeaf>
-                        {
-                            new RegistrationIndexLeaf(
-                                packageId: "Newtonsoft.Json",
-                                catalogEntry: new CatalogEntry(
-                                                catalogUri: new Uri("https://api.nuget.org/v3/catalog0/data/2015.02.01.06.24.15/newtonsoft.json.3.5.8.json"),
-                                                packageId: "Newtonsoft.Json",
-                                                version: "3.5.8"),
-                                packageContent: new Uri("https://api.nuget.org/v3-flatcontainer/newtonsoft.json/3.5.8/newtonsoft.json.3.5.8.nupkg")),
-
-                            new RegistrationIndexLeaf(
-                                packageId: "Newtonsoft.Json",
-                                catalogEntry: new CatalogEntry(
-                                                catalogUri: new Uri("https://api.nuget.org/v3/catalog0/data/2016.06.27.12.35.49/newtonsoft.json.9.0.1.json"),
-                                                packageId: "Newtonsoft.Json",
-                                                version: "9.0.1"),
-                                packageContent: new Uri("https://api.nuget.org/v3-flatcontainer/newtonsoft.json/9.0.1/newtonsoft.json.9.0.1.nupkg")),
-                        },
-                        lower: "3.5.8",
-                        upper: "9.0.1"
+                        packageId: id,
+                        items: packages.Select(p => new RegistrationIndexLeaf(
+                                                        packageId: p.Id,
+                                                        catalogEntry: new CatalogEntry(
+                                                                            catalogUri: new Uri($"https://api.nuget.org/v3/catalog0/data/2015.02.01.06.24.15/{p.Id}.{p.Version}.json"),
+                                                                            packageId: p.Id,
+                                                                            version: p.Version),
+                                                        packageContent: new Uri($"https://api.nuget.org/v3-flatcontainer/{p.Id}/{p.Version}/{p.Id}.{p.Version}.nupkg")))
+                                       .ToList(),
+                        lower: versions.Min().ToNormalizedString(),
+                        upper: versions.Max().ToNormalizedString()
                     ),
                 }
             };

@@ -1,20 +1,46 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using BaGet.Core;
+using BaGet.Core.Entities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using NuGet.Versioning;
 
 namespace BaGet.Controllers
 {
     public class SearchController
     {
-        public object Get()
+        private readonly BaGetContext _context;
+
+        public SearchController(BaGetContext context)
         {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
+
+        public async Task<object> Get([FromQuery(Name = "q")] string query = null)
+        {
+            IQueryable<Package> search = _context.Packages;
+
+            if (!string.IsNullOrEmpty(query))
+            {
+                search = search.Where(p => p.Id.Contains(query));
+            }
+
+            var results = await search.Take(20).ToListAsync();
+
+            results.GroupBy(p => p.Id);
+
             return new
             {
-                TotalHits = 1,
-                Data = new[]
-                {
-                    new SearchResult("Newtonsoft.Json", "9.0.1", new List<string> { "3.0.8", "9.0.1"}),
-                }
+                TotalHits = results.Count,
+                Data = results.GroupBy(p => p.Id)
+                            .Select(g => new SearchResult(
+                                                g.Key,
+                                                g.Max(p => NuGetVersion.Parse(p.Version)).ToNormalizedString(),
+                                                g.Select(p => p.Version).ToList()))
             };
         }
 
