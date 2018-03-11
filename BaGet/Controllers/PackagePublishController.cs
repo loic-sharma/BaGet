@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
+using BaGet.Core;
 using BaGet.Core.Entities;
+using BaGet.Core.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NuGet.Packaging;
 
 namespace BaGet.Controllers
@@ -11,7 +15,15 @@ namespace BaGet.Controllers
 
     public class PackagePublishController : Controller
     {
-        public string Upload(IFormFile upload)
+        private readonly BaGetContext _context;
+
+        public PackagePublishController(BaGetContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
+
+        // See: https://docs.microsoft.com/en-us/nuget/api/package-publish-resource#push-a-package
+        public async Task Upload(IFormFile upload)
         {
             Uri ParseUri(string uriString)
             {
@@ -27,45 +39,62 @@ namespace BaGet.Controllers
                 return tags.Split(',', ';', '\t', ' ');
             }
 
-            using (var uploadStream = upload.OpenReadStream())
-            using (var packageReader = new PackageArchiveReader(uploadStream))
+            try
             {
-                HttpContext.Response.StatusCode = 201;
-
-                var nuspec = packageReader.NuspecReader;
-
-                var package = new Package
+                using (var uploadStream = upload.OpenReadStream())
+                using (var packageReader = new PackageArchiveReader(uploadStream))
                 {
-                    Id = nuspec.GetId(),
-                    Version = nuspec.GetVersion().ToNormalizedString(),
-                    Authors = nuspec.GetAuthors(),
-                    Description = nuspec.GetDescription(),
-                    Listed = true,
-                    MinClientVersion = nuspec.GetMinClientVersion()?.ToNormalizedString(),
-                    Published = DateTime.UtcNow,
-                    RequireLicenseAcceptance = nuspec.GetRequireLicenseAcceptance(),
-                    Summary = nuspec.GetSummary(),
-                    Title = nuspec.GetTitle(),
-                    IconUrl = ParseUri(nuspec.GetIconUrl()),
-                    LicenseUrl = ParseUri(nuspec.GetLicenseUrl()),
-                    ProjectUrl = ParseUri(nuspec.GetProjectUrl()),
-                    Dependencies = nuspec.GetDependencyGroups()
-                                         .Select(g => new BagetPackageDependencyGroup
-                                         {
-                                             TargetFramework = g.TargetFramework.DotNetFrameworkName,
-                                             Dependencies = g.Packages
-                                                             .Select(p => new PackageDependency
-                                                             {
-                                                                 Id = p.Id,
-                                                                 VersionRange = p.VersionRange.OriginalString
-                                                             })
-                                                             .ToList()
-                                         })
-                                         .ToList(),
-                    Tags = ParseTags(nuspec.GetTags())
-                };
+                    var nuspec = packageReader.NuspecReader;
 
-                return $"{package.Id}@{package.Version}";
+                    _context.Packages.Add(new Package
+                    {
+                        Id = nuspec.GetId(),
+                        Version = nuspec.GetVersion().ToNormalizedString(),
+                        Authors = nuspec.GetAuthors(),
+                        Description = nuspec.GetDescription(),
+                        Listed = true,
+                        MinClientVersion = nuspec.GetMinClientVersion()?.ToNormalizedString(),
+                        Published = DateTime.UtcNow,
+                        RequireLicenseAcceptance = nuspec.GetRequireLicenseAcceptance(),
+                        Summary = nuspec.GetSummary(),
+                        Title = nuspec.GetTitle(),
+                        IconUrl = ParseUri(nuspec.GetIconUrl()),
+                        LicenseUrl = ParseUri(nuspec.GetLicenseUrl()),
+                        ProjectUrl = ParseUri(nuspec.GetProjectUrl()),
+                        Dependencies = nuspec
+                                        .GetDependencyGroups()
+                                        .Select(group => new BagetPackageDependencyGroup
+                                        {
+                                            TargetFramework = group.TargetFramework.DotNetFrameworkName,
+                                            Dependencies = group.Packages
+                                                            .Select(p => new PackageDependency
+                                                            {
+                                                                Id = p.Id,
+                                                                VersionRange = p.VersionRange.OriginalString
+                                                            })
+                                                            .ToList()
+                                        })
+                                        .ToList(),
+                        Tags = ParseTags(nuspec.GetTags())
+                    });
+                }
+            }
+            catch
+            {
+                // TODO: Log?
+                HttpContext.Response.StatusCode = 400;
+                return;
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+
+                HttpContext.Response.StatusCode = 201;
+            }
+            catch (DbUpdateException e) when (e.IsUniqueConstraintViolationException())
+            {
+                HttpContext.Response.StatusCode = 409;
             }
         }
 

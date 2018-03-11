@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using BaGet.Core;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -10,6 +11,13 @@ namespace BaGet.Controllers.Registration
     /// </summary>
     public class RegistrationIndexController
     {
+        private readonly BaGetContext _context;
+
+        public RegistrationIndexController(BaGetContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
+
         // GET v3/registration/{id}.json
         [HttpGet]
         public object Get(string id)

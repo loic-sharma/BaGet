@@ -8,6 +8,8 @@ namespace BaGet.Core.Entities
     // See NuGetGallery's: https://github.com/NuGet/NuGetGallery/blob/master/src/NuGetGallery.Core/Entities/Package.cs
     public class Package
     {
+        public int Key { get; set; }
+
         public string Id { get; set; }
         public string Version { get; set; }
 
@@ -24,15 +26,32 @@ namespace BaGet.Core.Entities
         public Uri LicenseUrl { get; set; }
         public Uri ProjectUrl { get; set; }
 
+        public string[] Tags { get; set; }
+
         public List<PackageDependencyGroup> Dependencies { get; set; }
 
-        [NotMapped]
-        public string[] Tags
+        public string IconUrlString
         {
-            get => _tags == null ? new string[0] : JsonConvert.DeserializeObject<string[]>(_tags);
-            set => _tags = JsonConvert.SerializeObject(value);
+            get => IconUrl?.AbsoluteUri;
+            set => IconUrl = (value != null) ? new Uri(value) : null;
         }
 
-        internal string _tags { get; set; }
+        public string LicenseUrlString
+        {
+            get => LicenseUrl?.AbsoluteUri;
+            set => LicenseUrl = (value != null) ? new Uri(value) : null;
+        }
+
+        public string ProjectUrlString
+        {
+            get => ProjectUrl?.AbsoluteUri;
+            set => ProjectUrl = (value != null) ? new Uri(value) : null;
+        }
+
+        public string TagsString
+        {
+            get => JsonConvert.SerializeObject(Tags);
+            set => Tags = (value != null) ? JsonConvert.DeserializeObject<string[]>(value) : new string[0];
+        }
     }
 }
