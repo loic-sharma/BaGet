@@ -30,6 +30,12 @@ namespace BaGet.Core
                 .Entity<Package>()
                 .HasKey(p => p.Key);
 
+            // TODO: This is SQLite specific!
+            builder
+                .Entity<Package>()
+                .Property(p => p.Id)
+                .HasColumnType("TEXT COLLATE NOCASE");
+
             builder
                 .Entity<Package>()
                 .HasIndex(p => new { p.Id, p.Version })

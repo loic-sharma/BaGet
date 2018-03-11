@@ -31,7 +31,8 @@ namespace BaGet.Core.Migrations
                     b.Property<string>("IconUrlString")
                         .HasColumnName("IconUrl");
 
-                    b.Property<string>("Id");
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<string>("LicenseUrlString")
                         .HasColumnName("LicenseUrl");
