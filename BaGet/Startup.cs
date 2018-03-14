@@ -1,4 +1,5 @@
 ﻿using BaGet.Core;
+using BaGet.Core.Indexing;
 using BaGet.Core.Storage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -39,6 +40,7 @@ namespace BaGet
             services.AddDbContext<BaGetContext>(options => options.UseSqlite("Data Source=baget.db"));
 
             services.Configure<BaGetOptions>(Configuration);
+            services.AddTransient<IIndexingService, IndexingService>();
             services.AddTransient<IPackageStorageService, FilePackageStorageService>(s =>
             {
                 var options = s.GetRequiredService<IOptions<BaGetOptions>>().Value;

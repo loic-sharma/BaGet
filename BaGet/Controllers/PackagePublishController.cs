@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using BaGet.Core;
 using BaGet.Core.Entities;
 using BaGet.Core.Extensions;
+using BaGet.Core.Indexing;
 using BaGet.Core.Storage;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,131 +20,54 @@ namespace BaGet.Controllers
 
     public class PackagePublishController : Controller
     {
-        private readonly BaGetContext _context;
-        private readonly IPackageStorageService _storage;
+        private readonly IIndexingService _indexer;
         private readonly ILogger<PackagePublishController> _logger;
 
         public PackagePublishController(
-            BaGetContext context,
-            IPackageStorageService storage,
+            IIndexingService indexer,
             ILogger<PackagePublishController> logger)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-            _storage = storage ?? throw new ArgumentNullException(nameof(storage));
+            _indexer = indexer ?? throw new ArgumentNullException(nameof(indexer));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         // See: https://docs.microsoft.com/en-us/nuget/api/package-publish-resource#push-a-package
         public async Task Upload(IFormFile upload)
         {
-            Uri ParseUri(string uriString)
+            if (upload == null)
             {
-                if (string.IsNullOrEmpty(uriString)) return null;
-
-                return new Uri(uriString);
-            }
-
-            string[] ParseTags(string tags)
-            {
-                if (string.IsNullOrEmpty(tags)) return new string[0];
-
-                return tags.Split(',', ';', '\t', ' ');
-            }
-
-            Package package;
-
-            try
-            {
-                using (var uploadStream = upload.OpenReadStream())
-                using (var packageReader = new PackageArchiveReader(uploadStream))
-                {
-                    if (await PackageAlreadyExistsAsync(packageReader.GetIdentity()))
-                    {
-                        HttpContext.Response.StatusCode = 409;
-                        return;
-                    }
-
-                    try
-                    {
-                        await _storage.SaveAsync(packageReader, uploadStream);
-                    }
-                    catch (Exception e)
-                    {
-                        // This may happen due to concurrent pushes.
-                        _logger.LogError(e, "Failed to save package {Identity}", packageReader.GetIdentity());
-
-                        HttpContext.Response.StatusCode = 500;
-                        return;
-                    }
-
-                    var nuspec = packageReader.NuspecReader;
-
-                    package = new Package
-                    {
-                        Id = nuspec.GetId(),
-                        Version = nuspec.GetVersion().ToNormalizedString(),
-                        Authors = nuspec.GetAuthors(),
-                        Description = nuspec.GetDescription(),
-                        Listed = true,
-                        MinClientVersion = nuspec.GetMinClientVersion()?.ToNormalizedString(),
-                        Published = DateTime.UtcNow,
-                        RequireLicenseAcceptance = nuspec.GetRequireLicenseAcceptance(),
-                        Summary = nuspec.GetSummary(),
-                        Title = nuspec.GetTitle(),
-                        IconUrl = ParseUri(nuspec.GetIconUrl()),
-                        LicenseUrl = ParseUri(nuspec.GetLicenseUrl()),
-                        ProjectUrl = ParseUri(nuspec.GetProjectUrl()),
-                        Dependencies = nuspec
-                            .GetDependencyGroups()
-                            .Select(group => new BagetPackageDependencyGroup
-                            {
-                                TargetFramework = group.TargetFramework.DotNetFrameworkName,
-                                Dependencies = group.Packages
-                                    .Select(p => new BaGetPackageDependency
-                                    {
-                                        Id = p.Id,
-                                        VersionRange = p.VersionRange.OriginalString
-                                    })
-                                    .ToList()
-                            })
-                            .ToList(),
-                        Tags = ParseTags(nuspec.GetTags())
-                    };
-                }
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Uploaded package is invalid");
-
                 HttpContext.Response.StatusCode = 400;
                 return;
             }
 
             try
             {
-                _context.Packages.Add(package);
+                using (var uploadStream = upload.OpenReadStream())
+                {
+                    var result = await _indexer.IndexAsync(uploadStream);
 
-                await _context.SaveChangesAsync();
+                    switch (result)
+                    {
+                        case Result.InvalidPackage:
+                            HttpContext.Response.StatusCode = 400;
+                            break;
 
-                HttpContext.Response.StatusCode = 201;
+                        case Result.PackageAlreadyExists:
+                            HttpContext.Response.StatusCode = 409;
+                            break;
+
+                        case Result.Success:
+                            HttpContext.Response.StatusCode = 201;
+                            break;
+                    }
+                }
             }
-            catch (DbUpdateException e) when (e.IsUniqueConstraintViolationException())
+            catch (Exception e)
             {
-                _logger.LogError(e,
-                    "Failed to upload package {PackageId} {PackageVersion} as it already exists",
-                    package.Id,
-                    package.Version);
+                _logger.LogError(e, "Exception thrown during package upload");
 
-                HttpContext.Response.StatusCode = 409;
+                HttpContext.Response.StatusCode = 500;
             }
-        }
-
-        private Task<bool> PackageAlreadyExistsAsync(PackageIdentity package)
-        {
-            return _context.Packages
-                .Where(p => p.Id == package.Id)
-                .Where(p => p.Version == package.Version.ToNormalizedString())
-                .AnyAsync();
         }
 
         public void Delete(string id, string version)
