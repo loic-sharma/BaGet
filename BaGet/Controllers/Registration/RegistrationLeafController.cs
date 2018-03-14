@@ -1,54 +1,84 @@
 using System;
+using System.Linq;
+using System.Threading.Tasks;
+using BaGet.Core;
+using BaGet.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using NuGet.Versioning;
 
 namespace BaGet.Controllers.Registration
 {
     /// <summary>
     /// The API to retrieve the metadata of a specific version of a specific package.
     /// </summary>
-    public class RegistrationLeafController
+    public class RegistrationLeafController : Controller
     {
+        private readonly BaGetContext _context;
+
+        public RegistrationLeafController(BaGetContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
+
         // GET v3/registration/{id}/{version}.json
         [HttpGet]
-        public RegistrationLeaf Get(string id, string version)
+        public async Task<IActionResult> Get(string id, string version)
         {
+            if (!NuGetVersion.TryParse(version, out var nugetVersion))
+            {
+                return NotFound();
+            }
+
+            var package = await _context.Packages
+                .Where(p => p.Id == id)
+                .Where(p => p.Version == nugetVersion.ToNormalizedString())
+                .FirstOrDefaultAsync();
+
+            if (package == null)
+            {
+                return NotFound();
+            }
+
             // Documentation: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
-            return new RegistrationLeaf(
-                registrationUri: new Uri("https://api.nuget.org/v3/registration3/newtonsoft.json/9.0.1.json"),
-                listed: true,
-                packageContent: new Uri("https://api.nuget.org/v3-flatcontainer/newtonsoft.json/9.0.1/newtonsoft.json.9.0.1.nupkg"),
-                published: DateTimeOffset.Now,
-                registrationIndexUri: new Uri("https://api.nuget.org/v3/registration3/newtonsoft.json/index.json"));
+            var result = new RegistrationLeaf(
+                registrationUri: Url.PackageRegistrationLeaf(id, nugetVersion),
+                listed: package.Listed,
+                packageContentUri: Url.PackageDownload(id, nugetVersion),
+                published: package.Published,
+                registrationIndexUri: Url.PackageRegistrationIndex(id));
+
+            return Json(result);
         }
 
         public class RegistrationLeaf
         {
             public RegistrationLeaf(
-                Uri registrationUri,
+                string registrationUri,
                 bool listed,
-                Uri packageContent,
+                string packageContentUri,
                 DateTimeOffset published,
-                Uri registrationIndexUri)
+                string registrationIndexUri)
             {
                 RegistrationUri = registrationUri ?? throw new ArgumentNullException(nameof(registrationIndexUri));
                 Listed = listed;
                 Published = published;
-                PackageContent = packageContent ?? throw new ArgumentNullException(nameof(packageContent));
+                PackageContent = packageContentUri ?? throw new ArgumentNullException(nameof(packageContentUri));
                 RegistrationIndexUri = registrationIndexUri ?? throw new ArgumentNullException(nameof(registrationIndexUri));
             }
 
             [JsonProperty(PropertyName = "@id")]
-            public Uri RegistrationUri { get; }
+            public string RegistrationUri { get; }
 
             public bool Listed { get; }
 
-            public Uri PackageContent { get; }
+            public string PackageContent { get; }
 
             public DateTimeOffset Published { get; }
 
             [JsonProperty(PropertyName = "registration")]
-            public Uri RegistrationIndexUri { get; }
+            public string RegistrationIndexUri { get; }
         }
     }
 }

@@ -37,10 +37,10 @@ namespace BaGet.Controllers
             {
                 TotalHits = results.Count,
                 Data = results.GroupBy(p => p.Id)
-                            .Select(g => new SearchResult(
-                                                g.Key,
-                                                g.Max(p => NuGetVersion.Parse(p.Version)).ToNormalizedString(),
-                                                g.Select(p => p.Version).ToList()))
+                    .Select(g => new SearchResult(
+                        g.Key,
+                        g.Max(p => NuGetVersion.Parse(p.Version)).ToNormalizedString(),
+                        g.Select(p => p.Version).ToList()))
             };
         }
 
