@@ -1,4 +1,5 @@
 ﻿using BaGet.Core;
+using BaGet.Core.Storage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace BaGet
 {
@@ -24,6 +26,14 @@ namespace BaGet
             services.AddMvc();
 
             services.AddDbContext<BaGetContext>(options => options.UseSqlite("Data Source=baget.db"));
+
+            services.Configure<BaGetOptions>(Configuration);
+            services.AddTransient<IPackageStorageService, FilePackageStorageService>(s =>
+            {
+                var options = s.GetRequiredService<IOptions<BaGetOptions>>().Value;
+
+                return new FilePackageStorageService(options.PackageStore);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
