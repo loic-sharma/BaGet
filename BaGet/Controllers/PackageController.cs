@@ -1,21 +1,63 @@
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using BaGet.Core;
+using BaGet.Core.Storage;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging.Core;
+using NuGet.Versioning;
+
 namespace BaGet.Controllers
 {
-    public class PackageController
+    public class PackageController : Controller
     {
-        public string[] Versions(string id)
+        private readonly BaGetContext _context;
+        private readonly IPackageStorageService _storage;
+
+        public PackageController(BaGetContext context, IPackageStorageService storage)
         {
-            return new[] { "1.0.0" };
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _storage = storage ?? throw new ArgumentNullException(nameof(storage));
         }
 
-        public object DownloadPackage(string id, string version)
+        public async Task<IActionResult> Versions(string id)
         {
-            // TODO: Will redirect work??
-            return "Download package";
+            var versions = await _context.Packages
+                .Where(p => p.Id == id)
+                .Select(p => p.Version)
+                .ToListAsync();
+
+            if (!versions.Any())
+            {
+                return NotFound();
+            }
+
+            return Json(versions);
         }
 
-        public object DownloadNuspec(string id, string version)
+        public async Task<IActionResult> DownloadPackage(string id, string version)
         {
-            return "Download nuspec";
+            if (!NuGetVersion.TryParse(version, out var nugetVersion))
+            {
+                return NotFound();
+            }
+
+            var identity = new PackageIdentity(id, nugetVersion);
+
+            return File(await _storage.GetPackageStreamAsync(identity), "application/octet-stream");
+        }
+
+        public async Task<IActionResult> DownloadNuspec(string id, string version)
+        {
+            if (!NuGetVersion.TryParse(version, out var nugetVersion))
+            {
+                return NotFound();
+            }
+
+            var identity = new PackageIdentity(id, nugetVersion);
+
+            return File(await _storage.GetNuspecStreamAsync(identity), "text/xml");
         }
     }
 }
