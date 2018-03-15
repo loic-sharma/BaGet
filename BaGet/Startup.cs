@@ -1,5 +1,9 @@
-﻿using BaGet.Core;
+﻿using System;
+using System.Net;
+using System.Net.Http;
+using BaGet.Core;
 using BaGet.Core.Services;
+using BaGet.Services.Remote;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
@@ -7,6 +11,7 @@ using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace BaGet
@@ -35,12 +40,37 @@ namespace BaGet
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-
+            services.Configure<BaGetOptions>(Configuration);
             services.AddDbContext<BaGetContext>(options => options.UseSqlite("Data Source=baget.db"));
 
-            services.Configure<BaGetOptions>(Configuration);
+            services.AddSingleton(s =>
+            {
+                var options = s.GetRequiredService<IOptions<BaGetOptions>>().Value;
+
+                var client = new HttpClient(new HttpClientHandler
+                {
+                    AutomaticDecompression = (DecompressionMethods.GZip | DecompressionMethods.Deflate),
+                });
+
+                client.Timeout = TimeSpan.FromSeconds(options.PackageDownloadTimeoutSeconds);
+
+                return client;
+            });
+
+            services.AddTransient<PackageService>();
             services.AddTransient<IIndexingService, IndexingService>();
-            services.AddTransient<IPackageService, PackageService>();
+            services.AddTransient<IPackageDownloader, PackageDownloader>();
+            services.AddTransient<IPackageService, RemotePackageService>(s =>
+            {
+                var options = s.GetRequiredService<IOptions<BaGetOptions>>().Value;
+
+                return new RemotePackageService(
+                    options.PackageSource,
+                    s.GetRequiredService<PackageService>(),
+                    s.GetRequiredService<IPackageDownloader>(),
+                    s.GetRequiredService<IIndexingService>(),
+                    s.GetRequiredService<ILogger<RemotePackageService>>());
+            });
 
             services.AddTransient<IPackageStorageService, FilePackageStorageService>(s =>
             {

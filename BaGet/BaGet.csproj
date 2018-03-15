@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
+    <ProjectReference Include="..\BaGet.Services.Remote\BaGet.Services.Remote.csproj" />
   </ItemGroup>
 
 </Project>

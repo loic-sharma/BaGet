@@ -5,7 +5,9 @@ VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet", "BaGet\BaGet.csproj", "{284366CB-C68F-473E-908A-50A382616AE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaGet.Core", "BaGet.Core\BaGet.Core.csproj", "{FFFACD28-C300-4046-BCFE-4A7899E88EA3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Core", "BaGet.Core\BaGet.Core.csproj", "{FFFACD28-C300-4046-BCFE-4A7899E88EA3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaGet.Services.Remote", "BaGet.Services.Remote\BaGet.Services.Remote.csproj", "{6BC034FA-1A02-491F-B3E4-C2E87CCBC57D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{FFFACD28-C300-4046-BCFE-4A7899E88EA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFFACD28-C300-4046-BCFE-4A7899E88EA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFFACD28-C300-4046-BCFE-4A7899E88EA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BC034FA-1A02-491F-B3E4-C2E87CCBC57D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BC034FA-1A02-491F-B3E4-C2E87CCBC57D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BC034FA-1A02-491F-B3E4-C2E87CCBC57D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BC034FA-1A02-491F-B3E4-C2E87CCBC57D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

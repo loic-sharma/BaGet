@@ -57,16 +57,16 @@ namespace BaGet.Core.Services
 
         private string PackagePath(PackageIdentity package)
         {
-            var id = package.Id;
-            var version = package.Version.ToNormalizedString();
+            var id = package.Id.ToLowerInvariant();
+            var version = package.Version.ToNormalizedString().ToLowerInvariant();
 
             return Path.Combine(_storePath, id, version, $"{id}.{version}.nupkg");
         }
 
         private string NuspecPath(PackageIdentity package)
         {
-            var id = package.Id;
-            var version = package.Version.ToNormalizedString();
+            var id = package.Id.ToLowerInvariant();
+            var version = package.Version.ToNormalizedString().ToLowerInvariant();
 
             return Path.Combine(_storePath, id, version, $"{id}.nuspec");
         }
