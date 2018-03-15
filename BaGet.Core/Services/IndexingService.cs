@@ -4,16 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
 using BaGet.Core.Extensions;
-using BaGet.Core.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
 
-namespace BaGet.Core.Indexing
+namespace BaGet.Core.Services
 {
-    using BagetPackageDependencyGroup = Core.Entities.PackageDependencyGroup;
-    using BaGetPackageDependency = Core.Entities.PackageDependency;
+    using BagetPackageDependencyGroup = Entities.PackageDependencyGroup;
+    using BaGetPackageDependency = Entities.PackageDependency;
 
     public class IndexingService : IIndexingService
     {
@@ -30,7 +29,7 @@ namespace BaGet.Core.Indexing
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-        public async Task<Result> IndexAsync(Stream stream)
+        public async Task<IndexingResult> IndexAsync(Stream stream)
         {
             Package package;
 
@@ -40,7 +39,7 @@ namespace BaGet.Core.Indexing
                 {
                     if (await PackageAlreadyExistsAsync(packageReader.GetIdentity()))
                     {
-                        return Result.PackageAlreadyExists;
+                        return IndexingResult.PackageAlreadyExists;
                     }
 
                     try
@@ -63,7 +62,7 @@ namespace BaGet.Core.Indexing
             {
                 _logger.LogError(e, "Uploaded package is invalid");
 
-                return Result.InvalidPackage;
+                return IndexingResult.InvalidPackage;
             }
 
             try
@@ -72,7 +71,7 @@ namespace BaGet.Core.Indexing
 
                 await _context.SaveChangesAsync();
 
-                return Result.Success;
+                return IndexingResult.Success;
             }
             catch (DbUpdateException e) when (e.IsUniqueConstraintViolationException())
             {
@@ -81,7 +80,7 @@ namespace BaGet.Core.Indexing
                     package.Id,
                     package.Version);
 
-                return Result.PackageAlreadyExists;
+                return IndexingResult.PackageAlreadyExists;
             }
         }
 

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
 
-namespace BaGet.Core.Storage
+namespace BaGet.Core.Services
 {
     public interface IPackageStorageService
     {

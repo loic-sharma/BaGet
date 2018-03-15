@@ -1,6 +1,5 @@
 ﻿using BaGet.Core;
-using BaGet.Core.Indexing;
-using BaGet.Core.Storage;
+using BaGet.Core.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;

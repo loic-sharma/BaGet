@@ -1,23 +1,12 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
-using BaGet.Core;
-using BaGet.Core.Entities;
-using BaGet.Core.Extensions;
-using BaGet.Core.Indexing;
-using BaGet.Core.Storage;
+using BaGet.Core.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using NuGet.Packaging;
-using NuGet.Packaging.Core;
 
 namespace BaGet.Controllers
 {
-    using BagetPackageDependencyGroup = Core.Entities.PackageDependencyGroup;
-    using BaGetPackageDependency = Core.Entities.PackageDependency;
-
     public class PackagePublishController : Controller
     {
         private readonly IIndexingService _indexer;
@@ -48,15 +37,15 @@ namespace BaGet.Controllers
 
                     switch (result)
                     {
-                        case Result.InvalidPackage:
+                        case IndexingResult.InvalidPackage:
                             HttpContext.Response.StatusCode = 400;
                             break;
 
-                        case Result.PackageAlreadyExists:
+                        case IndexingResult.PackageAlreadyExists:
                             HttpContext.Response.StatusCode = 409;
                             break;
 
-                        case Result.Success:
+                        case IndexingResult.Success:
                             HttpContext.Response.StatusCode = 201;
                             break;
                     }

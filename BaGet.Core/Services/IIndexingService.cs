@@ -1,9 +1,9 @@
 using System.IO;
 using System.Threading.Tasks;
 
-namespace BaGet.Core.Indexing
+namespace BaGet.Core.Services
 {
-    public enum Result
+    public enum IndexingResult
     {
         InvalidPackage,
         PackageAlreadyExists,
@@ -12,6 +12,6 @@ namespace BaGet.Core.Indexing
 
     public interface IIndexingService
     {
-        Task<Result> IndexAsync(Stream stream);
+        Task<IndexingResult> IndexAsync(Stream stream);
     }
 }
