@@ -40,6 +40,8 @@ namespace BaGet
 
             services.Configure<BaGetOptions>(Configuration);
             services.AddTransient<IIndexingService, IndexingService>();
+            services.AddTransient<IPackageService, PackageService>();
+
             services.AddTransient<IPackageStorageService, FilePackageStorageService>(s =>
             {
                 var options = s.GetRequiredService<IOptions<BaGetOptions>>().Value;

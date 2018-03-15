@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Core;
+using BaGet.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -15,11 +16,11 @@ namespace BaGet.Controllers.Registration
     /// </summary>
     public class RegistrationIndexController : Controller
     {
-        private readonly BaGetContext _context;
+        private readonly IPackageService _packages;
 
-        public RegistrationIndexController(BaGetContext context)
+        public RegistrationIndexController(IPackageService packages)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _packages = packages ?? throw new ArgumentNullException(nameof(packages));
         }
 
         // GET v3/registration/{id}.json
@@ -27,7 +28,7 @@ namespace BaGet.Controllers.Registration
         public async Task<object> Get(string id)
         {
             // Documentation: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
-            var packages = await _context.Packages.Where(p => p.Id == id).ToListAsync();
+            var packages = await _packages.FindAsync(id);
             var versions = packages.Select(p => NuGetVersion.Parse(p.Version)).ToList();
 
             // TODO: Paging of registration items.

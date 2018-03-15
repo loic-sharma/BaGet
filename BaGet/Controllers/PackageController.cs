@@ -12,26 +12,25 @@ namespace BaGet.Controllers
 {
     public class PackageController : Controller
     {
-        private readonly BaGetContext _context;
+        private readonly IPackageService _packages;
         private readonly IPackageStorageService _storage;
 
-        public PackageController(BaGetContext context, IPackageStorageService storage)
+        public PackageController(IPackageService packages, IPackageStorageService storage)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _packages = packages ?? throw new ArgumentNullException(nameof(packages));
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
         }
 
         public async Task<IActionResult> Versions(string id)
         {
-            var versions = await _context.Packages
-                .Where(p => p.Id == id)
-                .Select(p => p.Version)
-                .ToListAsync();
+            var packages = await _packages.FindAsync(id);
 
-            if (!versions.Any())
+            if (!packages.Any())
             {
                 return NotFound();
             }
+
+            var versions = packages.Select(p => p.Version).ToList();
 
             return Json(versions);
         }

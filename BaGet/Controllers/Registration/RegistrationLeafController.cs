@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Core;
+using BaGet.Core.Services;
 using BaGet.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,11 +16,11 @@ namespace BaGet.Controllers.Registration
     /// </summary>
     public class RegistrationLeafController : Controller
     {
-        private readonly BaGetContext _context;
+        private readonly IPackageService _packages;
 
-        public RegistrationLeafController(BaGetContext context)
+        public RegistrationLeafController(IPackageService packages)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _packages = packages ?? throw new ArgumentNullException(nameof(packages));
         }
 
         // GET v3/registration/{id}/{version}.json
@@ -31,10 +32,7 @@ namespace BaGet.Controllers.Registration
                 return NotFound();
             }
 
-            var package = await _context.Packages
-                .Where(p => p.Id == id)
-                .Where(p => p.Version == nugetVersion.ToNormalizedString())
-                .FirstOrDefaultAsync();
+            var package = await _packages.FindAsync(id, nugetVersion);
 
             if (package == null)
             {
