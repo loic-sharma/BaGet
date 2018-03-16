@@ -28,7 +28,7 @@ namespace BaGet.Controllers
                 return NotFound();
             }
 
-            var versions = packages.Select(p => p.Version).ToList();
+            var versions = packages.Select(p => p.VersionString).ToList();
 
             return Json(versions);
         }
@@ -36,6 +36,11 @@ namespace BaGet.Controllers
         public async Task<IActionResult> DownloadPackage(string id, string version)
         {
             if (!NuGetVersion.TryParse(version, out var nugetVersion))
+            {
+                return NotFound();
+            }
+
+            if (!await _packages.ExistsAsync(id, nugetVersion))
             {
                 return NotFound();
             }
@@ -48,6 +53,11 @@ namespace BaGet.Controllers
         public async Task<IActionResult> DownloadNuspec(string id, string version)
         {
             if (!NuGetVersion.TryParse(version, out var nugetVersion))
+            {
+                return NotFound();
+            }
+
+            if (!await _packages.ExistsAsync(id, nugetVersion))
             {
                 return NotFound();
             }
