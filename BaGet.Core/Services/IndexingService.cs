@@ -88,7 +88,7 @@ namespace BaGet.Core.Services
         {
             return _context.Packages
                 .Where(p => p.Id == package.Id)
-                .Where(p => p.Version == package.Version.ToNormalizedString())
+                .Where(p => p.Version == package.Version)
                 .AnyAsync();
         }
 
@@ -99,7 +99,7 @@ namespace BaGet.Core.Services
             return new Package
             {
                 Id = nuspec.GetId(),
-                Version = nuspec.GetVersion().ToNormalizedString(),
+                Version = nuspec.GetVersion(),
                 Authors = nuspec.GetAuthors(),
                 Description = nuspec.GetDescription(),
                 Listed = true,

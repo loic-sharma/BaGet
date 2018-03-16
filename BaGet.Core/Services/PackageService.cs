@@ -20,7 +20,7 @@ namespace BaGet.Core.Services
         public Task<bool> ExistsAsync(string id, NuGetVersion version)
             => _context.Packages
                 .Where(p => p.Id == id)
-                .Where(p => p.Version == version.ToNormalizedString())
+                .Where(p => p.Version == version)
                 .AnyAsync();
 
         public async Task<IReadOnlyList<Package>> FindAsync(string id)
@@ -35,7 +35,7 @@ namespace BaGet.Core.Services
         public Task<Package> FindAsync(string id, NuGetVersion version)
             => _context.Packages
                 .Where(p => p.Id == id)
-                .Where(p => p.Version == version.ToNormalizedString())
+                .Where(p => p.Version == version)
                 .FirstOrDefaultAsync();
     }
 }

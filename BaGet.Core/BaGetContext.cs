@@ -38,7 +38,12 @@ namespace BaGet.Core
 
             builder
                 .Entity<Package>()
-                .HasIndex(p => new { p.Id, p.Version })
+                .Property(p => p.VersionString)
+                .HasColumnName("Version");
+
+            builder
+                .Entity<Package>()
+                .HasIndex(p => new { p.Id, p.VersionString })
                 .IsUnique();
 
             builder
@@ -63,6 +68,7 @@ namespace BaGet.Core
 
             builder
                 .Entity<Package>()
+                .Ignore(p => p.Version)
                 .Ignore(p => p.IconUrl)
                 .Ignore(p => p.LicenseUrl)
                 .Ignore(p => p.ProjectUrl)

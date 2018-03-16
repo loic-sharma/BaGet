@@ -39,8 +39,8 @@ namespace BaGet.Controllers
                 Data = results.GroupBy(p => p.Id)
                     .Select(g => new SearchResult(
                         g.Key,
-                        g.Max(p => NuGetVersion.Parse(p.Version)).ToNormalizedString(),
-                        g.Select(p => p.Version).ToList()))
+                        g.Max(p => p.Version).ToNormalizedString(),
+                        g.Select(p => p.Version.ToNormalizedString()).ToList()))
             };
         }
 

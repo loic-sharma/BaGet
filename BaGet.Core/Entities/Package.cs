@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
+using NuGet.Versioning;
 
 namespace BaGet.Core.Entities
 {
@@ -11,7 +12,7 @@ namespace BaGet.Core.Entities
         public int Key { get; set; }
 
         public string Id { get; set; }
-        public string Version { get; set; }
+        public NuGetVersion Version { get; set; }
 
         public string Authors { get; set; }
         public string Description { get; set; }
@@ -29,6 +30,17 @@ namespace BaGet.Core.Entities
         public string[] Tags { get; set; }
 
         public List<PackageDependencyGroup> Dependencies { get; set; }
+
+        public string VersionString
+        {
+            get => Version?.ToNormalizedString();
+            set
+            {
+                NuGetVersion.TryParse(value, out var version);
+
+                Version = version;
+            }
+        }
 
         public string IconUrlString
         {
