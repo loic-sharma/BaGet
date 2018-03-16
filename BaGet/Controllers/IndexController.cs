@@ -1,4 +1,5 @@
 using System;
+using BaGet.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -15,18 +16,16 @@ namespace BaGet.Controllers
         {
             // Documentation: https://docs.microsoft.com/en-us/nuget/api/overview
             // NuGet.org: https://api.nuget.org/v3-index/index.json
-            var baseUri = $"{Request.Scheme}://{Request.Host}";
-
             return new
             {
                 Version = "3.0.0-beta.1",
                 Resources = new[]
                 {
                     // Required
-                    new ServiceResource("PackagePublish/2.0.0", new Uri($"{baseUri}/v2/package")),
-                    new ServiceResource("SearchQueryService/3.0.0-rc", new Uri($"{baseUri}/v3/search")),
-                    new ServiceResource("RegistrationsBaseUrl/3.0.0-rc", new Uri($"{baseUri}/v3/registration")),
-                    new ServiceResource("PackageBaseAddress/3.0.0", new Uri($"{baseUri}/v3/package")),
+                    new ServiceResource("PackagePublish/2.0.0", Url.PackagePublish()),
+                    new ServiceResource("SearchQueryService/3.0.0-rc", Url.PackageSearch()),
+                    new ServiceResource("RegistrationsBaseUrl/3.0.0-rc", "/v3/registration"),
+                    new ServiceResource("PackageBaseAddress/3.0.0", "/v3/package"),
 
                     // Optional
                     //new ServiceResource("SearchAutocompleteService/3.0.0-rc", new Uri("https://google.com")),
@@ -38,7 +37,7 @@ namespace BaGet.Controllers
 
         private class ServiceResource
         {
-            public ServiceResource(string type, Uri id, string comment = null)
+            public ServiceResource(string type, string id, string comment = null)
             {
                 Id = id ?? throw new ArgumentNullException(nameof(id));
                 Type = type ?? throw new ArgumentNullException(nameof(type));
@@ -46,7 +45,7 @@ namespace BaGet.Controllers
             }
 
             [JsonProperty(PropertyName = "@id")]
-            public Uri Id { get; }
+            public string Id { get; }
 
             [JsonProperty(PropertyName = "@type")]
             public string Type { get; }

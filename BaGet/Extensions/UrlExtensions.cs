@@ -1,11 +1,13 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using NuGet.Versioning;
 
 namespace BaGet.Extensions
 {
     public static class UrlExtensions
     {
+        public static string PackagePublish(this IUrlHelper url) => url.RouteUrl(Startup.UploadRouteName);
+        public static string PackageSearch(this IUrlHelper url) => url.RouteUrl(Startup.SearchRouteName);
+
         public static string PackageRegistrationIndex(this IUrlHelper url, string id)
             => url.RouteUrl(
                 Startup.RegistrationLeafRouteName,
