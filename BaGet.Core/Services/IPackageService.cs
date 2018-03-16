@@ -12,5 +12,7 @@ namespace BaGet.Core.Services
         Task<IReadOnlyList<Package>> FindAsync(string id);
 
         Task<Package> FindAsync(string id, NuGetVersion version);
+        Task<bool> UnlistPackageAsync(string id, NuGetVersion version);
+        Task<bool> RelistPackageAsync(string id, NuGetVersion version);
     }
 }

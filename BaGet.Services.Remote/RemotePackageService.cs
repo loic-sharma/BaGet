@@ -80,6 +80,26 @@ namespace BaGet.Services.Remote
             return await _cache.FindAsync(id, version);
         }
 
+        public async Task<bool> UnlistPackageAsync(string id, NuGetVersion version)
+        {
+            if (!await ExistsAsync(id, version))
+            {
+                return false;
+            }
+
+            return await _cache.UnlistPackageAsync(id, version);
+        }
+
+        public async Task<bool> RelistPackageAsync(string id, NuGetVersion version)
+        {
+            if (!await ExistsAsync(id, version))
+            {
+                return false;
+            }
+
+            return await _cache.RelistPackageAsync(id, version);
+        }
+
         private Task<bool> TryIndexFromSourceAsync(string id)
         {
             /*

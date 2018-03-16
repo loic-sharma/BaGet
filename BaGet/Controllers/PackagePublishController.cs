@@ -4,19 +4,23 @@ using BaGet.Core.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NuGet.Versioning;
 
 namespace BaGet.Controllers
 {
     public class PackagePublishController : Controller
     {
         private readonly IIndexingService _indexer;
+        private readonly IPackageService _packages;
         private readonly ILogger<PackagePublishController> _logger;
 
         public PackagePublishController(
             IIndexingService indexer,
+            IPackageService packages,
             ILogger<PackagePublishController> logger)
         {
             _indexer = indexer ?? throw new ArgumentNullException(nameof(indexer));
+            _packages = packages ?? throw new ArgumentNullException(nameof(packages));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -59,14 +63,38 @@ namespace BaGet.Controllers
             }
         }
 
-        public void Delete(string id, string version)
+        public async Task<IActionResult> Delete(string id, string version)
         {
-            HttpContext.Response.StatusCode = 404;
+            if (!NuGetVersion.TryParse(version, out var nugetVersion))
+            {
+                return NotFound();
+            }
+
+            if (await _packages.UnlistPackageAsync(id, nugetVersion))
+            {
+                return NoContent();
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
-        public void Relist(string id, string version)
+        public async Task<IActionResult> Relist(string id, string version)
         {
-            HttpContext.Response.StatusCode = 404;
+            if (!NuGetVersion.TryParse(version, out var nugetVersion))
+            {
+                return NotFound();
+            }
+
+            if (await _packages.RelistPackageAsync(id, nugetVersion))
+            {
+                return Ok();
+            }
+            else
+            {
+                return NotFound();
+            }
         }
     }
 }

@@ -37,5 +37,30 @@ namespace BaGet.Core.Services
                 .Where(p => p.Id == id)
                 .Where(p => p.Version == version)
                 .FirstOrDefaultAsync();
+
+        public Task<bool> UnlistPackageAsync(string id, NuGetVersion version)
+        {
+            return TryUpdatePackageAsync(id, version, p => p.Listed = false);
+        }
+
+        public Task<bool> RelistPackageAsync(string id, NuGetVersion version)
+        {
+            return TryUpdatePackageAsync(id, version, p => p.Listed = true);
+        }
+
+        private async Task<bool> TryUpdatePackageAsync(string id, NuGetVersion version, Action<Package> action)
+        {
+            var package = await FindAsync(id, version);
+
+            if (package != null)
+            {
+                action(package);
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+
+            return false;
+        }
     }
 }
