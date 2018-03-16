@@ -2,7 +2,7 @@
 
 ## About
 
-A fresh reimplementation of the NuGet service.
+A lightweight implementation of the NuGet service.
 
 ## Installation
 
