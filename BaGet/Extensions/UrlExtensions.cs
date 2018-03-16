@@ -7,6 +7,7 @@ namespace BaGet.Extensions
     {
         public static string PackagePublish(this IUrlHelper url) => url.RouteUrl(Startup.UploadRouteName);
         public static string PackageSearch(this IUrlHelper url) => url.RouteUrl(Startup.SearchRouteName);
+        public static string PackageAutocomplete(this IUrlHelper url) => url.RouteUrl(Startup.AutocompleteRouteName);
 
         public static string PackageRegistrationIndex(this IUrlHelper url, string id)
             => url.RouteUrl(

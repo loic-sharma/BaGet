@@ -23,6 +23,7 @@ namespace BaGet
         public const string DeleteRouteName = "delete";
         public const string RelistRouteName = "relist";
         public const string SearchRouteName = "search";
+        public const string AutocompleteRouteName = "autocomplete";
         public const string RegistrationIndexRouteName = "registration-index";
         public const string RegistrationLeafRouteName = "registration-leaf";
         public const string PackageVersionsRouteName = "package-versions";
@@ -118,6 +119,11 @@ namespace BaGet
                     SearchRouteName,
                     "v3/search",
                     defaults: new { controller = "Search", action = "Get" });
+
+                routes.MapRoute(
+                    AutocompleteRouteName,
+                    "v3/autocomplete",
+                    defaults: new { controller = "Search", action = "Autocomplete" });
 
                 // Registration
                 routes.MapRoute(

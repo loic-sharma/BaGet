@@ -28,7 +28,7 @@ namespace BaGet.Controllers
                     new ServiceResource("PackageBaseAddress/3.0.0", "/v3/package"),
 
                     // Optional
-                    //new ServiceResource("SearchAutocompleteService/3.0.0-rc", new Uri("https://google.com")),
+                    new ServiceResource("SearchAutocompleteService/3.0.0-rc", Url.PackageAutocomplete()),
                     //new ServiceResource("ReportAbuseUriTemplate/3.0.0-rc", new Uri("https://google.com")),
                     //new ServiceResource("Catalog/3.0.0", new Uri("https://google.com"))
                 }

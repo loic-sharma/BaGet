@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace BaGet.Controllers
 {
-    public class SearchController
+    public class SearchController : Controller
     {
         private readonly BaGetContext _context;
 
@@ -25,7 +25,8 @@ namespace BaGet.Controllers
 
             if (!string.IsNullOrEmpty(query))
             {
-                search = search.Where(p => p.Id.Contains(query));
+                query = query.ToLower();
+                search = search.Where(p => p.Id.ToLower().Contains(query));
             }
 
             var results = await search.Take(20).ToListAsync();
@@ -41,6 +42,29 @@ namespace BaGet.Controllers
                         g.Max(p => p.Version).ToNormalizedString(),
                         g.Select(p => p.Version.ToNormalizedString()).ToList()))
             };
+        }
+
+        public async Task<IActionResult> Autocomplete([FromQuery(Name = "q")] string query = null)
+        {
+            IQueryable<Package> search = _context.Packages;
+
+            if (!string.IsNullOrEmpty(query))
+            {
+                query = query.ToLower();
+                search = search.Where(p => p.Id.ToLower().Contains(query));
+            }
+
+            var results = await search.Where(p => p.Listed)
+                .Select(p => p.Id)
+                .Distinct()
+                .Take(20)
+                .ToListAsync();
+
+            return Json(new
+            {
+                TotalHits = results.Count,
+                Data = results,
+            });
         }
 
         private class SearchResult
