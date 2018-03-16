@@ -34,7 +34,7 @@ namespace BaGet.Core.Entities
 
         public string VersionString
         {
-            get => Version?.ToNormalizedString();
+            get => Version?.ToNormalizedString() ?? string.Empty;
             set
             {
                 NuGetVersion.TryParse(value, out var version);
@@ -45,19 +45,19 @@ namespace BaGet.Core.Entities
 
         public string IconUrlString
         {
-            get => IconUrl?.AbsoluteUri;
+            get => IconUrl?.AbsoluteUri ?? string.Empty;
             set => IconUrl = (value != null) ? new Uri(value) : null;
         }
 
         public string LicenseUrlString
         {
-            get => LicenseUrl?.AbsoluteUri;
+            get => LicenseUrl?.AbsoluteUri ?? string.Empty;
             set => LicenseUrl = (value != null) ? new Uri(value) : null;
         }
 
         public string ProjectUrlString
         {
-            get => ProjectUrl?.AbsoluteUri;
+            get => ProjectUrl?.AbsoluteUri ?? string.Empty;
             set => ProjectUrl = (value != null) ? new Uri(value) : null;
         }
 
