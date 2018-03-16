@@ -18,6 +18,7 @@ namespace BaGet.Core.Migrations
                     Description = table.Column<string>(nullable: true),
                     IconUrl = table.Column<string>(nullable: true),
                     Id = table.Column<string>(type: "TEXT COLLATE NOCASE", nullable: true),
+                    Language = table.Column<string>(nullable: true),
                     LicenseUrl = table.Column<string>(nullable: true),
                     Listed = table.Column<bool>(nullable: false),
                     MinClientVersion = table.Column<string>(nullable: true),

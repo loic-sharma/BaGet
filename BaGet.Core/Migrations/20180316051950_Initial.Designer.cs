@@ -11,7 +11,7 @@ using System;
 namespace BaGet.Core.Migrations
 {
     [DbContext(typeof(BaGetContext))]
-    [Migration("20180311115834_Initial")]
+    [Migration("20180316051950_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,6 +35,8 @@ namespace BaGet.Core.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("TEXT COLLATE NOCASE");
 
+                    b.Property<string>("Language");
+
                     b.Property<string>("LicenseUrlString")
                         .HasColumnName("LicenseUrl");
 
@@ -56,11 +58,12 @@ namespace BaGet.Core.Migrations
 
                     b.Property<string>("Title");
 
-                    b.Property<string>("Version");
+                    b.Property<string>("VersionString")
+                        .HasColumnName("Version");
 
                     b.HasKey("Key");
 
-                    b.HasIndex("Id", "Version")
+                    b.HasIndex("Id", "VersionString")
                         .IsUnique();
 
                     b.ToTable("Packages");

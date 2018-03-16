@@ -7,7 +7,6 @@ using BaGet.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using NuGet.Versioning;
 
 namespace BaGet.Controllers
 {

@@ -16,6 +16,7 @@ namespace BaGet.Core.Entities
 
         public string Authors { get; set; }
         public string Description { get; set; }
+        public string Language { get; set; }
         public bool Listed { get; set; }
         public string MinClientVersion { get; set; }
         public DateTime Published { get; set; }

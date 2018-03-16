@@ -58,9 +58,9 @@ namespace BaGet.Controllers.Registration
             new RegistrationIndexLeaf(
                 packageId: package.Id,
                 catalogEntry: new CatalogEntry(
-                    catalogUri: new Uri($"https://api.nuget.org/v3/catalog0/data/2015.02.01.06.24.15/{package.Id}.{package.Version}.json"),
-                    packageId: package.Id,
-                    version: package.Version),
+                    package: package,
+                    catalogUri: $"https://api.nuget.org/v3/catalog0/data/2015.02.01.06.24.15/{package.Id}.{package.Version}.json",
+                    packageContent: Url.PackageDownload(package.Id, package.Version)),
                 packageContent: Url.PackageDownload(package.Id, package.Version));
 
         private class RegistrationIndexItem
@@ -113,23 +113,51 @@ namespace BaGet.Controllers.Registration
 
         private class CatalogEntry
         {
-            public CatalogEntry(Uri catalogUri, string packageId, NuGetVersion version)
+            public CatalogEntry(Package package, string catalogUri, string packageContent)
             {
-                if (string.IsNullOrEmpty(nameof(packageId))) throw new ArgumentNullException(nameof(packageId));
-
-                PackageId = packageId;
+                if (package == null) throw new ArgumentNullException(nameof(package));
 
                 CatalogUri = catalogUri ?? throw new ArgumentNullException(nameof(catalogUri));
-                Version = version?.ToNormalizedString() ?? throw new ArgumentNullException(nameof(version));
+
+                PackageId = package.Id;
+                Version = package.VersionString;
+                Authors = package.Authors;
+                Description = package.Description;
+                IconUrl = package.IconUrlString;
+                Language = package.Language;
+                LicenseUrl = package.LicenseUrlString;
+                Listed = package.Listed;
+                MinClientVersion = package.MinClientVersion;
+                PackageContent = packageContent;
+                ProjectUrl = package.ProjectUrlString;
+                Published = package.Published;
+                RequireLicenseAcceptance = package.RequireLicenseAcceptance;
+                Summary = package.Summary;
+                Tags = package.Tags;
+                Title = package.Title;
             }
 
             [JsonProperty(PropertyName = "@id")]
-            public Uri CatalogUri { get; }
+            public string CatalogUri { get; }
 
             [JsonProperty(PropertyName = "id")]
             public string PackageId { get; }
 
             public string Version { get; }
+            public string Authors { get; }
+            public string Description { get; }
+            public string IconUrl { get; }
+            public string Language { get; }
+            public string LicenseUrl { get; }
+            public bool Listed { get; }
+            public string MinClientVersion { get; }
+            public string PackageContent { get; }
+            public string ProjectUrl { get; }
+            public DateTime Published { get; }
+            public bool RequireLicenseAcceptance { get; }
+            public string Summary { get; }
+            public string[] Tags { get; }
+            public string Title { get; }
         }
     }
 }

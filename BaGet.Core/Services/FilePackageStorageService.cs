@@ -21,6 +21,7 @@ namespace BaGet.Core.Services
 
             EnsurePathExists(identity);
 
+            // TODO: Catch IOException and test if File.Exists. If false, rethrow exception.
             using (var fileStream = File.Open(PackagePath(identity), FileMode.CreateNew))
             {
                 packageStream.Seek(0, SeekOrigin.Begin);
