@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Core;
 using BaGet.Core.Entities;
+using BaGet.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -29,18 +30,20 @@ namespace BaGet.Controllers
                 search = search.Where(p => p.Id.ToLower().Contains(query));
             }
 
-            var results = await search.Take(20).ToListAsync();
-
-            results.GroupBy(p => p.Id);
+            var flatResults = await search
+                .Take(20)
+                .ToListAsync();
 
             return new
             {
-                TotalHits = results.Count,
-                Data = results.GroupBy(p => p.Id)
+                TotalHits = flatResults.Count,
+                Data = flatResults
+                    .GroupBy(p => p.Id)
                     .Select(g => new SearchResult(
-                        g.Key,
-                        g.Max(p => p.Version).ToNormalizedString(),
-                        g.Select(p => p.Version.ToNormalizedString()).ToList()))
+                        id: g.Key,
+                        latest: g.OrderBy(p => p.Version).First(),
+                        versions: g.Select(p => p.VersionString).ToList(),
+                        registrationIndex: Url.PackageRegistrationIndex(g.Key)))
             };
         }
 
@@ -69,21 +72,43 @@ namespace BaGet.Controllers
 
         private class SearchResult
         {
-            public SearchResult(string packageId, string version, IReadOnlyList<string> versions)
+            public SearchResult(
+                string id,
+                Package latest,
+                IReadOnlyList<string> versions,
+                string registrationIndex)
             {
-                if (string.IsNullOrEmpty(packageId)) throw new ArgumentNullException(nameof(packageId));
-                if (string.IsNullOrEmpty(version)) throw new ArgumentNullException(nameof(version));
-
-                PackageId = packageId;
-                Version = version;
-                Versions = versions ?? throw new ArgumentNullException(nameof(versions));
+                PackageId = id;
+                Version = latest.VersionString;
+                Description = latest.Description;
+                Versions = versions;
+                Authors = latest.Authors;
+                IconUrl = latest.IconUrlString;
+                LicenseUrl = latest.LicenseUrlString;
+                ProjectUrl = latest.ProjectUrlString;
+                Registration = registrationIndex;
+                Summary = latest.Summary;
+                Tags = latest.Tags;
+                Title = latest.Title;
+                TotalDownloads = 0;
             }
 
             [JsonProperty(PropertyName = "id")]
             public string PackageId { get; }
 
             public string Version { get; }
+            public string Description { get; }
+            public string Authors { get; }
+            public string IconUrl { get; }
+            public string LicenseUrl { get; }
+            public string ProjectUrl { get; }
+            public string Registration { get; }
+            public string Summary { get; }
+            public string[] Tags { get; }
+            public string Title { get; }
+            public int TotalDownloads { get; }
 
+            // This is wrong
             public IReadOnlyList<string> Versions { get; }
         }
     }

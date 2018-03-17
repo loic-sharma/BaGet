@@ -11,22 +11,30 @@ namespace BaGet.Extensions
 
         public static string PackageRegistrationIndex(this IUrlHelper url, string id)
             => url.RouteUrl(
-                Startup.RegistrationLeafRouteName,
-                new { id });
+                Startup.RegistrationIndexRouteName,
+                new { Id = id.ToLowerInvariant() });
 
         public static string PackageRegistrationLeaf(this IUrlHelper url, string id, NuGetVersion version)
             => url.RouteUrl(
                 Startup.RegistrationLeafRouteName,
-                new { id, version = version.ToNormalizedString() });
+                new {
+                    Id = id.ToLowerInvariant(),
+                    Version = version.ToNormalizedString().ToLowerInvariant()
+                });
 
         public static string PackageDownload(this IUrlHelper url, string id, NuGetVersion version)
-            => url.RouteUrl(
+        {
+            id = id.ToLowerInvariant();
+            var versionString = version.ToNormalizedString().ToLowerInvariant();
+
+            return url.RouteUrl(
                 Startup.PackageDownloadRouteName,
                 new
                 {
                     id,
-                    version = version.ToNormalizedString(),
-                    idVersion = $"{id}.{version.ToNormalizedString()}"
+                    Version = versionString,
+                    IdVersion = $"{id}.{versionString}"
                 });
+        }
     }
 }

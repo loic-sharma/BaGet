@@ -14,6 +14,7 @@ namespace BaGet.Core.Entities
         public string Id { get; set; }
         public NuGetVersion Version { get; set; }
 
+        // TODO: This should be string[]
         public string Authors { get; set; }
         public string Description { get; set; }
         public string Language { get; set; }
