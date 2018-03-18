@@ -4,16 +4,16 @@ A lightweight NuGet service implementation.
 
 ## Installation
 
-Setup the database:
+Run:
 
 ```
-cd src\BaGet.Core\
-dotnet ef database update --startup-project ..\BaGet\
+$ cd .\src\BaGet
+$ dotnet run
+Using launch settings from D:\Code\BaGet\src\BaGet\Properties\launchSettings.json...
+Hosting environment: Development
+Content root path: D:\Code\BaGet\src\BaGet
+Now listening on: http://localhost:50561
+Application started. Press Ctrl+C to shut down.
 ```
 
-Run BaGet:
-
-```
-cd ..\BaGet
-dotnet run
-```
+You can access the [service index](https://docs.microsoft.com/en-us/nuget/api/overview#service-index) at http://localhost:50561/v3/index.json
