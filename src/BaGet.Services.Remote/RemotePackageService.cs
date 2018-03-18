@@ -33,7 +33,7 @@ namespace BaGet.Services.Remote
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public Task AddAsync(Package package) => _localPackages.AddAsync(package);
+        public Task<PackageAddResult> AddAsync(Package package) => _localPackages.AddAsync(package);
         public Task<IReadOnlyList<Package>> FindAsync(string id) => _localPackages.FindAsync(id);
 
         public async Task<bool> ExistsAsync(string id, NuGetVersion version)

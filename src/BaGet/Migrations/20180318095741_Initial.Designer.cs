@@ -10,8 +10,8 @@ using System;
 
 namespace BaGet.Migrations
 {
-    [DbContext(typeof(Context))]
-    [Migration("20180318090944_Initial")]
+    [DbContext(typeof(SqliteContext))]
+    [Migration("20180318095741_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

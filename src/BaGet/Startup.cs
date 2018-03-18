@@ -43,8 +43,8 @@ namespace BaGet
         {
             services.AddMvc();
             services.Configure<Options>(Configuration);
-            services.AddScoped<IContext>(p => p.GetRequiredService<Context>());
-            services.AddDbContext<Context>(options => options.UseSqlite("Data Source=baget.db"));
+            services.AddScoped<IContext>(p => p.GetRequiredService<SqliteContext>());
+            services.AddDbContext<SqliteContext>(options => options.UseSqlite("Data Source=baget.db"));
 
             services.AddSingleton(s =>
             {
@@ -109,7 +109,7 @@ namespace BaGet
                 using (var scope = scopeFactory.CreateScope())
                 {
                     scope.ServiceProvider
-                        .GetRequiredService<Context>()
+                        .GetRequiredService<SqliteContext>()
                         .Database
                         .Migrate();
                 }

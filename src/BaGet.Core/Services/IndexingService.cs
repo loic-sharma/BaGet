@@ -3,11 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
-using BaGet.Core.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NuGet.Packaging;
-using NuGet.Packaging.Core;
 
 namespace BaGet.Core.Services
 {
@@ -29,8 +27,11 @@ namespace BaGet.Core.Services
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
+
         public async Task<IndexingResult> IndexAsync(Stream stream)
         {
+            // Try to save the package stream to storage.
+            // TODO: On exception, roll back storage save.
             Package package;
 
             try
@@ -68,20 +69,21 @@ namespace BaGet.Core.Services
                 return IndexingResult.InvalidPackage;
             }
 
-            try
-            {
-                await _packages.AddAsync(package);
+            // The package stream has been stored. Persist the package's metadata to the database.
+            var result = await _packages.AddAsync(package);
 
-                return IndexingResult.Success;
-            }
-            catch (DbUpdateException e) when (e.IsUniqueConstraintViolationException())
+            switch (result)
             {
-                _logger.LogError(e,
-                    "Failed to upload package {PackageId} {PackageVersion} as it already exists",
-                    package.Id,
-                    package.Version);
+                case PackageAddResult.Success:
+                    return IndexingResult.Success;
 
-                return IndexingResult.PackageAlreadyExists;
+                case PackageAddResult.PackageAlreadyExists:
+                    return IndexingResult.PackageAlreadyExists;
+
+                default:
+                    _logger.LogError($"Unknown {nameof(PackageAddResult)} value: {{PackageAddResult}}", result);
+
+                    throw new InvalidOperationException($"Unknown {nameof(PackageAddResult)} value: {result}");
             }
         }
 

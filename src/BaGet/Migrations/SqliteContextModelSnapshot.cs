@@ -10,8 +10,8 @@ using System;
 
 namespace BaGet.Migrations
 {
-    [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(SqliteContext))]
+    partial class SqliteContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

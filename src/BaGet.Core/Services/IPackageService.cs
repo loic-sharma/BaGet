@@ -5,9 +5,15 @@ using NuGet.Versioning;
 
 namespace BaGet.Core.Services
 {
+    public enum PackageAddResult
+    {
+        PackageAlreadyExists,
+        Success
+    }
+
     public interface IPackageService
     {
-        Task AddAsync(Package package);
+        Task<PackageAddResult> AddAsync(Package package);
 
         Task<Package> FindAsync(string id, NuGetVersion version);
         Task<IReadOnlyList<Package>> FindAsync(string id);

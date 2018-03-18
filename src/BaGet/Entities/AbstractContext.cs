@@ -5,15 +5,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BaGet.Entities
 {
-    public class Context : DbContext, IContext
+    public abstract class AbstractContext : DbContext, IContext
     {
-        public Context(DbContextOptions<Context> options)
+        public AbstractContext(DbContextOptions<SqliteContext> options)
             : base(options)
         { }
 
         public DbSet<Package> Packages { get; set; }
 
         public Task<int> SaveChangesAsync() => SaveChangesAsync(default(CancellationToken));
+
+        public abstract bool IsUniqueConstraintViolationException(DbUpdateException exception);
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

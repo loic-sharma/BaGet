@@ -17,11 +17,21 @@ namespace BaGet.Core.Services
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public Task AddAsync(Package package)
+        public async Task<PackageAddResult> AddAsync(Package package)
         {
-            _context.Packages.Add(package);
+            try
+            {
+                _context.Packages.Add(package);
 
-            return _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
+
+                return PackageAddResult.Success;
+            }
+            catch (DbUpdateException e)
+                when (_context.IsUniqueConstraintViolationException(e))
+            {
+                return PackageAddResult.PackageAlreadyExists;
+            }
         }
 
         public Task<bool> ExistsAsync(string id, NuGetVersion version)
