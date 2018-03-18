@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BaGet.Core.Services
+namespace BaGet.Services.Remote
 {
     public interface IPackageDownloader
     {

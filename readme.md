@@ -1,21 +1,17 @@
 # BaGet :baguette_bread:
 
-A lightweight NuGet service implementation.
+A lightweight [NuGet service](https://docs.microsoft.com/en-us/nuget/api/overview) implementation.
 
 ## Getting Started
 
-Run:
+1. Install [.NET Core](https://www.microsoft.com/net/download/windows)
+2. Run `git clone https://github.com/loic-sharma/BaGet.git`
+3. Navigate to `.\BaGet\src\BaGet`
+4. Start the service with `dotnet run`
+5. Open the URL `http://localhost:5000/v3/index.json` in your browser
 
-```
-$ cd .\src\BaGet
-$ dotnet run
-Using launch settings from D:\Code\BaGet\src\BaGet\Properties\launchSettings.json...
-Hosting environment: Development
-Content root path: D:\Code\BaGet\src\BaGet
-Now listening on: http://localhost:50561
-Application started. Press Ctrl+C to shut down.
-```
+## Features
 
-You can now access the [service index](https://docs.microsoft.com/en-us/nuget/api/overview#service-index) at http://localhost:50561/v3/index.json.
+BaGet indexes packages automatically using [nuget.org](https://www.nuget.org/) as its upstream source. For example, accessing http://localhost:50561/v3/registration/newtonsoft.json/11.0.1.json will download and then index the package [Newtonsoft.Json](https://www.nuget.org/packages/Newtonsoft.Json/11.0.1). This lets you to use BaGet as a read-through cache.
 
-BaGet uses nuget.org as its upstream source. For example, accessing http://localhost:50561/v3/registration/newtonsoft.json/11.0.1.json will automatically download and then index [Newtonsoft.Json v11.0.1](https://www.nuget.org/packages/Newtonsoft.Json/11.0.1).
+Stay tuned, more features are planned!
