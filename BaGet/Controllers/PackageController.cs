@@ -28,9 +28,10 @@ namespace BaGet.Controllers
                 return NotFound();
             }
 
-            var versions = packages.Select(p => p.VersionString).ToList();
-
-            return Json(versions);
+            return Json(new
+            {
+                Versions = packages.Select(p => p.VersionString).ToList()
+            });
         }
 
         public async Task<IActionResult> DownloadPackage(string id, string version)

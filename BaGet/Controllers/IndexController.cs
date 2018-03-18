@@ -16,19 +16,22 @@ namespace BaGet.Controllers
         {
             // Documentation: https://docs.microsoft.com/en-us/nuget/api/overview
             // NuGet.org: https://api.nuget.org/v3-index/index.json
+
+            // TODO: Client is picky about versions' formatting. Needs more research. See:
+            // https://github.com/NuGet/NuGet.Client/blob/67d34ee8158597377fb26e06987ad6ad40a1b09b/src/NuGet.Core/NuGet.Protocol/Constants.cs
             return new
             {
                 Version = "3.0.0-beta.1",
                 Resources = new[]
                 {
                     // Required
-                    new ServiceResource("PackagePublish/2.0.0", Url.PackagePublish()),
-                    new ServiceResource("SearchQueryService/3.0.0-rc", Url.PackageSearch()),
-                    new ServiceResource("RegistrationsBaseUrl/3.0.0-rc", "/v3/registration"),
-                    new ServiceResource("PackageBaseAddress/3.0.0", "/v3/package"),
+                    new ServiceResource("PackagePublish/Versioned", Url.PackagePublish()),
+                    new ServiceResource("SearchQueryService/Versioned", Url.PackageSearch()),
+                    new ServiceResource("RegistrationsBaseUrl/Versioned", Url.RegistrationsBase()),
+                    new ServiceResource("PackageBaseAddress/Versioned", Url.PackageBase()),
 
                     // Optional
-                    new ServiceResource("SearchAutocompleteService/3.0.0-rc", Url.PackageAutocomplete()),
+                    new ServiceResource("SearchAutocompleteService/Versioned", Url.PackageAutocomplete()),
                     //new ServiceResource("ReportAbuseUriTemplate/3.0.0-rc", new Uri("https://google.com")),
                     //new ServiceResource("Catalog/3.0.0", new Uri("https://google.com"))
                 }

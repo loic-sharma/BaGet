@@ -42,8 +42,11 @@ namespace BaGet.Controllers
                     .Select(g => new SearchResult(
                         id: g.Key,
                         latest: g.OrderBy(p => p.Version).First(),
-                        versions: g.Select(p => p.VersionString).ToList(),
-                        registrationIndex: Url.PackageRegistrationIndex(g.Key)))
+                        versions: g.Select(p => new SearchResultVersion(
+                            registrationUrl: Url.PackageRegistration(p.Id, p.Version),
+                            version: p.VersionString,
+                            downloads: 0)).ToList(),
+                        registrationIndex: Url.PackageRegistration(g.Key)))
             };
         }
 
@@ -75,7 +78,7 @@ namespace BaGet.Controllers
             public SearchResult(
                 string id,
                 Package latest,
-                IReadOnlyList<string> versions,
+                IReadOnlyList<SearchResultVersion> versions,
                 string registrationIndex)
             {
                 PackageId = id;
@@ -97,6 +100,7 @@ namespace BaGet.Controllers
             public string PackageId { get; }
 
             public string Version { get; }
+
             public string Description { get; }
             public string Authors { get; }
             public string IconUrl { get; }
@@ -108,8 +112,27 @@ namespace BaGet.Controllers
             public string Title { get; }
             public int TotalDownloads { get; }
 
-            // This is wrong
-            public IReadOnlyList<string> Versions { get; }
+            public IReadOnlyList<SearchResultVersion> Versions { get; }
+        }
+
+        private class SearchResultVersion
+        {
+            public SearchResultVersion(string registrationUrl, string version, int downloads)
+            {
+                if (string.IsNullOrEmpty(registrationUrl)) throw new ArgumentNullException(nameof(registrationUrl));
+                if (string.IsNullOrEmpty(version)) throw new ArgumentNullException(nameof(version));
+
+                RegistrationUrl = registrationUrl;
+                Version = version;
+                Downloads = downloads;
+            }
+
+            [JsonProperty(PropertyName = "id")]
+            public string RegistrationUrl { get; }
+
+            public string Version { get; }
+
+            public int Downloads { get; }
         }
     }
 }

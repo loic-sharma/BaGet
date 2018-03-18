@@ -38,11 +38,11 @@ namespace BaGet.Controllers.Registration
 
             // Documentation: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
             var result = new RegistrationLeaf(
-                registrationUri: Url.PackageRegistrationLeaf(id, nugetVersion),
+                registrationUri: Url.PackageRegistration(id, nugetVersion),
                 listed: package.Listed,
                 packageContentUri: Url.PackageDownload(id, nugetVersion),
                 published: package.Published,
-                registrationIndexUri: Url.PackageRegistrationIndex(id));
+                registrationIndexUri: Url.PackageRegistration(id));
 
             return Json(result);
         }
