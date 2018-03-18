@@ -59,8 +59,19 @@ namespace BaGet
             });
 
             services.AddTransient<PackageService>();
-            services.AddTransient<IIndexingService, IndexingService>();
             services.AddTransient<IPackageDownloader, PackageDownloader>();
+
+            // TODO: This is a bit of a hack! The IndexingService depends on IPackageService,
+            // and RemotePackageService (which is an IPackageService) depends on IndexingService.
+            // Prevent infinite recursion by forcing IndexingService to use PackageService.
+            services.AddTransient<IIndexingService, IndexingService>(s =>
+            {
+                return new IndexingService(
+                    s.GetRequiredService<PackageService>(),
+                    s.GetRequiredService<IPackageStorageService>(),
+                    s.GetRequiredService<ILogger<IndexingService>>());
+            });
+
             services.AddTransient<IPackageService, RemotePackageService>(s =>
             {
                 var options = s.GetRequiredService<IOptions<BaGetOptions>>().Value;

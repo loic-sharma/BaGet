@@ -30,7 +30,9 @@ namespace BaGet.Controllers
                 search = search.Where(p => p.Id.ToLower().Contains(query));
             }
 
+            // TODO: Order by downloads.
             var flatResults = await search
+                .OrderByDescending(p => p.Published)
                 .Take(20)
                 .ToListAsync();
 
@@ -60,10 +62,12 @@ namespace BaGet.Controllers
                 search = search.Where(p => p.Id.ToLower().Contains(query));
             }
 
+            // TODO: Order by downloads
             var results = await search.Where(p => p.Listed)
+                .OrderByDescending(p => p.Published)
+                .Take(20)
                 .Select(p => p.Id)
                 .Distinct()
-                .Take(20)
                 .ToListAsync();
 
             return Json(new

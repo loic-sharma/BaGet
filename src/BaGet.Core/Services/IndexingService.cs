@@ -16,16 +16,16 @@ namespace BaGet.Core.Services
 
     public class IndexingService : IIndexingService
     {
-        private readonly BaGetContext _context;
+        private readonly IPackageService _packages;
         private readonly IPackageStorageService _storage;
         private readonly ILogger<IndexingService> _logger;
 
         public IndexingService(
-            BaGetContext context,
+            IPackageService packages,
             IPackageStorageService storage,
             ILogger<IndexingService> logger)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _packages = packages ?? throw new ArgumentNullException(nameof(packages));
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -37,7 +37,10 @@ namespace BaGet.Core.Services
             {
                 using (var packageReader = new PackageArchiveReader(stream))
                 {
-                    if (await PackageAlreadyExistsAsync(packageReader.GetIdentity()))
+                    var packageId = packageReader.NuspecReader.GetId();
+                    var packageVersion = packageReader.NuspecReader.GetVersion();
+
+                    if (await _packages.ExistsAsync(packageId, packageVersion))
                     {
                         return IndexingResult.PackageAlreadyExists;
                     }
@@ -67,9 +70,7 @@ namespace BaGet.Core.Services
 
             try
             {
-                _context.Packages.Add(package);
-
-                await _context.SaveChangesAsync();
+                await _packages.AddAsync(package);
 
                 return IndexingResult.Success;
             }
@@ -82,14 +83,6 @@ namespace BaGet.Core.Services
 
                 return IndexingResult.PackageAlreadyExists;
             }
-        }
-
-        private Task<bool> PackageAlreadyExistsAsync(PackageIdentity package)
-        {
-            return _context.Packages
-                .Where(p => p.Id == package.Id)
-                .Where(p => p.Version == package.Version)
-                .AnyAsync();
         }
 
         private Package GetPakageMetadata(PackageArchiveReader packageReader)

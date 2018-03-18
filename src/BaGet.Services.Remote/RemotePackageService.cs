@@ -14,7 +14,7 @@ namespace BaGet.Services.Remote
     public class RemotePackageService : IPackageService
     {
         private readonly string _packageBaseAddress;
-        private readonly IPackageService _cache;
+        private readonly IPackageService _localPackages;
         private readonly IPackageDownloader _downloader;
         private readonly IIndexingService _indexer;
         private readonly ILogger<RemotePackageService> _logger;
@@ -22,13 +22,13 @@ namespace BaGet.Services.Remote
 
         public RemotePackageService(
             string packageBaseAddress,
-            IPackageService cache,
+            IPackageService localPackages,
             IPackageDownloader downloader,
             IIndexingService indexer,
             ILogger<RemotePackageService> logger)
         {
             _packageBaseAddress = packageBaseAddress?.Trim('/') ?? throw new ArgumentNullException(nameof(packageBaseAddress));
-            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
+            _localPackages = localPackages ?? throw new ArgumentNullException(nameof(localPackages));
             _downloader = downloader ?? throw new ArgumentNullException(nameof(downloader));
             _indexer = indexer ?? throw new ArgumentNullException(nameof(indexer));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -36,9 +36,11 @@ namespace BaGet.Services.Remote
             _nugetLogger = new Logger(_logger);
         }
 
+        public Task AddAsync(Package package) => _localPackages.AddAsync(package);
+
         public async Task<bool> ExistsAsync(string id, NuGetVersion version)
         {
-            if (await _cache.ExistsAsync(id, version))
+            if (await _localPackages.ExistsAsync(id, version))
             {
                 return true;
             }
@@ -48,7 +50,7 @@ namespace BaGet.Services.Remote
 
         public async Task<IReadOnlyList<Package>> FindAsync(string id)
         {
-            var packages = await _cache.FindAsync(id);
+            var packages = await _localPackages.FindAsync(id);
 
             if (packages.Count != 0)
             {
@@ -60,12 +62,12 @@ namespace BaGet.Services.Remote
                 return new List<Package>();
             }
 
-            return await _cache.FindAsync(id);
+            return await _localPackages.FindAsync(id);
         }
 
         public async Task<Package> FindAsync(string id, NuGetVersion version)
         {
-            var package = await _cache.FindAsync(id, version);
+            var package = await _localPackages.FindAsync(id, version);
 
             if (package != null)
             {
@@ -77,7 +79,7 @@ namespace BaGet.Services.Remote
                 return null;
             }
 
-            return await _cache.FindAsync(id, version);
+            return await _localPackages.FindAsync(id, version);
         }
 
         public async Task<bool> UnlistPackageAsync(string id, NuGetVersion version)
@@ -87,7 +89,7 @@ namespace BaGet.Services.Remote
                 return false;
             }
 
-            return await _cache.UnlistPackageAsync(id, version);
+            return await _localPackages.UnlistPackageAsync(id, version);
         }
 
         public async Task<bool> RelistPackageAsync(string id, NuGetVersion version)
@@ -97,7 +99,7 @@ namespace BaGet.Services.Remote
                 return false;
             }
 
-            return await _cache.RelistPackageAsync(id, version);
+            return await _localPackages.RelistPackageAsync(id, version);
         }
 
         private Task<bool> TryIndexFromSourceAsync(string id)

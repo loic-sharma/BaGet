@@ -17,10 +17,17 @@ namespace BaGet.Core.Services
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
+        public Task AddAsync(Package package)
+        {
+            _context.Packages.Add(package);
+
+            return _context.SaveChangesAsync();
+        }
+
         public Task<bool> ExistsAsync(string id, NuGetVersion version)
             => _context.Packages
                 .Where(p => p.Id == id)
-                .Where(p => p.Version == version)
+                .Where(p => p.VersionString == version.ToNormalizedString())
                 .AnyAsync();
 
         public async Task<IReadOnlyList<Package>> FindAsync(string id)
@@ -35,7 +42,7 @@ namespace BaGet.Core.Services
         public Task<Package> FindAsync(string id, NuGetVersion version)
             => _context.Packages
                 .Where(p => p.Id == id)
-                .Where(p => p.Version == version)
+                .Where(p => p.VersionString == version.ToNormalizedString())
                 .FirstOrDefaultAsync();
 
         public Task<bool> UnlistPackageAsync(string id, NuGetVersion version)
