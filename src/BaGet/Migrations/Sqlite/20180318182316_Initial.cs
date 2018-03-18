@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace BaGet.Migrations
+namespace BaGet.Migrations.Sqlite
 {
     public partial class Initial : Migration
     {

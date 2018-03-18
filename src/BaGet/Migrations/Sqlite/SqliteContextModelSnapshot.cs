@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
-namespace BaGet.Migrations
+namespace BaGet.Migrations.Sqlite
 {
     [DbContext(typeof(SqliteContext))]
     partial class SqliteContextModelSnapshot : ModelSnapshot

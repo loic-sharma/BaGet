@@ -9,7 +9,7 @@ Regenerate migrations with:
 ```
 rm baget.db
 dotnet ef migrations remove
-dotnet ef migrations add Initial
+dotnet ef migrations add Initial --context SqliteContext --output-dir Migrations/Sqlite
 
 dotnet ef database update
 ```

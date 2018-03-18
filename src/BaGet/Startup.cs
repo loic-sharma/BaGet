@@ -38,17 +38,40 @@ namespace BaGet
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
             services.Configure<Options>(Configuration);
-            services.AddScoped<IContext>(p => p.GetRequiredService<SqliteContext>());
-            services.AddDbContext<SqliteContext>(options => options.UseSqlite("Data Source=baget.db"));
 
-            services.AddSingleton(s =>
+            services.AddScoped<IContext>(provider =>
             {
-                var options = s.GetRequiredService<IOptions<Options>>().Value;
+                var databaseOptions = provider.GetRequiredService<IOptions<Options>>()
+                    .Value
+                    .Database;
+
+                switch (databaseOptions.Type)
+                {
+                    case DatabaseType.Sqlite:
+                        return provider.GetRequiredService<SqliteContext>();
+
+                    default:
+                        throw new InvalidOperationException(
+                            $"Unsupported database provider: {databaseOptions.Type}");
+                }
+            });
+
+            services.AddDbContext<SqliteContext>((provider, options) =>
+            {
+                var databaseOptions = provider.GetRequiredService<IOptions<Options>>()
+                    .Value
+                    .Database;
+
+                options.UseSqlite(databaseOptions.ConnectionString);
+            });
+
+            services.AddSingleton(provider =>
+            {
+                var options = provider.GetRequiredService<IOptions<Options>>().Value;
 
                 var client = new HttpClient(new HttpClientHandler
                 {
@@ -66,29 +89,29 @@ namespace BaGet
             // TODO: This is a bit of a hack! The IndexingService depends on IPackageService,
             // and RemotePackageService (which is an IPackageService) depends on IndexingService.
             // Prevent infinite recursion by forcing IndexingService to use PackageService.
-            services.AddTransient<IIndexingService, IndexingService>(s =>
+            services.AddTransient<IIndexingService, IndexingService>(provider =>
             {
                 return new IndexingService(
-                    s.GetRequiredService<PackageService>(),
-                    s.GetRequiredService<IPackageStorageService>(),
-                    s.GetRequiredService<ILogger<IndexingService>>());
+                    provider.GetRequiredService<PackageService>(),
+                    provider.GetRequiredService<IPackageStorageService>(),
+                    provider.GetRequiredService<ILogger<IndexingService>>());
             });
 
-            services.AddTransient<IPackageService, RemotePackageService>(s =>
+            services.AddTransient<IPackageService, RemotePackageService>(provider =>
             {
-                var options = s.GetRequiredService<IOptions<Options>>().Value;
+                var options = provider.GetRequiredService<IOptions<Options>>().Value;
 
                 return new RemotePackageService(
                     options.PackageSource,
-                    s.GetRequiredService<PackageService>(),
-                    s.GetRequiredService<IPackageDownloader>(),
-                    s.GetRequiredService<IIndexingService>(),
-                    s.GetRequiredService<ILogger<RemotePackageService>>());
+                    provider.GetRequiredService<PackageService>(),
+                    provider.GetRequiredService<IPackageDownloader>(),
+                    provider.GetRequiredService<IIndexingService>(),
+                    provider.GetRequiredService<ILogger<RemotePackageService>>());
             });
 
-            services.AddTransient<IPackageStorageService, FilePackageStorageService>(s =>
+            services.AddTransient<IPackageStorageService, FilePackageStorageService>(provider =>
             {
-                var options = s.GetRequiredService<IOptions<Options>>().Value;
+                var options = provider.GetRequiredService<IOptions<Options>>().Value;
 
                 return new FilePackageStorageService(options.PackageStore);
             });
@@ -109,7 +132,7 @@ namespace BaGet
                 using (var scope = scopeFactory.CreateScope())
                 {
                     scope.ServiceProvider
-                        .GetRequiredService<SqliteContext>()
+                        .GetRequiredService<IContext>()
                         .Database
                         .Migrate();
                 }

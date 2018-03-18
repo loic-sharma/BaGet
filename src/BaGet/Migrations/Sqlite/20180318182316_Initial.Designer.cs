@@ -8,10 +8,10 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
-namespace BaGet.Migrations
+namespace BaGet.Migrations.Sqlite
 {
     [DbContext(typeof(SqliteContext))]
-    [Migration("20180318095741_Initial")]
+    [Migration("20180318182316_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
