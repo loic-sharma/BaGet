@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
-using BaGet.Core;
+using BaGet.Core.Entities;
 using BaGet.Core.Services;
+using BaGet.Entities;
 using BaGet.Services.Remote;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -41,12 +42,13 @@ namespace BaGet
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.Configure<BaGetOptions>(Configuration);
-            services.AddDbContext<BaGetContext>(options => options.UseSqlite("Data Source=baget.db"));
+            services.Configure<Options>(Configuration);
+            services.AddScoped<IContext>(p => p.GetRequiredService<Context>());
+            services.AddDbContext<Context>(options => options.UseSqlite("Data Source=baget.db"));
 
             services.AddSingleton(s =>
             {
-                var options = s.GetRequiredService<IOptions<BaGetOptions>>().Value;
+                var options = s.GetRequiredService<IOptions<Options>>().Value;
 
                 var client = new HttpClient(new HttpClientHandler
                 {
@@ -74,7 +76,7 @@ namespace BaGet
 
             services.AddTransient<IPackageService, RemotePackageService>(s =>
             {
-                var options = s.GetRequiredService<IOptions<BaGetOptions>>().Value;
+                var options = s.GetRequiredService<IOptions<Options>>().Value;
 
                 return new RemotePackageService(
                     options.PackageSource,
@@ -86,7 +88,7 @@ namespace BaGet
 
             services.AddTransient<IPackageStorageService, FilePackageStorageService>(s =>
             {
-                var options = s.GetRequiredService<IOptions<BaGetOptions>>().Value;
+                var options = s.GetRequiredService<IOptions<Options>>().Value;
 
                 return new FilePackageStorageService(options.PackageStore);
             });
@@ -99,6 +101,18 @@ namespace BaGet
             {
                 app.UseDeveloperExceptionPage();
                 app.UseStatusCodePages();
+
+                // Run migrations automatically in development mode.
+                var scopeFactory = app.ApplicationServices
+                    .GetRequiredService<IServiceScopeFactory>();
+
+                using (var scope = scopeFactory.CreateScope())
+                {
+                    scope.ServiceProvider
+                        .GetRequiredService<Context>()
+                        .Database
+                        .Migrate();
+                }
             }
 
             app.UseMvc(routes =>

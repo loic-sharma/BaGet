@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace BaGet.Core.Migrations
+namespace BaGet.Migrations
 {
     public partial class Initial : Migration
     {

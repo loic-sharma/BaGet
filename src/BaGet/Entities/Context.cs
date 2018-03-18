@@ -1,15 +1,19 @@
-﻿using BaGet.Core.Entities;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using BaGet.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace BaGet.Core
+namespace BaGet.Entities
 {
-    public class BaGetContext : DbContext
+    public class Context : DbContext, IContext
     {
-        public BaGetContext(DbContextOptions<BaGetContext> options)
+        public Context(DbContextOptions<Context> options)
             : base(options)
         { }
 
         public DbSet<Package> Packages { get; set; }
+
+        public Task<int> SaveChangesAsync() => SaveChangesAsync(default(CancellationToken));
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

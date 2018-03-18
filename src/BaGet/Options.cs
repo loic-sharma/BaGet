@@ -1,8 +1,10 @@
-﻿namespace BaGet
+﻿using System;
+
+namespace BaGet
 {
-    public class BaGetOptions
+    public class Options
     {
-        public string PackageSource { get; set; }
+        public Uri PackageSource { get; set; }
         public int PackageDownloadTimeoutSeconds { get; set; }
         public string PackageStore { get; set; }
     }

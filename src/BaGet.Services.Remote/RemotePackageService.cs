@@ -13,30 +13,28 @@ namespace BaGet.Services.Remote
 
     public class RemotePackageService : IPackageService
     {
-        private readonly string _packageBaseAddress;
+        private readonly Uri _packageBaseAddress;
         private readonly IPackageService _localPackages;
         private readonly IPackageDownloader _downloader;
         private readonly IIndexingService _indexer;
         private readonly ILogger<RemotePackageService> _logger;
-        private readonly NuGetLogger _nugetLogger;
 
         public RemotePackageService(
-            string packageBaseAddress,
+            Uri packageBaseAddress,
             IPackageService localPackages,
             IPackageDownloader downloader,
             IIndexingService indexer,
             ILogger<RemotePackageService> logger)
         {
-            _packageBaseAddress = packageBaseAddress?.Trim('/') ?? throw new ArgumentNullException(nameof(packageBaseAddress));
+            _packageBaseAddress = packageBaseAddress ?? throw new ArgumentNullException(nameof(packageBaseAddress));
             _localPackages = localPackages ?? throw new ArgumentNullException(nameof(localPackages));
             _downloader = downloader ?? throw new ArgumentNullException(nameof(downloader));
             _indexer = indexer ?? throw new ArgumentNullException(nameof(indexer));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
-            _nugetLogger = new Logger(_logger);
         }
 
         public Task AddAsync(Package package) => _localPackages.AddAsync(package);
+        public Task<IReadOnlyList<Package>> FindAsync(string id) => _localPackages.FindAsync(id);
 
         public async Task<bool> ExistsAsync(string id, NuGetVersion version)
         {
@@ -46,23 +44,6 @@ namespace BaGet.Services.Remote
             }
 
             return await TryIndexFromSourceAsync(id, version);
-        }
-
-        public async Task<IReadOnlyList<Package>> FindAsync(string id)
-        {
-            var packages = await _localPackages.FindAsync(id);
-
-            if (packages.Count != 0)
-            {
-                return packages;
-            }
-
-            if (!await TryIndexFromSourceAsync(id))
-            {
-                return new List<Package>();
-            }
-
-            return await _localPackages.FindAsync(id);
         }
 
         public async Task<Package> FindAsync(string id, NuGetVersion version)
@@ -102,25 +83,6 @@ namespace BaGet.Services.Remote
             return await _localPackages.RelistPackageAsync(id, version);
         }
 
-        private Task<bool> TryIndexFromSourceAsync(string id)
-        {
-            /*
-            var packageFinder = await _sourceRepository.GetResourceAsync<FindPackageByIdResource>();
-
-            var versions = await packageFinder.GetAllVersionsAsync(
-                id,
-                _cacheContext,
-                _nugetLogger,
-                CancellationToken.None);
-
-            var tasks = versions.Select(v => TryIndexFromSourceAsync(id, v)).ToList();
-
-            return (await Task.WhenAll(tasks)).All(r => r);
-            */
-
-            return Task.FromResult(false);
-        }
-
         private async Task<bool> TryIndexFromSourceAsync(string id, NuGetVersion version)
         {
             _logger.LogInformation("Attempting to index package {Id} {Version} from upstream source...",
@@ -133,7 +95,7 @@ namespace BaGet.Services.Remote
                 var idPath = id.ToLowerInvariant();
                 var versionPath = version.ToNormalizedString().ToLowerInvariant();
 
-                var packageUri = new Uri($"{_packageBaseAddress}/{idPath}/{versionPath}/{idPath}.{versionPath}.nupkg");
+                var packageUri = new Uri(_packageBaseAddress, $"{idPath}/{versionPath}/{idPath}.{versionPath}.nupkg");
 
                 // TODO: DownloadAsync throws when the package doesn't exist. This could be cleaner.
                 using (var stream = await _downloader.DownloadAsync(packageUri, CancellationToken.None))
@@ -162,25 +124,6 @@ namespace BaGet.Services.Remote
 
                 return false;
             }
-        }
-
-        private class Logger : NuGetLogger
-        {
-            private readonly ILogger<RemotePackageService> _logger;
-
-            public Logger(ILogger<RemotePackageService> logger)
-            {
-                _logger = logger;
-            }
-
-            public void LogDebug(string data) => _logger.LogDebug(data);
-            public void LogError(string data) => _logger.LogError(data);
-            public void LogErrorSummary(string data) => _logger.LogError(data);
-            public void LogInformation(string data) => _logger.LogInformation(data);
-            public void LogInformationSummary(string data) => _logger.LogInformation(data);
-            public void LogMinimal(string data) => _logger.LogTrace(data);
-            public void LogVerbose(string data) => _logger.LogTrace(data);
-            public void LogWarning(string data) => _logger.LogWarning(data);
         }
     }
 }

@@ -13,9 +13,9 @@ namespace BaGet.Controllers
 {
     public class SearchController : Controller
     {
-        private readonly BaGetContext _context;
+        private readonly IContext _context;
 
-        public SearchController(BaGetContext context)
+        public SearchController(IContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }

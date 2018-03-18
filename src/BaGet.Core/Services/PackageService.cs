@@ -10,9 +10,9 @@ namespace BaGet.Core.Services
 {
     public class PackageService : IPackageService
     {
-        private readonly BaGetContext _context;
+        private readonly IContext _context;
 
-        public PackageService(BaGetContext context)
+        public PackageService(IContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
