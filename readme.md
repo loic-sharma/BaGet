@@ -1,8 +1,6 @@
-# BaGet
+# BaGet :baguette_bread:
 
-## About
-
-A lightweight implementation of the NuGet service.
+A lightweight NuGet service implementation.
 
 ## Installation
 
