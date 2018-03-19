@@ -19,5 +19,6 @@ namespace BaGet
     public enum DatabaseType
     {
         Sqlite,
+        SqlServer,
     }
 }

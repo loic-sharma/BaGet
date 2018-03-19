@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BaGet.Entities
 {
-    public abstract class AbstractContext : DbContext, IContext
+    public abstract class AbstractContext<TContext> : DbContext, IContext where TContext : DbContext
     {
-        public AbstractContext(DbContextOptions<SqliteContext> options)
+        public AbstractContext(DbContextOptions<TContext> options)
             : base(options)
         { }
 

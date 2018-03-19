@@ -64,7 +64,7 @@ namespace BaGet.Core.Services
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Uploaded package is invalid");
+                _logger.LogError(e, "Uploaded package is invalid or the package already existed in storage");
 
                 return IndexingResult.InvalidPackage;
             }

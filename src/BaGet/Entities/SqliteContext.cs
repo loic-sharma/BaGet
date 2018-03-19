@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BaGet.Entities
 {
-    public class SqliteContext : AbstractContext
+    public class SqliteContext : AbstractContext<SqliteContext>
     {
         /// <summary>
         /// The Sqlite error code for when a unique constraint is violated.

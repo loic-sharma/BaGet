@@ -54,6 +54,9 @@ namespace BaGet
                     case DatabaseType.Sqlite:
                         return provider.GetRequiredService<SqliteContext>();
 
+                    case DatabaseType.SqlServer:
+                        return provider.GetRequiredService<SqlServerContext>();
+
                     default:
                         throw new InvalidOperationException(
                             $"Unsupported database provider: {databaseOptions.Type}");
@@ -67,6 +70,15 @@ namespace BaGet
                     .Database;
 
                 options.UseSqlite(databaseOptions.ConnectionString);
+            });
+
+            services.AddDbContext<SqlServerContext>((provider, options) =>
+            {
+                var databaseOptions = provider.GetRequiredService<IOptions<Options>>()
+                    .Value
+                    .Database;
+
+                options.UseSqlServer(databaseOptions.ConnectionString);
             });
 
             services.AddSingleton(provider =>
