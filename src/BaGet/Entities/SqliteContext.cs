@@ -25,8 +25,7 @@ namespace BaGet.Entities
         {
             base.OnModelCreating(builder);
 
-            builder
-                .Entity<Package>()
+            builder.Entity<Package>()
                 .Property(p => p.Id)
                 .HasColumnType("TEXT COLLATE NOCASE");
         }

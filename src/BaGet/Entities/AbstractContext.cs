@@ -21,53 +21,46 @@ namespace BaGet.Entities
         {
             BuildPackageEntity(builder);
 
-            builder
-                .Entity<PackageDependencyGroup>()
+            builder.Entity<PackageDependencyGroup>()
                 .HasKey(g => g.Key);
 
-            builder
-                .Entity<PackageDependency>()
+            builder.Entity<PackageDependency>()
                 .HasKey(d => d.Key);
         }
 
         private void BuildPackageEntity(ModelBuilder builder)
         {
-            builder
-                .Entity<Package>()
+            builder.Entity<Package>()
                 .HasKey(p => p.Key);
 
-            builder
-                .Entity<Package>()
+            builder.Entity<Package>()
+                .HasIndex(p => p.Id);
+
+            builder.Entity<Package>()
                 .Property(p => p.VersionString)
                 .HasColumnName("Version");
 
-            builder
-                .Entity<Package>()
+            builder.Entity<Package>()
                 .HasIndex(p => new { p.Id, p.VersionString })
                 .IsUnique();
 
-            builder
-                .Entity<Package>()
+            builder.Entity<Package>()
                 .Property(p => p.IconUrlString)
                 .HasColumnName("IconUrl");
 
-            builder
-                .Entity<Package>()
+            builder.Entity<Package>()
                 .Property(p => p.LicenseUrlString)
                 .HasColumnName("LicenseUrl");
 
-            builder
-                .Entity<Package>()
+            builder.Entity<Package>()
                 .Property(p => p.ProjectUrlString)
                 .HasColumnName("ProjectUrl");
 
-            builder
-                .Entity<Package>()
+            builder.Entity<Package>()
                 .Property(p => p.TagsString)
                 .HasColumnName("Tags");
 
-            builder
-                .Entity<Package>()
+            builder.Entity<Package>()
                 .Ignore(p => p.Version)
                 .Ignore(p => p.IconUrl)
                 .Ignore(p => p.LicenseUrl)

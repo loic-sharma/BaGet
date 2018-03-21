@@ -8,17 +8,18 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
-namespace BaGet.Migrations.Sqlite
+namespace BaGet.Migrations.SqlServer
 {
-    [DbContext(typeof(SqliteContext))]
-    [Migration("20180318182316_Initial")]
+    [DbContext(typeof(SqlServerContext))]
+    [Migration("20180321042428_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.0.1-rtm-125");
+                .HasAnnotation("ProductVersion", "2.0.1-rtm-125")
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("BaGet.Core.Entities.Package", b =>
                 {
@@ -32,8 +33,7 @@ namespace BaGet.Migrations.Sqlite
                     b.Property<string>("IconUrlString")
                         .HasColumnName("IconUrl");
 
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT COLLATE NOCASE");
+                    b.Property<string>("Id");
 
                     b.Property<string>("Language");
 
@@ -63,8 +63,11 @@ namespace BaGet.Migrations.Sqlite
 
                     b.HasKey("Key");
 
+                    b.HasIndex("Id");
+
                     b.HasIndex("Id", "VersionString")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[Id] IS NOT NULL AND [Version] IS NOT NULL");
 
                     b.ToTable("Packages");
                 });

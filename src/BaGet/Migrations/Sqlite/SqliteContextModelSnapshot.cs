@@ -62,6 +62,8 @@ namespace BaGet.Migrations.Sqlite
 
                     b.HasKey("Key");
 
+                    b.HasIndex("Id");
+
                     b.HasIndex("Id", "VersionString")
                         .IsUnique();
 

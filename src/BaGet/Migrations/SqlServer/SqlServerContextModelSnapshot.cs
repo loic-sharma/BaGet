@@ -62,6 +62,8 @@ namespace BaGet.Migrations.SqlServer
 
                     b.HasKey("Key");
 
+                    b.HasIndex("Id");
+
                     b.HasIndex("Id", "VersionString")
                         .IsUnique()
                         .HasFilter("[Id] IS NOT NULL AND [Version] IS NOT NULL");

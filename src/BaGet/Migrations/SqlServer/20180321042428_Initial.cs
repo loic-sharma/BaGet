@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 using System.Collections.Generic;
 
-namespace BaGet.Migrations.Sqlite
+namespace BaGet.Migrations.SqlServer
 {
     public partial class Initial : Migration
     {
@@ -13,11 +14,11 @@ namespace BaGet.Migrations.Sqlite
                 columns: table => new
                 {
                     Key = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Authors = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     IconUrl = table.Column<string>(nullable: true),
-                    Id = table.Column<string>(type: "TEXT COLLATE NOCASE", nullable: true),
+                    Id = table.Column<string>(nullable: true),
                     Language = table.Column<string>(nullable: true),
                     LicenseUrl = table.Column<string>(nullable: true),
                     Listed = table.Column<bool>(nullable: false),
@@ -40,7 +41,7 @@ namespace BaGet.Migrations.Sqlite
                 columns: table => new
                 {
                     Key = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     PackageKey = table.Column<int>(nullable: true),
                     TargetFramework = table.Column<string>(nullable: true)
                 },
@@ -60,7 +61,7 @@ namespace BaGet.Migrations.Sqlite
                 columns: table => new
                 {
                     Key = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Id = table.Column<string>(nullable: true),
                     PackageDependencyGroupKey = table.Column<int>(nullable: true),
                     VersionRange = table.Column<string>(nullable: true)
@@ -87,10 +88,16 @@ namespace BaGet.Migrations.Sqlite
                 column: "PackageKey");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Packages_Id",
+                table: "Packages",
+                column: "Id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Packages_Id_Version",
                 table: "Packages",
                 columns: new[] { "Id", "Version" },
-                unique: true);
+                unique: true,
+                filter: "[Id] IS NOT NULL AND [Version] IS NOT NULL");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
