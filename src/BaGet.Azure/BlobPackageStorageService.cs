@@ -13,7 +13,6 @@ namespace BaGet.Azure
     // See: https://github.com/NuGet/NuGetGallery/blob/master/src/NuGetGallery.Core/Services/CloudBlobCoreFileStorageService.cs
     public class BlobPackageStorageService : IPackageStorageService
     {
-        private const int BufferSize = 8192;
         private const string PackageContentType = "binary/octet-stream";
         private const string TextContentType = "text/plain";
 
