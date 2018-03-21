@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using BaGet.Core.Extensions;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
 
@@ -18,11 +19,13 @@ namespace BaGet.Core.Services
         public async Task SaveAsync(PackageArchiveReader package, Stream packageStream)
         {
             var identity = package.GetIdentity();
+            var packagePath = Path.Combine(_storePath, identity.PackagePath());
+            var nuspecPath = Path.Combine(_storePath, identity.NuspecPath());
 
             EnsurePathExists(identity);
 
             // TODO: Catch IOException and test if File.Exists. If false, rethrow exception.
-            using (var fileStream = File.Open(PackagePath(identity), FileMode.CreateNew))
+            using (var fileStream = File.Open(packagePath, FileMode.CreateNew))
             {
                 packageStream.Seek(0, SeekOrigin.Begin);
 
@@ -30,7 +33,7 @@ namespace BaGet.Core.Services
             }
 
             using (var nuspec = package.GetNuspec())
-            using (var fileStream = File.Open(NuspecPath(identity), FileMode.CreateNew))
+            using (var fileStream = File.Open(nuspecPath, FileMode.CreateNew))
             {
                 await nuspec.CopyToAsync(fileStream);
             }
@@ -39,8 +42,19 @@ namespace BaGet.Core.Services
         public Task<Stream> GetPackageStreamAsync(PackageIdentity package) => Task.FromResult(GetPackageStream(package));
         public Task<Stream> GetNuspecStreamAsync(PackageIdentity package) => Task.FromResult(GetNuspecStream(package));
 
-        private Stream GetPackageStream(PackageIdentity package) => File.Open(PackagePath(package), FileMode.Open);
-        private Stream GetNuspecStream(PackageIdentity package) => File.Open(NuspecPath(package), FileMode.Open);
+        private Stream GetPackageStream(PackageIdentity package)
+        {
+            var path = Path.Combine(_storePath, package.PackagePath());
+
+            return File.Open(path, FileMode.Open);
+        }
+
+        private Stream GetNuspecStream(PackageIdentity package)
+        {
+            var path = Path.Combine(_storePath, package.NuspecPath());
+
+            return File.Open(path, FileMode.Open);
+        }
 
         public Task DeleteAsync(PackageIdentity package)
         {
@@ -54,22 +68,6 @@ namespace BaGet.Core.Services
             var path = Path.Combine(_storePath, id, version);
 
             Directory.CreateDirectory(path);
-        }
-
-        private string PackagePath(PackageIdentity package)
-        {
-            var id = package.Id.ToLowerInvariant();
-            var version = package.Version.ToNormalizedString().ToLowerInvariant();
-
-            return Path.Combine(_storePath, id, version, $"{id}.{version}.nupkg");
-        }
-
-        private string NuspecPath(PackageIdentity package)
-        {
-            var id = package.Id.ToLowerInvariant();
-            var version = package.Version.ToNormalizedString().ToLowerInvariant();
-
-            return Path.Combine(_storePath, id, version, $"{id}.nuspec");
         }
     }
 }

@@ -17,6 +17,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\BaGet.Azure\BaGet.Azure.csproj" />
     <ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
     <ProjectReference Include="..\BaGet.Services.Remote\BaGet.Services.Remote.csproj" />
   </ItemGroup>

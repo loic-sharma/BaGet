@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using BaGet.Azure;
+using BaGet.Azure.Extensions;
+using BaGet.Configuration;
 using BaGet.Core.Entities;
 using BaGet.Core.Services;
 using BaGet.Entities;
@@ -41,11 +44,13 @@ namespace BaGet
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.Configure<Options>(Configuration);
+            services.Configure<BaGetOptions>(Configuration);
+
+            services.AddSingleton(provider => provider.GetRequiredService<IOptions<BaGetOptions>>().Value.Azure);
 
             services.AddScoped<IContext>(provider =>
             {
-                var databaseOptions = provider.GetRequiredService<IOptions<Options>>()
+                var databaseOptions = provider.GetRequiredService<IOptions<BaGetOptions>>()
                     .Value
                     .Database;
 
@@ -65,7 +70,7 @@ namespace BaGet
 
             services.AddDbContext<SqliteContext>((provider, options) =>
             {
-                var databaseOptions = provider.GetRequiredService<IOptions<Options>>()
+                var databaseOptions = provider.GetRequiredService<IOptions<BaGetOptions>>()
                     .Value
                     .Database;
 
@@ -74,7 +79,7 @@ namespace BaGet
 
             services.AddDbContext<SqlServerContext>((provider, options) =>
             {
-                var databaseOptions = provider.GetRequiredService<IOptions<Options>>()
+                var databaseOptions = provider.GetRequiredService<IOptions<BaGetOptions>>()
                     .Value
                     .Database;
 
@@ -83,7 +88,7 @@ namespace BaGet
 
             services.AddSingleton(provider =>
             {
-                var options = provider.GetRequiredService<IOptions<Options>>().Value;
+                var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
 
                 var client = new HttpClient(new HttpClientHandler
                 {
@@ -111,7 +116,7 @@ namespace BaGet
 
             services.AddTransient<IPackageService, RemotePackageService>(provider =>
             {
-                var options = provider.GetRequiredService<IOptions<Options>>().Value;
+                var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
 
                 return new RemotePackageService(
                     options.PackageSource,
@@ -121,12 +126,32 @@ namespace BaGet
                     provider.GetRequiredService<ILogger<RemotePackageService>>());
             });
 
-            services.AddTransient<IPackageStorageService, FilePackageStorageService>(provider =>
+            services.AddTransient<IPackageStorageService>(provider =>
             {
-                var options = provider.GetRequiredService<IOptions<Options>>().Value;
+                var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
 
-                return new FilePackageStorageService(options.PackageStore);
+                switch (options.Storage.Type)
+                {
+                    case StorageType.FileSystem:
+                        return provider.GetRequiredService<FilePackageStorageService>();
+
+                    case StorageType.AzureBlobStorage:
+                        return provider.GetRequiredService<BlobPackageStorageService>();
+
+                    default:
+                        throw new InvalidOperationException(
+                            $"Unsupported storage service: {options.Storage.Type}");
+                }
             });
+
+            services.AddTransient<FilePackageStorageService>(provider =>
+            {
+                var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
+
+                return new FilePackageStorageService(options.Storage.Path);
+            });
+
+            services.AddBlobPackageStorageService();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
