@@ -47,25 +47,25 @@ namespace BaGet.Core.Entities
         public string IconUrlString
         {
             get => IconUrl?.AbsoluteUri ?? string.Empty;
-            set => IconUrl = (value != null) ? new Uri(value) : null;
+            set => IconUrl = (!string.IsNullOrEmpty(value)) ? new Uri(value) : null;
         }
 
         public string LicenseUrlString
         {
             get => LicenseUrl?.AbsoluteUri ?? string.Empty;
-            set => LicenseUrl = (value != null) ? new Uri(value) : null;
+            set => LicenseUrl = (!string.IsNullOrEmpty(value)) ? new Uri(value) : null;
         }
 
         public string ProjectUrlString
         {
             get => ProjectUrl?.AbsoluteUri ?? string.Empty;
-            set => ProjectUrl = (value != null) ? new Uri(value) : null;
+            set => ProjectUrl = (!string.IsNullOrEmpty(value)) ? new Uri(value) : null;
         }
 
         public string TagsString
         {
             get => JsonConvert.SerializeObject(Tags);
-            set => Tags = (value != null) ? JsonConvert.DeserializeObject<string[]>(value) : new string[0];
+            set => Tags = (!string.IsNullOrEmpty(value)) ? JsonConvert.DeserializeObject<string[]>(value) : new string[0];
         }
     }
 }

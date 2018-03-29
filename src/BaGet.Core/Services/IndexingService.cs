@@ -48,18 +48,36 @@ namespace BaGet.Core.Services
 
                     try
                     {
+                        _logger.LogInformation(
+                            "Persisting package {Id} {Version} content to storage...",
+                            packageId,
+                            packageVersion.ToNormalizedString());
+
                         await _storage.SaveAsync(packageReader, stream);
                     }
                     catch (Exception e)
                     {
                         // This may happen due to concurrent pushes.
                         // TODO: Make IStorageService.SaveAsync return a result enum so this can be properly handled.
-                        _logger.LogError(e, "Failed to save package {Identity}", packageReader.GetIdentity());
+                        _logger.LogError(e, "Failed to save package {Id} {Version}", packageId, packageVersion.ToNormalizedString());
 
                         throw;
                     }
 
-                    package = GetPakageMetadata(packageReader);
+                    try
+                    {
+                        package = GetPackageMetadata(packageReader);
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.LogError(
+                            e,
+                            "Failed to extract metadata for package {Id} {Version}",
+                            packageId,
+                            packageVersion.ToNormalizedString());
+
+                        throw;
+                    }
                 }
             }
             catch (Exception e)
@@ -70,14 +88,29 @@ namespace BaGet.Core.Services
             }
 
             // The package stream has been stored. Persist the package's metadata to the database.
+            _logger.LogInformation(
+                "Persisting package {Id} {Version} metadata to database...",
+                package.Id,
+                package.VersionString);
+
             var result = await _packages.AddAsync(package);
 
             switch (result)
             {
                 case PackageAddResult.Success:
+                    _logger.LogInformation(
+                        "Successfully persisted package {Id} {Version} metadata to database",
+                        package.Id,
+                        package.VersionString);
+
                     return IndexingResult.Success;
 
                 case PackageAddResult.PackageAlreadyExists:
+                    _logger.LogWarning(
+                        "Package {Id} {Version} metadata already exists in database",
+                        package.Id,
+                        package.VersionString);
+
                     return IndexingResult.PackageAlreadyExists;
 
                 default:
@@ -87,7 +120,7 @@ namespace BaGet.Core.Services
             }
         }
 
-        private Package GetPakageMetadata(PackageArchiveReader packageReader)
+        private Package GetPackageMetadata(PackageArchiveReader packageReader)
         {
             var nuspec = packageReader.NuspecReader;
 
