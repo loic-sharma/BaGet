@@ -6,7 +6,7 @@ using BaGet.Azure.Extensions;
 using BaGet.Configuration;
 using BaGet.Core.Entities;
 using BaGet.Core.Services;
-using BaGet.Entities;
+using BaGet.Extensions;
 using BaGet.Services.Remote;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -44,47 +44,10 @@ namespace BaGet
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddBaGetContext();
             services.Configure<BaGetOptions>(Configuration);
 
             services.AddSingleton(provider => provider.GetRequiredService<IOptions<BaGetOptions>>().Value.Azure);
-
-            services.AddScoped<IContext>(provider =>
-            {
-                var databaseOptions = provider.GetRequiredService<IOptions<BaGetOptions>>()
-                    .Value
-                    .Database;
-
-                switch (databaseOptions.Type)
-                {
-                    case DatabaseType.Sqlite:
-                        return provider.GetRequiredService<SqliteContext>();
-
-                    case DatabaseType.SqlServer:
-                        return provider.GetRequiredService<SqlServerContext>();
-
-                    default:
-                        throw new InvalidOperationException(
-                            $"Unsupported database provider: {databaseOptions.Type}");
-                }
-            });
-
-            services.AddDbContext<SqliteContext>((provider, options) =>
-            {
-                var databaseOptions = provider.GetRequiredService<IOptions<BaGetOptions>>()
-                    .Value
-                    .Database;
-
-                options.UseSqlite(databaseOptions.ConnectionString);
-            });
-
-            services.AddDbContext<SqlServerContext>((provider, options) =>
-            {
-                var databaseOptions = provider.GetRequiredService<IOptions<BaGetOptions>>()
-                    .Value
-                    .Database;
-
-                options.UseSqlServer(databaseOptions.ConnectionString);
-            });
 
             services.AddSingleton(provider =>
             {
@@ -144,7 +107,7 @@ namespace BaGet
                 }
             });
 
-            services.AddTransient<FilePackageStorageService>(provider =>
+            services.AddTransient(provider =>
             {
                 var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
 

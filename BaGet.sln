@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Core", "src\BaGet.Cor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Services.Remote", "src\BaGet.Services.Remote\BaGet.Services.Remote.csproj", "{6BC034FA-1A02-491F-B3E4-C2E87CCBC57D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaGet.Azure", "src\BaGet.Azure\BaGet.Azure.csproj", "{716C970D-9614-4265-AC92-57E8B227B98E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Azure", "src\BaGet.Azure\BaGet.Azure.csproj", "{716C970D-9614-4265-AC92-57E8B227B98E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaGet.Tools.ImportDownloads", "src\BaGet.Tools.ImportDownloads\BaGet.Tools.ImportDownloads.csproj", "{8B7C1C8D-ED4D-4732-86A1-0A7DAD3045DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{716C970D-9614-4265-AC92-57E8B227B98E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{716C970D-9614-4265-AC92-57E8B227B98E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{716C970D-9614-4265-AC92-57E8B227B98E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B7C1C8D-ED4D-4732-86A1-0A7DAD3045DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B7C1C8D-ED4D-4732-86A1-0A7DAD3045DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B7C1C8D-ED4D-4732-86A1-0A7DAD3045DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B7C1C8D-ED4D-4732-86A1-0A7DAD3045DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
