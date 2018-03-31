@@ -35,6 +35,8 @@ namespace BaGet.Services.Remote
 
         public Task<PackageAddResult> AddAsync(Package package) => _localPackages.AddAsync(package);
         public Task<IReadOnlyList<Package>> FindAsync(string id) => _localPackages.FindAsync(id);
+        public Task AddDownloadAsync(string id, NuGetVersion version) => _localPackages.AddDownloadAsync(id, version);
+
 
         public async Task<bool> ExistsAsync(string id, NuGetVersion version)
         {

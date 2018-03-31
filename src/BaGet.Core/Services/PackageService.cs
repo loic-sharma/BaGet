@@ -79,5 +79,14 @@ namespace BaGet.Core.Services
 
             return false;
         }
+
+        public async Task AddDownloadAsync(string id, NuGetVersion version)
+        {
+            var package = await FindAsync(id, version);
+
+            package.Downloads += 1;
+
+            await _context.SaveChangesAsync();
+        }
     }
 }

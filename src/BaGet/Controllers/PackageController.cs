@@ -46,9 +46,12 @@ namespace BaGet.Controllers
                 return NotFound();
             }
 
-            var identity = new PackageIdentity(id, nugetVersion);
+            await _packages.AddDownloadAsync(id, nugetVersion);
 
-            return File(await _storage.GetPackageStreamAsync(identity), "application/octet-stream");
+            var identity = new PackageIdentity(id, nugetVersion);
+            var packageStream = await _storage.GetPackageStreamAsync(identity);
+
+            return File(packageStream, "application/octet-stream");
         }
 
         public async Task<IActionResult> DownloadNuspec(string id, string version)

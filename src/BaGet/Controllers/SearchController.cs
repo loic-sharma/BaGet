@@ -30,9 +30,8 @@ namespace BaGet.Controllers
                 search = search.Where(p => p.Id.ToLower().Contains(query));
             }
 
-            // TODO: Order by downloads.
             var flatResults = await search
-                .OrderByDescending(p => p.Published)
+                .OrderByDescending(p => p.Downloads)
                 .Take(20)
                 .ToListAsync();
 
@@ -43,12 +42,13 @@ namespace BaGet.Controllers
                     .GroupBy(p => p.Id)
                     .Select(g => new SearchResult(
                         id: g.Key,
-                        latest: g.OrderBy(p => p.Version).First(),
+                        latest: g.OrderByDescending(p => p.Version).First(),
                         versions: g.Select(p => new SearchResultVersion(
                             registrationUrl: Url.PackageRegistration(p.Id, p.Version),
                             version: p.VersionString,
-                            downloads: 0)).ToList(),
-                        registrationIndex: Url.PackageRegistration(g.Key)))
+                            downloads: p.Downloads)).ToList(),
+                        registrationIndex: Url.PackageRegistration(g.Key),
+                        totalDownloads: g.Sum(p => p.Downloads)))
             };
         }
 
@@ -83,7 +83,8 @@ namespace BaGet.Controllers
                 string id,
                 Package latest,
                 IReadOnlyList<SearchResultVersion> versions,
-                string registrationIndex)
+                string registrationIndex,
+                long totalDownloads)
             {
                 PackageId = id;
                 Version = latest.VersionString;
@@ -97,7 +98,7 @@ namespace BaGet.Controllers
                 Summary = latest.Summary;
                 Tags = latest.Tags;
                 Title = latest.Title;
-                TotalDownloads = 0;
+                TotalDownloads = totalDownloads;
             }
 
             [JsonProperty(PropertyName = "id")]
@@ -114,14 +115,14 @@ namespace BaGet.Controllers
             public string Summary { get; }
             public string[] Tags { get; }
             public string Title { get; }
-            public int TotalDownloads { get; }
+            public long TotalDownloads { get; }
 
             public IReadOnlyList<SearchResultVersion> Versions { get; }
         }
 
         private class SearchResultVersion
         {
-            public SearchResultVersion(string registrationUrl, string version, int downloads)
+            public SearchResultVersion(string registrationUrl, string version, long downloads)
             {
                 if (string.IsNullOrEmpty(registrationUrl)) throw new ArgumentNullException(nameof(registrationUrl));
                 if (string.IsNullOrEmpty(version)) throw new ArgumentNullException(nameof(version));
@@ -136,7 +137,7 @@ namespace BaGet.Controllers
 
             public string Version { get; }
 
-            public int Downloads { get; }
+            public long Downloads { get; }
         }
     }
 }
