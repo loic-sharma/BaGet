@@ -29,6 +29,8 @@ namespace BaGet.Migrations.SqlServer
 
                     b.Property<string>("Description");
 
+                    b.Property<long>("Downloads");
+
                     b.Property<string>("IconUrlString")
                         .HasColumnName("IconUrl");
 

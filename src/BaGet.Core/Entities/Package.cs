@@ -17,6 +17,7 @@ namespace BaGet.Core.Entities
         // TODO: This should be string[]
         public string Authors { get; set; }
         public string Description { get; set; }
+        public long Downloads { get; set; }
         public string Language { get; set; }
         public bool Listed { get; set; }
         public string MinClientVersion { get; set; }
