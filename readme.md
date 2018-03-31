@@ -12,8 +12,10 @@ A lightweight [NuGet service](https://docs.microsoft.com/en-us/nuget/api/overvie
 
 ## Features
 
-Supports both Sqlite and SQL Server.
-
-BaGet indexes packages automatically using [nuget.org](https://www.nuget.org/) as its upstream source. For example, accessing http://localhost:50561/v3/registration/newtonsoft.json/11.0.1.json will download and then index the package [Newtonsoft.Json](https://www.nuget.org/packages/Newtonsoft.Json/11.0.1). This lets you to use BaGet as a read-through cache.
+* Supports Sqlite and SQL Server to store metadata
+* Supports local filesystem and Azure Blob Storage to store NuGet packages
+* Supports read-through caching. For example, accessing `http://localhost:5000/v3/registration/newtonsoft.json/11.0.1.json`
+will index [Newtonsoft.Json](https://www.nuget.org/packages/Newtonsoft.Json/11.0.1) using [nuget.org](https://www.nuget.org/)
+* Can import download counts from [nuget.org](https://www.nuget.org)
 
 Stay tuned, more features are planned!
