@@ -46,7 +46,7 @@ namespace BaGet.Core.Services
         {
             var path = Path.Combine(_storePath, package.PackagePath());
 
-            return File.Open(path, FileMode.Open);
+            return File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
         }
 
         private Stream GetNuspecStream(PackageIdentity package)
