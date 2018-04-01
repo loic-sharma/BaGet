@@ -34,6 +34,8 @@ namespace BaGet
         public const string PackageDownloadRouteName = "package-download";
         public const string PackageDownloadManifestRouteName = "package-download-manifest";
 
+        private const string CorsPolicy = "AllowAll";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -46,6 +48,14 @@ namespace BaGet
             services.AddMvc();
             services.AddBaGetContext();
             services.Configure<BaGetOptions>(Configuration);
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(CorsPolicy,
+                    builder => builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            });
 
             services.AddSingleton(provider => provider.GetRequiredService<IOptions<BaGetOptions>>().Value.Azure);
 
@@ -140,6 +150,8 @@ namespace BaGet
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
+
+            app.UseCors(CorsPolicy);
 
             app.UseMvc(routes =>
             {

@@ -1,0 +1,153 @@
+import * as React from 'react';
+
+interface DisplayPackageProps {
+  id: string;
+}
+
+interface Package {
+  id: string;
+  latestVersion: string;
+  readme: string;
+  lastUpdate: Date;
+  iconUrl: string;
+  projectUrl: string;
+  licenseUrl: string;
+  downloadUrl: string;
+  totalDownloads: number;
+  latestDownloads: number;
+  authors: string;
+  tags: string[];
+  versions: PackageVersion[];
+}
+
+interface PackageVersion {
+  version: string;
+  downloads: number;
+  date: Date;
+}
+
+interface DisplayPackageState {
+  package?: Package;
+}
+
+export default class DisplayPackage extends React.Component<DisplayPackageProps, DisplayPackageState> {
+
+  constructor(props: DisplayPackageProps) {
+    super(props);
+
+    this.state = {package: undefined};
+  }
+
+  componentDidMount() {
+    let url = `http://localhost:50557/v3/registration/${this.props.id}/index.json`;
+
+    fetch(url).then(response => {
+      return response.json();
+    }).then(results => {
+      console.log(results);
+
+      let id = results["items"][0]["id"];
+      let latestVersion = results["items"][0]["upper"];
+      let latestCatalogEntry: {[key: string]: any} | undefined;
+      let latestDownloadUrl: string | undefined;
+
+      let versions: PackageVersion[] = [];
+
+      for (let entry of results["items"][0]["items"]) {
+        let catalogEntry = entry["catalogEntry"];
+
+        versions.push({
+          version: catalogEntry["version"],
+          downloads: 0, // TODO
+          date: new Date(catalogEntry["published"])
+        });
+
+        if (catalogEntry["version"] == latestVersion) {
+          latestCatalogEntry = catalogEntry;
+          latestDownloadUrl = entry["packageContent"];
+        }
+      }
+
+      if (latestCatalogEntry && latestDownloadUrl) {
+        this.setState({
+          package: {
+            id: id,
+            latestVersion: latestVersion,
+            readme: "TODO",
+            lastUpdate: new Date(latestCatalogEntry["published"]),
+            iconUrl: latestCatalogEntry["iconUrl"],
+            projectUrl: latestCatalogEntry["projectUrl"],
+            licenseUrl: latestCatalogEntry["licenseUrl"],
+            downloadUrl: latestDownloadUrl,
+            totalDownloads: 0, // TODO
+            latestDownloads: 0, // TODO
+            authors: latestCatalogEntry["downloads"],
+            tags: latestCatalogEntry["tags"],
+            versions: versions,
+          }
+        });
+      }
+    });
+  }
+
+  render() {
+    if (!this.state.package) {
+        return (
+          <div>...</div>
+        );
+    } else {
+      return (
+        <div>
+          <div>
+            <img src={this.state.package.iconUrl} />
+          </div>
+          <div>
+            <div>
+              <h1>{this.state.package.id}</h1>
+              <span>{this.state.package.latestVersion}</span>
+            </div>
+            <div>
+              How to install stuffs.
+            </div>
+            <div>
+              {this.state.package.readme}
+            </div>
+          </div>
+          <div>
+            <div>
+              <h1>Info</h1>
+
+              <span>last update TODO</span>
+              <a href={this.state.package.projectUrl}>{this.state.package.projectUrl}</a>
+              <a href={this.state.package.licenseUrl}>License Info</a>
+            </div>
+
+            <div>
+              <h1>Statistics</h1>
+
+              <span>{this.state.package.totalDownloads} total downloads</span>
+              <span>{this.state.package.latestDownloads} downloads of latest version</span>
+            </div>
+
+            <div>
+              <h1>Versions</h1>
+
+              {this.state.package.versions.map(value => (
+                <div key={value.version}>
+                  <span>{value.version}</span>
+                  <span>{value.date.toLocaleString()}</span>
+                </div>
+              ))}
+            </div>
+
+            <div>
+              <h1>Authors</h1>
+
+              <p>{this.state.package.authors}</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+  }
+}
