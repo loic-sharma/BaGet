@@ -138,6 +138,9 @@ namespace BaGet
                 }
             }
 
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+
             app.UseMvc(routes =>
             {
                 // Service index
