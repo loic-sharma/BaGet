@@ -40,7 +40,7 @@ export default class App extends React.Component<{}, AppState> {
       <div>
         <input
           type="text"
-          placeholder="Search"
+          placeholder="Search packages"
           onChange={e => this._handleChange(e.target.value)} />
       </div>
     );

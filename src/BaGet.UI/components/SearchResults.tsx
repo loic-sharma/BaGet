@@ -31,6 +31,10 @@ export default class Search extends React.Component<SearchResultsProps, SearchRe
     this._loadItems(this.props.input);
   }
 
+  componentWillReceiveProps(props: Readonly<SearchResultsProps>) {
+    this._loadItems(props.input);
+  }
+
   render() {
     return (
       <div>
@@ -40,7 +44,7 @@ export default class Search extends React.Component<SearchResultsProps, SearchRe
               <img src={value.iconUrl} />
             </div>
             <div>
-              <a href="#" onClick={e => this.props.onSelect(value.id)}>{value.id}</a>
+              <h2><a href="#" onClick={e => this.props.onSelect(value.id)}>{value.id}</a></h2>
               <span>by: {value.authors}</span>
             </div>
             <div>
