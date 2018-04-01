@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using MoreLinq;
 
 namespace BaGet.Tools.ImportDownloads
 {
     public class DownloadsImporter
     {
-        private const int BatchSize = 1000;
+        private const int BatchSize = 200;
 
         private readonly IContext _context;
         private readonly IPackageDownloadsSource _downloadsSource;
@@ -28,15 +29,14 @@ namespace BaGet.Tools.ImportDownloads
         public async Task ImportAsync()
         {
             var packageDownloads = await _downloadsSource.GetPackageDownloadsAsync();
-            var packages = await _context.Packages.ToListAsync();
+            var packages = await _context.Packages.CountAsync();
+            var batches = (packages / BatchSize) + 1;
 
-            var batchCount = 1;
-
-            foreach (var batch in packages.Batch(BatchSize))
+            for (var batch = 0; batch < batches; batch++)
             {
-                _logger.LogInformation("Importing batch {BatchCount}...", batchCount);
+                _logger.LogInformation("Importing batch {Batch}...", batch);
 
-                foreach (var package in packages)
+                foreach (var package in await GetBatch(batch))
                 {
                     var packageId = package.Id.ToLowerInvariant();
                     var packageVersion = package.VersionString.ToLowerInvariant();
@@ -52,10 +52,15 @@ namespace BaGet.Tools.ImportDownloads
 
                 await _context.SaveChangesAsync();
 
-                _logger.LogInformation("Imported batch {BatchCount}", batchCount);
-
-                batchCount++;
+                _logger.LogInformation("Imported batch {Batch}", batch);
             }
         }
+
+        private Task<List<Package>> GetBatch(int batch)
+            => _context.Packages
+                .OrderBy(p => p.Key)
+                .Skip(batch * BatchSize)
+                .Take(BatchSize)
+                .ToListAsync();
     }
 }
