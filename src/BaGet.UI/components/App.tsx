@@ -21,7 +21,9 @@ export default class App extends React.Component<{}, AppState> {
         <div>
           {this._renderSearch()}
 
-          <DisplayPackage id={this.state.selected} />
+          <section role="main" className="container main-container">
+            <DisplayPackage id={this.state.selected} />
+          </section>
         </div>
       );
     } else {
@@ -29,7 +31,9 @@ export default class App extends React.Component<{}, AppState> {
         <div>
           {this._renderSearch()}
 
-          <SearchResults input={this.state.input} onSelect={selected => this._handleSelect(selected)} />
+          <section role="main" className="container main-container">
+            <SearchResults input={this.state.input} onSelect={selected => this._handleSelect(selected)} />
+          </section>
         </div>
       );
     }
@@ -37,12 +41,27 @@ export default class App extends React.Component<{}, AppState> {
 
   private _renderSearch() {
     return (
-      <div>
-        <input
-          type="text"
-          placeholder="Search packages"
-          onChange={e => this._handleChange(e.target.value)} />
-      </div>
+      <nav>
+        <div className="container">
+          <div className="row">
+            <div className="col-sm-12">
+              <div id="logo">
+                <h1><a href="/">BaGet</a></h1>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="container search-container">
+          <div className="row">
+            <input
+              type="text"
+              className="form-control"
+              autoComplete="off"
+              placeholder="Search packages"
+              onChange={e => this._handleChange(e.target.value)} />
+          </div>
+        </div>
+      </nav>
     );
   }
 

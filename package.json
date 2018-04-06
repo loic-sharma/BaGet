@@ -24,6 +24,7 @@
         "parcel-bundler": "^1.7.0",
         "parcel-plugin-typescript": "^0.7.0",
         "prettier": "^1.11.1",
+        "timeago.js": "^3.0.2",
         "tslint": "^5.9.1",
         "tslint-config-airbnb": "^5.8.0",
         "tslint-config-prettier": "^1.10.0",

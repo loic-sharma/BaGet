@@ -1,4 +1,5 @@
 import * as React from 'react';
+import './SearchResults.css';
 
 interface SearchResultsProps {
   input: string;
@@ -39,21 +40,23 @@ export default class Search extends React.Component<SearchResultsProps, SearchRe
     return (
       <div>
         {this.state.items.map(value => (
-          <div key={value.id}>
-            <div>
-              <img src={value.iconUrl} />
+          <div key={value.id} className="row search-result">
+            <div className="col-sm-1 hidden-xs hidden-sm">
+              <img src={value.iconUrl} className="package-icon img-responsive" />
             </div>
-            <div>
-              <h2><a href="#" onClick={e => this.props.onSelect(value.id)}>{value.id}</a></h2>
-              <span>by: {value.authors}</span>
-            </div>
-            <div>
-              <span>{value.totalDownloads} total downloads</span>
-              <span>Latest version: {value.latestVersion}</span>
-              <span>{value.tags}</span>
-            </div>
-            <div>
-              {value.description}
+            <div className="col-sm-11">
+              <div>
+                <h2><a href="#" onClick={e => this.props.onSelect(value.id)}>{value.id}</a></h2>
+                <span>by: {value.authors}</span>
+              </div>
+              <div className="info">
+                <span>{value.totalDownloads} total downloads</span>
+                <span>Latest version: {value.latestVersion}</span>
+                <span>{value.tags.join(' ')}</span>
+              </div>
+              <div>
+                {value.description}
+              </div>
             </div>
           </div>
         ))}

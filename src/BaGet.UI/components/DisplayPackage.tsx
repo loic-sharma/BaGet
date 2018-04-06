@@ -1,4 +1,7 @@
 import * as React from 'react';
+import timeago from 'timeago.js';
+
+import './DisplayPackage.css';
 
 interface DisplayPackageProps {
   id: string;
@@ -73,7 +76,7 @@ export default class DisplayPackage extends React.Component<DisplayPackageProps,
           package: {
             id: id,
             latestVersion: latestVersion,
-            readme: "TODO",
+            readme: latestCatalogEntry["description"],
             lastUpdate: new Date(latestCatalogEntry["published"]),
             iconUrl: latestCatalogEntry["iconUrl"],
             projectUrl: latestCatalogEntry["projectUrl"],
@@ -81,7 +84,7 @@ export default class DisplayPackage extends React.Component<DisplayPackageProps,
             downloadUrl: latestDownloadUrl,
             totalDownloads: 0, // TODO
             latestDownloads: 0, // TODO
-            authors: latestCatalogEntry["downloads"],
+            authors: latestCatalogEntry["authors"],
             tags: latestCatalogEntry["tags"],
             versions: versions,
           }
@@ -97,36 +100,36 @@ export default class DisplayPackage extends React.Component<DisplayPackageProps,
         );
     } else {
       return (
-        <div>
-          <div>
-            <img src={this.state.package.iconUrl} />
-          </div>
-          <div>
+        <div className="row display-package">
+          <aside className="col-sm-1">
+            <img src={this.state.package.iconUrl} className="img-responsive" />
+          </aside>
+          <article className="col-sm-8 package-details-main">
             <div>
               <h1>{this.state.package.id}</h1>
               <span>{this.state.package.latestVersion}</span>
             </div>
-            <div>
-              How to install stuffs.
+            <div className="install-script">
+              dotnet add package {this.state.package.id} --version {this.state.package.latestVersion}
             </div>
             <div>
               {this.state.package.readme}
             </div>
-          </div>
-          <div>
+          </article>
+          <aside className="col-sm-3 package-details-info">
             <div>
               <h1>Info</h1>
 
-              <span>last update TODO</span>
-              <a href={this.state.package.projectUrl}>{this.state.package.projectUrl}</a>
-              <a href={this.state.package.licenseUrl}>License Info</a>
+              <div>last updated {timeago().format(this.state.package.lastUpdate)}</div>
+              <div><a href={this.state.package.projectUrl}>{this.state.package.projectUrl}</a></div>
+              <div><a href={this.state.package.licenseUrl}>License Info</a></div>
             </div>
 
             <div>
               <h1>Statistics</h1>
 
-              <span>{this.state.package.totalDownloads} total downloads</span>
-              <span>{this.state.package.latestDownloads} downloads of latest version</span>
+              <div>{this.state.package.totalDownloads} total downloads</div>
+              <div>{this.state.package.latestDownloads} downloads of latest version</div>
             </div>
 
             <div>
@@ -134,8 +137,8 @@ export default class DisplayPackage extends React.Component<DisplayPackageProps,
 
               {this.state.package.versions.map(value => (
                 <div key={value.version}>
-                  <span>{value.version}</span>
-                  <span>{value.date.toLocaleString()}</span>
+                  <span>v{value.version}: </span>
+                  <span>{this._dateToString(value.date)}</span>
                 </div>
               ))}
             </div>
@@ -143,11 +146,15 @@ export default class DisplayPackage extends React.Component<DisplayPackageProps,
             <div>
               <h1>Authors</h1>
 
-              <p>{this.state.package.authors}</p>
+              <p>{(!this.state.package.authors) ? 'Unknown' : this.state.package.authors}</p>
             </div>
-          </div>
+          </aside>
         </div>
       );
     }
+  }
+
+  private _dateToString(date: Date): string {
+      return `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`;
   }
 }

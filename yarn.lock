@@ -32,6 +32,10 @@
     reflect-metadata "^0.1.12"
     tslib "^1.8.1"
 
+"@types/jquery@^2.0.40":
+  version "2.0.49"
+  resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-2.0.49.tgz#95bd7064caebf65bde10429dff491a1aea05b67d"
+
 "@types/node@*":
   version "9.6.1"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.1.tgz#e2d374ef15b315b48e7efc308fa1a7cd51faa06c"
@@ -3949,6 +3953,12 @@ through2@^2.0.0, through2@~2.0.3:
   dependencies:
     readable-stream "^2.1.5"
     xtend "~4.0.1"
+
+timeago.js@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/timeago.js/-/timeago.js-3.0.2.tgz#32a67e7c0d887ea42ca588d3aae26f77de5e76cc"
+  dependencies:
+    "@types/jquery" "^2.0.40"
 
 timers-browserify@^2.0.4:
   version "2.0.6"
