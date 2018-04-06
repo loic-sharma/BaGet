@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using BaGet.Azure;
@@ -120,8 +121,14 @@ namespace BaGet
             services.AddTransient(provider =>
             {
                 var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
+                var path = string.IsNullOrEmpty(options.Storage.Path)
+                    ? Path.Combine(Directory.GetCurrentDirectory(), "Packages")
+                    : options.Storage.Path;
 
-                return new FilePackageStorageService(options.Storage.Path);
+                // Ensure the package storage directory exists
+                Directory.CreateDirectory(path);
+
+                return new FilePackageStorageService(path);
             });
 
             services.AddBlobPackageStorageService();
