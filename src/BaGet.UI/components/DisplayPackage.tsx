@@ -42,7 +42,7 @@ export default class DisplayPackage extends React.Component<DisplayPackageProps,
   }
 
   componentDidMount() {
-    let url = `http://localhost:50557/v3/registration/${this.props.id}/index.json`;
+    let url = `/v3/registration/${this.props.id}/index.json`;
 
     fetch(url).then(response => {
       return response.json();

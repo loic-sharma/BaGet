@@ -66,8 +66,8 @@ export default class Search extends React.Component<SearchResultsProps, SearchRe
 
   private _loadItems(query: string): void {
     let url = (query && query.length != 0)
-      ? `http://localhost:50557/v3/search?q=${encodeURIComponent(query)}`
-      : `http://localhost:50557/v3/search`;
+      ? `/v3/search?q=${encodeURIComponent(query)}`
+      : `/v3/search`;
 
     fetch(url).then(response => {
       return response.json();
