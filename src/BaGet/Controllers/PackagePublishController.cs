@@ -25,9 +25,9 @@ namespace BaGet.Controllers
         }
 
         // See: https://docs.microsoft.com/en-us/nuget/api/package-publish-resource#push-a-package
-        public async Task Upload(IFormFile upload)
+        public async Task Upload(IFormFile package)
         {
-            if (upload == null)
+            if (package == null)
             {
                 HttpContext.Response.StatusCode = 400;
                 return;
@@ -35,7 +35,7 @@ namespace BaGet.Controllers
 
             try
             {
-                using (var uploadStream = upload.OpenReadStream())
+                using (var uploadStream = package.OpenReadStream())
                 {
                     var result = await _indexer.IndexAsync(uploadStream);
 

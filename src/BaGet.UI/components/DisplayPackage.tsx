@@ -1,5 +1,6 @@
 import * as React from 'react';
 import timeago from 'timeago.js';
+import {Parser, HtmlRenderer} from 'commonmark';
 
 import './DisplayPackage.css';
 
@@ -35,8 +36,14 @@ interface DisplayPackageState {
 
 export default class DisplayPackage extends React.Component<DisplayPackageProps, DisplayPackageState> {
 
+  private _parser: Parser;
+  private _htmlRenderer: HtmlRenderer;
+
   constructor(props: DisplayPackageProps) {
     super(props);
+
+    this._parser = new Parser();
+    this._htmlRenderer = new HtmlRenderer();
 
     this.state = {package: undefined};
   }
@@ -72,6 +79,12 @@ export default class DisplayPackage extends React.Component<DisplayPackageProps,
       }
 
       if (latestCatalogEntry && latestDownloadUrl) {
+        let readme = null;
+
+        if (!latestCatalogEntry["hasReadme"]) {
+          readme = latestCatalogEntry["description"];
+        }
+
         this.setState({
           package: {
             id: id,
@@ -89,6 +102,23 @@ export default class DisplayPackage extends React.Component<DisplayPackageProps,
             versions: versions,
           }
         });
+
+        if (latestCatalogEntry["hasReadme"]) {
+          let readmeUrl = `/v3/package/${this.props.id}/${latestVersion}/readme`;
+
+          fetch(readmeUrl).then(response => {
+            return response.text();
+          }).then(result => {
+            this.setState(prevState => {
+              let state = {...prevState};
+              let markdown = this._parser.parse(result);
+
+              state.package!.readme = this._htmlRenderer.render(markdown);
+
+              return state;
+            });
+          });
+        }
       }
     });
   }
@@ -112,9 +142,9 @@ export default class DisplayPackage extends React.Component<DisplayPackageProps,
             <div className="install-script">
               dotnet add package {this.state.package.id} --version {this.state.package.latestVersion}
             </div>
-            <div>
-              {this.state.package.readme}
-            </div>
+
+            {/* TODO: Fix this */}
+            <div dangerouslySetInnerHTML={ {__html: this.state.package.readme} } />
           </article>
           <aside className="col-sm-3 package-details-info">
             <div>

@@ -20,5 +20,13 @@ namespace BaGet.Core.Extensions
 
             return Path.Combine(id, version, $"{id}.nuspec");
         }
+
+        public static string ReadmePath(this PackageIdentity package)
+        {
+            var id = package.Id.ToLowerInvariant();
+            var version = package.Version.ToNormalizedString().ToLowerInvariant();
+
+            return Path.Combine(id, version, "readme");
+        }
     }
 }

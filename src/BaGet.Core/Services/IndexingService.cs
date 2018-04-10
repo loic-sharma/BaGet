@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
+using BaGet.Core.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NuGet.Packaging;
@@ -53,7 +54,7 @@ namespace BaGet.Core.Services
                             packageId,
                             packageVersion.ToNormalizedString());
 
-                        await _storage.SaveAsync(packageReader, stream);
+                        await _storage.SavePackageStreamAsync(packageReader, stream);
                     }
                     catch (Exception e)
                     {
@@ -130,6 +131,7 @@ namespace BaGet.Core.Services
                 Version = nuspec.GetVersion(),
                 Authors = nuspec.GetAuthors(),
                 Description = nuspec.GetDescription(),
+                HasReadme = packageReader.HasReadme(),
                 Language = nuspec.GetLanguage() ?? string.Empty,
                 Listed = true,
                 MinClientVersion = nuspec.GetMinClientVersion()?.ToNormalizedString() ?? string.Empty,

@@ -34,6 +34,8 @@ namespace BaGet
         public const string PackageVersionsRouteName = "package-versions";
         public const string PackageDownloadRouteName = "package-download";
         public const string PackageDownloadManifestRouteName = "package-download-manifest";
+        public const string PackageDownloadReadmeRouteName = "package-download-readme";
+
 
         private const string CorsPolicy = "AllowAll";
 
@@ -221,6 +223,11 @@ namespace BaGet
                     PackageDownloadManifestRouteName,
                     "v3/package/{id}/{version}/{id2}.nuspec",
                     defaults: new { controller = "Package", action = "DownloadNuspec" });
+
+                routes.MapRoute(
+                    PackageDownloadReadmeRouteName,
+                    "v3/package/{id}/{version}/readme",
+                    defaults: new { controller = "Package", action = "DownloadReadme" });
             });
         }
     }

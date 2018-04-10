@@ -18,6 +18,7 @@ namespace BaGet.Core.Entities
         public string Authors { get; set; }
         public string Description { get; set; }
         public long Downloads { get; set; }
+        public bool HasReadme { get; set; }
         public string Language { get; set; }
         public bool Listed { get; set; }
         public string MinClientVersion { get; set; }

@@ -27,13 +27,7 @@ namespace BaGet.Azure
         {
             await GetPackageBlob(package).DeleteIfExistsAsync();
             await GetNuspecBlob(package).DeleteIfExistsAsync();
-        }
-
-        public Task<Stream> GetNuspecStreamAsync(PackageIdentity package)
-        {
-            var blob = GetPackageBlob(package);
-
-            return DownloadBlobAsync(blob);
+            await GetReadmeBlob(package).DeleteIfExistsAsync();
         }
 
         public Task<Stream> GetPackageStreamAsync(PackageIdentity package)
@@ -42,8 +36,26 @@ namespace BaGet.Azure
 
             return DownloadBlobAsync(blob);
         }
+        public Task<Stream> GetNuspecStreamAsync(PackageIdentity package)
+        {
+            var blob = GetNuspecBlob(package);
 
-        public async Task SaveAsync(PackageArchiveReader package, Stream packageStream)
+            return DownloadBlobAsync(blob);
+        }
+
+        public async Task<Stream> GetReadmeStreamAsync(PackageIdentity package)
+        {
+            var blob = GetReadmeBlob(package);
+
+            if (!await blob.ExistsAsync())
+            {
+                return Stream.Null;
+            }
+
+            return await DownloadBlobAsync(blob);
+        }
+
+        public async Task SavePackageStreamAsync(PackageArchiveReader package, Stream packageStream)
         {
             var identity = package.GetIdentity();
 
@@ -58,6 +70,14 @@ namespace BaGet.Azure
                 //    UploadBlobAsync(GetPackageBlob(identity), packageStream, PackageContentType),
                 //    UploadBlobAsync(GetNuspecBlob(identity), nuspecStream, TextContentType));
             }
+
+            using (var readmeStream = package.GetReadme())
+            {
+                if (readmeStream != Stream.Null)
+                {
+                    await UploadBlobAsync(GetReadmeBlob(identity), readmeStream, TextContentType);
+                }
+            }
         }
 
         private CloudBlockBlob GetPackageBlob(PackageIdentity package)
@@ -65,6 +85,10 @@ namespace BaGet.Azure
 
         private CloudBlockBlob GetNuspecBlob(PackageIdentity package)
             => _container.GetBlockBlobReference(package.NuspecPath());
+
+        private CloudBlockBlob GetReadmeBlob(PackageIdentity package)
+            => _container.GetBlockBlobReference(package.ReadmePath());
+
 
         private async Task UploadBlobAsync(CloudBlockBlob blob, Stream content, string contentType)
         {

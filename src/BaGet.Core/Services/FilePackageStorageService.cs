@@ -16,11 +16,12 @@ namespace BaGet.Core.Services
             _storePath = storePath ?? throw new ArgumentNullException(nameof(storePath));
         }
 
-        public async Task SaveAsync(PackageArchiveReader package, Stream packageStream)
+        public async Task SavePackageStreamAsync(PackageArchiveReader package, Stream packageStream)
         {
             var identity = package.GetIdentity();
             var packagePath = Path.Combine(_storePath, identity.PackagePath());
             var nuspecPath = Path.Combine(_storePath, identity.NuspecPath());
+            var readmePath = Path.Combine(_storePath, identity.ReadmePath());
 
             EnsurePathExists(identity);
 
@@ -37,23 +38,27 @@ namespace BaGet.Core.Services
             {
                 await nuspec.CopyToAsync(fileStream);
             }
+
+            using (var readme = package.GetReadme())
+            using (var fileStream = File.Open(readmePath, FileMode.CreateNew))
+            {
+                await readme.CopyToAsync(fileStream);
+            }
         }
 
         public Task<Stream> GetPackageStreamAsync(PackageIdentity package) => Task.FromResult(GetPackageStream(package));
         public Task<Stream> GetNuspecStreamAsync(PackageIdentity package) => Task.FromResult(GetNuspecStream(package));
+        public Task<Stream> GetReadmeStreamAsync(PackageIdentity package) => Task.FromResult(GetReadmeStream(package));
 
-        private Stream GetPackageStream(PackageIdentity package)
+        private Stream GetPackageStream(PackageIdentity package) => GetFileStream(package.PackagePath());
+        private Stream GetNuspecStream(PackageIdentity package) => GetFileStream(package.NuspecPath());
+        private Stream GetReadmeStream(PackageIdentity package) => GetFileStream(package.ReadmePath());
+
+        private Stream GetFileStream(string path)
         {
-            var path = Path.Combine(_storePath, package.PackagePath());
+            path = Path.Combine(_storePath, path);
 
             return File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-        }
-
-        private Stream GetNuspecStream(PackageIdentity package)
-        {
-            var path = Path.Combine(_storePath, package.NuspecPath());
-
-            return File.Open(path, FileMode.Open);
         }
 
         public Task DeleteAsync(PackageIdentity package)

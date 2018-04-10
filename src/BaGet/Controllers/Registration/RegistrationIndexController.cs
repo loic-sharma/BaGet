@@ -123,6 +123,7 @@ namespace BaGet.Controllers.Registration
                 Version = package.VersionString;
                 Authors = package.Authors;
                 Description = package.Description;
+                HasReadme = package.HasReadme;
                 IconUrl = package.IconUrlString;
                 Language = package.Language;
                 LicenseUrl = package.LicenseUrlString;
@@ -146,6 +147,7 @@ namespace BaGet.Controllers.Registration
             public string Version { get; }
             public string Authors { get; }
             public string Description { get; }
+            public bool HasReadme { get; }
             public string IconUrl { get; }
             public string Language { get; }
             public string LicenseUrl { get; }

@@ -9,8 +9,6 @@ using System.Threading;
 
 namespace BaGet.Services.Remote
 {
-    using NuGetLogger = NuGet.Common.ILogger;
-
     public class RemotePackageService : IPackageService
     {
         private readonly Uri _packageBaseAddress;

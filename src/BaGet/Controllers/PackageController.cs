@@ -70,5 +70,22 @@ namespace BaGet.Controllers
 
             return File(await _storage.GetNuspecStreamAsync(identity), "text/xml");
         }
+
+        public async Task<IActionResult> DownloadReadme(string id, string version)
+        {
+            if (!NuGetVersion.TryParse(version, out var nugetVersion))
+            {
+                return NotFound();
+            }
+
+            if (!await _packages.ExistsAsync(id, nugetVersion))
+            {
+                return NotFound();
+            }
+
+            var identity = new PackageIdentity(id, nugetVersion);
+
+            return File(await _storage.GetReadmeStreamAsync(identity), "text/markdown");
+        }
     }
 }

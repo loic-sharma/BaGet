@@ -30,6 +30,8 @@ namespace BaGet.Migrations.Sqlite
 
                     b.Property<long>("Downloads");
 
+                    b.Property<bool>("HasReadme");
+
                     b.Property<string>("IconUrlString")
                         .HasColumnName("IconUrl");
 
