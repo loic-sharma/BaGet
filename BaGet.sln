@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Azure", "src\BaGet.Az
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Tools.ImportDownloads", "src\BaGet.Tools.ImportDownloads\BaGet.Tools.ImportDownloads.csproj", "{8B7C1C8D-ED4D-4732-86A1-0A7DAD3045DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaGet.Tools.AzureSearchIndexer", "src\BaGet.Tools.AzureSearchIndexer\BaGet.Tools.AzureSearchIndexer.csproj", "{B232DAFE-5CE8-441F-ACC7-2BB54BCD094F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaGet.Tools.AzureSearchImporter", "src\BaGet.Tools.AzureSearchImporter\BaGet.Tools.AzureSearchImporter.csproj", "{B232DAFE-5CE8-441F-ACC7-2BB54BCD094F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

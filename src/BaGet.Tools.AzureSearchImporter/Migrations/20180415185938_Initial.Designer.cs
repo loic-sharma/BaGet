@@ -10,7 +10,7 @@ using System;
 namespace BaGet.Tools.AzureSearchImporter.Migrations
 {
     [DbContext(typeof(IndexerContext))]
-    [Migration("20180413063338_Initial")]
+    [Migration("20180415185938_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,6 +30,11 @@ namespace BaGet.Tools.AzureSearchImporter.Migrations
                         .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.HasKey("Key");
+
+                    b.HasIndex("Done");
+
+                    b.HasIndex("Value")
+                        .IsUnique();
 
                     b.ToTable("PackageIds");
                 });

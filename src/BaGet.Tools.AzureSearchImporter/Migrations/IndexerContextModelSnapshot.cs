@@ -30,6 +30,11 @@ namespace BaGet.Tools.AzureSearchImporter.Migrations
 
                     b.HasKey("Key");
 
+                    b.HasIndex("Done");
+
+                    b.HasIndex("Value")
+                        .IsUnique();
+
                     b.ToTable("PackageIds");
                 });
 #pragma warning restore 612, 618

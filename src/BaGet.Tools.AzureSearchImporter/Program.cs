@@ -3,10 +3,12 @@ using System.Threading.Tasks;
 using BaGet.Configuration;
 using BaGet.Extensions;
 using BaGet.Tools.AzureSearchImporter.Entities;
+using Microsoft.Azure.Search;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace BaGet.Tools.AzureSearchImporter
 {
@@ -30,7 +32,8 @@ namespace BaGet.Tools.AzureSearchImporter
                     .Migrate();
             }
 
-            await provider.GetRequiredService<Initializer>().InitializeAsync();
+            await provider.GetRequiredService<Initializer>()
+                .InitializeAsync();
         }
 
         private static IConfiguration GetConfiguration()
@@ -44,7 +47,11 @@ namespace BaGet.Tools.AzureSearchImporter
             var services = new ServiceCollection();
 
             services.Configure<BaGetOptions>(configuration);
-            services.AddLogging(logging => logging.AddConsole());
+            services.AddLogging(logging =>
+            {
+                logging.AddFilter(DbLoggerCategory.Database.Command.Name, LogLevel.Warning);
+                logging.AddConsole();
+            });
 
             services.AddBaGetContext();
             services.AddDbContext<IndexerContext>((provider, options) =>
@@ -53,6 +60,16 @@ namespace BaGet.Tools.AzureSearchImporter
             });
 
             services.AddTransient<Initializer>();
+
+            services.AddTransient(provider =>
+            {
+                var options = provider.GetRequiredService<IOptions<BaGetOptions>>();
+                var searchOptions = options.Value.Azure.Search;
+
+                var credentials = new SearchCredentials(searchOptions.AdminApiKey);
+
+                return new SearchServiceClient(searchOptions.AccountName, credentials);
+            });
 
             return services.BuildServiceProvider();
         }

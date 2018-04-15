@@ -18,6 +18,13 @@ namespace BaGet.Tools.AzureSearchImporter.Entities
             builder.Entity<PackageId>()
                 .Property(p => p.Value)
                 .HasColumnType("TEXT COLLATE NOCASE");
+
+            builder.Entity<PackageId>()
+                .HasIndex(p => p.Value)
+                .IsUnique();
+
+            builder.Entity<PackageId>()
+                .HasIndex(p => p.Done);
         }
     }
 }

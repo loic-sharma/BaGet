@@ -21,6 +21,17 @@ namespace BaGet.Tools.AzureSearchImporter.Migrations
                 {
                     table.PrimaryKey("PK_PackageIds", x => x.Key);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PackageIds_Done",
+                table: "PackageIds",
+                column: "Done");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PackageIds_Value",
+                table: "PackageIds",
+                column: "Value",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
