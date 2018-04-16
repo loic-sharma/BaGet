@@ -14,6 +14,7 @@ A lightweight [NuGet service](https://docs.microsoft.com/en-us/nuget/api/overvie
 
 * Supports Sqlite and SQL Server to store metadata
 * Supports local filesystem and Azure Blob Storage to store NuGet packages
+* Supports Azure Search
 * Supports read-through caching. For example, accessing `http://localhost:5000/v3/registration/newtonsoft.json/11.0.1.json`
 will index [Newtonsoft.Json](https://www.nuget.org/packages/Newtonsoft.Json/11.0.1) using [nuget.org](https://www.nuget.org/)
 * Can import download counts from [nuget.org](https://www.nuget.org)
