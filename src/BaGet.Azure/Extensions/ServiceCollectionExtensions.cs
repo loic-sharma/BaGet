@@ -14,7 +14,7 @@ namespace BaGet.Azure.Extensions
     {
         public static void ConfigureAzure(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<BlobPackageStorageService>(configuration.GetSection(nameof(BaGetOptions.Storage)));
+            services.Configure<BlobStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
             services.Configure<AzureSearchOptions>(configuration.GetSection(nameof(BaGetOptions.Search)));
         }
 
