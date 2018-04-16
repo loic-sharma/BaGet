@@ -38,7 +38,7 @@ namespace BaGet.Tools.AzureSearchImporter
 
             List<PackageId> batch;
 
-            do
+            while (true)
             {
                 _logger.LogInformation("Importing batch {BatchCount}...", batchCount);
 
@@ -48,6 +48,11 @@ namespace BaGet.Tools.AzureSearchImporter
                     .Skip(skip)
                     .Take(ImportBatchSize)
                     .ToListAsync();
+
+                if (batch.Count == 0)
+                {
+                    break;
+                }
 
                 await _indexer.IndexAsync(batch.Select(p => p.Value));
 
@@ -61,7 +66,6 @@ namespace BaGet.Tools.AzureSearchImporter
                 _logger.LogInformation("Imported batch {BatchCount}", batchCount);
                 batchCount++;
             }
-            while (batch.Count > 0);
 
             _logger.LogInformation("Finished importing");
         }
