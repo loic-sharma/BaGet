@@ -6,7 +6,7 @@ namespace BaGet.Azure.Search
 {
     // See: https://docs.microsoft.com/en-us/nuget/api/search-query-service-resource#search-for-packages
     [SerializePropertyNamesAsCamelCase]
-    public class PackageModel
+    public class PackageDocument
     {
         public const string IndexName = "packages";
 
@@ -25,7 +25,6 @@ namespace BaGet.Azure.Search
         public string IconUrl { get; set; }
         public string LicenseUrl { get; set; }
         public string ProjectUrl { get; set; }
-        public string Registration { get; set; }
 
         [IsSearchable]
         public string Summary { get; set; }

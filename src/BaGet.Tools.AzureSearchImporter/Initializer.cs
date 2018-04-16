@@ -40,7 +40,7 @@ namespace BaGet.Tools.AzureSearchImporter
 
         private async Task InitializeIndex()
         {
-            if (await _searchClient.Indexes.ExistsAsync(PackageModel.IndexName))
+            if (await _searchClient.Indexes.ExistsAsync(PackageDocument.IndexName))
             {
                 _logger.LogInformation("Search index already exists");
                 return;
@@ -50,8 +50,8 @@ namespace BaGet.Tools.AzureSearchImporter
 
             await _searchClient.Indexes.CreateAsync(new Index
             {
-                Name = PackageModel.IndexName,
-                Fields = FieldBuilder.BuildForType<PackageModel>()
+                Name = PackageDocument.IndexName,
+                Fields = FieldBuilder.BuildForType<PackageDocument>()
             });
 
             _logger.LogInformation("Created search index");

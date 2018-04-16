@@ -37,7 +37,7 @@ namespace BaGet.Core.Entities
 
         public string VersionString
         {
-            get => Version?.ToNormalizedString() ?? string.Empty;
+            get => Version?.ToNormalizedString().ToLowerInvariant() ?? string.Empty;
             set
             {
                 NuGetVersion.TryParse(value, out var version);

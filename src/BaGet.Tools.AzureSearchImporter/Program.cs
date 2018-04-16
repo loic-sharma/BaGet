@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using BaGet.Azure.Search;
 using BaGet.Configuration;
+using BaGet.Core.Services;
 using BaGet.Extensions;
 using BaGet.Tools.AzureSearchImporter.Entities;
 using Microsoft.Azure.Search;
@@ -34,6 +36,9 @@ namespace BaGet.Tools.AzureSearchImporter
 
             await provider.GetRequiredService<Initializer>()
                 .InitializeAsync();
+
+            await provider.GetRequiredService<Importer>()
+                .ImportAsync();
         }
 
         private static IConfiguration GetConfiguration()
@@ -59,8 +64,6 @@ namespace BaGet.Tools.AzureSearchImporter
                 options.UseSqlite(IndexerContextFactory.ConnectionString);
             });
 
-            services.AddTransient<Initializer>();
-
             services.AddTransient(provider =>
             {
                 var options = provider.GetRequiredService<IOptions<BaGetOptions>>();
@@ -70,6 +73,12 @@ namespace BaGet.Tools.AzureSearchImporter
 
                 return new SearchServiceClient(searchOptions.AccountName, credentials);
             });
+
+            services.AddTransient<IPackageService, PackageService>();
+            services.AddTransient<BatchIndexer>();
+
+            services.AddTransient<Initializer>();
+            services.AddTransient<Importer>();
 
             return services.BuildServiceProvider();
         }
