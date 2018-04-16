@@ -23,8 +23,19 @@ namespace BaGet.Tools.AzureSearchImporter
 
         private async static Task MainAsync(string[] args)
         {
+            // Parse the skip from arguments.
+            int skip = 0;
+
+            if (args.Length > 0)
+            {
+                int.TryParse(args[args.Length - 1], out skip);
+            }
+
+            // Prepare the job.
             var provider = GetServiceProvider(GetConfiguration());
             var scopeFactory = provider.GetRequiredService<IServiceScopeFactory>();
+            var initializer = provider.GetRequiredService<Initializer>();
+            var importer = provider.GetRequiredService<Importer>();
 
             using (var scope = scopeFactory.CreateScope())
             {
@@ -34,11 +45,9 @@ namespace BaGet.Tools.AzureSearchImporter
                     .Migrate();
             }
 
-            await provider.GetRequiredService<Initializer>()
-                .InitializeAsync();
-
-            await provider.GetRequiredService<Importer>()
-                .ImportAsync();
+            // Initialize the state and start importing packages to the search index.
+            await initializer.InitializeAsync();
+            await importer.ImportAsync(skip);
         }
 
         private static IConfiguration GetConfiguration()

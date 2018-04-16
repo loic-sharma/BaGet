@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Azure.Search;
@@ -24,20 +25,29 @@ namespace BaGet.Tools.AzureSearchImporter
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task ImportAsync()
+        public async Task ImportAsync(int skip = 0)
         {
-            _logger.LogInformation("Starting import...");
+            _logger.LogInformation("Starting import with skip {Skip}...", skip);
 
             var batchCount = 1;
-            var packageIds = await _context.PackageIds
+            var left = await _context.PackageIds
                 .Where(p => !p.Done)
-                .ToListAsync();
+                .CountAsync();
 
-            _logger.LogInformation("Found {PackageIds} package ids to import", packageIds.Count);
+            _logger.LogInformation("{PackageIdsLeft} package ids left to import", left);
 
-            foreach (var batch in packageIds.Batch(ImportBatchSize))
+            List<PackageId> batch;
+
+            do
             {
                 _logger.LogInformation("Importing batch {BatchCount}...", batchCount);
+
+                batch = await _context.PackageIds
+                    .Where(p => !p.Done)
+                    .OrderBy(p => p.Key)
+                    .Skip(skip)
+                    .Take(ImportBatchSize)
+                    .ToListAsync();
 
                 await _indexer.IndexAsync(batch.Select(p => p.Value));
 
@@ -51,8 +61,9 @@ namespace BaGet.Tools.AzureSearchImporter
                 _logger.LogInformation("Imported batch {BatchCount}", batchCount);
                 batchCount++;
             }
+            while (batch.Count > 0);
 
-            _logger.LogInformation("Finished import");
+            _logger.LogInformation("Finished importing");
         }
     }
 }
