@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
+using BaGet.Azure.Extensions;
 using BaGet.Azure.Search;
-using BaGet.Configuration;
+using BaGet.Core.Configuration;
 using BaGet.Core.Services;
 using BaGet.Extensions;
 using BaGet.Tools.AzureSearchImporter.Entities;
-using Microsoft.Azure.Search;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace BaGet.Tools.AzureSearchImporter
 {
@@ -61,6 +60,8 @@ namespace BaGet.Tools.AzureSearchImporter
             var services = new ServiceCollection();
 
             services.Configure<BaGetOptions>(configuration);
+            services.ConfigureAzure(configuration);
+
             services.AddLogging(logging =>
             {
                 logging.AddFilter(DbLoggerCategory.Database.Command.Name, LogLevel.Warning);
@@ -73,18 +74,9 @@ namespace BaGet.Tools.AzureSearchImporter
                 options.UseSqlite(IndexerContextFactory.ConnectionString);
             });
 
-            services.AddTransient(provider =>
-            {
-                var options = provider.GetRequiredService<IOptions<BaGetOptions>>();
-                var searchOptions = options.Value.Azure.Search;
-
-                var credentials = new SearchCredentials(searchOptions.AdminApiKey);
-
-                return new SearchServiceClient(searchOptions.AccountName, credentials);
-            });
-
             services.AddTransient<IPackageService, PackageService>();
             services.AddTransient<BatchIndexer>();
+            services.AddAzureSearch();
 
             services.AddTransient<Initializer>();
             services.AddTransient<Importer>();

@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using BaGet.Configuration;
+using BaGet.Core.Configuration;
 using BaGet.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

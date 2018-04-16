@@ -1,7 +1,6 @@
 ﻿using System;
-using BaGet.Azure.Configuration;
 
-namespace BaGet.Configuration
+namespace BaGet.Core.Configuration
 {
     public class BaGetOptions
     {
@@ -10,6 +9,6 @@ namespace BaGet.Configuration
 
         public DatabaseOptions Database { get; set; }
         public StorageOptions Storage { get; set; }
-        public AzureOptions Azure { get; set; }
+        public SearchOptions Search { get; set; }
     }
 }

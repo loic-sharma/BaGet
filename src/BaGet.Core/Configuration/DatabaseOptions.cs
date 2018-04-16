@@ -1,4 +1,4 @@
-﻿namespace BaGet.Configuration
+﻿namespace BaGet.Core.Configuration
 {
     public class DatabaseOptions
     {

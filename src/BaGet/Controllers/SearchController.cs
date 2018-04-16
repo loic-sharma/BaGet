@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BaGet.Core;
 using BaGet.Core.Entities;
+using BaGet.Core.Services;
 using BaGet.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,62 +13,27 @@ namespace BaGet.Controllers
 {
     public class SearchController : Controller
     {
-        private readonly IContext _context;
+        private readonly ISearchService _searchService;
 
-        public SearchController(IContext context)
+        public SearchController(ISearchService searchService)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _searchService = searchService ?? throw new ArgumentNullException(nameof(searchService));
         }
 
         public async Task<object> Get([FromQuery(Name = "q")] string query = null)
         {
-            IQueryable<Package> search = _context.Packages;
-
-            if (!string.IsNullOrEmpty(query))
-            {
-                query = query.ToLower();
-                search = search.Where(p => p.Id.ToLower().Contains(query));
-            }
-
-            var flatResults = await search
-                .OrderByDescending(p => p.Downloads)
-                .Take(20)
-                .ToListAsync();
+            var results = await _searchService.SearchAsync(query);
 
             return new
             {
-                TotalHits = flatResults.Count,
-                Data = flatResults
-                    .GroupBy(p => p.Id)
-                    .Select(g => new SearchResult(
-                        id: g.Key,
-                        latest: g.OrderByDescending(p => p.Version).First(),
-                        versions: g.Select(p => new SearchResultVersion(
-                            registrationUrl: Url.PackageRegistration(p.Id, p.Version),
-                            version: p.VersionString,
-                            downloads: p.Downloads)).ToList(),
-                        registrationIndex: Url.PackageRegistration(g.Key),
-                        totalDownloads: g.Sum(p => p.Downloads)))
+                TotalHits = results.Count,
+                Data = results.Select(p => new SearchResultModel(p, Url))
             };
         }
 
         public async Task<IActionResult> Autocomplete([FromQuery(Name = "q")] string query = null)
         {
-            IQueryable<Package> search = _context.Packages;
-
-            if (!string.IsNullOrEmpty(query))
-            {
-                query = query.ToLower();
-                search = search.Where(p => p.Id.ToLower().Contains(query));
-            }
-
-            // TODO: Order by downloads
-            var results = await search.Where(p => p.Listed)
-                .OrderByDescending(p => p.Published)
-                .Take(20)
-                .Select(p => p.Id)
-                .Distinct()
-                .ToListAsync();
+            var results = await _searchService.AutocompleteAsync(query);
 
             return Json(new
             {
@@ -77,52 +42,44 @@ namespace BaGet.Controllers
             });
         }
 
-        private class SearchResult
+        private class SearchResultModel
         {
-            public SearchResult(
-                string id,
-                Package latest,
-                IReadOnlyList<SearchResultVersion> versions,
-                string registrationIndex,
-                long totalDownloads)
+            private readonly SearchResult _result;
+            private readonly IUrlHelper _url;
+
+            public SearchResultModel(SearchResult result, IUrlHelper url)
             {
-                PackageId = id;
-                Version = latest.VersionString;
-                Description = latest.Description;
-                Versions = versions;
-                Authors = latest.Authors;
-                IconUrl = latest.IconUrlString;
-                LicenseUrl = latest.LicenseUrlString;
-                ProjectUrl = latest.ProjectUrlString;
-                Registration = registrationIndex;
-                Summary = latest.Summary;
-                Tags = latest.Tags;
-                Title = latest.Title;
-                TotalDownloads = totalDownloads;
+                _result = result ?? throw new ArgumentNullException(nameof(result));
+                _url = url ?? throw new ArgumentNullException(nameof(url));
+
+                var versions = result.Versions.Select(
+                    v => new SearchResultVersionModel(
+                        url.PackageRegistration(result.Id, v.Version),
+                        v.Version.ToNormalizedString(),
+                        v.Downloads));
+
+                Versions = versions.ToList().AsReadOnly();
             }
 
-            [JsonProperty(PropertyName = "id")]
-            public string PackageId { get; }
+            public string Id => _result.Id;
+            public string Version => _result.Version.ToNormalizedString();
+            public string Description => _result.Description;
+            public string Authors => _result.Authors;
+            public string IconUrl => _result.IconUrl;
+            public string LicenseUrl => _result.LicenseUrl;
+            public string ProjectUrl => _result.ProjectUrl;
+            public string Registration => _url.PackageRegistration(_result.Id);
+            public string Summary => _result.Summary;
+            public string[] Tags => _result.Tags;
+            public string Title => _result.Title;
+            public long TotalDownloads => _result.TotalDownloads;
 
-            public string Version { get; }
-
-            public string Description { get; }
-            public string Authors { get; }
-            public string IconUrl { get; }
-            public string LicenseUrl { get; }
-            public string ProjectUrl { get; }
-            public string Registration { get; }
-            public string Summary { get; }
-            public string[] Tags { get; }
-            public string Title { get; }
-            public long TotalDownloads { get; }
-
-            public IReadOnlyList<SearchResultVersion> Versions { get; }
+            public IReadOnlyList<SearchResultVersionModel> Versions { get; }
         }
 
-        private class SearchResultVersion
+        private class SearchResultVersionModel
         {
-            public SearchResultVersion(string registrationUrl, string version, long downloads)
+            public SearchResultVersionModel(string registrationUrl, string version, long downloads)
             {
                 if (string.IsNullOrEmpty(registrationUrl)) throw new ArgumentNullException(nameof(registrationUrl));
                 if (string.IsNullOrEmpty(version)) throw new ArgumentNullException(nameof(version));

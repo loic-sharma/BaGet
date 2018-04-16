@@ -8,7 +8,7 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
 
-namespace BaGet.Azure
+namespace BaGet.Azure.Configuration
 {
     // See: https://github.com/NuGet/NuGetGallery/blob/master/src/NuGetGallery.Core/Services/CloudBlobCoreFileStorageService.cs
     public class BlobPackageStorageService : IPackageStorageService

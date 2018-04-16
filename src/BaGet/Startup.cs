@@ -2,9 +2,10 @@
 using System.IO;
 using System.Net;
 using System.Net.Http;
-using BaGet.Azure;
+using BaGet.Azure.Configuration;
 using BaGet.Azure.Extensions;
-using BaGet.Configuration;
+using BaGet.Azure.Search;
+using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
 using BaGet.Core.Services;
 using BaGet.Extensions;
@@ -50,7 +51,10 @@ namespace BaGet
         {
             services.AddMvc();
             services.AddBaGetContext();
+
             services.Configure<BaGetOptions>(Configuration);
+            services.Configure<FileSystemStorageOptions>(Configuration.GetSection(nameof(BaGetOptions.Storage)));
+            services.ConfigureAzure(Configuration);
 
             services.AddCors(options =>
             {
@@ -59,8 +63,6 @@ namespace BaGet
                         .AllowAnyMethod()
                         .AllowAnyHeader());
             });
-
-            services.AddSingleton(provider => provider.GetRequiredService<IOptions<BaGetOptions>>().Value.Azure);
 
             services.AddSingleton(provider =>
             {
@@ -102,6 +104,12 @@ namespace BaGet
                     provider.GetRequiredService<ILogger<RemotePackageService>>());
             });
 
+            ConfigureStorageProviders(services);
+            ConfigureSearchProviders(services);
+        }
+
+        private void ConfigureStorageProviders(IServiceCollection services)
+        {
             services.AddTransient<IPackageStorageService>(provider =>
             {
                 var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
@@ -122,10 +130,10 @@ namespace BaGet
 
             services.AddTransient(provider =>
             {
-                var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
-                var path = string.IsNullOrEmpty(options.Storage.Path)
+                var options = provider.GetRequiredService<IOptions<FileSystemStorageOptions>>().Value;
+                var path = string.IsNullOrEmpty(options.Path)
                     ? Path.Combine(Directory.GetCurrentDirectory(), "Packages")
-                    : options.Storage.Path;
+                    : options.Path;
 
                 // Ensure the package storage directory exists
                 Directory.CreateDirectory(path);
@@ -134,6 +142,30 @@ namespace BaGet
             });
 
             services.AddBlobPackageStorageService();
+        }
+
+        private void ConfigureSearchProviders(IServiceCollection services)
+        {
+            services.AddTransient<ISearchService>(provider =>
+            {
+                var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
+
+                switch (options.Search.Type)
+                {
+                    case SearchType.Database:
+                        return provider.GetRequiredService<DatabaseSearchService>();
+
+                    case SearchType.Azure:
+                        return provider.GetRequiredService<AzureSearchService>();
+
+                    default:
+                        throw new InvalidOperationException(
+                            $"Unsupported search service: {options.Search.Type}");
+                }
+            });
+
+            services.AddTransient<DatabaseSearchService>();
+            services.AddAzureSearch();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,5 +1,5 @@
 ﻿using System;
-using BaGet.Configuration;
+using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
 using BaGet.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace BaGet.Extensions
 {
+    // TODO: Considering moving this to BaGet.Core
     public static class ServiceCollectionExtensions
     {
         public static void AddBaGetContext(this IServiceCollection services)

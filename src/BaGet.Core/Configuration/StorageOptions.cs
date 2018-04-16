@@ -1,10 +1,8 @@
-﻿namespace BaGet.Configuration
+﻿namespace BaGet.Core.Configuration
 {
     public class StorageOptions
     {
         public StorageType Type { get; set; }
-
-        public string Path { get; set; }
     }
 
     public enum StorageType
