@@ -8,6 +8,8 @@ using NuGet.Versioning;
 
 namespace BaGet.Azure.Search
 {
+    using SearchParameters = Microsoft.Azure.Search.Models.SearchParameters;
+
     public class AzureSearchService : ISearchService
     {
         private readonly SearchIndexClient _searchClient;
@@ -19,7 +21,14 @@ namespace BaGet.Azure.Search
 
         public async Task<IReadOnlyList<SearchResult>> SearchAsync(string query, int skip = 0, int take = 20)
         {
-            var search = await _searchClient.Documents.SearchAsync<PackageDocument>(query);
+            query = query.TrimEnd().TrimEnd('*') + '*';
+
+            var search = await _searchClient.Documents.SearchAsync<PackageDocument>(query, new SearchParameters
+            {
+                Skip = skip,
+                Top = take
+            });
+
             var results = new List<SearchResult>();
 
             foreach (var result in search.Results)

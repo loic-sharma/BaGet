@@ -22,6 +22,8 @@ namespace BaGet.Controllers
 
         public async Task<object> Get([FromQuery(Name = "q")] string query = null)
         {
+            query = query ?? string.Empty;
+
             var results = await _searchService.SearchAsync(query);
 
             return new
