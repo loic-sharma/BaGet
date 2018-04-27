@@ -22,6 +22,8 @@ interface SearchResultsState {
 
 export default class Search extends React.Component<SearchResultsProps, SearchResultsState> {
 
+  readonly defaultIconUrl: string = 'https://www.nuget.org/Content/gallery/img/default-package-icon-256x256.png';
+
   constructor(props: SearchResultsProps) {
     super(props);
 
@@ -42,7 +44,7 @@ export default class Search extends React.Component<SearchResultsProps, SearchRe
         {this.state.items.map(value => (
           <div key={value.id} className="row search-result">
             <div className="col-sm-1 hidden-xs hidden-sm">
-              <img src={value.iconUrl} className="package-icon img-responsive" />
+              <img src={value.iconUrl} className="package-icon img-responsive" onError={(e) => e.currentTarget.src = this.defaultIconUrl} />
             </div>
             <div className="col-sm-11">
               <div>
@@ -50,7 +52,7 @@ export default class Search extends React.Component<SearchResultsProps, SearchRe
                 <span>by: {value.authors}</span>
               </div>
               <div className="info">
-                <span>{value.totalDownloads} total downloads</span>
+                <span>{value.totalDownloads.toLocaleString()} total downloads</span>
                 <span>Latest version: {value.latestVersion}</span>
                 <span>{value.tags.join(' ')}</span>
               </div>
@@ -75,6 +77,12 @@ export default class Search extends React.Component<SearchResultsProps, SearchRe
       let items: Package[] = [];
 
       for (let entry of results["data"]) {
+        let iconUrl = entry["iconUrl"];
+
+        if (!iconUrl) {
+          iconUrl = this.defaultIconUrl;
+        }
+
         items.push({
           id: entry["id"],
           authors: entry["authors"],
@@ -82,7 +90,7 @@ export default class Search extends React.Component<SearchResultsProps, SearchRe
           latestVersion: entry["version"],
           tags: entry["tags"],
           description: entry["description"],
-          iconUrl: entry["iconUrl"],
+          iconUrl: iconUrl,
         });
       }
 
