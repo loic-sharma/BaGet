@@ -37,7 +37,6 @@ namespace BaGet
         public const string PackageDownloadManifestRouteName = "package-download-manifest";
         public const string PackageDownloadReadmeRouteName = "package-download-readme";
 
-
         private const string CorsPolicy = "AllowAll";
 
         public Startup(IConfiguration configuration)
@@ -76,6 +75,13 @@ namespace BaGet
                 client.Timeout = TimeSpan.FromSeconds(options.PackageDownloadTimeoutSeconds);
 
                 return client;
+            });
+
+            services.AddSingleton<IAuthenticationService, ApiKeyAuthenticationService>(provider =>
+            {
+                var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
+
+                return new ApiKeyAuthenticationService(options.ApiKeyHash);
             });
 
             services.AddTransient<PackageService>();

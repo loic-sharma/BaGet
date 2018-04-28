@@ -10,15 +10,20 @@ namespace BaGet.Controllers
 {
     public class PackagePublishController : Controller
     {
+        public const string ApiKeyHeader = "X-NuGet-ApiKey";
+
+        private readonly IAuthenticationService _authentication;
         private readonly IIndexingService _indexer;
         private readonly IPackageService _packages;
         private readonly ILogger<PackagePublishController> _logger;
 
         public PackagePublishController(
+            IAuthenticationService authentication,
             IIndexingService indexer,
             IPackageService packages,
             ILogger<PackagePublishController> logger)
         {
+            _authentication = authentication ?? throw new ArgumentNullException(nameof(authentication));
             _indexer = indexer ?? throw new ArgumentNullException(nameof(indexer));
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -30,6 +35,12 @@ namespace BaGet.Controllers
             if (package == null)
             {
                 HttpContext.Response.StatusCode = 400;
+                return;
+            }
+
+            if (!await _authentication.AuthenticateAsync(ApiKey))
+            {
+                HttpContext.Response.StatusCode = 401;
                 return;
             }
 
@@ -70,6 +81,11 @@ namespace BaGet.Controllers
                 return NotFound();
             }
 
+            if (!await _authentication.AuthenticateAsync(ApiKey))
+            {
+                return Unauthorized();
+            }
+
             if (await _packages.UnlistPackageAsync(id, nugetVersion))
             {
                 return NoContent();
@@ -87,6 +103,11 @@ namespace BaGet.Controllers
                 return NotFound();
             }
 
+            if (!await _authentication.AuthenticateAsync(ApiKey))
+            {
+                return Unauthorized();
+            }
+
             if (await _packages.RelistPackageAsync(id, nugetVersion))
             {
                 return Ok();
@@ -96,5 +117,7 @@ namespace BaGet.Controllers
                 return NotFound();
             }
         }
+
+        private string ApiKey => Request.Headers[ApiKeyHeader];
     }
 }
