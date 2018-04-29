@@ -7,7 +7,6 @@ using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
 using BaGet.Core.Services;
 using BaGet.Extensions;
-using BaGet.Services.Mirror;
 using BaGet.Services.Mirror.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

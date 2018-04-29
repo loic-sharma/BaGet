@@ -14,10 +14,6 @@ namespace BaGet.Services.Mirror.Extensions
         /// <summary>
         /// Add the services that mirror an upstream package source.
         /// </summary>
-        /// <typeparam name="TPackageService">
-        /// The local package service. It will be queried first to see if the package exists locally
-        /// before falling back to the upstream package source.
-        /// </typeparam>
         /// <param name="services">The defined services.</param>
         public static void AddMirrorServices(this IServiceCollection services)
         {
