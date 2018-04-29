@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Azure.Search;
-using BaGet.Core.Services;
 using BaGet.Tools.AzureSearchImporter.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

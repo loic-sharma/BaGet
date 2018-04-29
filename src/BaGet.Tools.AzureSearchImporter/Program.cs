@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using BaGet.Azure.Extensions;
-using BaGet.Azure.Search;
 using BaGet.Core.Configuration;
 using BaGet.Core.Services;
 using BaGet.Extensions;

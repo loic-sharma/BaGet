@@ -7,7 +7,6 @@ using BaGet.Core.Services;
 using BaGet.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using NuGet.Versioning;
 
 namespace BaGet.Controllers.Registration
 {
