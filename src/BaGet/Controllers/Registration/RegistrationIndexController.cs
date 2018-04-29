@@ -121,7 +121,7 @@ namespace BaGet.Controllers.Registration
 
                 PackageId = package.Id;
                 Version = package.VersionString;
-                Authors = package.Authors;
+                Authors = string.Join(", ", package.Authors);
                 Description = package.Description;
                 HasReadme = package.HasReadme;
                 IconUrl = package.IconUrlString;

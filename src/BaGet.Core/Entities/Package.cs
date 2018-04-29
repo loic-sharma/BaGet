@@ -14,8 +14,7 @@ namespace BaGet.Core.Entities
         public string Id { get; set; }
         public NuGetVersion Version { get; set; }
 
-        // TODO: This should be string[]
-        public string Authors { get; set; }
+        public string[] Authors { get; set; }
         public string Description { get; set; }
         public long Downloads { get; set; }
         public bool HasReadme { get; set; }
@@ -44,6 +43,12 @@ namespace BaGet.Core.Entities
 
                 Version = version;
             }
+        }
+
+        public string AuthorsString
+        {
+            get => JsonConvert.SerializeObject(Authors);
+            set => Authors = (!string.IsNullOrEmpty(value)) ? JsonConvert.DeserializeObject<string[]>(value) : new string[0];
         }
 
         public string IconUrlString

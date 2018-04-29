@@ -41,6 +41,10 @@ namespace BaGet.Entities
                 .HasColumnName("Version");
 
             builder.Entity<Package>()
+                .Property(p => p.AuthorsString)
+                .HasColumnName("Authors");
+
+            builder.Entity<Package>()
                 .HasIndex(p => new { p.Id, p.VersionString })
                 .IsUnique();
 
@@ -62,6 +66,7 @@ namespace BaGet.Entities
 
             builder.Entity<Package>()
                 .Ignore(p => p.Version)
+                .Ignore(p => p.Authors)
                 .Ignore(p => p.IconUrl)
                 .Ignore(p => p.LicenseUrl)
                 .Ignore(p => p.ProjectUrl)

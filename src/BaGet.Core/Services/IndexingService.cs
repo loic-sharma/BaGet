@@ -138,7 +138,7 @@ namespace BaGet.Core.Services
             {
                 Id = nuspec.GetId(),
                 Version = nuspec.GetVersion(),
-                Authors = nuspec.GetAuthors(),
+                Authors = ParseAuthors(nuspec.GetAuthors()),
                 Description = nuspec.GetDescription(),
                 HasReadme = packageReader.HasReadme(),
                 Language = nuspec.GetLanguage() ?? string.Empty,
@@ -176,11 +176,18 @@ namespace BaGet.Core.Services
             return new Uri(uriString);
         }
 
+        private string[] ParseAuthors(string authors)
+        {
+            if (string.IsNullOrEmpty(authors)) return new string[0];
+
+            return authors.Split(new[] { ',', ';', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
         private string[] ParseTags(string tags)
         {
             if (string.IsNullOrEmpty(tags)) return new string[0];
 
-            return tags.Split(',', ';', '\t', ' ');
+            return tags.Split(new[] { ',', ';', ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
         }
     }
 }

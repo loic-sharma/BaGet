@@ -83,7 +83,7 @@ namespace BaGet.Azure.Search
             result.Id = latest.Id;
             result.Version = latest.VersionString;
             result.Description = latest.Description;
-            result.Authors = new[] { latest.Authors }; // TODO
+            result.Authors = latest.Authors;
             result.IconUrl = latest.IconUrlString;
             result.LicenseUrl = latest.LicenseUrlString;
             result.ProjectUrl = latest.ProjectUrlString;
