@@ -1,37 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.Entities;
 using BaGet.Core.Services;
 using Microsoft.Extensions.Logging;
 using NuGet.Versioning;
-using System.Threading;
 
 namespace BaGet.Services.Mirror
 {
-    /// <summary>
-    /// A package service that falls back to an upstream package source for
-    /// unknown packages. Packages found on the upstream source will be indexed.
-    /// </summary>
-    /// <typeparam name="TPackageService">
-    /// The local package service used to store package metadata that will be wrapped
-    /// by <see cref="MirrorIndexingService{TPackageService}"/>.
-    /// </typeparam>
-    public class MirrorPackageService<TPackageService> : IPackageService
-        where TPackageService : class, IPackageService
+    public class MirrorService : IMirrorService
     {
         private readonly Uri _packageBaseAddress;
-        private readonly TPackageService _localPackages;
+        private readonly IPackageService _localPackages;
         private readonly IPackageDownloader _downloader;
         private readonly IIndexingService _indexer;
-        private readonly ILogger<MirrorPackageService<TPackageService>> _logger;
+        private readonly ILogger<MirrorService> _logger;
 
-        public MirrorPackageService(
+        public MirrorService(
             Uri packageBaseAddress,
-            TPackageService localPackages,
+            IPackageService localPackages,
             IPackageDownloader downloader,
             IIndexingService indexer,
-            ILogger<MirrorPackageService<TPackageService>> logger)
+            ILogger<MirrorService> logger)
         {
             _packageBaseAddress = packageBaseAddress ?? throw new ArgumentNullException(nameof(packageBaseAddress));
             _localPackages = localPackages ?? throw new ArgumentNullException(nameof(localPackages));
@@ -40,55 +29,14 @@ namespace BaGet.Services.Mirror
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public Task<PackageAddResult> AddAsync(Package package) => _localPackages.AddAsync(package);
-        public Task<IReadOnlyList<Package>> FindAsync(string id) => _localPackages.FindAsync(id);
-        public Task AddDownloadAsync(string id, NuGetVersion version) => _localPackages.AddDownloadAsync(id, version);
-
-        public async Task<bool> ExistsAsync(string id, NuGetVersion version)
+        public async Task MirrorAsync(string id, NuGetVersion version)
         {
             if (await _localPackages.ExistsAsync(id, version))
             {
-                return true;
+                return;
             }
 
-            return await TryIndexFromSourceAsync(id, version);
-        }
-
-        public async Task<Package> FindAsync(string id, NuGetVersion version)
-        {
-            var package = await _localPackages.FindAsync(id, version);
-
-            if (package != null)
-            {
-                return package;
-            }
-
-            if (!await TryIndexFromSourceAsync(id, version))
-            {
-                return null;
-            }
-
-            return await _localPackages.FindAsync(id, version);
-        }
-
-        public async Task<bool> UnlistPackageAsync(string id, NuGetVersion version)
-        {
-            if (!await ExistsAsync(id, version))
-            {
-                return false;
-            }
-
-            return await _localPackages.UnlistPackageAsync(id, version);
-        }
-
-        public async Task<bool> RelistPackageAsync(string id, NuGetVersion version)
-        {
-            if (!await ExistsAsync(id, version))
-            {
-                return false;
-            }
-
-            return await _localPackages.RelistPackageAsync(id, version);
+            await TryIndexFromSourceAsync(id, version);
         }
 
         private async Task<bool> TryIndexFromSourceAsync(string id, NuGetVersion version)

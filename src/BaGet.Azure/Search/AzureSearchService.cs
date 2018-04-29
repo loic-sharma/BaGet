@@ -8,16 +8,21 @@ using NuGet.Versioning;
 
 namespace BaGet.Azure.Search
 {
+    using BaGet.Core.Entities;
     using SearchParameters = Microsoft.Azure.Search.Models.SearchParameters;
 
     public class AzureSearchService : ISearchService
     {
+        private readonly BatchIndexer _indexer;
         private readonly SearchIndexClient _searchClient;
 
-        public AzureSearchService(SearchIndexClient searchClient)
+        public AzureSearchService(BatchIndexer indexer, SearchIndexClient searchClient)
         {
+            _indexer = indexer ?? throw new ArgumentNullException(nameof(indexer));
             _searchClient = searchClient ?? throw new ArgumentNullException(nameof(searchClient));
         }
+
+        public Task IndexAsync(Package package) => _indexer.IndexAsync(package.Id);
 
         public async Task<IReadOnlyList<SearchResult>> SearchAsync(string query, int skip = 0, int take = 20)
         {

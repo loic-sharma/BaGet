@@ -75,7 +75,6 @@ namespace BaGet.Tools.AzureSearchImporter
             });
 
             services.AddTransient<IPackageService, PackageService>();
-            services.AddTransient<BatchIndexer>();
             services.AddAzureSearch();
 
             services.AddTransient<Initializer>();

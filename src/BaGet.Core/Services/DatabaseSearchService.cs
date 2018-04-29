@@ -16,6 +16,8 @@ namespace BaGet.Core.Services
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
+        public Task IndexAsync(Package package) => Task.CompletedTask;
+
         public async Task<IReadOnlyList<SearchResult>> SearchAsync(string query, int skip = 0, int take = 20)
         {
             IQueryable<Package> search = _context.Packages;

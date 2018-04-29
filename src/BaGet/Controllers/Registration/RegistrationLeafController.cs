@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using BaGet.Core.Services;
 using BaGet.Extensions;
+using BaGet.Services.Mirror;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using NuGet.Versioning;
@@ -13,10 +14,12 @@ namespace BaGet.Controllers.Registration
     /// </summary>
     public class RegistrationLeafController : Controller
     {
+        private readonly IMirrorService _mirror;
         private readonly IPackageService _packages;
 
-        public RegistrationLeafController(IPackageService packages)
+        public RegistrationLeafController(IMirrorService mirror, IPackageService packages)
         {
+            _mirror = mirror ?? throw new ArgumentNullException(nameof(mirror));
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));
         }
 
@@ -28,6 +31,9 @@ namespace BaGet.Controllers.Registration
             {
                 return NotFound();
             }
+
+            // Allow read-through caching to happen if it is confiured.
+            await _mirror.MirrorAsync(id, nugetVersion);
 
             var package = await _packages.FindAsync(id, nugetVersion);
 

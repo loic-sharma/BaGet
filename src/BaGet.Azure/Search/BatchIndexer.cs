@@ -31,7 +31,7 @@ namespace BaGet.Azure.Search
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task IndexAsync(IEnumerable<string> packageIds)
+        public async Task IndexAsync(params string[] packageIds)
         {
             if (packageIds == null) throw new ArgumentNullException(nameof(packageIds));
 
@@ -91,6 +91,7 @@ namespace BaGet.Azure.Search
             result.Tags = latest.Tags;
             result.Title = latest.Title;
             result.TotalDownloads = versions.Sum(p => p.Downloads);
+            result.DownloadsMagnitude = result.TotalDownloads.ToString().Length;
             result.Versions = versions.Select(p => p.VersionString).ToArray();
             result.VersionDownloads = versions.Select(p => p.Downloads.ToString()).ToArray();
 

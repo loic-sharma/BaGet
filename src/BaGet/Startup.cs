@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Net;
-using System.Net.Http;
 using BaGet.Azure.Configuration;
 using BaGet.Azure.Extensions;
 using BaGet.Azure.Search;
@@ -18,7 +16,6 @@ using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace BaGet
@@ -71,33 +68,9 @@ namespace BaGet
                 return new ApiKeyAuthenticationService(options.ApiKeyHash);
             });
 
-            services.AddTransient<PackageService>();
-            services.AddTransient<IndexingService>();
-            services.AddMirrorServices<PackageService>();
-
-            services.AddTransient<IPackageService>(provider =>
-            {
-                var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
-
-                if (options.Mirror.EnableReadThroughCaching)
-                {
-                    return provider.GetRequiredService<MirrorPackageService<PackageService>>();
-                }
-
-                return provider.GetRequiredService<PackageService>();
-            });
-
-            services.AddTransient<IIndexingService>(provider =>
-            {
-                var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
-
-                if (options.Mirror.EnableReadThroughCaching)
-                {
-                    return provider.GetRequiredService<MirrorIndexingService<PackageService>>();
-                }
-
-                return provider.GetRequiredService<IndexingService>();
-            });
+            services.AddTransient<IPackageService, PackageService>();
+            services.AddTransient<IIndexingService, IndexingService>();
+            services.AddMirrorServices();
 
             ConfigureStorageProviders(services);
             ConfigureSearchProviders(services);

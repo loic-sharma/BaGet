@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
 using BaGet.Core.Extensions;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NuGet.Packaging;
 
@@ -17,15 +16,18 @@ namespace BaGet.Core.Services
     {
         private readonly IPackageService _packages;
         private readonly IPackageStorageService _storage;
+        private readonly ISearchService _search;
         private readonly ILogger<IndexingService> _logger;
 
         public IndexingService(
             IPackageService packages,
             IPackageStorageService storage,
+            ISearchService search,
             ILogger<IndexingService> logger)
         {
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
+            _search = search ?? throw new ArgumentNullException(nameof(search));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -100,7 +102,14 @@ namespace BaGet.Core.Services
             {
                 case PackageAddResult.Success:
                     _logger.LogInformation(
-                        "Successfully persisted package {Id} {Version} metadata to database",
+                        "Successfully persisted package {Id} {Version} metadata to database. Indexing in search...",
+                        package.Id,
+                        package.VersionString);
+
+                    await _search.IndexAsync(package);
+
+                    _logger.LogInformation(
+                        "Successfully indexed package {Id} {Version} in search",
                         package.Id,
                         package.VersionString);
 

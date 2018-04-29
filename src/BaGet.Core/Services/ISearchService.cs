@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BaGet.Core.Entities;
 using NuGet.Versioning;
 
 namespace BaGet.Core.Services
 {
     public interface ISearchService
     {
+        Task IndexAsync(Package package);
+
         Task<IReadOnlyList<SearchResult>> SearchAsync(string query, int skip = 0, int take = 20);
 
         Task<IReadOnlyList<string>> AutocompleteAsync(string query, int skip = 0, int take = 20);

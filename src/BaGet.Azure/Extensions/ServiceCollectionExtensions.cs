@@ -1,6 +1,7 @@
 ﻿using BaGet.Azure.Configuration;
 using BaGet.Azure.Search;
 using BaGet.Core.Configuration;
+using BaGet.Core.Services;
 using Microsoft.Azure.Search;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,6 +46,9 @@ namespace BaGet.Azure.Extensions
 
         public static void AddAzureSearch(this IServiceCollection services)
         {
+            services.AddTransient<BatchIndexer>();
+            services.AddTransient<AzureSearchService>();
+
             services.AddSingleton(provider =>
             {
                 var options = provider.GetRequiredService<IOptions<AzureSearchOptions>>().Value;
@@ -61,7 +65,6 @@ namespace BaGet.Azure.Extensions
                 return new SearchIndexClient(options.AccountName, PackageDocument.IndexName, credentials);
             });
 
-            services.AddSingleton<AzureSearchService>();
         }
     }
 }

@@ -38,6 +38,9 @@ namespace BaGet.Azure.Search
         [IsFilterable, IsSortable]
         public long TotalDownloads { get; set; }
 
+        [IsFilterable, IsSortable]
+        public int DownloadsMagnitude { get; set; }
+
         public string[] Versions { get; set;  }
         public string[] VersionDownloads { get; set; }
     }

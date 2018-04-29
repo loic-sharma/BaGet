@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Azure.Search;
+using BaGet.Core.Services;
 using BaGet.Tools.AzureSearchImporter.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -36,13 +37,11 @@ namespace BaGet.Tools.AzureSearchImporter
 
             _logger.LogInformation("{PackageIdsLeft} package ids left to import", left);
 
-            List<PackageId> batch;
-
             while (true)
             {
                 _logger.LogInformation("Importing batch {BatchCount}...", batchCount);
 
-                batch = await _context.PackageIds
+                var batch = await _context.PackageIds
                     .Where(p => !p.Done)
                     .OrderBy(p => p.Key)
                     .Skip(skip)
@@ -54,7 +53,7 @@ namespace BaGet.Tools.AzureSearchImporter
                     break;
                 }
 
-                await _indexer.IndexAsync(batch.Select(p => p.Value));
+                await _indexer.IndexAsync(batch.Select(p => p.Value).ToArray());
 
                 foreach (var package in batch)
                 {

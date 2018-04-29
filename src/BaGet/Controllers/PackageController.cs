@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Core.Services;
+using BaGet.Services.Mirror;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
@@ -10,11 +11,13 @@ namespace BaGet.Controllers
 {
     public class PackageController : Controller
     {
+        private readonly IMirrorService _mirror;
         private readonly IPackageService _packages;
         private readonly IPackageStorageService _storage;
 
-        public PackageController(IPackageService packages, IPackageStorageService storage)
+        public PackageController(IMirrorService mirror, IPackageService packages, IPackageStorageService storage)
         {
+            _mirror = mirror ?? throw new ArgumentNullException(nameof(mirror));
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
         }
@@ -41,6 +44,9 @@ namespace BaGet.Controllers
                 return NotFound();
             }
 
+            // Allow read-through caching if it is configured.
+            await _mirror.MirrorAsync(id, nugetVersion);
+
             if (!await _packages.ExistsAsync(id, nugetVersion))
             {
                 return NotFound();
@@ -61,6 +67,9 @@ namespace BaGet.Controllers
                 return NotFound();
             }
 
+            // Allow read-through caching if it is configured.
+            await _mirror.MirrorAsync(id, nugetVersion);
+
             if (!await _packages.ExistsAsync(id, nugetVersion))
             {
                 return NotFound();
@@ -77,6 +86,9 @@ namespace BaGet.Controllers
             {
                 return NotFound();
             }
+
+            // Allow read-through caching if it is configured.
+            await _mirror.MirrorAsync(id, nugetVersion);
 
             if (!await _packages.ExistsAsync(id, nugetVersion))
             {

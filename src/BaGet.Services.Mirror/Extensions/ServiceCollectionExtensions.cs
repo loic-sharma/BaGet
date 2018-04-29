@@ -19,24 +19,23 @@ namespace BaGet.Services.Mirror.Extensions
         /// before falling back to the upstream package source.
         /// </typeparam>
         /// <param name="services">The defined services.</param>
-        public static void AddMirrorServices<TPackageService>(this IServiceCollection services)
-            where TPackageService : class, IPackageService
+        public static void AddMirrorServices(this IServiceCollection services)
         {
-            /// Both the default indexing service and the mirror package service depend on
-            /// an <see cref="IPackageService"/>. To prevent infinite recursion, we will
-            /// force the indexing service to use the <see cref="TPackageService"/>.
-            services.AddTransient<MirrorIndexingService<TPackageService>>();
-
-            services.AddTransient(provider =>
+            services.AddTransient<IMirrorService>(provider =>
             {
                 var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
 
-                return new MirrorPackageService<TPackageService>(
+                if (!options.Mirror.EnableReadThroughCaching)
+                {
+                    return new FakeMirrorService();
+                }
+
+                return new MirrorService(
                     options.Mirror.PackageSource,
-                    provider.GetRequiredService<TPackageService>(),
+                    provider.GetRequiredService<IPackageService>(),
                     provider.GetRequiredService<IPackageDownloader>(),
                     provider.GetRequiredService<IIndexingService>(),
-                    provider.GetRequiredService<ILogger<MirrorPackageService<TPackageService>>>());
+                    provider.GetRequiredService<ILogger<MirrorService>>());
             });
 
             services.AddTransient<IPackageDownloader, PackageDownloader>();
