@@ -7,13 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet", "src\BaGet\BaGet.cs
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Core", "src\BaGet.Core\BaGet.Core.csproj", "{FFFACD28-C300-4046-BCFE-4A7899E88EA3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Services.Remote", "src\BaGet.Services.Remote\BaGet.Services.Remote.csproj", "{6BC034FA-1A02-491F-B3E4-C2E87CCBC57D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Services.Mirror", "src\BaGet.Services.Mirror\BaGet.Services.Mirror.csproj", "{6BC034FA-1A02-491F-B3E4-C2E87CCBC57D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Azure", "src\BaGet.Azure\BaGet.Azure.csproj", "{716C970D-9614-4265-AC92-57E8B227B98E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Tools.ImportDownloads", "src\BaGet.Tools.ImportDownloads\BaGet.Tools.ImportDownloads.csproj", "{8B7C1C8D-ED4D-4732-86A1-0A7DAD3045DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaGet.Tools.AzureSearchImporter", "src\BaGet.Tools.AzureSearchImporter\BaGet.Tools.AzureSearchImporter.csproj", "{B232DAFE-5CE8-441F-ACC7-2BB54BCD094F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Tools.AzureSearchImporter", "src\BaGet.Tools.AzureSearchImporter\BaGet.Tools.AzureSearchImporter.csproj", "{B232DAFE-5CE8-441F-ACC7-2BB54BCD094F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

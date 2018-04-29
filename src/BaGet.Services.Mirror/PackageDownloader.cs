@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace BaGet.Services.Remote
+namespace BaGet.Services.Mirror
 {
     // See: https://github.com/NuGet/NuGet.Jobs/blob/master/src/Validation.Common.Job/PackageDownloader.cs
     public class PackageDownloader : IPackageDownloader

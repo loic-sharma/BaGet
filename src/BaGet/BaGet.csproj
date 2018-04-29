@@ -19,7 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BaGet.Azure\BaGet.Azure.csproj" />
     <ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
-    <ProjectReference Include="..\BaGet.Services.Remote\BaGet.Services.Remote.csproj" />
+    <ProjectReference Include="..\BaGet.Services.Mirror\BaGet.Services.Mirror.csproj" />
   </ItemGroup>
 
 </Project>

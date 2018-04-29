@@ -9,7 +9,8 @@ using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
 using BaGet.Core.Services;
 using BaGet.Extensions;
-using BaGet.Services.Remote;
+using BaGet.Services.Mirror;
+using BaGet.Services.Mirror.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
@@ -63,20 +64,6 @@ namespace BaGet
                         .AllowAnyHeader());
             });
 
-            services.AddSingleton(provider =>
-            {
-                var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
-
-                var client = new HttpClient(new HttpClientHandler
-                {
-                    AutomaticDecompression = (DecompressionMethods.GZip | DecompressionMethods.Deflate),
-                });
-
-                client.Timeout = TimeSpan.FromSeconds(options.PackageDownloadTimeoutSeconds);
-
-                return client;
-            });
-
             services.AddSingleton<IAuthenticationService, ApiKeyAuthenticationService>(provider =>
             {
                 var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
@@ -85,29 +72,31 @@ namespace BaGet
             });
 
             services.AddTransient<PackageService>();
-            services.AddTransient<IPackageDownloader, PackageDownloader>();
+            services.AddTransient<IndexingService>();
+            services.AddMirrorServices<PackageService>();
 
-            // TODO: This is a bit of a hack! The IndexingService depends on IPackageService,
-            // and RemotePackageService (which is an IPackageService) depends on IndexingService.
-            // Prevent infinite recursion by forcing IndexingService to use PackageService.
-            services.AddTransient<IIndexingService, IndexingService>(provider =>
-            {
-                return new IndexingService(
-                    provider.GetRequiredService<PackageService>(),
-                    provider.GetRequiredService<IPackageStorageService>(),
-                    provider.GetRequiredService<ILogger<IndexingService>>());
-            });
-
-            services.AddTransient<IPackageService, RemotePackageService>(provider =>
+            services.AddTransient<IPackageService>(provider =>
             {
                 var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
 
-                return new RemotePackageService(
-                    options.PackageSource,
-                    provider.GetRequiredService<PackageService>(),
-                    provider.GetRequiredService<IPackageDownloader>(),
-                    provider.GetRequiredService<IIndexingService>(),
-                    provider.GetRequiredService<ILogger<RemotePackageService>>());
+                if (options.Mirror.EnableReadThroughCaching)
+                {
+                    return provider.GetRequiredService<MirrorPackageService<PackageService>>();
+                }
+
+                return provider.GetRequiredService<PackageService>();
+            });
+
+            services.AddTransient<IIndexingService>(provider =>
+            {
+                var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
+
+                if (options.Mirror.EnableReadThroughCaching)
+                {
+                    return provider.GetRequiredService<MirrorIndexingService<PackageService>>();
+                }
+
+                return provider.GetRequiredService<IndexingService>();
             });
 
             ConfigureStorageProviders(services);

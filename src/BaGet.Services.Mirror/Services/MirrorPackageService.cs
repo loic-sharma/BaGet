@@ -7,22 +7,31 @@ using Microsoft.Extensions.Logging;
 using NuGet.Versioning;
 using System.Threading;
 
-namespace BaGet.Services.Remote
+namespace BaGet.Services.Mirror
 {
-    public class RemotePackageService : IPackageService
+    /// <summary>
+    /// A package service that falls back to an upstream package source for
+    /// unknown packages. Packages found on the upstream source will be indexed.
+    /// </summary>
+    /// <typeparam name="TPackageService">
+    /// The local package service used to store package metadata that will be wrapped
+    /// by <see cref="MirrorIndexingService{TPackageService}"/>.
+    /// </typeparam>
+    public class MirrorPackageService<TPackageService> : IPackageService
+        where TPackageService : class, IPackageService
     {
         private readonly Uri _packageBaseAddress;
-        private readonly IPackageService _localPackages;
+        private readonly TPackageService _localPackages;
         private readonly IPackageDownloader _downloader;
         private readonly IIndexingService _indexer;
-        private readonly ILogger<RemotePackageService> _logger;
+        private readonly ILogger<MirrorPackageService<TPackageService>> _logger;
 
-        public RemotePackageService(
+        public MirrorPackageService(
             Uri packageBaseAddress,
-            IPackageService localPackages,
+            TPackageService localPackages,
             IPackageDownloader downloader,
             IIndexingService indexer,
-            ILogger<RemotePackageService> logger)
+            ILogger<MirrorPackageService<TPackageService>> logger)
         {
             _packageBaseAddress = packageBaseAddress ?? throw new ArgumentNullException(nameof(packageBaseAddress));
             _localPackages = localPackages ?? throw new ArgumentNullException(nameof(localPackages));
@@ -34,7 +43,6 @@ namespace BaGet.Services.Remote
         public Task<PackageAddResult> AddAsync(Package package) => _localPackages.AddAsync(package);
         public Task<IReadOnlyList<Package>> FindAsync(string id) => _localPackages.FindAsync(id);
         public Task AddDownloadAsync(string id, NuGetVersion version) => _localPackages.AddDownloadAsync(id, version);
-
 
         public async Task<bool> ExistsAsync(string id, NuGetVersion version)
         {
