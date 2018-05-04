@@ -41,6 +41,7 @@ namespace BaGet.Controllers.Registration
             return Json(new
             {
                 Count = packages.Count,
+                TotalDownloads = packages.Sum(p => p.Downloads),
                 Items = new[]
                 {
                     new RegistrationIndexItem(
@@ -122,6 +123,7 @@ namespace BaGet.Controllers.Registration
                 Version = package.VersionString;
                 Authors = string.Join(", ", package.Authors);
                 Description = package.Description;
+                Downloads = package.Downloads;
                 HasReadme = package.HasReadme;
                 IconUrl = package.IconUrlString;
                 Language = package.Language;
@@ -146,6 +148,7 @@ namespace BaGet.Controllers.Registration
             public string Version { get; }
             public string Authors { get; }
             public string Description { get; }
+            public long Downloads { get; }
             public bool HasReadme { get; }
             public string IconUrl { get; }
             public string Language { get; }

@@ -87,6 +87,7 @@ namespace BaGet.Azure.Search
             result.IconUrl = latest.IconUrlString;
             result.LicenseUrl = latest.LicenseUrlString;
             result.ProjectUrl = latest.ProjectUrlString;
+            result.Published = latest.Published;
             result.Summary = latest.Summary;
             result.Tags = latest.Tags;
             result.Title = latest.Title;

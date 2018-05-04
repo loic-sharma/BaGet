@@ -68,7 +68,7 @@ export default class DisplayPackage extends React.Component<DisplayPackageProps,
 
         versions.push({
           version: catalogEntry["version"],
-          downloads: 0, // TODO
+          downloads: catalogEntry["downloads"],
           date: new Date(catalogEntry["published"])
         });
 
@@ -95,8 +95,8 @@ export default class DisplayPackage extends React.Component<DisplayPackageProps,
             projectUrl: latestCatalogEntry["projectUrl"],
             licenseUrl: latestCatalogEntry["licenseUrl"],
             downloadUrl: latestDownloadUrl,
-            totalDownloads: 0, // TODO
-            latestDownloads: 0, // TODO
+            totalDownloads: results["totalDownloads"],
+            latestDownloads: latestCatalogEntry["downloads"],
             authors: latestCatalogEntry["authors"],
             tags: latestCatalogEntry["tags"],
             versions: versions,
@@ -158,8 +158,8 @@ export default class DisplayPackage extends React.Component<DisplayPackageProps,
             <div>
               <h1>Statistics</h1>
 
-              <div>{this.state.package.totalDownloads} total downloads</div>
-              <div>{this.state.package.latestDownloads} downloads of latest version</div>
+              <div>{this.state.package.totalDownloads.toLocaleString()} total downloads</div>
+              <div>{this.state.package.latestDownloads.toLocaleString()} downloads of latest version</div>
             </div>
 
             <div>

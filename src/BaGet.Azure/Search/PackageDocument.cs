@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
 
@@ -25,6 +26,7 @@ namespace BaGet.Azure.Search
         public string IconUrl { get; set; }
         public string LicenseUrl { get; set; }
         public string ProjectUrl { get; set; }
+        public DateTimeOffset Published { get; set; }
 
         [IsSearchable]
         public string Summary { get; set; }

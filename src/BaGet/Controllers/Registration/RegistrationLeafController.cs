@@ -46,6 +46,7 @@ namespace BaGet.Controllers.Registration
             var result = new RegistrationLeaf(
                 registrationUri: Url.PackageRegistration(id, nugetVersion),
                 listed: package.Listed,
+                downloads: package.Downloads,
                 packageContentUri: Url.PackageDownload(id, nugetVersion),
                 published: package.Published,
                 registrationIndexUri: Url.PackageRegistration(id));
@@ -58,6 +59,7 @@ namespace BaGet.Controllers.Registration
             public RegistrationLeaf(
                 string registrationUri,
                 bool listed,
+                long downloads,
                 string packageContentUri,
                 DateTimeOffset published,
                 string registrationIndexUri)
@@ -65,6 +67,7 @@ namespace BaGet.Controllers.Registration
                 RegistrationUri = registrationUri ?? throw new ArgumentNullException(nameof(registrationIndexUri));
                 Listed = listed;
                 Published = published;
+                Downloads = downloads;
                 PackageContent = packageContentUri ?? throw new ArgumentNullException(nameof(packageContentUri));
                 RegistrationIndexUri = registrationIndexUri ?? throw new ArgumentNullException(nameof(registrationIndexUri));
             }
@@ -73,6 +76,8 @@ namespace BaGet.Controllers.Registration
             public string RegistrationUri { get; }
 
             public bool Listed { get; }
+
+            public long Downloads { get; }
 
             public string PackageContent { get; }
 
