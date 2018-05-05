@@ -8,17 +8,18 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
-namespace BaGet.Migrations.Sqlite
+namespace BaGet.Migrations.SqlServer
 {
-    [DbContext(typeof(SqliteContext))]
-    [Migration("20180505222325_Initial")]
+    [DbContext(typeof(SqlServerContext))]
+    [Migration("20180505223809_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.0.1-rtm-125");
+                .HasAnnotation("ProductVersion", "2.0.1-rtm-125")
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("BaGet.Core.Entities.Package", b =>
                 {
@@ -41,7 +42,6 @@ namespace BaGet.Migrations.Sqlite
                         .HasMaxLength(4000);
 
                     b.Property<string>("Id")
-                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasMaxLength(128);
 
                     b.Property<string>("Language")
@@ -84,7 +84,8 @@ namespace BaGet.Migrations.Sqlite
                     b.HasIndex("Id");
 
                     b.HasIndex("Id", "VersionString")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[Id] IS NOT NULL AND [Version] IS NOT NULL");
 
                     b.ToTable("Packages");
                 });
@@ -95,7 +96,6 @@ namespace BaGet.Migrations.Sqlite
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Id")
-                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasMaxLength(128);
 
                     b.Property<int?>("PackageKey");
@@ -110,7 +110,7 @@ namespace BaGet.Migrations.Sqlite
 
                     b.HasIndex("PackageKey");
 
-                    b.ToTable("PackageDependency");
+                    b.ToTable("PackageDependencies");
                 });
 
             modelBuilder.Entity("BaGet.Core.Entities.PackageDependency", b =>

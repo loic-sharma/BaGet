@@ -109,7 +109,7 @@ namespace BaGet.Migrations.SqlServer
 
                     b.HasIndex("PackageKey");
 
-                    b.ToTable("PackageDependency");
+                    b.ToTable("PackageDependencies");
                 });
 
             modelBuilder.Entity("BaGet.Core.Entities.PackageDependency", b =>

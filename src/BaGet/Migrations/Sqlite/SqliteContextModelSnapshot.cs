@@ -109,7 +109,7 @@ namespace BaGet.Migrations.Sqlite
 
                     b.HasIndex("PackageKey");
 
-                    b.ToTable("PackageDependency");
+                    b.ToTable("PackageDependencies");
                 });
 
             modelBuilder.Entity("BaGet.Core.Entities.PackageDependency", b =>

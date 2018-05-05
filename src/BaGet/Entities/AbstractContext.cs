@@ -24,6 +24,7 @@ namespace BaGet.Entities
         { }
 
         public DbSet<Package> Packages { get; set; }
+        public DbSet<PackageDependency> PackageDependencies { get; set; }
 
         public Task<int> SaveChangesAsync() => SaveChangesAsync(default(CancellationToken));
 

@@ -38,7 +38,7 @@ namespace BaGet.Migrations.Sqlite
                 });
 
             migrationBuilder.CreateTable(
-                name: "PackageDependency",
+                name: "PackageDependencies",
                 columns: table => new
                 {
                     Key = table.Column<int>(nullable: false)
@@ -50,9 +50,9 @@ namespace BaGet.Migrations.Sqlite
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PackageDependency", x => x.Key);
+                    table.PrimaryKey("PK_PackageDependencies", x => x.Key);
                     table.ForeignKey(
-                        name: "FK_PackageDependency_Packages_PackageKey",
+                        name: "FK_PackageDependencies_Packages_PackageKey",
                         column: x => x.PackageKey,
                         principalTable: "Packages",
                         principalColumn: "Key",
@@ -60,8 +60,8 @@ namespace BaGet.Migrations.Sqlite
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_PackageDependency_PackageKey",
-                table: "PackageDependency",
+                name: "IX_PackageDependencies_PackageKey",
+                table: "PackageDependencies",
                 column: "PackageKey");
 
             migrationBuilder.CreateIndex(
@@ -79,7 +79,7 @@ namespace BaGet.Migrations.Sqlite
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "PackageDependency");
+                name: "PackageDependencies");
 
             migrationBuilder.DropTable(
                 name: "Packages");
