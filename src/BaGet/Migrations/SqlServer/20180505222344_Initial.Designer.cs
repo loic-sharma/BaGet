@@ -11,7 +11,7 @@ using System;
 namespace BaGet.Migrations.SqlServer
 {
     [DbContext(typeof(SqlServerContext))]
-    [Migration("20180321042428_Initial")]
+    [Migration("20180505222344_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,40 +26,58 @@ namespace BaGet.Migrations.SqlServer
                     b.Property<int>("Key")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Authors");
+                    b.Property<string>("AuthorsString")
+                        .HasColumnName("Authors")
+                        .HasMaxLength(4000);
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .HasMaxLength(4000);
+
+                    b.Property<long>("Downloads");
+
+                    b.Property<bool>("HasReadme");
 
                     b.Property<string>("IconUrlString")
-                        .HasColumnName("IconUrl");
+                        .HasColumnName("IconUrl")
+                        .HasMaxLength(4000);
 
-                    b.Property<string>("Id");
+                    b.Property<string>("Id")
+                        .HasMaxLength(128);
 
-                    b.Property<string>("Language");
+                    b.Property<string>("Language")
+                        .HasMaxLength(20);
 
                     b.Property<string>("LicenseUrlString")
-                        .HasColumnName("LicenseUrl");
+                        .HasColumnName("LicenseUrl")
+                        .HasMaxLength(4000);
 
                     b.Property<bool>("Listed");
 
-                    b.Property<string>("MinClientVersion");
+                    b.Property<string>("MinClientVersion")
+                        .HasMaxLength(44);
 
                     b.Property<string>("ProjectUrlString")
-                        .HasColumnName("ProjectUrl");
+                        .HasColumnName("ProjectUrl")
+                        .HasMaxLength(4000);
 
                     b.Property<DateTime>("Published");
 
                     b.Property<bool>("RequireLicenseAcceptance");
 
-                    b.Property<string>("Summary");
+                    b.Property<string>("Summary")
+                        .HasMaxLength(4000);
 
                     b.Property<string>("TagsString")
-                        .HasColumnName("Tags");
+                        .HasColumnName("Tags")
+                        .HasMaxLength(4000);
 
-                    b.Property<string>("Title");
+                    b.Property<string>("Title")
+                        .HasMaxLength(256);
 
                     b.Property<string>("VersionString")
-                        .HasColumnName("Version");
+                        .IsRequired()
+                        .HasColumnName("Version")
+                        .HasMaxLength(64);
 
                     b.HasKey("Key");
 
@@ -77,45 +95,27 @@ namespace BaGet.Migrations.SqlServer
                     b.Property<int>("Key")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Id");
-
-                    b.Property<int?>("PackageDependencyGroupKey");
-
-                    b.Property<string>("VersionRange");
-
-                    b.HasKey("Key");
-
-                    b.HasIndex("PackageDependencyGroupKey");
-
-                    b.ToTable("PackageDependency");
-                });
-
-            modelBuilder.Entity("BaGet.Core.Entities.PackageDependencyGroup", b =>
-                {
-                    b.Property<int>("Key")
-                        .ValueGeneratedOnAdd();
+                    b.Property<string>("Id")
+                        .HasMaxLength(128);
 
                     b.Property<int?>("PackageKey");
 
-                    b.Property<string>("TargetFramework");
+                    b.Property<string>("TargetFramework")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("VersionRange")
+                        .HasMaxLength(256);
 
                     b.HasKey("Key");
 
                     b.HasIndex("PackageKey");
 
-                    b.ToTable("PackageDependencyGroup");
+                    b.ToTable("PackageDependency");
                 });
 
             modelBuilder.Entity("BaGet.Core.Entities.PackageDependency", b =>
                 {
-                    b.HasOne("BaGet.Core.Entities.PackageDependencyGroup")
-                        .WithMany("Dependencies")
-                        .HasForeignKey("PackageDependencyGroupKey");
-                });
-
-            modelBuilder.Entity("BaGet.Core.Entities.PackageDependencyGroup", b =>
-                {
-                    b.HasOne("BaGet.Core.Entities.Package")
+                    b.HasOne("BaGet.Core.Entities.Package", "Package")
                         .WithMany("Dependencies")
                         .HasForeignKey("PackageKey");
                 });

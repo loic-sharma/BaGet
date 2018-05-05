@@ -2,11 +2,23 @@
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BaGet.Entities
 {
     public abstract class AbstractContext<TContext> : DbContext, IContext where TContext : DbContext
     {
+        public const int DefaultMaxStringLength = 4000;
+
+        public const int MaxPackageIdLength = 128;
+        public const int MaxPackageVersionLength = 64;
+        public const int MaxPackageMinClientVersionLength = 44;
+        public const int MaxPackageLanguageLength = 20;
+        public const int MaxPackageTitleLength = 256;
+
+        public const int MaxPackageDependencyVersionRangeLength = 256;
+        public const int MaxPackageDependencyTargetFrameworkLength = 256;
+
         public AbstractContext(DbContextOptions<TContext> options)
             : base(options)
         { }
@@ -19,58 +31,66 @@ namespace BaGet.Entities
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            BuildPackageEntity(builder);
-
-            builder.Entity<PackageDependencyGroup>()
-                .HasKey(g => g.Key);
-
-            builder.Entity<PackageDependency>()
-                .HasKey(d => d.Key);
+            builder.Entity<Package>(BuildPackageEntity);
+            builder.Entity<PackageDependency>(BuildPackageDependencyEntity);
         }
 
-        private void BuildPackageEntity(ModelBuilder builder)
+        private void BuildPackageEntity(EntityTypeBuilder<Package> package)
         {
-            builder.Entity<Package>()
-                .HasKey(p => p.Key);
-
-            builder.Entity<Package>()
-                .HasIndex(p => p.Id);
-
-            builder.Entity<Package>()
-                .Property(p => p.VersionString)
-                .HasColumnName("Version");
-
-            builder.Entity<Package>()
-                .Property(p => p.AuthorsString)
-                .HasColumnName("Authors");
-
-            builder.Entity<Package>()
-                .HasIndex(p => new { p.Id, p.VersionString })
+            package.HasKey(p => p.Key);
+            package.HasIndex(p => p.Id);
+            package.HasIndex(p => new { p.Id, p.VersionString })
                 .IsUnique();
 
-            builder.Entity<Package>()
-                .Property(p => p.IconUrlString)
-                .HasColumnName("IconUrl");
+            package.Property(p => p.Id)
+                .HasMaxLength(MaxPackageIdLength);
 
-            builder.Entity<Package>()
-                .Property(p => p.LicenseUrlString)
-                .HasColumnName("LicenseUrl");
+            package.Property(p => p.VersionString)
+                .HasColumnName("Version")
+                .HasMaxLength(MaxPackageVersionLength)
+                .IsRequired();
 
-            builder.Entity<Package>()
-                .Property(p => p.ProjectUrlString)
-                .HasColumnName("ProjectUrl");
+            package.Property(p => p.AuthorsString)
+                .HasColumnName("Authors")
+                .HasMaxLength(DefaultMaxStringLength);
 
-            builder.Entity<Package>()
-                .Property(p => p.TagsString)
-                .HasColumnName("Tags");
+            package.Property(p => p.IconUrlString)
+                .HasColumnName("IconUrl")
+                .HasMaxLength(DefaultMaxStringLength);
 
-            builder.Entity<Package>()
-                .Ignore(p => p.Version)
-                .Ignore(p => p.Authors)
-                .Ignore(p => p.IconUrl)
-                .Ignore(p => p.LicenseUrl)
-                .Ignore(p => p.ProjectUrl)
-                .Ignore(p => p.Tags);
+            package.Property(p => p.LicenseUrlString)
+                .HasColumnName("LicenseUrl")
+                .HasMaxLength(DefaultMaxStringLength);
+
+            package.Property(p => p.ProjectUrlString)
+                .HasColumnName("ProjectUrl")
+                .HasMaxLength(DefaultMaxStringLength);
+
+            package.Property(p => p.TagsString)
+                .HasColumnName("Tags")
+                .HasMaxLength(DefaultMaxStringLength);
+
+            package.Property(p => p.Description).HasMaxLength(DefaultMaxStringLength);
+            package.Property(p => p.Language).HasMaxLength(MaxPackageLanguageLength);
+            package.Property(p => p.MinClientVersion).HasMaxLength(MaxPackageMinClientVersionLength);
+            package.Property(p => p.Summary).HasMaxLength(DefaultMaxStringLength);
+            package.Property(p => p.Title).HasMaxLength(MaxPackageTitleLength);
+
+            package.Ignore(p => p.Version);
+            package.Ignore(p => p.Authors);
+            package.Ignore(p => p.IconUrl);
+            package.Ignore(p => p.LicenseUrl);
+            package.Ignore(p => p.ProjectUrl);
+            package.Ignore(p => p.Tags);
+        }
+
+        private void BuildPackageDependencyEntity(EntityTypeBuilder<PackageDependency> dependency)
+        {
+            dependency.HasKey(d => d.Key);
+
+            dependency.Property(d => d.Id).HasMaxLength(MaxPackageIdLength);
+            dependency.Property(d => d.VersionRange).HasMaxLength(MaxPackageDependencyVersionRangeLength);
+            dependency.Property(d => d.TargetFramework).HasMaxLength(MaxPackageDependencyTargetFrameworkLength);
         }
     }
 }

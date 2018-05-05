@@ -28,6 +28,10 @@ namespace BaGet.Entities
             builder.Entity<Package>()
                 .Property(p => p.Id)
                 .HasColumnType("TEXT COLLATE NOCASE");
+
+            builder.Entity<PackageDependency>()
+                .Property(p => p.Id)
+                .HasColumnType("TEXT COLLATE NOCASE");
         }
     }
 }

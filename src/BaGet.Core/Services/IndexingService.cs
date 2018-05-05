@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,7 +10,6 @@ using NuGet.Packaging;
 
 namespace BaGet.Core.Services
 {
-    using BagetPackageDependencyGroup = Entities.PackageDependencyGroup;
     using BaGetPackageDependency = Entities.PackageDependency;
 
     public class IndexingService : IIndexingService
@@ -151,20 +151,7 @@ namespace BaGet.Core.Services
                 IconUrl = ParseUri(nuspec.GetIconUrl()),
                 LicenseUrl = ParseUri(nuspec.GetLicenseUrl()),
                 ProjectUrl = ParseUri(nuspec.GetProjectUrl()),
-                Dependencies = nuspec
-                    .GetDependencyGroups()
-                    .Select(group => new BagetPackageDependencyGroup
-                    {
-                        TargetFramework = group.TargetFramework.DotNetFrameworkName,
-                        Dependencies = group.Packages
-                            .Select(p => new BaGetPackageDependency
-                            {
-                                Id = p.Id,
-                                VersionRange = p.VersionRange.OriginalString
-                            })
-                            .ToList()
-                    })
-                    .ToList(),
+                Dependencies = GetDependencies(nuspec),
                 Tags = ParseTags(nuspec.GetTags())
             };
         }
@@ -188,6 +175,38 @@ namespace BaGet.Core.Services
             if (string.IsNullOrEmpty(tags)) return new string[0];
 
             return tags.Split(new[] { ',', ';', ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        private List<BaGetPackageDependency> GetDependencies(NuspecReader nuspec)
+        {
+            var dependencies = new List<BaGetPackageDependency>();
+
+            foreach (var group in nuspec.GetDependencyGroups())
+            {
+                var targetFramework = group.TargetFramework.GetShortFolderName();
+
+                if (!group.Packages.Any())
+                {
+                    dependencies.Add(new BaGetPackageDependency
+                    {
+                        Id = null,
+                        VersionRange = null,
+                        TargetFramework = targetFramework,
+                    });
+                }
+
+                foreach (var dependency in group.Packages)
+                {
+                    dependencies.Add(new BaGetPackageDependency
+                    {
+                        Id = dependency.Id,
+                        VersionRange = dependency.VersionRange?.ToString(),
+                        TargetFramework = targetFramework,
+                    });
+                }
+            }
+
+            return dependencies;
         }
     }
 }

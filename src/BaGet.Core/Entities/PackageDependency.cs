@@ -7,5 +7,8 @@
 
         public string Id { get; set; }
         public string VersionRange { get; set; }
+        public string TargetFramework { get; set; }
+
+        public Package Package { get; set; }
     }
 }

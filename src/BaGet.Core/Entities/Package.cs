@@ -31,7 +31,7 @@ namespace BaGet.Core.Entities
 
         public string[] Tags { get; set; }
 
-        public List<PackageDependencyGroup> Dependencies { get; set; }
+        public List<PackageDependency> Dependencies { get; set; }
 
         public string VersionString
         {
