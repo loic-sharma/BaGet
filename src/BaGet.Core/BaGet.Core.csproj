@@ -5,10 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Note: Newtonsoft.Json MUST be 10.* due to bug in Azure .NET SDK -->
-    <!-- Bug tracked by: https://github.com/Azure/azure-sdk-for-net/issues/3441 -->
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.0.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="NuGet.Client" Version="4.2.0" />
   </ItemGroup>
 
