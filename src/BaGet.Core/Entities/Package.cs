@@ -44,34 +44,8 @@ namespace BaGet.Core.Entities
             }
         }
 
-        public string AuthorsString
-        {
-            get => JsonConvert.SerializeObject(Authors);
-            set => Authors = (!string.IsNullOrEmpty(value)) ? JsonConvert.DeserializeObject<string[]>(value) : new string[0];
-        }
-
-        public string IconUrlString
-        {
-            get => IconUrl?.AbsoluteUri ?? string.Empty;
-            set => IconUrl = (!string.IsNullOrEmpty(value)) ? new Uri(value) : null;
-        }
-
-        public string LicenseUrlString
-        {
-            get => LicenseUrl?.AbsoluteUri ?? string.Empty;
-            set => LicenseUrl = (!string.IsNullOrEmpty(value)) ? new Uri(value) : null;
-        }
-
-        public string ProjectUrlString
-        {
-            get => ProjectUrl?.AbsoluteUri ?? string.Empty;
-            set => ProjectUrl = (!string.IsNullOrEmpty(value)) ? new Uri(value) : null;
-        }
-
-        public string TagsString
-        {
-            get => JsonConvert.SerializeObject(Tags);
-            set => Tags = (!string.IsNullOrEmpty(value)) ? JsonConvert.DeserializeObject<string[]>(value) : new string[0];
-        }
+        public string IconUrlString => IconUrl?.AbsoluteUri ?? string.Empty;
+        public string LicenseUrlString => LicenseUrl?.AbsoluteUri ?? string.Empty;
+        public string ProjectUrlString => ProjectUrl?.AbsoluteUri ?? string.Empty;
     }
 }

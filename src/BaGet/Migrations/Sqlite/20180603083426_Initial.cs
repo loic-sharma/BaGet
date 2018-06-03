@@ -1,9 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System;
-using System.Collections.Generic;
 
-namespace BaGet.Migrations.SqlServer
+namespace BaGet.Migrations.Sqlite
 {
     public partial class Initial : Migration
     {
@@ -14,23 +12,23 @@ namespace BaGet.Migrations.SqlServer
                 columns: table => new
                 {
                     Key = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 128, nullable: false),
                     Authors = table.Column<string>(maxLength: 4000, nullable: true),
                     Description = table.Column<string>(maxLength: 4000, nullable: true),
                     Downloads = table.Column<long>(nullable: false),
                     HasReadme = table.Column<bool>(nullable: false),
-                    IconUrl = table.Column<string>(maxLength: 4000, nullable: true),
-                    Id = table.Column<string>(maxLength: 128, nullable: true),
                     Language = table.Column<string>(maxLength: 20, nullable: true),
-                    LicenseUrl = table.Column<string>(maxLength: 4000, nullable: true),
                     Listed = table.Column<bool>(nullable: false),
                     MinClientVersion = table.Column<string>(maxLength: 44, nullable: true),
-                    ProjectUrl = table.Column<string>(maxLength: 4000, nullable: true),
                     Published = table.Column<DateTime>(nullable: false),
                     RequireLicenseAcceptance = table.Column<bool>(nullable: false),
                     Summary = table.Column<string>(maxLength: 4000, nullable: true),
-                    Tags = table.Column<string>(maxLength: 4000, nullable: true),
                     Title = table.Column<string>(maxLength: 256, nullable: true),
+                    IconUrl = table.Column<string>(maxLength: 4000, nullable: true),
+                    LicenseUrl = table.Column<string>(maxLength: 4000, nullable: true),
+                    ProjectUrl = table.Column<string>(maxLength: 4000, nullable: true),
+                    Tags = table.Column<string>(maxLength: 4000, nullable: true),
                     Version = table.Column<string>(maxLength: 64, nullable: false)
                 },
                 constraints: table =>
@@ -43,11 +41,11 @@ namespace BaGet.Migrations.SqlServer
                 columns: table => new
                 {
                     Key = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Id = table.Column<string>(maxLength: 128, nullable: true),
-                    PackageKey = table.Column<int>(nullable: true),
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 128, nullable: false),
+                    VersionRange = table.Column<string>(maxLength: 256, nullable: true),
                     TargetFramework = table.Column<string>(maxLength: 256, nullable: true),
-                    VersionRange = table.Column<string>(maxLength: 256, nullable: true)
+                    PackageKey = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -74,8 +72,7 @@ namespace BaGet.Migrations.SqlServer
                 name: "IX_Packages_Id_Version",
                 table: "Packages",
                 columns: new[] { "Id", "Version" },
-                unique: true,
-                filter: "[Id] IS NOT NULL AND [Version] IS NOT NULL");
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

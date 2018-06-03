@@ -25,7 +25,7 @@ namespace BaGet.Core.Services
             if (!string.IsNullOrEmpty(query))
             {
                 query = query.ToLower();
-                search = search.Where(p => p.Id.Contains(query));
+                search = search.Where(p => p.Id.ToLower().Contains(query));
             }
 
             // TODO: These results are an approximation. There are many scenarios in which this query

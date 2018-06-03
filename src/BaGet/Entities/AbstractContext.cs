@@ -44,31 +44,32 @@ namespace BaGet.Entities
                 .IsUnique();
 
             package.Property(p => p.Id)
-                .HasMaxLength(MaxPackageIdLength);
+                .HasMaxLength(MaxPackageIdLength)
+                .IsRequired();
 
             package.Property(p => p.VersionString)
                 .HasColumnName("Version")
                 .HasMaxLength(MaxPackageVersionLength)
                 .IsRequired();
 
-            package.Property(p => p.AuthorsString)
-                .HasColumnName("Authors")
+            package.Property(p => p.Authors)
+                .HasConversion(StringArrayToJsonConverter.Instance)
                 .HasMaxLength(DefaultMaxStringLength);
 
-            package.Property(p => p.IconUrlString)
-                .HasColumnName("IconUrl")
+            package.Property(p => p.IconUrl)
+                .HasConversion(UriToStringConverter.Instance)
                 .HasMaxLength(DefaultMaxStringLength);
 
-            package.Property(p => p.LicenseUrlString)
-                .HasColumnName("LicenseUrl")
+            package.Property(p => p.LicenseUrl)
+                .HasConversion(UriToStringConverter.Instance)
                 .HasMaxLength(DefaultMaxStringLength);
 
-            package.Property(p => p.ProjectUrlString)
-                .HasColumnName("ProjectUrl")
+            package.Property(p => p.ProjectUrl)
+                .HasConversion(UriToStringConverter.Instance)
                 .HasMaxLength(DefaultMaxStringLength);
 
-            package.Property(p => p.TagsString)
-                .HasColumnName("Tags")
+            package.Property(p => p.Tags)
+                .HasConversion(StringArrayToJsonConverter.Instance)
                 .HasMaxLength(DefaultMaxStringLength);
 
             package.Property(p => p.Description).HasMaxLength(DefaultMaxStringLength);
@@ -78,18 +79,16 @@ namespace BaGet.Entities
             package.Property(p => p.Title).HasMaxLength(MaxPackageTitleLength);
 
             package.Ignore(p => p.Version);
-            package.Ignore(p => p.Authors);
-            package.Ignore(p => p.IconUrl);
-            package.Ignore(p => p.LicenseUrl);
-            package.Ignore(p => p.ProjectUrl);
-            package.Ignore(p => p.Tags);
+            package.Ignore(p => p.IconUrlString);
+            package.Ignore(p => p.LicenseUrlString);
+            package.Ignore(p => p.ProjectUrlString);
         }
 
         private void BuildPackageDependencyEntity(EntityTypeBuilder<PackageDependency> dependency)
         {
             dependency.HasKey(d => d.Key);
 
-            dependency.Property(d => d.Id).HasMaxLength(MaxPackageIdLength);
+            dependency.Property(d => d.Id).HasMaxLength(MaxPackageIdLength).IsRequired();
             dependency.Property(d => d.VersionRange).HasMaxLength(MaxPackageDependencyVersionRangeLength);
             dependency.Property(d => d.TargetFramework).HasMaxLength(MaxPackageDependencyTargetFrameworkLength);
         }
