@@ -4,7 +4,7 @@ A lightweight [NuGet service](https://docs.microsoft.com/en-us/nuget/api/overvie
 
 ## Getting Started
 
-1. Install [.NET Core](https://www.microsoft.com/net/download/windows)
+1. Install [.NET Core](https://www.microsoft.com/net/download)
 2. Run `git clone https://github.com/loic-sharma/BaGet.git`
 3. Navigate to `.\BaGet\src\BaGet`
 4. Start the service with `dotnet run`
