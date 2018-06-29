@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaGet.Migrations.Sqlite
 {
     [DbContext(typeof(SqliteContext))]
-    [Migration("20180603083426_Initial")]
+    [Migration("20180629015647_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -89,7 +89,6 @@ namespace BaGet.Migrations.Sqlite
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Id")
-                        .IsRequired()
                         .HasColumnType("TEXT COLLATE NOCASE")
                         .HasMaxLength(128);
 

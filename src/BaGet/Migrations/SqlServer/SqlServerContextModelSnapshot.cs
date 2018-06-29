@@ -91,7 +91,6 @@ namespace BaGet.Migrations.SqlServer
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Id")
-                        .IsRequired()
                         .HasMaxLength(128);
 
                     b.Property<int?>("PackageKey");

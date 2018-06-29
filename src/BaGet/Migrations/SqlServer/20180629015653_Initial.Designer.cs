@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaGet.Migrations.SqlServer
 {
     [DbContext(typeof(SqlServerContext))]
-    [Migration("20180603083502_Initial")]
+    [Migration("20180629015653_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -93,7 +93,6 @@ namespace BaGet.Migrations.SqlServer
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Id")
-                        .IsRequired()
                         .HasMaxLength(128);
 
                     b.Property<int?>("PackageKey");

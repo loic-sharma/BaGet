@@ -88,7 +88,7 @@ namespace BaGet.Entities
         {
             dependency.HasKey(d => d.Key);
 
-            dependency.Property(d => d.Id).HasMaxLength(MaxPackageIdLength).IsRequired();
+            dependency.Property(d => d.Id).HasMaxLength(MaxPackageIdLength);
             dependency.Property(d => d.VersionRange).HasMaxLength(MaxPackageDependencyVersionRangeLength);
             dependency.Property(d => d.TargetFramework).HasMaxLength(MaxPackageDependencyTargetFrameworkLength);
         }

@@ -42,7 +42,7 @@ namespace BaGet.Migrations.Sqlite
                 {
                     Key = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Id = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 128, nullable: false),
+                    Id = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 128, nullable: true),
                     VersionRange = table.Column<string>(maxLength: 256, nullable: true),
                     TargetFramework = table.Column<string>(maxLength: 256, nullable: true),
                     PackageKey = table.Column<int>(nullable: true)

@@ -87,7 +87,6 @@ namespace BaGet.Migrations.Sqlite
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Id")
-                        .IsRequired()
                         .HasColumnType("TEXT COLLATE NOCASE")
                         .HasMaxLength(128);
 
