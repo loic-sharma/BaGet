@@ -23,7 +23,7 @@ namespace BaGet.Services.Mirror.Extensions
 
                 if (!options.Mirror.EnableReadThroughCaching)
                 {
-                    return new FakeMirrorService(provider.GetRequiredService<ILogger<MirrorService>>());
+                    return new FakeMirrorService();
                 }
 
                 return new MirrorService(
