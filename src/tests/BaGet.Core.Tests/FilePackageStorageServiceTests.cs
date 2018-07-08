@@ -12,6 +12,7 @@ namespace BaGet.Core.Tests
             string validButNotExistingPath = Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString("N"));
             Assert.False(Directory.Exists(validButNotExistingPath));
             IPackageStorageService service = new FilePackageStorageService(validButNotExistingPath);
+            Assert.False(Directory.Exists(validButNotExistingPath)); 
         }
     }
 }
