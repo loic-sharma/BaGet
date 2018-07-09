@@ -69,11 +69,11 @@ namespace BaGet.Tests
                 .UseConfiguration(configurationBuilder.Build())
                 .UseStartup<Startup>();
 
-            if (this._helper != null)
+            if (_helper != null)
             {
                 hostBuilder.ConfigureLogging((builder) =>
                 {
-                    builder.AddProvider(new XunitLoggerProvider(this._helper));
+                    builder.AddProvider(new XunitLoggerProvider(_helper));
                     builder.SetMinimumLevel(_minimumLevel);
                 });
             }

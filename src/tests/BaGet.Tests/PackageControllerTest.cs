@@ -24,7 +24,7 @@ namespace BaGet.Tests
         [InlineData("id02")]
         public async Task AskEmptyServerForNotExistingPackageID(string packageID)
         {
-            using (TestServer server = TestServerBuilder.Empty().TraceToTestOutputHelper(this.Helper,LogLevel.Error).Build())
+            using (TestServer server = TestServerBuilder.Empty().TraceToTestOutputHelper(Helper,LogLevel.Error).Build())
             {
                 //Ask Empty Storage for a not existings ID
                 var response = await  server.CreateClient().GetAsync(string.Format(IndexUrlFormatString, packageID));
