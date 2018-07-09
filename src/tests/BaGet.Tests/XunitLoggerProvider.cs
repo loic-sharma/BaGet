@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
-using System;
 
 namespace BaGet.Tests
 {

@@ -1,5 +1,5 @@
-using BaGet.Core.Services;
 using System.IO;
+using BaGet.Core.Services;
 using Xunit;
 
 namespace BaGet.Core.Tests

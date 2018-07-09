@@ -1,5 +1,5 @@
-﻿using NuGet.Versioning;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using NuGet.Versioning;
 
 namespace BaGet.Services.Mirror
 {

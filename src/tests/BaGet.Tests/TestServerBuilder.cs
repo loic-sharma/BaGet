@@ -1,13 +1,13 @@
-﻿using BaGet.Core.Entities;
+﻿using System;
+using System.IO;
+using System.Collections.Generic;
+using BaGet.Core.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using Xunit.Abstractions;
 
 namespace BaGet.Tests
