@@ -30,7 +30,7 @@ namespace BaGet.Services.Mirror.Tests
         public void AskServiceProviderForWellConfiguredMirrorOptions()
         {
             //Create a IConfiguration with a minimal "Mirror" object.
-            KeyValuePair<string, string> initialData = new KeyValuePair<string, string>("Mirror:EnableReadThroughCaching", false.ToString());
+            KeyValuePair<string, string> initialData = new KeyValuePair<string, string>($"{nameof(BaGetOptions.Mirror)}:{nameof(MirrorOptions.EnableReadThroughCaching)}",false.ToString());
             IConfiguration configuration = new ConfigurationBuilder().AddInMemoryCollection(new KeyValuePair<string, string>[] { initialData }).Build();
 
             ServiceProvider provider = new ServiceCollection()

@@ -12,6 +12,8 @@ namespace BaGet.Tests
 {
     public class ServiceCollectionExtensionsTest
     {
+        private readonly string DatabaseTypeKey = $"{nameof(BaGetOptions.Database)}:{nameof(DatabaseOptions.Type)}";
+        private readonly string ConnectionStringKey = $"{nameof(BaGetOptions.Database)}:{nameof(DatabaseOptions.ConnectionString)}";
 
         [Fact]
 
@@ -34,8 +36,8 @@ namespace BaGet.Tests
         {
             //Create a IConfiguration with a minimal "Database" object.
             Dictionary<string, string> initialData = new Dictionary<string, string>();
-            initialData.Add("Database:Type", DatabaseType.Sqlite.ToString());
-            initialData.Add("Database:ConnectionString", "blabla");
+            initialData.Add(DatabaseTypeKey, DatabaseType.Sqlite.ToString());
+            initialData.Add(ConnectionStringKey, "blabla");
 
             IConfiguration configuration = new ConfigurationBuilder().AddInMemoryCollection(initialData).Build();
 
@@ -55,8 +57,8 @@ namespace BaGet.Tests
         {
             //Create a IConfiguration with a minimal "Database" object.
             Dictionary<string, string> initialData = new Dictionary<string, string>();
-            initialData.Add("Database:Type", DatabaseType.Sqlite.ToString());
-            initialData.Add("Database:ConnectionString", "blabla");
+            initialData.Add(DatabaseTypeKey, DatabaseType.Sqlite.ToString());
+            initialData.Add(ConnectionStringKey, "blabla");
 
             IConfiguration configuration = new ConfigurationBuilder().AddInMemoryCollection(initialData).Build();
 
@@ -73,8 +75,8 @@ namespace BaGet.Tests
         {
             //Create a IConfiguration with a minimal "Database" object.
             Dictionary<string, string> initialData = new Dictionary<string, string>();
-            initialData.Add("Database:Type", DatabaseType.Sqlite.ToString());
-            initialData.Add("Database:ConnectionString", string.Empty); //empty equals missing!
+            initialData.Add(DatabaseTypeKey, DatabaseType.Sqlite.ToString());
+            initialData.Add(ConnectionStringKey, string.Empty); //empty equals missing!
 
             IConfiguration configuration = new ConfigurationBuilder().AddInMemoryCollection(initialData).Build();
 
@@ -98,7 +100,7 @@ namespace BaGet.Tests
         {
             //Create a IConfiguration with a minimal "Database" object.
             Dictionary<string, string> initialData = new Dictionary<string, string>();
-            initialData.Add("Database:Type", databaseType);
+            initialData.Add(DatabaseTypeKey, databaseType);
 
             IConfiguration configuration = new ConfigurationBuilder().AddInMemoryCollection(initialData).Build();
 
