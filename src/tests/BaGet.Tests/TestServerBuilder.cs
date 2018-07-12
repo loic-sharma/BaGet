@@ -2,6 +2,8 @@
 using System.IO;
 using System.Collections.Generic;
 using BaGet.Core.Entities;
+using BaGet.Core.Configuration;
+using BaGet.Core.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
@@ -24,10 +26,16 @@ namespace BaGet.Tests
         /// </summary>
         private TestServerBuilder()
         {
+            this.Configuration = new Dictionary<string, string>();
         }
 
         private ITestOutputHelper _helper;
         private LogLevel _minimumLevel = LogLevel.None;
+
+        /// <summary>
+        /// In Memory representation of Config Settings
+        /// </summary>
+        public Dictionary<string, string> Configuration { get; private set; }
 
         /// <summary>
         /// Xunit.ITestOutputHelper is used as Logging-Target (Microsoft.Extensions.Logging)
@@ -42,38 +50,58 @@ namespace BaGet.Tests
             return this;
         }
 
+
+
         /// <summary>
-        /// Empty means: 
-        ///  - Sqlite Database with a new/empty file
-        ///  - StorageType FileSystem based on a empty/temporary directory
+        /// Not configured Test Server Builder
         /// </summary>
         /// <returns></returns>
-        public static TestServerBuilder Empty()
+        public static TestServerBuilder Create()
         {
             return new TestServerBuilder();
         }
 
+        private readonly string DatabaseTypeKey = $"{nameof(BaGetOptions.Database)}:{nameof(DatabaseOptions.Type)}";
+        private readonly string ConnectionStringKey = $"{nameof(BaGetOptions.Database)}:{nameof(DatabaseOptions.ConnectionString)}";
+        private readonly string StorageTypeKey = $"{nameof(BaGetOptions.Storage)}:{nameof(StorageOptions.Type)}";
+        private readonly string MirrorEnableReadThroughCachingKey = $"{nameof(BaGetOptions.Mirror)}:{nameof(MirrorOptions.EnableReadThroughCaching)}";
+        private readonly string FileSystemStoragePathKey = $"{nameof(BaGetOptions.Storage)}:{nameof(FileSystemStorageOptions.Path)}";
+
+        /// <summary>
+        /// Creates a subdirectory: Path.GetTempPath() + Guid  
+        /// and uses this as location for 
+        /// - Sqlite file  => .\BaGet.db 
+        /// - FilePackageStorageService => .\Packages\*.*
+        /// </summary>
+        /// <returns></returns>
+        public TestServerBuilder UseEmptyTempFolder()
+        {
+            this.Configuration.Add(DatabaseTypeKey, DatabaseType.Sqlite.ToString());
+            string uniqueTempFolder = Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(uniqueTempFolder);
+            string resolvedSqliteFile = Path.Combine(uniqueTempFolder,"BaGet.db");
+            string storageFolderPath = Path.Combine(uniqueTempFolder, FilePackageStorageService.DefaultPackagesFolderName);
+
+            this.Configuration.Add(ConnectionStringKey, string.Format("Data Source={0}", resolvedSqliteFile));
+            this.Configuration.Add(StorageTypeKey, StorageType.FileSystem.ToString());
+            this.Configuration.Add(MirrorEnableReadThroughCachingKey, false.ToString());
+            this.Configuration.Add(FileSystemStoragePathKey, storageFolderPath);
+            return this;
+        }
+
+
         public TestServer Build()
         {
-            
-            Dictionary<string, string> testHostConfig = new Dictionary<string, string>();
-            testHostConfig.Add("Database:Type", "Sqlite");
-            string resolvedSqliteFile = Path.GetFullPath("..\\..\\baget.db");
-
-            testHostConfig.Add("Database:ConnectionString", string.Format("Data Source={0}", resolvedSqliteFile));
-            testHostConfig.Add("Storage:Type", "FileSystem");
-            testHostConfig.Add("Mirror:EnableReadThroughCaching", false.ToString());
-
-            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder().AddInMemoryCollection(testHostConfig);
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder().AddInMemoryCollection(this.Configuration);
             IWebHostBuilder hostBuilder = new WebHostBuilder()
                 .UseConfiguration(configurationBuilder.Build())
                 .UseStartup<Startup>();
 
-            if (_helper != null)
+            if (this._helper != null)
             {
                 hostBuilder.ConfigureLogging((builder) =>
                 {
-                    builder.AddProvider(new XunitLoggerProvider(_helper));
+                    builder.AddProvider(new XunitLoggerProvider(this._helper));
                     builder.SetMinimumLevel(_minimumLevel);
                 });
             }
