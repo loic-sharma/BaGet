@@ -104,11 +104,14 @@ namespace BaGet
             {
                 var options = provider.GetRequiredService<IOptions<FileSystemStorageOptions>>().Value;
                 var path = string.IsNullOrEmpty(options.Path)
-                    ? Path.Combine(Directory.GetCurrentDirectory(), "Packages")
+                    ? Path.Combine(Directory.GetCurrentDirectory(), FilePackageStorageService.DefaultPackagesFolderName)
                     : options.Path;
 
                 // Ensure the package storage directory exists
-                Directory.CreateDirectory(path);
+                if (Directory.Exists(path) == false)
+                {
+                    Directory.CreateDirectory(path);
+                }
 
                 return new FilePackageStorageService(path);
             });
