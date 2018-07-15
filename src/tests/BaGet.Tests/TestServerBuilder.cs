@@ -26,7 +26,7 @@ namespace BaGet.Tests
         /// </summary>
         private TestServerBuilder()
         {
-            this.Configuration = new Dictionary<string, string>();
+            Configuration = new Dictionary<string, string>();
         }
 
         private ITestOutputHelper _helper;
@@ -76,16 +76,16 @@ namespace BaGet.Tests
         /// <returns></returns>
         public TestServerBuilder UseEmptyTempFolder()
         {
-            this.Configuration.Add(DatabaseTypeKey, DatabaseType.Sqlite.ToString());
+            Configuration.Add(DatabaseTypeKey, DatabaseType.Sqlite.ToString());
             string uniqueTempFolder = Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(uniqueTempFolder);
             string resolvedSqliteFile = Path.Combine(uniqueTempFolder,"BaGet.db");
             string storageFolderPath = Path.Combine(uniqueTempFolder, FilePackageStorageService.DefaultPackagesFolderName);
 
-            this.Configuration.Add(ConnectionStringKey, string.Format("Data Source={0}", resolvedSqliteFile));
-            this.Configuration.Add(StorageTypeKey, StorageType.FileSystem.ToString());
-            this.Configuration.Add(MirrorEnableReadThroughCachingKey, false.ToString());
-            this.Configuration.Add(FileSystemStoragePathKey, storageFolderPath);
+            Configuration.Add(ConnectionStringKey, string.Format("Data Source={0}", resolvedSqliteFile));
+            Configuration.Add(StorageTypeKey, StorageType.FileSystem.ToString());
+            Configuration.Add(MirrorEnableReadThroughCachingKey, false.ToString());
+            Configuration.Add(FileSystemStoragePathKey, storageFolderPath);
             return this;
         }
 
@@ -97,11 +97,11 @@ namespace BaGet.Tests
                 .UseConfiguration(configurationBuilder.Build())
                 .UseStartup<Startup>();
 
-            if (this._helper != null)
+            if (_helper != null)
             {
                 hostBuilder.ConfigureLogging((builder) =>
                 {
-                    builder.AddProvider(new XunitLoggerProvider(this._helper));
+                    builder.AddProvider(new XunitLoggerProvider(_helper));
                     builder.SetMinimumLevel(_minimumLevel);
                 });
             }
