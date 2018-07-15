@@ -47,7 +47,7 @@ namespace BaGet.Extensions
                 {
                     throw new InvalidOperationException($"The '{nameof(databaseOptions.ConnectionString)}' configuration is missing");
                 }
-                options.UseSqlite(databaseOptions.ConnectionString);//required Syntax: "Data Source=Filename"!!!
+                options.UseSqlite(databaseOptions.ConnectionString);
             });
 
             services.AddDbContext<SqlServerContext>((provider, options) =>

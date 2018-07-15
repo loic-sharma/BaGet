@@ -108,7 +108,7 @@ namespace BaGet
                     : options.Path;
 
                 // Ensure the package storage directory exists
-                if (Directory.Exists(path) == false)
+                if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
                 }

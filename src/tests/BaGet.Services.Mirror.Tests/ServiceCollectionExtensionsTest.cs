@@ -20,7 +20,7 @@ namespace BaGet.Services.Mirror.Tests
                 .AddMirrorServices() //Method Under Test!
                 .BuildServiceProvider();
 
-            InvalidOperationException expected = Assert.Throws<InvalidOperationException>(
+            var expected = Assert.Throws<InvalidOperationException>(
                 () => provider.GetRequiredService<IMirrorService>()
             );
             Assert.Contains(nameof(BaGetOptions.Mirror), expected.Message);

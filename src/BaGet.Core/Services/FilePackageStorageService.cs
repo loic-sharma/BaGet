@@ -13,7 +13,6 @@ namespace BaGet.Core.Services
 
         public static readonly string DefaultPackagesFolderName = "Packages";
 
-
         public FilePackageStorageService(string storePath)
         {
             _storePath = storePath ?? throw new ArgumentNullException(nameof(storePath));

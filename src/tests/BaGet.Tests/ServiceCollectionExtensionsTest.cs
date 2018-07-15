@@ -23,7 +23,7 @@ namespace BaGet.Tests
                 .AddBaGetContext() //Method Under Test
                 .BuildServiceProvider();
 
-            InvalidOperationException expected = Assert.Throws<InvalidOperationException>( 
+            var expected = Assert.Throws<InvalidOperationException>( 
                 () => provider.GetRequiredService<IContext>().Database
             );
 
@@ -109,7 +109,7 @@ namespace BaGet.Tests
                 .AddBaGetContext() //Method Under Test
                 .BuildServiceProvider();
 
-            InvalidOperationException expected = Assert.Throws<InvalidOperationException>(
+            var expected = Assert.Throws<InvalidOperationException>(
                            () => provider.GetRequiredService<IContext>().Database
                        );
             //currently the DatabaseType is implemented as Enum => configuration System uses deserialization and we get a 
