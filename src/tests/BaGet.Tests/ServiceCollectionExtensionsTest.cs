@@ -16,20 +16,18 @@ namespace BaGet.Tests
         private readonly string ConnectionStringKey = $"{nameof(BaGetOptions.Database)}:{nameof(DatabaseOptions.ConnectionString)}";
 
         [Fact]
-
         public void AskServiceProviderForNotConfiguredDatabaseOptions()
         {
             ServiceProvider provider = new ServiceCollection()
                 .AddBaGetContext() //Method Under Test
                 .BuildServiceProvider();
 
-            var expected = Assert.Throws<InvalidOperationException>( 
+            var expected = Assert.Throws<InvalidOperationException>(
                 () => provider.GetRequiredService<IContext>().Database
             );
 
-            Assert.Contains(nameof(BaGetOptions.Database), expected.Message);        
+            Assert.Contains(nameof(BaGetOptions.Database), expected.Message);
         }
-
 
         [Fact]
         public void AskServiceProviderForWellConfiguredDatabaseOptions()
@@ -48,9 +46,6 @@ namespace BaGet.Tests
 
             Assert.NotNull(provider.GetRequiredService<IContext>());
         }
-
-
-
 
         [Fact]
         public void AskServiceProviderForWellConfiguredSqliteContext()
@@ -116,16 +111,5 @@ namespace BaGet.Tests
             //"Failed to convert '<invalid>' to type 'BaGet.Core.Configuration.DatabaseType" message in case of invalid Type.
             //not sure if it is worth to improve that!
         }
-
-
-
-
-
-
-
-
-
-
-
     }
 }

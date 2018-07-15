@@ -43,14 +43,12 @@ namespace BaGet.Tests
         /// <param name="helper"></param>
         /// <param name="minimumLevel"></param>
         /// <returns></returns>
-        public TestServerBuilder TraceToTestOutputHelper(ITestOutputHelper helper, LogLevel minimumLevel )
+        public TestServerBuilder TraceToTestOutputHelper(ITestOutputHelper helper, LogLevel minimumLevel)
         {
             _helper = helper ?? throw new ArgumentNullException(nameof(helper));
             _minimumLevel = minimumLevel;
             return this;
         }
-
-
 
         /// <summary>
         /// Not configured Test Server Builder
@@ -79,7 +77,7 @@ namespace BaGet.Tests
             Configuration.Add(DatabaseTypeKey, DatabaseType.Sqlite.ToString());
             string uniqueTempFolder = Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(uniqueTempFolder);
-            string resolvedSqliteFile = Path.Combine(uniqueTempFolder,"BaGet.db");
+            string resolvedSqliteFile = Path.Combine(uniqueTempFolder, "BaGet.db");
             string storageFolderPath = Path.Combine(uniqueTempFolder, FilePackageStorageService.DefaultPackagesFolderName);
 
             Configuration.Add(ConnectionStringKey, string.Format("Data Source={0}", resolvedSqliteFile));
@@ -88,7 +86,6 @@ namespace BaGet.Tests
             Configuration.Add(FileSystemStoragePathKey, storageFolderPath);
             return this;
         }
-
 
         public TestServer Build()
         {
