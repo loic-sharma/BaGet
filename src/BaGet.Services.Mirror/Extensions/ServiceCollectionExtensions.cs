@@ -15,11 +15,18 @@ namespace BaGet.Services.Mirror.Extensions
         /// Add the services that mirror an upstream package source.
         /// </summary>
         /// <param name="services">The defined services.</param>
-        public static void AddMirrorServices(this IServiceCollection services)
+        public static IServiceCollection AddMirrorServices(this IServiceCollection services)
         {
+            if (services == null) throw new ArgumentNullException(nameof(services));
+
             services.AddTransient<IMirrorService>(provider =>
             {
                 var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
+
+                if (options.Mirror == null)
+                {
+                    throw new InvalidOperationException($"The '{nameof(options.Mirror)}' configuration is missing");
+                }
 
                 if (!options.Mirror.EnableReadThroughCaching)
                 {
@@ -49,6 +56,8 @@ namespace BaGet.Services.Mirror.Extensions
 
                 return client;
             });
+
+            return services;
         }
     }
 }

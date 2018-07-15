@@ -81,6 +81,10 @@ namespace BaGet
             {
                 var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
 
+                if (options.Storage == null)
+                {
+                    throw new InvalidOperationException($"The '{nameof(options.Storage)}' configuration is missing");
+                }
                 switch (options.Storage.Type)
                 {
                     case StorageType.FileSystem:
@@ -90,8 +94,9 @@ namespace BaGet
                         return provider.GetRequiredService<BlobPackageStorageService>();
 
                     default:
-                        throw new InvalidOperationException(
-                            $"Unsupported storage service: {options.Storage.Type}");
+                        //this exception is only thrown if there is a not implemented value on the enum "StorageType"
+                        //if there is a invalid value inside the Config file/IConfigg we get a deserialization error.
+                        throw new InvalidOperationException($"Unsupported storage service: {options.Storage.Type}");
                 }
             });
 
@@ -99,11 +104,14 @@ namespace BaGet
             {
                 var options = provider.GetRequiredService<IOptions<FileSystemStorageOptions>>().Value;
                 var path = string.IsNullOrEmpty(options.Path)
-                    ? Path.Combine(Directory.GetCurrentDirectory(), "Packages")
+                    ? Path.Combine(Directory.GetCurrentDirectory(), FilePackageStorageService.DefaultPackagesFolderName)
                     : options.Path;
 
                 // Ensure the package storage directory exists
-                Directory.CreateDirectory(path);
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
 
                 return new FilePackageStorageService(path);
             });
@@ -116,7 +124,10 @@ namespace BaGet
             services.AddTransient<ISearchService>(provider =>
             {
                 var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
-
+                if (options.Search == null)
+                {
+                    throw new InvalidOperationException($"The '{nameof(options.Search)}' configuration is missing");
+                }
                 switch (options.Search.Type)
                 {
                     case SearchType.Database:
