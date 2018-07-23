@@ -68,8 +68,8 @@ namespace BaGet.Core.Services
 
         private void EnsurePathExists(PackageIdentity package)
         {
-            var id = package.Id;
-            var version = package.Version.ToNormalizedString();
+            var id = package.Id.ToLowerInvariant();
+            var version = package.Version.ToNormalizedString().ToLowerInvariant();
             var path = Path.Combine(_storePath, id, version);
 
             Directory.CreateDirectory(path);
