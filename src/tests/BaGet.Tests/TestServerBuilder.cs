@@ -20,6 +20,16 @@ namespace BaGet.Tests
     /// </summary>
     public class TestServerBuilder
     {
+
+        private ITestOutputHelper _helper;
+        private LogLevel _minimumLevel = LogLevel.None;
+
+        private readonly string DatabaseTypeKey = $"{nameof(BaGetOptions.Database)}:{nameof(DatabaseOptions.Type)}";
+        private readonly string ConnectionStringKey = $"{nameof(BaGetOptions.Database)}:{nameof(DatabaseOptions.ConnectionString)}";
+        private readonly string StorageTypeKey = $"{nameof(BaGetOptions.Storage)}:{nameof(StorageOptions.Type)}";
+        private readonly string MirrorEnableReadThroughCachingKey = $"{nameof(BaGetOptions.Mirror)}:{nameof(MirrorOptions.EnableReadThroughCaching)}";
+        private readonly string FileSystemStoragePathKey = $"{nameof(BaGetOptions.Storage)}:{nameof(FileSystemStorageOptions.Path)}";
+
         /// <summary>
         /// private/hidden Constructor.
         /// Tests should use some of the static methods!
@@ -28,9 +38,6 @@ namespace BaGet.Tests
         {
             Configuration = new Dictionary<string, string>();
         }
-
-        private ITestOutputHelper _helper;
-        private LogLevel _minimumLevel = LogLevel.None;
 
         /// <summary>
         /// In Memory representation of Config Settings
@@ -56,14 +63,8 @@ namespace BaGet.Tests
         /// <returns></returns>
         public static TestServerBuilder Create()
         {
-            return new TestServerBuilder();
+            return new TestServerBuilder().UseEmptyTempFolder();
         }
-
-        private readonly string DatabaseTypeKey = $"{nameof(BaGetOptions.Database)}:{nameof(DatabaseOptions.Type)}";
-        private readonly string ConnectionStringKey = $"{nameof(BaGetOptions.Database)}:{nameof(DatabaseOptions.ConnectionString)}";
-        private readonly string StorageTypeKey = $"{nameof(BaGetOptions.Storage)}:{nameof(StorageOptions.Type)}";
-        private readonly string MirrorEnableReadThroughCachingKey = $"{nameof(BaGetOptions.Mirror)}:{nameof(MirrorOptions.EnableReadThroughCaching)}";
-        private readonly string FileSystemStoragePathKey = $"{nameof(BaGetOptions.Storage)}:{nameof(FileSystemStorageOptions.Path)}";
 
         /// <summary>
         /// Creates a subdirectory: Path.GetTempPath() + Guid  
@@ -72,7 +73,7 @@ namespace BaGet.Tests
         /// - FilePackageStorageService => .\Packages\*.*
         /// </summary>
         /// <returns></returns>
-        public TestServerBuilder UseEmptyTempFolder()
+        private TestServerBuilder UseEmptyTempFolder()
         {
             Configuration.Add(DatabaseTypeKey, DatabaseType.Sqlite.ToString());
             string uniqueTempFolder = Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString("N"));
