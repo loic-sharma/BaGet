@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Core.Services;
-using BaGet.Extensions;
+using BaGet.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace BaGet.Controllers
+namespace BaGet.Web.Controllers
 {
     public class SearchController : Controller
     {

@@ -1,13 +1,12 @@
 using System;
 using System.Threading.Tasks;
 using BaGet.Core.Services;
-using BaGet.Extensions;
-using BaGet.Services.Mirror;
+using BaGet.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using NuGet.Versioning;
 
-namespace BaGet.Controllers.Registration
+namespace BaGet.Controllers.Web.Registration
 {
     /// <summary>
     /// The API to retrieve the metadata of a specific version of a specific package.

@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.Services;
 using Microsoft.Extensions.Logging;
 using NuGet.Versioning;
 
-namespace BaGet.Services.Mirror
+namespace BaGet.Core.Services
 {
     public class MirrorService : IMirrorService
     {

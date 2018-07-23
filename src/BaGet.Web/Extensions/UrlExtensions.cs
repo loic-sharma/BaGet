@@ -2,24 +2,24 @@
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Versioning;
 
-namespace BaGet.Extensions
+namespace BaGet.Web.Extensions
 {
     public static class UrlExtensions
     {
         public static string PackageBase(this IUrlHelper url) => url.AbsoluteUrl("v3/package");
         public static string RegistrationsBase(this IUrlHelper url) => url.AbsoluteUrl("v3/registration");
-        public static string PackagePublish(this IUrlHelper url) => url.AbsoluteRouteUrl(Startup.UploadRouteName);
-        public static string PackageSearch(this IUrlHelper url) => url.AbsoluteRouteUrl(Startup.SearchRouteName);
-        public static string PackageAutocomplete(this IUrlHelper url) => url.AbsoluteRouteUrl(Startup.AutocompleteRouteName);
+        public static string PackagePublish(this IUrlHelper url) => url.AbsoluteRouteUrl(Routes.UploadRouteName);
+        public static string PackageSearch(this IUrlHelper url) => url.AbsoluteRouteUrl(Routes.SearchRouteName);
+        public static string PackageAutocomplete(this IUrlHelper url) => url.AbsoluteRouteUrl(Routes.AutocompleteRouteName);
 
         public static string PackageRegistration(this IUrlHelper url, string id)
             => url.AbsoluteRouteUrl(
-                Startup.RegistrationIndexRouteName,
+                Routes.RegistrationIndexRouteName,
                 new { Id = id.ToLowerInvariant() });
 
         public static string PackageRegistration(this IUrlHelper url, string id, NuGetVersion version)
             => url.AbsoluteRouteUrl(
-                Startup.RegistrationLeafRouteName,
+                Routes.RegistrationLeafRouteName,
                 new {
                     Id = id.ToLowerInvariant(),
                     Version = version.ToNormalizedString().ToLowerInvariant()
@@ -31,7 +31,7 @@ namespace BaGet.Extensions
             var versionString = version.ToNormalizedString().ToLowerInvariant();
 
             return url.AbsoluteRouteUrl(
-                Startup.PackageDownloadRouteName,
+                Routes.PackageDownloadRouteName,
                 new
                 {
                     id,

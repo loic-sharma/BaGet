@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BaGet.Services.Mirror
+namespace BaGet.Core.Services
 {
     public interface IPackageDownloader
     {

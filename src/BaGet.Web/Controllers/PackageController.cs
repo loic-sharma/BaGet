@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Core.Services;
-using BaGet.Services.Mirror;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
