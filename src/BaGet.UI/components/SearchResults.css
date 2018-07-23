@@ -2,6 +2,10 @@
   padding-top: 20px;
 }
 
+.search-result .package-icon {
+  margin-top: 20px;
+}
+
 .info {
   color: #666;
   line-height: 20px;

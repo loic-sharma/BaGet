@@ -131,7 +131,7 @@ export default class DisplayPackage extends React.Component<DisplayPackageProps,
     } else {
       return (
         <div className="row display-package">
-          <aside className="col-sm-1">
+          <aside className="col-sm-1 package-icon">
             <img src={this.state.package.iconUrl} className="img-responsive" />
           </aside>
           <article className="col-sm-8 package-details-main">

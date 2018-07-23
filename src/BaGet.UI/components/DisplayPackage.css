@@ -2,6 +2,10 @@
   padding-top: 30px;
 }
 
+.display-package .package-icon {
+  margin-top: 20px;
+}
+
 .install-script:before {
   content: "> ";
 }
