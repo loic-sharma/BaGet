@@ -85,6 +85,7 @@ namespace BaGet
                 {
                     throw new InvalidOperationException($"The '{nameof(options.Storage)}' configuration is missing");
                 }
+
                 switch (options.Storage.Type)
                 {
                     case StorageType.FileSystem:
@@ -94,8 +95,6 @@ namespace BaGet
                         return provider.GetRequiredService<BlobPackageStorageService>();
 
                     default:
-                        //this exception is only thrown if there is a not implemented value on the enum "StorageType"
-                        //if there is a invalid value inside the Config file/IConfigg we get a deserialization error.
                         throw new InvalidOperationException($"Unsupported storage service: {options.Storage.Type}");
                 }
             });
@@ -107,7 +106,6 @@ namespace BaGet
                     ? Path.Combine(Directory.GetCurrentDirectory(), FilePackageStorageService.DefaultPackagesFolderName)
                     : options.Path;
 
-                // Ensure the package storage directory exists
                 if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
