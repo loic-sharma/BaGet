@@ -10,8 +10,8 @@
     "author": "Loic Sharma",
     "repository": "github:loic-sharma/BaGet",
     "scripts": {
-        "develop": "parcel ./src/BaGet.UI/index.html",
-        "build": "parcel build ./src/BaGet.UI/index.html --out-dir src/BaGet/wwwroot"
+        "develop": "parcel ./index.html",
+        "build": "parcel build ./index.html --out-dir ../BaGet/wwwroot"
     },
     "dependencies": {
         "bootstrap": "3.3.7",
