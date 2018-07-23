@@ -3,3 +3,5 @@ mono: none
 dotnet: 2.1.302
 script:
  - dotnet build
+ - dotnet test tests/BaGet.Tests/BaGet.Tests.csproj
+ - dotnet test tests/BaGet.Core.Tests/BaGet.Core.Tests.csproj
