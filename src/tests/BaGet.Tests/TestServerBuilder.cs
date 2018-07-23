@@ -90,7 +90,7 @@ namespace BaGet.Tests
 
         public TestServer Build()
         {
-            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder().AddInMemoryCollection(this.Configuration);
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder().AddInMemoryCollection(Configuration);
             IWebHostBuilder hostBuilder = new WebHostBuilder()
                 .UseConfiguration(configurationBuilder.Build())
                 .UseStartup<Startup>();

@@ -107,9 +107,6 @@ namespace BaGet.Tests
             var expected = Assert.Throws<InvalidOperationException>(
                            () => provider.GetRequiredService<IContext>().Database
                        );
-            //currently the DatabaseType is implemented as Enum => configuration System uses deserialization and we get a 
-            //"Failed to convert '<invalid>' to type 'BaGet.Core.Configuration.DatabaseType" message in case of invalid Type.
-            //not sure if it is worth to improve that!
         }
     }
 }
