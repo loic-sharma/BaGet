@@ -21,7 +21,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{26A0B557-53F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C237857D-AD8E-4C52-974F-6A8155BB0C18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaGet.Web", "src\BaGet.Web\BaGet.Web.csproj", "{13EE64B4-23A4-4B41-A3F8-BB353B2F9F9F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Web", "src\BaGet.Web\BaGet.Web.csproj", "{13EE64B4-23A4-4B41-A3F8-BB353B2F9F9F}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{48B89831-0DF0-471A-88E1-7C3CF934DFDA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +63,10 @@ Global
 		{13EE64B4-23A4-4B41-A3F8-BB353B2F9F9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13EE64B4-23A4-4B41-A3F8-BB353B2F9F9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13EE64B4-23A4-4B41-A3F8-BB353B2F9F9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48B89831-0DF0-471A-88E1-7C3CF934DFDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48B89831-0DF0-471A-88E1-7C3CF934DFDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48B89831-0DF0-471A-88E1-7C3CF934DFDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48B89831-0DF0-471A-88E1-7C3CF934DFDA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
