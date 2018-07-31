@@ -23,6 +23,11 @@ namespace BaGet.Azure.Configuration
             _container = container ?? throw new ArgumentNullException(nameof(container));
         }
 
+        public Task<bool> ExistsAsync(PackageIdentity package)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task DeleteAsync(PackageIdentity package)
         {
             await GetPackageBlob(package).DeleteIfExistsAsync();
@@ -36,6 +41,7 @@ namespace BaGet.Azure.Configuration
 
             return DownloadBlobAsync(blob);
         }
+
         public Task<Stream> GetNuspecStreamAsync(PackageIdentity package)
         {
             var blob = GetNuspecBlob(package);

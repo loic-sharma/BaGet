@@ -49,10 +49,17 @@ namespace BaGet.Core.Services
         public Task<Stream> GetPackageStreamAsync(PackageIdentity package) => Task.FromResult(GetPackageStream(package));
         public Task<Stream> GetNuspecStreamAsync(PackageIdentity package) => Task.FromResult(GetNuspecStream(package));
         public Task<Stream> GetReadmeStreamAsync(PackageIdentity package) => Task.FromResult(GetReadmeStream(package));
+        public Task<bool> ExistsAsync(PackageIdentity package) => Task.FromResult(CheckIfFileExists(package.PackagePath()));
 
         private Stream GetPackageStream(PackageIdentity package) => GetFileStream(package.PackagePath());
         private Stream GetNuspecStream(PackageIdentity package) => GetFileStream(package.NuspecPath());
         private Stream GetReadmeStream(PackageIdentity package) => GetFileStream(package.ReadmePath());
+
+        private bool CheckIfFileExists(string path)
+        {
+            path = Path.Combine(_storePath, path);
+            return File.Exists(path);
+        }
 
         private Stream GetFileStream(string path)
         {
@@ -70,7 +77,7 @@ namespace BaGet.Core.Services
         {
             var id = package.Id.ToLowerInvariant();
             var version = package.Version.ToNormalizedString().ToLowerInvariant();
-            var path = Path.Combine(_storePath, id, version);
+            var path = Path.Combine(_storePath, id, version).ToLowerInvariant();
 
             Directory.CreateDirectory(path);
         }
