@@ -48,7 +48,7 @@ namespace BaGet.Core.Services
 
                     var identity = new PackageIdentity(packageId, packageVersion);
 
-                    if (await _storage.ExistsAsync(identity))
+                    if (await _storage.ExistsAsync(identity) && await _packages.ExistsAsync(packageId, packageVersion))
                     {
                         return IndexingResult.PackageAlreadyExists;
                     }
