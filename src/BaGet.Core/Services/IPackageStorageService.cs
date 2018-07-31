@@ -13,6 +13,7 @@ namespace BaGet.Core.Services
         Task<Stream> GetPackageStreamAsync(PackageIdentity package);
         Task<Stream> GetNuspecStreamAsync(PackageIdentity package);
         Task<Stream> GetReadmeStreamAsync(PackageIdentity package);
+        Task<bool> ExistsAsync(PackageIdentity package);
 
         Task DeleteAsync(PackageIdentity package);
     }

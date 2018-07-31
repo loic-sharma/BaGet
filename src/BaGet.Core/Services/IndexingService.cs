@@ -7,10 +7,12 @@ using BaGet.Core.Entities;
 using BaGet.Core.Extensions;
 using Microsoft.Extensions.Logging;
 using NuGet.Packaging;
+using NuGet.Packaging.Core;
+using PackageDependency = BaGet.Core.Entities.PackageDependency;
 
 namespace BaGet.Core.Services
 {
-    using BaGetPackageDependency = Entities.PackageDependency;
+    using BaGetPackageDependency = PackageDependency;
 
     public class IndexingService : IIndexingService
     {
@@ -44,7 +46,9 @@ namespace BaGet.Core.Services
                     var packageId = packageReader.NuspecReader.GetId();
                     var packageVersion = packageReader.NuspecReader.GetVersion();
 
-                    if (await _packages.ExistsAsync(packageId, packageVersion))
+                    var identity = new PackageIdentity(packageId, packageVersion);
+
+                    if (await _storage.ExistsAsync(identity))
                     {
                         return IndexingResult.PackageAlreadyExists;
                     }
@@ -81,6 +85,11 @@ namespace BaGet.Core.Services
 
                         throw;
                     }
+
+                    if (await _packages.ExistsAsync(packageId, packageVersion))
+                    {
+                        return IndexingResult.PackageAlreadyExists;
+                    }
                 }
             }
             catch (Exception e)
@@ -89,6 +98,7 @@ namespace BaGet.Core.Services
 
                 return IndexingResult.InvalidPackage;
             }
+
 
             // The package stream has been stored. Persist the package's metadata to the database.
             _logger.LogInformation(
