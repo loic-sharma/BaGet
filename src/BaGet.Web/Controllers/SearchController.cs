@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Core.Services;
 using BaGet.Web.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace BaGet.Web.Controllers
 {
+    [Authorize]
     public class SearchController : Controller
     {
         private readonly ISearchService _searchService;

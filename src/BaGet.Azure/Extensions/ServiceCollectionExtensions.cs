@@ -1,6 +1,8 @@
-﻿using BaGet.Azure.Configuration;
+﻿using BaGet.Azure.Authentication;
+using BaGet.Azure.Configuration;
 using BaGet.Azure.Search;
 using BaGet.Core.Configuration;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Azure.Search;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +18,7 @@ namespace BaGet.Azure.Extensions
         {
             services.Configure<BlobStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
             services.Configure<AzureSearchOptions>(configuration.GetSection(nameof(BaGetOptions.Search)));
+            services.Configure<AzureActiveDirectoryOptions>(configuration.GetSection(nameof(BaGetOptions.Authentication)));
         }
 
         public static void AddBlobPackageStorageService(this IServiceCollection services)
@@ -63,7 +66,17 @@ namespace BaGet.Azure.Extensions
 
                 return new SearchIndexClient(options.AccountName, PackageDocument.IndexName, credentials);
             });
+        }
 
+        public static void AddAzureAuthentication(this IServiceCollection services, IConfiguration configuration)
+        {
+            // https://github.com/Azure-Samples/active-directory-dotnet-webapp-webapi-openidconnect-aspnetcore
+            // https://github.com/Azure-Samples/active-directory-dotnet-native-aspnetcore
+            services.AddSingleton<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>();
+
+            services
+                .AddAuthentication(options => options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer();
         }
     }
 }

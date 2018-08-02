@@ -13,5 +13,7 @@
         public SearchOptions Search { get; set; }
 
         public MirrorOptions Mirror { get; set; }
+
+        public AuthenticationOptions Authentication { get; set; }
     }
 }
