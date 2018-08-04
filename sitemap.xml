@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-     <loc>http://127.0.0.1:8000/</loc>
+     <loc>https://loic-sharma.github.io/BaGet/</loc>
      <lastmod>2018-08-03</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>http://127.0.0.1:8000/private-feeds/</loc>
+     <loc>https://loic-sharma.github.io/BaGet/private-feeds/</loc>
      <lastmod>2018-08-03</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>http://127.0.0.1:8000/docker/</loc>
+     <loc>https://loic-sharma.github.io/BaGet/docker/</loc>
      <lastmod>2018-08-03</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>http://127.0.0.1:8000/azure/</loc>
+     <loc>https://loic-sharma.github.io/BaGet/azure/</loc>
      <lastmod>2018-08-03</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>http://127.0.0.1:8000/mirroring/</loc>
+     <loc>https://loic-sharma.github.io/BaGet/mirroring/</loc>
      <lastmod>2018-08-03</lastmod>
      <changefreq>daily</changefreq>
     </url>
