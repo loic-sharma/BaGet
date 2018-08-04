@@ -26,11 +26,25 @@
     
 
     
+        
     <url>
-     <loc>https://loic-sharma.github.io/BaGet//azure/</loc>
+     <loc>https://loic-sharma.github.io/BaGet//cloud/azure/</loc>
      <lastmod>2018-08-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
+    <url>
+     <loc>https://loic-sharma.github.io/BaGet//cloud/gcp/</loc>
+     <lastmod>2018-08-04</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>https://loic-sharma.github.io/BaGet//cloud/aws/</loc>
+     <lastmod>2018-08-04</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
     
 
     

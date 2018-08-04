@@ -13,7 +13,7 @@
         <meta name="description" content="A lightweight NuGet service implementation">
       
       
-        <link rel="canonical" href="https://loic-sharma.github.io/BaGet/vs/nugetorg/">
+        <link rel="canonical" href="https://loic-sharma.github.io/BaGet/cloud/gcp/">
       
       
         <meta name="author" content="Loic Sharma">
@@ -42,7 +42,7 @@
     
     
       
-        <title>nuget.org - BaGet</title>
+        <title>Google Cloud - BaGet</title>
       
     
     
@@ -104,7 +104,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#nugetorg" tabindex="1" class="md-skip">
+      <a href="#running-baget-on-the-google-cloud" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -130,7 +130,7 @@
                 BaGet
               </span>
               <span class="md-header-nav__topic">
-                nuget.org
+                Google Cloud
               </span>
             
           
@@ -281,10 +281,12 @@
       
       
 
+  
 
-  <li class="md-nav__item md-nav__item--nested">
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
     
     <label class="md-nav__link" for="nav-4">
       Running in the Cloud
@@ -302,7 +304,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../cloud/azure/" title="Azure" class="md-nav__link">
+    <a href="../azure/" title="Azure" class="md-nav__link">
       Azure
     </a>
   </li>
@@ -312,11 +314,20 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../../cloud/gcp/" title="Google Cloud" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+    <a href="./" title="Google Cloud" class="md-nav__link md-nav__link--active">
       Google Cloud
     </a>
+    
   </li>
 
         
@@ -326,7 +337,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../cloud/aws/" title="AWS" class="md-nav__link">
+    <a href="../aws/" title="AWS" class="md-nav__link">
       AWS
     </a>
   </li>
@@ -377,12 +388,10 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+  <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
     
     <label class="md-nav__link" for="nav-6">
       BaGet vs. Other Software
@@ -398,20 +407,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-    <a href="./" title="nuget.org" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../../vs/nugetorg/" title="nuget.org" class="md-nav__link">
       nuget.org
     </a>
-    
   </li>
 
         
@@ -421,7 +421,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../nugetserver/" title="NuGet.Server" class="md-nav__link">
+    <a href="../../vs/nugetserver/" title="NuGet.Server" class="md-nav__link">
       NuGet.Server
     </a>
   </li>
@@ -433,7 +433,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../vsts/" title="VSTS" class="md-nav__link">
+    <a href="../../vs/vsts/" title="VSTS" class="md-nav__link">
       VSTS
     </a>
   </li>
@@ -445,7 +445,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../myget/" title="MyGet" class="md-nav__link">
+    <a href="../../vs/myget/" title="MyGet" class="md-nav__link">
       MyGet
     </a>
   </li>
@@ -457,7 +457,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../liget/" title="LiGet" class="md-nav__link">
+    <a href="../../vs/liget/" title="LiGet" class="md-nav__link">
       LiGet
     </a>
   </li>
@@ -469,7 +469,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../artifactory/" title="Artifactory" class="md-nav__link">
+    <a href="../../vs/artifactory/" title="Artifactory" class="md-nav__link">
       Artifactory
     </a>
   </li>
@@ -481,7 +481,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../nexus/" title="Nexus" class="md-nav__link">
+    <a href="../../vs/nexus/" title="Nexus" class="md-nav__link">
       Nexus
     </a>
   </li>
@@ -493,7 +493,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../teamcity/" title="TeamCity" class="md-nav__link">
+    <a href="../../vs/teamcity/" title="TeamCity" class="md-nav__link">
       TeamCity
     </a>
   </li>
@@ -531,52 +531,17 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/loic-sharma/BaGet/edit/master/docs/vs/nugetorg.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                  <a href="https://github.com/loic-sharma/BaGet/edit/master/docs/cloud/gcp.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                <h1 id="nugetorg">nuget.org<a class="headerlink" href="#nugetorg" title="Permanent link">&para;</a></h1>
+                <h1 id="running-baget-on-the-google-cloud">Running BaGet on the Google Cloud<a class="headerlink" href="#running-baget-on-the-google-cloud" title="Permanent link">&para;</a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This page is a work in progress!</p>
 </div>
-<p><a href="https://www.nuget.org/">nuget.org</a>, also known as the "Gallery", is the defacto feed to host open
-source packages. You should publish NuGet packages for your open-source projects here.</p>
-<p>The Gallery is battle-tested and proven to scale well. You can find a guide on how to host
-your own Gallery instance on <a href="https://github.com/NuGet/NuGetGallery/wiki/Hosting-nuget.org's-v3-services">the Gallery's wiki</a>.
-You can find the Gallery's code on GitHub:</p>
-<ul>
-<li><a href="https://github.com/NuGet/NuGetGallery">NuGet/NuGetGallery</a> - the <a href="https://nuget.org">nuget.org</a>
-website and v2 APIs</li>
-<li><a href="https://github.com/NuGet/NuGet.Jobs/">NuGet/NuGet.Jobs</a> - the Gallery's jobs for things like validation and package statistics.</li>
-<li><a href="https://github.com/NuGet/NuGet.Services.Metadata/">NuGet/NuGet.Services.Metadata</a> - NuGet's v3 implementation</li>
-<li><a href="https://github.com/NuGet/ServerCommon">NuGet/ServerCommon</a> - common libraries used across NuGet's services</li>
-</ul>
-<p>As you can tell, nuget.org is a complex beast. Hosting your own instance of the Gallery is not for the faint of heart.</p>
-<h1 id="baget-vs-nugetorg">BaGet vs nuget.org<a class="headerlink" href="#baget-vs-nugetorg" title="Permanent link">&para;</a></h1>
-<p>TODO. See <a href="https://github.com/loic-sharma/BaGet/issues/71">this issue</a> for a deep-dive.</p>
-<ul>
-<li>BaGet only competes with <a href="https://github.com/NuGet/NuGet.Services.Metadata/">NuGet/NuGet.Services.Metadata</a></li>
-<li>nuget.org's v3 implementation is static<ul>
-<li>Runs only on Windows</li>
-<li>Highly tied to Azure</li>
-<li>Scales reads to near infinity</li>
-<li>Doesn't scale well for writes</li>
-<li>Static JSON files are hosted on Azure Blob Storage</li>
-<li>Served by a Content Delivery Network</li>
-<li>Files are updated by <code>feed2catalog</code>, <code>catalog2registration</code>, <code>catalog2dnx</code>, and <code>catalog2lucene</code> jobs</li>
-</ul>
-</li>
-<li>BaGet's v3 implementation is dynamic<ul>
-<li>Cross-platform implementation</li>
-<li>Requests are served by a service that queries a database</li>
-<li>Simpler architecture, which makes it easier to deploy and run small feeds</li>
-<li>Easier to scale for writes</li>
-<li>Harder to scale for reads</li>
-<li>Easier to add new features</li>
-<li>Harder to make as reliable</li>
-</ul>
-</li>
-</ul>
+<p>Sadly, BaGet does not support GCP today. We're open source and accept contributions!
+<a href="https://github.com/loic-sharma/BaGet">Fork us on GitHub</a>.</p>
+<p>For now, please refer to the <a href="../azure">Azure documentation</a>.</p>
                 
                   
                 
@@ -597,7 +562,7 @@ website and v2 APIs</li>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../../tools/mirroring/" title="Mirroring" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../azure/" title="Azure" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -606,19 +571,19 @@ website and v2 APIs</li>
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Mirroring
+                Azure
               </span>
             </div>
           </a>
         
         
-          <a href="../nugetserver/" title="NuGet.Server" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../aws/" title="AWS" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                NuGet.Server
+                AWS
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">

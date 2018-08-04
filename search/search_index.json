@@ -71,14 +71,34 @@
             "title": "Configuration"
         }, 
         {
-            "location": "/azure/", 
+            "location": "/cloud/azure/", 
             "text": "Running BaGet on Azure\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nUse Azure to scale BaGet to nuget.org scale.\n\n\nTODO:\n\n\n\n\nApp Service\n\n\nAzure SQL Database\n\n\nAzure Blob Storage\n\n\nAzure Search\n\n\nHigh availibility setup", 
             "title": "Azure"
         }, 
         {
-            "location": "/azure/#running-baget-on-azure", 
+            "location": "/cloud/azure/#running-baget-on-azure", 
             "text": "Warning  This page is a work in progress!   Use Azure to scale BaGet to nuget.org scale.  TODO:   App Service  Azure SQL Database  Azure Blob Storage  Azure Search  High availibility setup", 
             "title": "Running BaGet on Azure"
+        }, 
+        {
+            "location": "/cloud/gcp/", 
+            "text": "Running BaGet on the Google Cloud\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nSadly, BaGet does not support GCP today. We're open source and accept contributions!\n\nFork us on GitHub\n.\n\n\nFor now, please refer to the \nAzure documentation\n.", 
+            "title": "Google Cloud"
+        }, 
+        {
+            "location": "/cloud/gcp/#running-baget-on-the-google-cloud", 
+            "text": "Warning  This page is a work in progress!   Sadly, BaGet does not support GCP today. We're open source and accept contributions! Fork us on GitHub .  For now, please refer to the  Azure documentation .", 
+            "title": "Running BaGet on the Google Cloud"
+        }, 
+        {
+            "location": "/cloud/aws/", 
+            "text": "Running BaGet on AWS\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nSadly, BaGet does not support AWS today. We're open source and accept contributions!\n\nFork us on GitHub\n.\n\n\nFor now, please refer to the \nAzure documentation\n.", 
+            "title": "AWS"
+        }, 
+        {
+            "location": "/cloud/aws/#running-baget-on-aws", 
+            "text": "Warning  This page is a work in progress!   Sadly, BaGet does not support AWS today. We're open source and accept contributions! Fork us on GitHub .  For now, please refer to the  Azure documentation .", 
+            "title": "Running BaGet on AWS"
         }, 
         {
             "location": "/tools/mirroring/", 
