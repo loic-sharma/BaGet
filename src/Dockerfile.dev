@@ -1,0 +1,15 @@
+# Build environment
+FROM microsoft/dotnet:2.1.302-sdk AS build-env
+WORKDIR /src
+COPY * ./
+RUN dotnet restore && dotnet publish -c Debug -o out
+
+# Build runtime image
+FROM microsoft/dotnet:2.1.1-aspnetcore-runtime-alpine
+ENV ASPNETCORE_ENVIRONMENT Development
+ENV ASPNETCORE_URLS http://0.0.0.0:5000
+EXPOSE 5000
+WORKDIR /src
+COPY --from=build-env /src/out .
+ENTRYPOINT ["dotnet"]
+CMD ["run", "-c", "Debug"]
