@@ -62,7 +62,7 @@ namespace BaGet.Tests
 
             testHostConfig.Add("Database:ConnectionString", string.Format("Data Source={0}", resolvedSqliteFile));
             testHostConfig.Add("Storage:Type", "FileSystem");
-            testHostConfig.Add("Mirror:EnableReadThroughCaching", false.ToString());
+            testHostConfig.Add("Mirror:Enabled", false.ToString());
 
             IConfigurationBuilder configurationBuilder = new ConfigurationBuilder().AddInMemoryCollection(testHostConfig);
             IWebHostBuilder hostBuilder = new WebHostBuilder()
