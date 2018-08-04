@@ -13,7 +13,7 @@
         <meta name="description" content="A lightweight NuGet service implementation">
       
       
-        <link rel="canonical" href="https://loic-sharma.github.io/BaGet/">
+        <link rel="canonical" href="https://loic-sharma.github.io/BaGet/tools/mirroring/">
       
       
         <meta name="author" content="Loic Sharma">
@@ -37,18 +37,18 @@
       
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
-      <link rel="shortcut icon" href="./assets/images/favicon.png">
+      <link rel="shortcut icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-0.17.3, mkdocs-material-2.9.4">
     
     
       
-        <title>BaGet</title>
+        <title>Mirroring - BaGet</title>
       
     
     
-      <link rel="stylesheet" href="./assets/stylesheets/application.451f80e5.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/application.451f80e5.css">
       
-        <link rel="stylesheet" href="./assets/stylesheets/application-palette.22915126.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/application-palette.22915126.css">
       
       
         
@@ -57,7 +57,7 @@
       
     
     
-      <script src="./assets/javascripts/modernizr.1aa3b519.js"></script>
+      <script src="../../assets/javascripts/modernizr.1aa3b519.js"></script>
     
     
       <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
@@ -66,7 +66,7 @@
         <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
       
     
-    <link rel="stylesheet" href="./assets/fonts/material-icons.css">
+    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
     
     
   </head>
@@ -104,7 +104,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#baget" tabindex="1" class="md-skip">
+      <a href="#mirroring-nugetorg" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -126,7 +126,12 @@
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           
             
-              BaGet
+              <span class="md-header-nav__topic">
+                BaGet
+              </span>
+              <span class="md-header-nav__topic">
+                Mirroring
+              </span>
             
           
         </div>
@@ -240,63 +245,11 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        BaGet
-      </label>
-    
-    <a href="." title="BaGet" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../.." title="BaGet" class="md-nav__link">
       BaGet
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#getting-started" title="Getting Started" class="md-nav__link">
-    Getting Started
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#pushing-packages" title="Pushing Packages" class="md-nav__link">
-    Pushing Packages
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#running-baget-on-docker" title="Running BaGet on Docker" class="md-nav__link">
-    Running BaGet on Docker
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
     
@@ -306,7 +259,7 @@
 
 
   <li class="md-nav__item">
-    <a href="configuration/" title="Configuration" class="md-nav__link">
+    <a href="../../configuration/" title="Configuration" class="md-nav__link">
       Configuration
     </a>
   </li>
@@ -318,7 +271,7 @@
 
 
   <li class="md-nav__item">
-    <a href="private-feeds/" title="Private Feeds" class="md-nav__link">
+    <a href="../../private-feeds/" title="Private Feeds" class="md-nav__link">
       Private Feeds
     </a>
   </li>
@@ -330,7 +283,7 @@
 
 
   <li class="md-nav__item">
-    <a href="azure/" title="Azure" class="md-nav__link">
+    <a href="../../azure/" title="Azure" class="md-nav__link">
       Azure
     </a>
   </li>
@@ -340,10 +293,12 @@
       
       
 
+  
 
-  <li class="md-nav__item md-nav__item--nested">
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" checked>
     
     <label class="md-nav__link" for="nav-5">
       Tools
@@ -359,11 +314,49 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="tools/mirroring/" title="Mirroring" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Mirroring
+      </label>
+    
+    <a href="./" title="Mirroring" class="md-nav__link md-nav__link--active">
       Mirroring
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#indexing-nugetorg" title="Indexing nuget.org" class="md-nav__link">
+    Indexing nuget.org
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
         
@@ -397,7 +390,7 @@
 
 
   <li class="md-nav__item">
-    <a href="vs/nugetorg/" title="nuget.org" class="md-nav__link">
+    <a href="../../vs/nugetorg/" title="nuget.org" class="md-nav__link">
       nuget.org
     </a>
   </li>
@@ -409,7 +402,7 @@
 
 
   <li class="md-nav__item">
-    <a href="vs/nugetserver/" title="NuGet.Server" class="md-nav__link">
+    <a href="../../vs/nugetserver/" title="NuGet.Server" class="md-nav__link">
       NuGet.Server
     </a>
   </li>
@@ -421,7 +414,7 @@
 
 
   <li class="md-nav__item">
-    <a href="vs/vsts/" title="VSTS" class="md-nav__link">
+    <a href="../../vs/vsts/" title="VSTS" class="md-nav__link">
       VSTS
     </a>
   </li>
@@ -433,7 +426,7 @@
 
 
   <li class="md-nav__item">
-    <a href="vs/myget/" title="MyGet" class="md-nav__link">
+    <a href="../../vs/myget/" title="MyGet" class="md-nav__link">
       MyGet
     </a>
   </li>
@@ -445,7 +438,7 @@
 
 
   <li class="md-nav__item">
-    <a href="vs/liget/" title="LiGet" class="md-nav__link">
+    <a href="../../vs/liget/" title="LiGet" class="md-nav__link">
       LiGet
     </a>
   </li>
@@ -457,7 +450,7 @@
 
 
   <li class="md-nav__item">
-    <a href="vs/artifactory/" title="Artifactory" class="md-nav__link">
+    <a href="../../vs/artifactory/" title="Artifactory" class="md-nav__link">
       Artifactory
     </a>
   </li>
@@ -469,7 +462,7 @@
 
 
   <li class="md-nav__item">
-    <a href="vs/nexus/" title="Nexus" class="md-nav__link">
+    <a href="../../vs/nexus/" title="Nexus" class="md-nav__link">
       Nexus
     </a>
   </li>
@@ -481,7 +474,7 @@
 
 
   <li class="md-nav__item">
-    <a href="vs/teamcity/" title="TeamCity" class="md-nav__link">
+    <a href="../../vs/teamcity/" title="TeamCity" class="md-nav__link">
       TeamCity
     </a>
   </li>
@@ -513,22 +506,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#getting-started" title="Getting Started" class="md-nav__link">
-    Getting Started
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#pushing-packages" title="Pushing Packages" class="md-nav__link">
-    Pushing Packages
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#running-baget-on-docker" title="Running BaGet on Docker" class="md-nav__link">
-    Running BaGet on Docker
+  <a href="#indexing-nugetorg" title="Indexing nuget.org" class="md-nav__link">
+    Indexing nuget.org
   </a>
   
 </li>
@@ -549,70 +528,21 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/loic-sharma/BaGet/edit/master/docs/index.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                  <a href="https://github.com/loic-sharma/BaGet/edit/master/docs/tools/mirroring.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                <h1 id="baget">BaGet<a class="headerlink" href="#baget" title="Permanent link">&para;</a></h1>
-<h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h2>
-<ol>
-<li>Install <a href="https://www.microsoft.com/net/download">.NET Core</a></li>
-<li>Run <code>git clone https://github.com/loic-sharma/BaGet.git</code></li>
-<li>Navigate to <code>.\BaGet\src\BaGet</code></li>
-<li>Start the service with <code>dotnet run</code></li>
-<li>Open the URL <code>http://localhost:5000/v3/index.json</code> in your browser</li>
-</ol>
-<h2 id="pushing-packages">Pushing Packages<a class="headerlink" href="#pushing-packages" title="Permanent link">&para;</a></h2>
-<p>You can push a package with this command:</p>
-<div class="codehilite"><pre><span></span>dotnet nuget push -s http://localhost:5000/v3/index.json newtonsoft.json.11.0.2.nupkg
-</pre></div>
-
-
-<h2 id="running-baget-on-docker">Running BaGet on Docker<a class="headerlink" href="#running-baget-on-docker" title="Permanent link">&para;</a></h2>
-<p>If you'd like, you can run BaGet on Docker:</p>
-<ol>
-<li>Build the docker image:</li>
-</ol>
-<div class="codehilite"><pre><span></span>docker build . -t baget
-</pre></div>
-
-
-<ol>
-<li>Create a file named <code>baget.env</code> with the content:</li>
-</ol>
-<div class="codehilite"><pre><span></span># The default API key is &quot;NUGET-SERVER-API-KEY&quot;
-ASPNETCORE_ENVIRONMENT=Development
-ApiKeyHash=658489D79E218D2474D049E8729198D86DB0A4AF43981686A31C7DCB02DC0900
-Storage__Type=FileSystem
-Storage__Path=/var/baget/packages
-Database__Type=Sqlite
-Database__ConnectionString=Data Source=/var/baget/baget.db
-Search__Type=Database
-</pre></div>
-
-
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>The <code>baget.env</code> file stores BaGet's configuration. Please refer to <a href="./../configuration">the
-configuration's documentation</a> for more information.</p>
+                <h1 id="mirroring-nugetorg">Mirroring nuget.org<a class="headerlink" href="#mirroring-nugetorg" title="Permanent link">&para;</a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This page is a work in progress!</p>
 </div>
-<ol>
-<li>Create a folder named <code>baget-data</code></li>
-<li>Run:</li>
-</ol>
-<div class="codehilite"><pre><span></span>docker run --rm --name nuget-server -p 5555:80 --env-file baget.env -v &quot;$(pwd)/baget-data:/var/baget&quot; baget-nuget-server:latest
-</pre></div>
-
-
-<ol>
-<li>Push your first package with:</li>
-</ol>
-<div class="codehilite"><pre><span></span>dotnet nuget push -s http://localhost:5555/v3/index.json -k NUGET-SERVER-API-KEY newtonsoft.json.11.0.2.nupkg
-</pre></div>
-
-
-<ol>
-<li>Open the URL <code>http://localhost:5555/</code> in your browser</li>
-</ol>
+<h2 id="indexing-nugetorg">Indexing nuget.org<a class="headerlink" href="#indexing-nugetorg" title="Permanent link">&para;</a></h2>
+<ul>
+<li>TODO Check-in code</li>
+<li>Explain scaling</li>
+<li>Rebuild indexes at end</li>
+<li>Importing downloads from nuget.org</li>
+</ul>
                 
                   
                 
@@ -633,14 +563,28 @@ configuration's documentation</a> for more information.</p>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
+          <a href="../../azure/" title="Azure" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Azure
+              </span>
+            </div>
+          </a>
         
-          <a href="configuration/" title="Configuration" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+        
+          <a href="../../vs/nugetorg/" title="nuget.org" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Configuration
+                nuget.org
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">
@@ -668,7 +612,7 @@ configuration's documentation</a> for more information.</p>
       
         
   <div class="md-footer-social">
-    <link rel="stylesheet" href="./assets/fonts/font-awesome.css">
+    <link rel="stylesheet" href="../../assets/fonts/font-awesome.css">
     
       <a href="https://github.com/loic-sharma" class="md-footer-social__link fa fa-github-alt"></a>
     
@@ -683,9 +627,9 @@ configuration's documentation</a> for more information.</p>
       
     </div>
     
-      <script src="./assets/javascripts/application.30f6b8b1.js"></script>
+      <script src="../../assets/javascripts/application.30f6b8b1.js"></script>
       
-      <script>app.initialize({version:"0.17.3",url:{base:"."}})</script>
+      <script>app.initialize({version:"0.17.3",url:{base:"../.."}})</script>
       
     
     

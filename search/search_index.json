@@ -2,7 +2,7 @@
     "docs": [
         {
             "location": "/", 
-            "text": "BaGet\n\n\nGetting Started\n\n\n\n\nInstall \n.NET Core\n\n\nRun \ngit clone https://github.com/loic-sharma/BaGet.git\n\n\nNavigate to \n.\\BaGet\\src\\BaGet\n\n\nStart the service with \ndotnet run\n\n\nOpen the URL \nhttp://localhost:5000/v3/index.json\n in your browser\n\n\n\n\nPushing Packages\n\n\nYou can push a package with this command:\n\n\ndotnet nuget push -s http://localhost:5000/v3/index.json newtonsoft.json.11.0.2.nupkg", 
+            "text": "BaGet\n\n\nGetting Started\n\n\n\n\nInstall \n.NET Core\n\n\nRun \ngit clone https://github.com/loic-sharma/BaGet.git\n\n\nNavigate to \n.\\BaGet\\src\\BaGet\n\n\nStart the service with \ndotnet run\n\n\nOpen the URL \nhttp://localhost:5000/v3/index.json\n in your browser\n\n\n\n\nPushing Packages\n\n\nYou can push a package with this command:\n\n\ndotnet nuget push -s http://localhost:5000/v3/index.json newtonsoft.json.11.0.2.nupkg\n\n\n\n\n\nRunning BaGet on Docker\n\n\nIf you'd like, you can run BaGet on Docker:\n\n\n\n\nBuild the docker image:\n\n\n\n\ndocker build . -t baget\n\n\n\n\n\n\n\nCreate a file named \nbaget.env\n with the content:\n\n\n\n\n# The default API key is \nNUGET-SERVER-API-KEY\n\nASPNETCORE_ENVIRONMENT=Development\nApiKeyHash=658489D79E218D2474D049E8729198D86DB0A4AF43981686A31C7DCB02DC0900\nStorage__Type=FileSystem\nStorage__Path=/var/baget/packages\nDatabase__Type=Sqlite\nDatabase__ConnectionString=Data Source=/var/baget/baget.db\nSearch__Type=Database\n\n\n\n\n\n\n\nInfo\n\n\nThe \nbaget.env\n file stores BaGet's configuration. Please refer to \nthe\nconfiguration's documentation\n for more information.\n\n\n\n\n\n\nCreate a folder named \nbaget-data\n\n\nRun:\n\n\n\n\ndocker run --rm --name nuget-server -p 5555:80 --env-file baget.env -v \n$(pwd)/baget-data:/var/baget\n baget-nuget-server:latest\n\n\n\n\n\n\n\nPush your first package with:\n\n\n\n\ndotnet nuget push -s http://localhost:5555/v3/index.json -k NUGET-SERVER-API-KEY newtonsoft.json.11.0.2.nupkg\n\n\n\n\n\n\n\nOpen the URL \nhttp://localhost:5555/\n in your browser", 
             "title": "BaGet"
         }, 
         {
@@ -21,54 +21,169 @@
             "title": "Pushing Packages"
         }, 
         {
+            "location": "/#running-baget-on-docker", 
+            "text": "If you'd like, you can run BaGet on Docker:   Build the docker image:   docker build . -t baget   Create a file named  baget.env  with the content:   # The default API key is  NUGET-SERVER-API-KEY \nASPNETCORE_ENVIRONMENT=Development\nApiKeyHash=658489D79E218D2474D049E8729198D86DB0A4AF43981686A31C7DCB02DC0900\nStorage__Type=FileSystem\nStorage__Path=/var/baget/packages\nDatabase__Type=Sqlite\nDatabase__ConnectionString=Data Source=/var/baget/baget.db\nSearch__Type=Database   Info  The  baget.env  file stores BaGet's configuration. Please refer to  the\nconfiguration's documentation  for more information.    Create a folder named  baget-data  Run:   docker run --rm --name nuget-server -p 5555:80 --env-file baget.env -v  $(pwd)/baget-data:/var/baget  baget-nuget-server:latest   Push your first package with:   dotnet nuget push -s http://localhost:5555/v3/index.json -k NUGET-SERVER-API-KEY newtonsoft.json.11.0.2.nupkg   Open the URL  http://localhost:5555/  in your browser", 
+            "title": "Running BaGet on Docker"
+        }, 
+        {
+            "location": "/configuration/", 
+            "text": "Configuration\n\n\nYou can modify BaGet's configurations by editing the \nappsettings.json\n file.\n\n\nRequiring an API key\n\n\nYou can require that users provide a password, called an API key, to publish packages.\nTo do so, insert the SHA-256 hash of your desired API key in the \nApiKeyHash\n field:\n\n\n{\n\n    \nApiKeyHash\n:\n \n658489D79E218D2474D049E8729198D86DB0A4AF43981686A31C7DCB02DC0900\n,\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\n\n\nInfo\n\n\n658489D79E218D2474D049E8729198D86DB0A4AF43981686A31C7DCB02DC0900\n is the SHA-256 hash of \nNUGET-SERVER-API-KEY\n.\n\n\n\n\nUsers will now have to provide the API key to push packages:\n\n\ndotnet nuget push -s http://localhost:5000/v3/index.json -k NUGET-SERVER-API-KEY newtonsoft.json.11.0.2.nupkg\n\n\n\n\n\nEnabling Read-Through Caching\n\n\nRead-through caching lets you index packages from an upstream source. You can use read-through\ncaching to:\n\n\n\n\nSpeed up your builds if restores from \nnuget.org\n are slow\n\n\nEnable package restores in offline scenarios\n\n\n\n\nThe following \nMirror\n settings configures BaGet to index packages from \nnuget.org\n:\n\n\n{\n\n    \n...\n\n\n    \nMirror\n:\n \n{\n\n        \nEnableReadThroughCaching\n:\n  \ntrue\n,\n\n        \nPackageDownloadTimeoutSeconds\n:\n \n600\n,\n\n        \nPackageSource\n:\n \nhttps://api.nuget.org/v3-flatcontainer/\n\n    \n},\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\n\n\nInfo\n\n\nPackageSource\n is the value of the \nPackageBaseAddress\n resource\non a \nNuGet service index\n.", 
+            "title": "Configuration"
+        }, 
+        {
+            "location": "/configuration/#configuration", 
+            "text": "You can modify BaGet's configurations by editing the  appsettings.json  file.", 
+            "title": "Configuration"
+        }, 
+        {
+            "location": "/configuration/#requiring-an-api-key", 
+            "text": "You can require that users provide a password, called an API key, to publish packages.\nTo do so, insert the SHA-256 hash of your desired API key in the  ApiKeyHash  field:  { \n     ApiKeyHash :   658489D79E218D2474D049E8729198D86DB0A4AF43981686A31C7DCB02DC0900 , \n\n     ...  }    Info  658489D79E218D2474D049E8729198D86DB0A4AF43981686A31C7DCB02DC0900  is the SHA-256 hash of  NUGET-SERVER-API-KEY .   Users will now have to provide the API key to push packages:  dotnet nuget push -s http://localhost:5000/v3/index.json -k NUGET-SERVER-API-KEY newtonsoft.json.11.0.2.nupkg", 
+            "title": "Requiring an API key"
+        }, 
+        {
+            "location": "/configuration/#enabling-read-through-caching", 
+            "text": "Read-through caching lets you index packages from an upstream source. You can use read-through\ncaching to:   Speed up your builds if restores from  nuget.org  are slow  Enable package restores in offline scenarios   The following  Mirror  settings configures BaGet to index packages from  nuget.org :  { \n     ... \n\n     Mirror :   { \n         EnableReadThroughCaching :    true , \n         PackageDownloadTimeoutSeconds :   600 , \n         PackageSource :   https://api.nuget.org/v3-flatcontainer/ \n     }, \n\n     ...  }    Info  PackageSource  is the value of the  PackageBaseAddress  resource\non a  NuGet service index .", 
+            "title": "Enabling Read-Through Caching"
+        }, 
+        {
             "location": "/private-feeds/", 
-            "text": "Private Feeds\n\n\n\n\nWarning\n\n\nThis page is a work in progress!", 
+            "text": "Private Feeds\n\n\n\n\nWarning\n\n\nThis page is a work in progress! See \nthis pull request\n for more information.\n\n\n\n\n\n\nTip\n\n\nRefer to the \nAPI key\n documentation if you'd like to require an API key to push packages.\n\n\n\n\nA private feed requires users to authenticate before accessing packages. BaGet supports the following authentication providers:\n\n\n\n\nAzure Active Directory\n\n\n\n\nAzure Active Directory\n\n\nSetup\n\n\n\n\nBuild Azure Active Directory apps\n\n\nRegister the users on the tenant\n\n\nGet the tenant id, app ids, etc..\n\n\n\n\nConfiguration\n\n\n\n\nConfigure BaGet\n\n\nConfigure the NuGet plugin", 
             "title": "Private Feeds"
         }, 
         {
             "location": "/private-feeds/#private-feeds", 
-            "text": "Warning  This page is a work in progress!", 
+            "text": "Warning  This page is a work in progress! See  this pull request  for more information.    Tip  Refer to the  API key  documentation if you'd like to require an API key to push packages.   A private feed requires users to authenticate before accessing packages. BaGet supports the following authentication providers:   Azure Active Directory", 
             "title": "Private Feeds"
         }, 
         {
-            "location": "/docker/", 
-            "text": "Running BaGet on Docker\n\n\n\n\nBuild the docker image:\n\n\n\n\ndocker build . -t baget\n\n\n\n\n\n\n\nCreate a file named \nbaget.env\n with the content:\n\n\n\n\n# The default API key is \nNUGET-SERVER-API-KEY\n\nASPNETCORE_ENVIRONMENT=Development\nApiKeyHash=658489D79E218D2474D049E8729198D86DB0A4AF43981686A31C7DCB02DC0900\nStorage__Type=FileSystem\nStorage__Path=/var/baget/packages\nDatabase__Type=Sqlite\nDatabase__ConnectionString=Data Source=/var/baget/baget.db\nSearch__Type=Database\n\n\n\n\n\n\n\nCreate a folder named \nbaget-data\n\n\nRun:\n\n\n\n\ndocker run --rm --name nuget-server -p 5555:80 --env-file baget.env -v \n$(pwd)/baget-data:/var/baget\n baget-nuget-server:latest\n\n\n\n\n\n\n\nPush your first package with:\n\n\n\n\ndotnet nuget push -s http://localhost:5555/v3/index.json -k NUGET-SERVER-API-KEY newtonsoft.json.11.0.2.nupkg\n\n\n\n\n\n\n\nBrowse your packages at \nhttp://localhost:5555/", 
-            "title": "Docker"
+            "location": "/private-feeds/#azure-active-directory", 
+            "text": "", 
+            "title": "Azure Active Directory"
         }, 
         {
-            "location": "/docker/#running-baget-on-docker", 
-            "text": "Build the docker image:   docker build . -t baget   Create a file named  baget.env  with the content:   # The default API key is  NUGET-SERVER-API-KEY \nASPNETCORE_ENVIRONMENT=Development\nApiKeyHash=658489D79E218D2474D049E8729198D86DB0A4AF43981686A31C7DCB02DC0900\nStorage__Type=FileSystem\nStorage__Path=/var/baget/packages\nDatabase__Type=Sqlite\nDatabase__ConnectionString=Data Source=/var/baget/baget.db\nSearch__Type=Database   Create a folder named  baget-data  Run:   docker run --rm --name nuget-server -p 5555:80 --env-file baget.env -v  $(pwd)/baget-data:/var/baget  baget-nuget-server:latest   Push your first package with:   dotnet nuget push -s http://localhost:5555/v3/index.json -k NUGET-SERVER-API-KEY newtonsoft.json.11.0.2.nupkg   Browse your packages at  http://localhost:5555/", 
-            "title": "Running BaGet on Docker"
+            "location": "/private-feeds/#setup", 
+            "text": "Build Azure Active Directory apps  Register the users on the tenant  Get the tenant id, app ids, etc..", 
+            "title": "Setup"
+        }, 
+        {
+            "location": "/private-feeds/#configuration", 
+            "text": "Configure BaGet  Configure the NuGet plugin", 
+            "title": "Configuration"
         }, 
         {
             "location": "/azure/", 
-            "text": "Running BaGet on Azure\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nTODO:\n\n\n\n\nApp Service\n\n\nAzure SQL Database\n\n\nAzure Blob Storage\n\n\nAzure Search", 
+            "text": "Running BaGet on Azure\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nUse Azure to scale BaGet to nuget.org scale.\n\n\nTODO:\n\n\n\n\nApp Service\n\n\nAzure SQL Database\n\n\nAzure Blob Storage\n\n\nAzure Search\n\n\nHigh availibility setup", 
             "title": "Azure"
         }, 
         {
             "location": "/azure/#running-baget-on-azure", 
-            "text": "Warning  This page is a work in progress!   TODO:   App Service  Azure SQL Database  Azure Blob Storage  Azure Search", 
+            "text": "Warning  This page is a work in progress!   Use Azure to scale BaGet to nuget.org scale.  TODO:   App Service  Azure SQL Database  Azure Blob Storage  Azure Search  High availibility setup", 
             "title": "Running BaGet on Azure"
         }, 
         {
-            "location": "/mirroring/", 
-            "text": "Mirroring nuget.org\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nRead-Through Caching\n\n\n\n\nWhat it is (where the code is)\n\n\nHow to configure it\n\n\nLimitations\n\n\n\n\nIndexing nuget.org\n\n\n\n\nTODO Check-in code\n\n\nExplain scaling\n\n\nRebuild indexes at end", 
+            "location": "/tools/mirroring/", 
+            "text": "Mirroring nuget.org\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nIndexing nuget.org\n\n\n\n\nTODO Check-in code\n\n\nExplain scaling\n\n\nRebuild indexes at end\n\n\nImporting downloads from nuget.org", 
             "title": "Mirroring"
         }, 
         {
-            "location": "/mirroring/#mirroring-nugetorg", 
+            "location": "/tools/mirroring/#mirroring-nugetorg", 
             "text": "Warning  This page is a work in progress!", 
             "title": "Mirroring nuget.org"
         }, 
         {
-            "location": "/mirroring/#read-through-caching", 
-            "text": "What it is (where the code is)  How to configure it  Limitations", 
-            "title": "Read-Through Caching"
+            "location": "/tools/mirroring/#indexing-nugetorg", 
+            "text": "TODO Check-in code  Explain scaling  Rebuild indexes at end  Importing downloads from nuget.org", 
+            "title": "Indexing nuget.org"
         }, 
         {
-            "location": "/mirroring/#indexing-nugetorg", 
-            "text": "TODO Check-in code  Explain scaling  Rebuild indexes at end", 
-            "title": "Indexing nuget.org"
+            "location": "/vs/nugetorg/", 
+            "text": "nuget.org\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nnuget.org\n, also known as the \"Gallery\", is the defacto feed to host open\nsource packages. You should publish NuGet packages for your open-source projects here.\n\n\nThe Gallery is battle-tested and proven to scale well. You can find a guide on how to host\nyour own Gallery instance on \nthe Gallery's wiki\n.\nYou can find the Gallery's code on GitHub:\n\n\n\n\nNuGet/NuGetGallery\n - the \nnuget.org\n\nwebsite and v2 APIs\n\n\nNuGet/NuGet.Jobs\n - the Gallery's jobs for things like validation and package statistics.\n\n\nNuGet/NuGet.Services.Metadata\n - NuGet's v3 implementation\n\n\nNuGet/ServerCommon\n - common libraries used across NuGet's services\n\n\n\n\nAs you can tell, nuget.org is a complex beast. Hosting your own instance of the Gallery is not for the faint of heart.\n\n\nBaGet vs nuget.org\n\n\nTODO. See \nthis issue\n for a deep-dive.\n\n\n\n\nBaGet only competes with \nNuGet/NuGet.Services.Metadata\n\n\nnuget.org's v3 implementation is static\n\n\nRuns only on Windows\n\n\nHighly tied to Azure\n\n\nScales reads to near infinity\n\n\nDoesn't scale well for writes\n\n\nStatic JSON files are hosted on Azure Blob Storage\n\n\nServed by a Content Delivery Network\n\n\nFiles are updated by \nfeed2catalog\n, \ncatalog2registration\n, \ncatalog2dnx\n, and \ncatalog2lucene\n jobs\n\n\n\n\n\n\nBaGet's v3 implementation is dynamic\n\n\nCross-platform implementation\n\n\nRequests are served by a service that queries a database\n\n\nSimpler architecture, which makes it easier to deploy and run small feeds\n\n\nEasier to scale for writes\n\n\nHarder to scale for reads\n\n\nEasier to add new features\n\n\nHarder to make as reliable", 
+            "title": "nuget.org"
+        }, 
+        {
+            "location": "/vs/nugetorg/#nugetorg", 
+            "text": "Warning  This page is a work in progress!   nuget.org , also known as the \"Gallery\", is the defacto feed to host open\nsource packages. You should publish NuGet packages for your open-source projects here.  The Gallery is battle-tested and proven to scale well. You can find a guide on how to host\nyour own Gallery instance on  the Gallery's wiki .\nYou can find the Gallery's code on GitHub:   NuGet/NuGetGallery  - the  nuget.org \nwebsite and v2 APIs  NuGet/NuGet.Jobs  - the Gallery's jobs for things like validation and package statistics.  NuGet/NuGet.Services.Metadata  - NuGet's v3 implementation  NuGet/ServerCommon  - common libraries used across NuGet's services   As you can tell, nuget.org is a complex beast. Hosting your own instance of the Gallery is not for the faint of heart.", 
+            "title": "nuget.org"
+        }, 
+        {
+            "location": "/vs/nugetorg/#baget-vs-nugetorg", 
+            "text": "TODO. See  this issue  for a deep-dive.   BaGet only competes with  NuGet/NuGet.Services.Metadata  nuget.org's v3 implementation is static  Runs only on Windows  Highly tied to Azure  Scales reads to near infinity  Doesn't scale well for writes  Static JSON files are hosted on Azure Blob Storage  Served by a Content Delivery Network  Files are updated by  feed2catalog ,  catalog2registration ,  catalog2dnx , and  catalog2lucene  jobs    BaGet's v3 implementation is dynamic  Cross-platform implementation  Requests are served by a service that queries a database  Simpler architecture, which makes it easier to deploy and run small feeds  Easier to scale for writes  Harder to scale for reads  Easier to add new features  Harder to make as reliable", 
+            "title": "BaGet vs nuget.org"
+        }, 
+        {
+            "location": "/vs/nugetserver/", 
+            "text": "NuGet.Server\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nNuGet.Server\n is a lightweight standalone NuGet server. It is strongly recommended that you upgrade to BaGet if you use NuGet.Server. Feel free to open \nGitHub issues\n if you need help migrating.\n\n\n\n\nNuGet.Server\n\n\nOnly runs on Windows\n\n\nSupports NuGet v2 APIs (missing verified packages, signed packages, etc...)\n\n\nDoesn't support NuGet's v3 APIs\n\n\nDoes not scale well\n\n\nNot well documented\n\n\nNot well maintained\n\n\n\n\n\n\nBaGet\n\n\nCross-platform\n\n\nSupports NuGet v3 APIs\n\n\n\n\n\n\n\n\nUpgrade Guide\n\n\nTODO", 
+            "title": "NuGet.Server"
+        }, 
+        {
+            "location": "/vs/nugetserver/#nugetserver", 
+            "text": "Warning  This page is a work in progress!   NuGet.Server  is a lightweight standalone NuGet server. It is strongly recommended that you upgrade to BaGet if you use NuGet.Server. Feel free to open  GitHub issues  if you need help migrating.   NuGet.Server  Only runs on Windows  Supports NuGet v2 APIs (missing verified packages, signed packages, etc...)  Doesn't support NuGet's v3 APIs  Does not scale well  Not well documented  Not well maintained    BaGet  Cross-platform  Supports NuGet v3 APIs", 
+            "title": "NuGet.Server"
+        }, 
+        {
+            "location": "/vs/nugetserver/#upgrade-guide", 
+            "text": "TODO", 
+            "title": "Upgrade Guide"
+        }, 
+        {
+            "location": "/vs/vsts/", 
+            "text": "VSTS\n\n\n\n\nWarning\n\n\nThis page is a work in progress!", 
+            "title": "VSTS"
+        }, 
+        {
+            "location": "/vs/vsts/#vsts", 
+            "text": "Warning  This page is a work in progress!", 
+            "title": "VSTS"
+        }, 
+        {
+            "location": "/vs/myget/", 
+            "text": "MyGet\n\n\n\n\nWarning\n\n\nThis page is a work in progress!", 
+            "title": "MyGet"
+        }, 
+        {
+            "location": "/vs/myget/#myget", 
+            "text": "Warning  This page is a work in progress!", 
+            "title": "MyGet"
+        }, 
+        {
+            "location": "/vs/liget/", 
+            "text": "LiGet\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nLiGet\n is a NuGet server created with a linux-first approach.\n\n\n\n\nLiGet\n\n\nStrong support for Paket\n\n\nOnly supports NuGet's v2 APIs (missing verified packages, signed packages, etc...)\n\n\nStores all packages' metadata using a single JSON file\n\n\n\n\n\n\nBaGet\n\n\nSupports NuGet's v3 APIs\n\n\nStores packages' metadata in a database\n\n\nCapable of ingesting all packages on nuget.org\n\n\nCan run on Azure", 
+            "title": "LiGet"
+        }, 
+        {
+            "location": "/vs/liget/#liget", 
+            "text": "Warning  This page is a work in progress!   LiGet  is a NuGet server created with a linux-first approach.   LiGet  Strong support for Paket  Only supports NuGet's v2 APIs (missing verified packages, signed packages, etc...)  Stores all packages' metadata using a single JSON file    BaGet  Supports NuGet's v3 APIs  Stores packages' metadata in a database  Capable of ingesting all packages on nuget.org  Can run on Azure", 
+            "title": "LiGet"
+        }, 
+        {
+            "location": "/vs/artifactory/", 
+            "text": "Artifactory\n\n\n\n\nWarning\n\n\nThis page is a work in progress!", 
+            "title": "Artifactory"
+        }, 
+        {
+            "location": "/vs/artifactory/#artifactory", 
+            "text": "Warning  This page is a work in progress!", 
+            "title": "Artifactory"
+        }, 
+        {
+            "location": "/vs/nexus/", 
+            "text": "Nexus\n\n\n\n\nWarning\n\n\nThis page is a work in progress!", 
+            "title": "Nexus"
+        }, 
+        {
+            "location": "/vs/nexus/#nexus", 
+            "text": "Warning  This page is a work in progress!", 
+            "title": "Nexus"
+        }, 
+        {
+            "location": "/vs/teamcity/", 
+            "text": "TeamCity\n\n\n\n\nWarning\n\n\nThis page is a work in progress!", 
+            "title": "TeamCity"
+        }, 
+        {
+            "location": "/vs/teamcity/#teamcity", 
+            "text": "Warning  This page is a work in progress!", 
+            "title": "TeamCity"
         }
     ]
 }

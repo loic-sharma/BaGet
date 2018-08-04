@@ -13,7 +13,7 @@
         <meta name="description" content="A lightweight NuGet service implementation">
       
       
-        <link rel="canonical" href="https://loic-sharma.github.io/BaGet/docker/">
+        <link rel="canonical" href="https://loic-sharma.github.io/BaGet/configuration/">
       
       
         <meta name="author" content="Loic Sharma">
@@ -42,7 +42,7 @@
     
     
       
-        <title>Docker - BaGet</title>
+        <title>Configuration - BaGet</title>
       
     
     
@@ -104,7 +104,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#running-baget-on-docker" tabindex="1" class="md-skip">
+      <a href="#configuration" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -130,7 +130,7 @@
                 BaGet
               </span>
               <span class="md-header-nav__topic">
-                Docker
+                Configuration
               </span>
             
           
@@ -257,18 +257,6 @@
       
       
 
-
-  <li class="md-nav__item">
-    <a href="../private-feeds/" title="Private Feeds" class="md-nav__link">
-      Private Feeds
-    </a>
-  </li>
-
-    
-      
-      
-      
-
   
 
 
@@ -279,10 +267,58 @@
       
     
     
-    <a href="./" title="Docker" class="md-nav__link md-nav__link--active">
-      Docker
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Configuration
+      </label>
+    
+    <a href="./" title="Configuration" class="md-nav__link md-nav__link--active">
+      Configuration
     </a>
     
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#requiring-an-api-key" title="Requiring an API key" class="md-nav__link">
+    Requiring an API key
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enabling-read-through-caching" title="Enabling Read-Through Caching" class="md-nav__link">
+    Enabling Read-Through Caching
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../private-feeds/" title="Private Feeds" class="md-nav__link">
+      Private Feeds
+    </a>
   </li>
 
     
@@ -303,10 +339,154 @@
       
 
 
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      Tools
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        Tools
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
   <li class="md-nav__item">
-    <a href="../mirroring/" title="Mirroring" class="md-nav__link">
+    <a href="../tools/mirroring/" title="Mirroring" class="md-nav__link">
       Mirroring
     </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      BaGet vs. Other Software
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        BaGet vs. Other Software
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../vs/nugetorg/" title="nuget.org" class="md-nav__link">
+      nuget.org
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../vs/nugetserver/" title="NuGet.Server" class="md-nav__link">
+      NuGet.Server
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../vs/vsts/" title="VSTS" class="md-nav__link">
+      VSTS
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../vs/myget/" title="MyGet" class="md-nav__link">
+      MyGet
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../vs/liget/" title="LiGet" class="md-nav__link">
+      LiGet
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../vs/artifactory/" title="Artifactory" class="md-nav__link">
+      Artifactory
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../vs/nexus/" title="Nexus" class="md-nav__link">
+      Nexus
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../vs/teamcity/" title="TeamCity" class="md-nav__link">
+      TeamCity
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
   </li>
 
     
@@ -327,6 +507,29 @@
     
   
   
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#requiring-an-api-key" title="Requiring an API key" class="md-nav__link">
+    Requiring an API key
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enabling-read-through-caching" title="Enabling Read-Through Caching" class="md-nav__link">
+    Enabling Read-Through Caching
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -337,49 +540,58 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/loic-sharma/BaGet/edit/master/docs/docker.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                  <a href="https://github.com/loic-sharma/BaGet/edit/master/docs/configuration.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                <h1 id="running-baget-on-docker">Running BaGet on Docker<a class="headerlink" href="#running-baget-on-docker" title="Permanent link">&para;</a></h1>
-<ol>
-<li>Build the docker image:</li>
-</ol>
-<div class="codehilite"><pre><span></span>docker build . -t baget
+                <h1 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h1>
+<p>You can modify BaGet's configurations by editing the <a href="https://github.com/loic-sharma/BaGet/blob/master/src/BaGet/appsettings.json"><code>appsettings.json</code></a> file.</p>
+<h2 id="requiring-an-api-key">Requiring an API key<a class="headerlink" href="#requiring-an-api-key" title="Permanent link">&para;</a></h2>
+<p>You can require that users provide a password, called an API key, to publish packages.
+To do so, insert the SHA-256 hash of your desired API key in the <code>ApiKeyHash</code> field:</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;ApiKeyHash&quot;</span><span class="p">:</span> <span class="s2">&quot;658489D79E218D2474D049E8729198D86DB0A4AF43981686A31C7DCB02DC0900&quot;</span><span class="p">,</span>
+
+    <span class="err">...</span>
+<span class="p">}</span>
 </pre></div>
 
 
-<ol>
-<li>Create a file named <code>baget.env</code> with the content:</li>
-</ol>
-<div class="codehilite"><pre><span></span># The default API key is &quot;NUGET-SERVER-API-KEY&quot;
-ASPNETCORE_ENVIRONMENT=Development
-ApiKeyHash=658489D79E218D2474D049E8729198D86DB0A4AF43981686A31C7DCB02DC0900
-Storage__Type=FileSystem
-Storage__Path=/var/baget/packages
-Database__Type=Sqlite
-Database__ConnectionString=Data Source=/var/baget/baget.db
-Search__Type=Database
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p><code>658489D79E218D2474D049E8729198D86DB0A4AF43981686A31C7DCB02DC0900</code> is the SHA-256 hash of <code>NUGET-SERVER-API-KEY</code>.</p>
+</div>
+<p>Users will now have to provide the API key to push packages:</p>
+<div class="codehilite"><pre><span></span>dotnet nuget push -s http://localhost:5000/v3/index.json -k NUGET-SERVER-API-KEY newtonsoft.json.11.0.2.nupkg
 </pre></div>
 
 
+<h2 id="enabling-read-through-caching">Enabling Read-Through Caching<a class="headerlink" href="#enabling-read-through-caching" title="Permanent link">&para;</a></h2>
+<p>Read-through caching lets you index packages from an upstream source. You can use read-through
+caching to:</p>
 <ol>
-<li>Create a folder named <code>baget-data</code></li>
-<li>Run:</li>
+<li>Speed up your builds if restores from <a href="https://nuget.org">nuget.org</a> are slow</li>
+<li>Enable package restores in offline scenarios</li>
 </ol>
-<div class="codehilite"><pre><span></span>docker run --rm --name nuget-server -p 5555:80 --env-file baget.env -v &quot;$(pwd)/baget-data:/var/baget&quot; baget-nuget-server:latest
+<p>The following <code>Mirror</code> settings configures BaGet to index packages from <a href="https://nuget.org">nuget.org</a>:</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+    <span class="err">...</span>
+
+    <span class="nt">&quot;Mirror&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;EnableReadThroughCaching&quot;</span><span class="p">:</span>  <span class="kc">true</span><span class="p">,</span>
+        <span class="nt">&quot;PackageDownloadTimeoutSeconds&quot;</span><span class="p">:</span> <span class="mi">600</span><span class="p">,</span>
+        <span class="nt">&quot;PackageSource&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.nuget.org/v3-flatcontainer/&quot;</span>
+    <span class="p">},</span>
+
+    <span class="err">...</span>
+<span class="p">}</span>
 </pre></div>
 
 
-<ol>
-<li>Push your first package with:</li>
-</ol>
-<div class="codehilite"><pre><span></span>dotnet nuget push -s http://localhost:5555/v3/index.json -k NUGET-SERVER-API-KEY newtonsoft.json.11.0.2.nupkg
-</pre></div>
-
-
-<ol>
-<li>Browse your packages at <code>http://localhost:5555/</code></li>
-</ol>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p><code>PackageSource</code> is the value of the <a href="https://docs.microsoft.com/en-us/nuget/api/overview#resources-and-schema"><code>PackageBaseAddress</code></a> resource
+on a <a href="https://docs.microsoft.com/en-us/nuget/api/service-index">NuGet service index</a>.</p>
+</div>
                 
                   
                 
@@ -400,7 +612,7 @@ Search__Type=Database
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../private-feeds/" title="Private Feeds" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href=".." title="BaGet" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -409,19 +621,19 @@ Search__Type=Database
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Private Feeds
+                BaGet
               </span>
             </div>
           </a>
         
         
-          <a href="../azure/" title="Azure" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../private-feeds/" title="Private Feeds" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Azure
+                Private Feeds
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">
