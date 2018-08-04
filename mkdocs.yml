@@ -1,0 +1,50 @@
+site_name: BaGet
+site_description: A lightweight NuGet service implementation
+site_author: Loic Sharma
+site_url: https://loic-sharma.github.io/BaGet/
+
+repo_name: loic-sharma/BaGet
+repo_url: https://github.com/loic-sharma/BaGet
+
+copyright: 'Copyright &copy; 2018 Loic Sharma'
+
+theme:
+  name: material
+  language: en
+  palette:
+    primary: yellow
+    accent: yellow
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+extra:
+  social:
+    - type: github-alt
+      link: https://github.com/loic-sharma
+    - type: twitter
+      link: https://twitter.com/sharmaloic
+
+markdown_extensions:
+  - markdown.extensions.admonition
+  - markdown.extensions.codehilite:
+      guess_lang: false
+  - markdown.extensions.toc:
+      permalink: true
+
+pages:
+  - BaGet: index.md
+  - Configuration: configuration.md
+  - Private Feeds: private-feeds.md
+  - Azure: azure.md
+  - Tools:
+    - Mirroring: tools/mirroring.md
+  - BaGet vs. Other Software:
+    - nuget.org: vs/nugetorg.md
+    - NuGet.Server: vs/nugetserver.md
+    - VSTS: vs/vsts.md
+    - MyGet: vs/myget.md
+    - LiGet: vs/liget.md
+    - Artifactory: vs/artifactory.md
+    - Nexus: vs/nexus.md
+    - TeamCity: vs/teamcity.md
