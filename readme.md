@@ -10,13 +10,15 @@ A lightweight [NuGet service](https://docs.microsoft.com/en-us/nuget/api/overvie
 4. Start the service with `dotnet run`
 5. Open the URL `http://localhost:5000/v3/index.json` in your browser
 
+For more information, please refer to [our documentation](https://loic-sharma.github.io/BaGet/).
+
 ## Features
 
-* Supports Sqlite and SQL Server to store metadata
-* Supports local filesystem and [Azure Blob Storage](docs/Azure.md) to store NuGet packages
-* Supports [Azure Search](docs/Azure.md)
-* Supports [read-through caching](docs/IndexingNuGetOrg.md). For example, accessing `http://localhost:5000/v3/registration/newtonsoft.json/11.0.1.json`
-will index [Newtonsoft.Json](https://www.nuget.org/packages/Newtonsoft.Json/11.0.1) using [nuget.org](https://www.nuget.org/)
-* Supports [indexing nuget.org](docs/IndexingNuGetOrg.md)
+* [Dockerized](https://loic-sharma.github.io/BaGet/#running-baget-on-docker)
+* [Cloud ready](https://loic-sharma.github.io/BaGet/cloud/azure/)
+* [Supports read-through caching](https://loic-sharma.github.io/BaGet/configuration/#enabling-read-through-caching)
+* Can index the entirety of nuget.org. See [this documentation](https://loic-sharma.github.io/BaGet/tools/mirroring/)
+* Coming soon: Supports [private feeds](https://loic-sharma.github.io/BaGet/private-feeds/)
+* And more!
 
 Stay tuned, more features are planned!

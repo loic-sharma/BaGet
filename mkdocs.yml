@@ -36,7 +36,10 @@ pages:
   - BaGet: index.md
   - Configuration: configuration.md
   - Private Feeds: private-feeds.md
-  - Azure: azure.md
+  - Running in the Cloud:
+    - Azure: cloud/azure.md
+    - Google Cloud: cloud/gcp.md
+    - AWS: cloud/aws.md
   - Tools:
     - Mirroring: tools/mirroring.md
   - BaGet vs. Other Software:
