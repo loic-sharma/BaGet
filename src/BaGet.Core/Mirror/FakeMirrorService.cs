@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using NuGet.Versioning;
 
-namespace BaGet.Core.Services
+namespace BaGet.Core.Mirror
 {
     public class FakeMirrorService : IMirrorService
     {

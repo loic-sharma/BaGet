@@ -1,9 +1,6 @@
 ﻿using System;
-using BaGet.Azure.Extensions;
 using BaGet.Configurations;
-using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
-using BaGet.Core.Services;
 using BaGet.Extensions;
 using BaGet.Web.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -25,19 +22,7 @@ namespace BaGet
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<BaGetOptions>(Configuration);
-
-            services.AddBaGetContext();
-            services.ConfigureHttpServices();
-            services.ConfigureAzure(Configuration);
-
-            services.AddTransient<IPackageService, PackageService>();
-            services.AddTransient<IIndexingService, IndexingService>();
-            services.AddMirrorServices();
-
-            services.ConfigureStorageProviders(Configuration);
-            services.ConfigureSearchProviders();
-            services.ConfigureAuthenticationProviders();
+            services.ConfigureBaGet(Configuration, httpServices: true);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

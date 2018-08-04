@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using BaGet.Core.Mirror;
 using BaGet.Core.Services;
 using BaGet.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;

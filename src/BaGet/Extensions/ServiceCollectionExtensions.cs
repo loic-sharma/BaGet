@@ -8,6 +8,7 @@ using BaGet.Azure.Search;
 using BaGet.Configurations;
 using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
+using BaGet.Core.Mirror;
 using BaGet.Core.Services;
 using BaGet.Entities;
 using Microsoft.AspNetCore.Builder;
@@ -23,6 +24,30 @@ namespace BaGet.Extensions
 {
     public static class ServiceCollectionExtensions
     {
+        public static void ConfigureBaGet(
+            this IServiceCollection services,
+            IConfiguration configuration,
+            bool httpServices = false)
+        {
+            services.Configure<BaGetOptions>(configuration);
+
+            services.AddBaGetContext();
+            services.ConfigureAzure(configuration);
+
+            if (httpServices)
+            {
+                services.ConfigureHttpServices();
+            }
+
+            services.AddTransient<IPackageService, PackageService>();
+            services.AddTransient<IIndexingService, IndexingService>();
+            services.AddMirrorServices();
+
+            services.ConfigureStorageProviders(configuration);
+            services.ConfigureSearchProviders();
+            services.ConfigureAuthenticationProviders();
+        }
+
         public static void AddBaGetContext(this IServiceCollection services)
         {
             services.AddScoped<IContext>(provider =>
@@ -179,6 +204,15 @@ namespace BaGet.Extensions
                 client.Timeout = TimeSpan.FromSeconds(options.Mirror.PackageDownloadTimeoutSeconds);
 
                 return client;
+            });
+
+            services.AddSingleton<DownloadsImporter>();
+
+            services.AddSingleton<IPackageDownloadsSource>(provider =>
+            {
+                return new PackageDownloadsJsonSource(
+                    new HttpClient(),
+                    provider.GetRequiredService<ILogger<PackageDownloadsJsonSource>>());
             });
         }
 
