@@ -39,8 +39,7 @@ The following `Mirror` settings configures BaGet to index packages from [nuget.o
     ...
 
     "Mirror": {
-        "EnableReadThroughCaching":  true,
-        "PackageDownloadTimeoutSeconds": 600,
+        "Enabled":  true,
         "PackageSource": "https://api.nuget.org/v3-flatcontainer/"
     },
 
