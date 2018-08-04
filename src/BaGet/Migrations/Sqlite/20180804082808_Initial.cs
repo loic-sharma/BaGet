@@ -28,7 +28,10 @@ namespace BaGet.Migrations.Sqlite
                     IconUrl = table.Column<string>(maxLength: 4000, nullable: true),
                     LicenseUrl = table.Column<string>(maxLength: 4000, nullable: true),
                     ProjectUrl = table.Column<string>(maxLength: 4000, nullable: true),
+                    RepositoryUrl = table.Column<string>(maxLength: 4000, nullable: true),
+                    RepositoryType = table.Column<string>(maxLength: 100, nullable: true),
                     Tags = table.Column<string>(maxLength: 4000, nullable: true),
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
                     Version = table.Column<string>(maxLength: 64, nullable: false)
                 },
                 constraints: table =>

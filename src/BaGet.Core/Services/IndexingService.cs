@@ -134,6 +134,8 @@ namespace BaGet.Core.Services
         {
             var nuspec = packageReader.NuspecReader;
 
+            (var repositoryUri, var repositoryType) = GetRepositoryMetadata(nuspec);
+
             return new Package
             {
                 Id = nuspec.GetId(),
@@ -151,6 +153,8 @@ namespace BaGet.Core.Services
                 IconUrl = ParseUri(nuspec.GetIconUrl()),
                 LicenseUrl = ParseUri(nuspec.GetLicenseUrl()),
                 ProjectUrl = ParseUri(nuspec.GetProjectUrl()),
+                RepositoryUrl = repositoryUri,
+                RepositoryType = repositoryType,
                 Dependencies = GetDependencies(nuspec),
                 Tags = ParseTags(nuspec.GetTags())
             };
@@ -175,6 +179,29 @@ namespace BaGet.Core.Services
             if (string.IsNullOrEmpty(tags)) return new string[0];
 
             return tags.Split(new[] { ',', ';', ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        private (Uri repositoryUrl, string repositoryType) GetRepositoryMetadata(NuspecReader nuspec)
+        {
+            var repository = nuspec.GetRepositoryMetadata();
+
+            if (string.IsNullOrEmpty(repository?.Url) ||
+                !Uri.TryCreate(repository.Url, UriKind.Absolute, out var repositoryUri))
+            {
+                return (null, null);
+            }
+
+            if (repositoryUri.Scheme != Uri.UriSchemeHttps)
+            {
+                return (null, null);
+            }
+
+            if (repository.Type.Length > 100)
+            {
+                throw new InvalidOperationException("Repository type must be less than or equal 100 characters");
+            }
+
+            return (repositoryUri, repository.Type);
         }
 
         private List<BaGetPackageDependency> GetDependencies(NuspecReader nuspec)

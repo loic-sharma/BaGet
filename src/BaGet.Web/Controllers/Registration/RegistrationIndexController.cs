@@ -132,6 +132,8 @@ namespace BaGet.Controllers.Web.Registration
                 MinClientVersion = package.MinClientVersion;
                 PackageContent = packageContent;
                 ProjectUrl = package.ProjectUrlString;
+                RepositoryUrl = package.RepositoryUrlString;
+                RepositoryType = package.RepositoryType;
                 Published = package.Published;
                 RequireLicenseAcceptance = package.RequireLicenseAcceptance;
                 Summary = package.Summary;
@@ -157,6 +159,8 @@ namespace BaGet.Controllers.Web.Registration
             public string MinClientVersion { get; }
             public string PackageContent { get; }
             public string ProjectUrl { get; }
+            public string RepositoryUrl { get; }
+            public string RepositoryType { get; }
             public DateTime Published { get; }
             public bool RequireLicenseAcceptance { get; }
             public string Summary { get; }

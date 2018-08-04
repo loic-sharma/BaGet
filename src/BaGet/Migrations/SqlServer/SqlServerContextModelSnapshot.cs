@@ -15,7 +15,7 @@ namespace BaGet.Migrations.SqlServer
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.0-rtm-30799")
+                .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -58,7 +58,17 @@ namespace BaGet.Migrations.SqlServer
 
                     b.Property<DateTime>("Published");
 
+                    b.Property<string>("RepositoryType")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("RepositoryUrl")
+                        .HasMaxLength(4000);
+
                     b.Property<bool>("RequireLicenseAcceptance");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
 
                     b.Property<string>("Summary")
                         .HasMaxLength(4000);

@@ -3,29 +3,25 @@ using System;
 using BaGet.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace BaGet.Migrations.SqlServer
+namespace BaGet.Migrations.Sqlite
 {
-    [DbContext(typeof(SqlServerContext))]
-    [Migration("20180629015653_Initial")]
+    [DbContext(typeof(SqliteContext))]
+    [Migration("20180804082808_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.0-rtm-30799")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "2.1.1-rtm-30846");
 
             modelBuilder.Entity("BaGet.Core.Entities.Package", b =>
                 {
                     b.Property<int>("Key")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Authors")
                         .HasMaxLength(4000);
@@ -42,6 +38,7 @@ namespace BaGet.Migrations.SqlServer
 
                     b.Property<string>("Id")
                         .IsRequired()
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasMaxLength(128);
 
                     b.Property<string>("Language")
@@ -60,7 +57,17 @@ namespace BaGet.Migrations.SqlServer
 
                     b.Property<DateTime>("Published");
 
+                    b.Property<string>("RepositoryType")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("RepositoryUrl")
+                        .HasMaxLength(4000);
+
                     b.Property<bool>("RequireLicenseAcceptance");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
 
                     b.Property<string>("Summary")
                         .HasMaxLength(4000);
@@ -89,10 +96,10 @@ namespace BaGet.Migrations.SqlServer
             modelBuilder.Entity("BaGet.Core.Entities.PackageDependency", b =>
                 {
                     b.Property<int>("Key")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Id")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasMaxLength(128);
 
                     b.Property<int?>("PackageKey");

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 using NuGet.Versioning;
 
 namespace BaGet.Core.Entities
@@ -29,7 +28,15 @@ namespace BaGet.Core.Entities
         public Uri LicenseUrl { get; set; }
         public Uri ProjectUrl { get; set; }
 
+        public Uri RepositoryUrl { get; set; }
+        public string RepositoryType { get; set; }
+
         public string[] Tags { get; set; }
+
+        /// <summary>
+        /// Used for optimistic concurrency.
+        /// </summary>
+        public byte[] RowVersion { get; set; }
 
         public List<PackageDependency> Dependencies { get; set; }
 
@@ -47,5 +54,6 @@ namespace BaGet.Core.Entities
         public string IconUrlString => IconUrl?.AbsoluteUri ?? string.Empty;
         public string LicenseUrlString => LicenseUrl?.AbsoluteUri ?? string.Empty;
         public string ProjectUrlString => ProjectUrl?.AbsoluteUri ?? string.Empty;
+        public string RepositoryUrlString => RepositoryUrl?.AbsoluteUri ?? string.Empty;
     }
 }

@@ -15,6 +15,7 @@ namespace BaGet.Entities
         public const int MaxPackageMinClientVersionLength = 44;
         public const int MaxPackageLanguageLength = 20;
         public const int MaxPackageTitleLength = 256;
+        public const int MaxRepositoryTypeLength = 100;
 
         public const int MaxPackageDependencyVersionRangeLength = 256;
         public const int MaxPackageDependencyTargetFrameworkLength = 256;
@@ -68,6 +69,10 @@ namespace BaGet.Entities
                 .HasConversion(UriToStringConverter.Instance)
                 .HasMaxLength(DefaultMaxStringLength);
 
+            package.Property(p => p.RepositoryUrl)
+                .HasConversion(UriToStringConverter.Instance)
+                .HasMaxLength(DefaultMaxStringLength);
+
             package.Property(p => p.Tags)
                 .HasConversion(StringArrayToJsonConverter.Instance)
                 .HasMaxLength(DefaultMaxStringLength);
@@ -77,11 +82,15 @@ namespace BaGet.Entities
             package.Property(p => p.MinClientVersion).HasMaxLength(MaxPackageMinClientVersionLength);
             package.Property(p => p.Summary).HasMaxLength(DefaultMaxStringLength);
             package.Property(p => p.Title).HasMaxLength(MaxPackageTitleLength);
+            package.Property(p => p.RepositoryType).HasMaxLength(MaxRepositoryTypeLength);
 
             package.Ignore(p => p.Version);
             package.Ignore(p => p.IconUrlString);
             package.Ignore(p => p.LicenseUrlString);
             package.Ignore(p => p.ProjectUrlString);
+            package.Ignore(p => p.RepositoryUrlString);
+
+            package.Property(p => p.RowVersion).IsRowVersion();
         }
 
         private void BuildPackageDependencyEntity(EntityTypeBuilder<PackageDependency> dependency)

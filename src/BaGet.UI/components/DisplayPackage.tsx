@@ -1,6 +1,7 @@
 import * as React from 'react';
 import timeago from 'timeago.js';
 import {Parser, HtmlRenderer} from 'commonmark';
+import SourceRepository from './SourceRepository';
 
 import './DisplayPackage.css';
 
@@ -17,6 +18,8 @@ interface Package {
   projectUrl: string;
   licenseUrl: string;
   downloadUrl: string;
+  repositoryUrl: string;
+  repositoryType: string;
   totalDownloads: number;
   latestDownloads: number;
   authors: string;
@@ -95,6 +98,8 @@ export default class DisplayPackage extends React.Component<DisplayPackageProps,
             projectUrl: latestCatalogEntry["projectUrl"],
             licenseUrl: latestCatalogEntry["licenseUrl"],
             downloadUrl: latestDownloadUrl,
+            repositoryUrl: latestCatalogEntry["repositoryUrl"],
+            repositoryType: latestCatalogEntry["repositoryType"],
             totalDownloads: results["totalDownloads"],
             latestDownloads: latestCatalogEntry["downloads"],
             authors: latestCatalogEntry["authors"],
@@ -152,6 +157,9 @@ export default class DisplayPackage extends React.Component<DisplayPackageProps,
 
               <div>last updated {timeago().format(this.state.package.lastUpdate)}</div>
               <div><a href={this.state.package.projectUrl}>{this.state.package.projectUrl}</a></div>
+
+              <SourceRepository url={this.state.package.repositoryUrl} type={this.state.package.repositoryType} />
+
               <div><a href={this.state.package.licenseUrl}>License Info</a></div>
             </div>
 

@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.1.1" />
-    <PackageReference Include="NuGet.Client" Version="4.2.0" />
+    <PackageReference Include="NuGet.Packaging" Version="4.7.0" />
   </ItemGroup>
 
 </Project>
