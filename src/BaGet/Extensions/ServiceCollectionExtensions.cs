@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Net;
 using System.Net.Http;
 using BaGet.Azure.Configuration;
@@ -8,6 +7,7 @@ using BaGet.Azure.Search;
 using BaGet.Configurations;
 using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
+using BaGet.Core.Extensions;
 using BaGet.Core.Mirror;
 using BaGet.Core.Services;
 using BaGet.Entities;
@@ -51,15 +51,15 @@ namespace BaGet.Extensions
         public static IServiceCollection AddBaGetContext(this IServiceCollection services)
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
+
             services.AddScoped<IContext>(provider =>
             {
                 var databaseOptions = provider.GetRequiredService<IOptions<BaGetOptions>>()
                     .Value
                     .Database;
-                if (databaseOptions == null)
-                {
-                    throw new InvalidOperationException($"The '{nameof(BaGetOptions.Database)}' configuration is missing");
-                }
+
+                databaseOptions.EnsureValid();
+
                 switch (databaseOptions.Type)
                 {
                     case DatabaseType.Sqlite:
@@ -79,10 +79,6 @@ namespace BaGet.Extensions
                 var databaseOptions = provider.GetRequiredService<IOptions<BaGetOptions>>()
                     .Value
                     .Database;
-                if (string.IsNullOrEmpty(databaseOptions.ConnectionString))
-                {
-                    throw new InvalidOperationException($"The '{nameof(databaseOptions.ConnectionString)}' configuration is missing");
-                }
 
                 options.UseSqlite(databaseOptions.ConnectionString);
             });
@@ -120,9 +116,14 @@ namespace BaGet.Extensions
 
             services.AddTransient<IPackageStorageService>(provider =>
             {
-                var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
+                var storageOptions = provider
+                    .GetRequiredService<IOptions<BaGetOptions>>()
+                    .Value
+                    .Storage;
 
-                switch (options.Storage.Type)
+                storageOptions.EnsureValid();
+
+                switch (storageOptions.Type)
                 {
                     case StorageType.FileSystem:
                         return provider.GetRequiredService<FilePackageStorageService>();
@@ -132,21 +133,19 @@ namespace BaGet.Extensions
 
                     default:
                         throw new InvalidOperationException(
-                            $"Unsupported storage service: {options.Storage.Type}");
+                            $"Unsupported storage service: {storageOptions.Type}");
                 }
             });
 
             services.AddTransient(provider =>
             {
-                var options = provider.GetRequiredService<IOptions<FileSystemStorageOptions>>().Value;
-                var path = string.IsNullOrEmpty(options.Path)
-                    ? Path.Combine(Directory.GetCurrentDirectory(), "Packages")
-                    : options.Path;
+                var options = provider
+                    .GetRequiredService<IOptions<FileSystemStorageOptions>>()
+                    .Value;
 
-                // Ensure the package storage directory exists
-                Directory.CreateDirectory(path);
+                options.EnsureValid();
 
-                return new FilePackageStorageService(path);
+                return new FilePackageStorageService(options.Path);
             });
 
             services.AddBlobPackageStorageService();
@@ -156,9 +155,14 @@ namespace BaGet.Extensions
         {
             services.AddTransient<ISearchService>(provider =>
             {
-                var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
+                var searchOptions = provider
+                    .GetRequiredService<IOptions<BaGetOptions>>()
+                    .Value
+                    .Search;
 
-                switch (options.Search.Type)
+                searchOptions.EnsureValid();
+
+                switch (searchOptions.Type)
                 {
                     case SearchType.Database:
                         return provider.GetRequiredService<DatabaseSearchService>();
@@ -168,7 +172,7 @@ namespace BaGet.Extensions
 
                     default:
                         throw new InvalidOperationException(
-                            $"Unsupported search service: {options.Search.Type}");
+                            $"Unsupported search service: {searchOptions.Type}");
                 }
             });
 
@@ -184,15 +188,20 @@ namespace BaGet.Extensions
         {
             services.AddTransient<IMirrorService>(provider =>
             {
-                var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
+                var mirrorOptions = provider
+                    .GetRequiredService<IOptions<BaGetOptions>>()
+                    .Value
+                    .Mirror;
 
-                if (!options.Mirror.Enabled)
+                mirrorOptions.EnsureValid();
+
+                if (!mirrorOptions.Enabled)
                 {
                     return new FakeMirrorService();
                 }
 
                 return new MirrorService(
-                    options.Mirror.PackageSource,
+                    mirrorOptions.PackageSource,
                     provider.GetRequiredService<IPackageService>(),
                     provider.GetRequiredService<IPackageDownloader>(),
                     provider.GetRequiredService<IIndexingService>(),

@@ -65,28 +65,6 @@ namespace BaGet.Tests
             Assert.NotNull(provider.GetRequiredService<SqliteContext>());
         }
 
-        [Fact]
-        public void AskServiceProviderForSqliteContextWithMissingConnectionString()
-        {
-            //Create a IConfiguration with a minimal "Database" object.
-            Dictionary<string, string> initialData = new Dictionary<string, string>();
-            initialData.Add(DatabaseTypeKey, DatabaseType.Sqlite.ToString());
-            initialData.Add(ConnectionStringKey, string.Empty); //empty equals missing!
-
-            IConfiguration configuration = new ConfigurationBuilder().AddInMemoryCollection(initialData).Build();
-
-            ServiceProvider provider = new ServiceCollection()
-                .Configure<BaGetOptions>(configuration)
-                .AddBaGetContext() //Method Under Test
-                .BuildServiceProvider();
-
-            InvalidOperationException expected = Assert.Throws<InvalidOperationException>(
-                           () => provider.GetRequiredService<SqliteContext>().Database
-                       );
-
-            Assert.Contains(nameof(DatabaseOptions.ConnectionString), expected.Message);
-        }
-
         [Theory]
         [InlineData("<invalid>")]
         [InlineData("")]
