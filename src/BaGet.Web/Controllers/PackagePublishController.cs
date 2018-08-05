@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using BaGet.Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -8,6 +9,7 @@ using NuGet.Versioning;
 
 namespace BaGet.Controllers
 {
+    [Authorize]
     public class PackagePublishController : Controller
     {
         public const string ApiKeyHeader = "X-NuGet-ApiKey";

@@ -47,6 +47,7 @@ namespace BaGet
             }
 
             app.UseForwardedHeaders();
+            app.UseAuthentication();
             app.UseDefaultFiles();
             app.UseStaticFiles();
 

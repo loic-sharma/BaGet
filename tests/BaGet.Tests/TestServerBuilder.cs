@@ -55,7 +55,6 @@ namespace BaGet.Tests
 
         public TestServer Build()
         {
-            
             Dictionary<string, string> testHostConfig = new Dictionary<string, string>();
             testHostConfig.Add("Database:Type", "Sqlite");
             string resolvedSqliteFile = Path.GetFullPath("..\\..\\baget.db");
@@ -63,6 +62,7 @@ namespace BaGet.Tests
             testHostConfig.Add("Database:ConnectionString", string.Format("Data Source={0}", resolvedSqliteFile));
             testHostConfig.Add("Storage:Type", "FileSystem");
             testHostConfig.Add("Mirror:Enabled", false.ToString());
+            testHostConfig.Add("Authentication:Type", "None");
 
             IConfigurationBuilder configurationBuilder = new ConfigurationBuilder().AddInMemoryCollection(testHostConfig);
             IWebHostBuilder hostBuilder = new WebHostBuilder()

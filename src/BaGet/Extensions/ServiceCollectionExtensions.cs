@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using BaGet.Authentication;
 using BaGet.Azure.Configuration;
 using BaGet.Azure.Extensions;
 using BaGet.Azure.Search;
@@ -14,6 +15,7 @@ using BaGet.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,7 +47,7 @@ namespace BaGet.Extensions
 
             services.ConfigureStorageProviders(configuration);
             services.ConfigureSearchProviders();
-            services.ConfigureAuthenticationProviders();
+            services.ConfigureAuthenticationProviders(configuration);
         }
 
         public static void AddBaGetContext(this IServiceCollection services)
@@ -216,14 +218,20 @@ namespace BaGet.Extensions
             });
         }
 
-        public static void ConfigureAuthenticationProviders(this IServiceCollection services)
+        public static void ConfigureAuthenticationProviders(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddSingleton<IConfigureOptions<MvcOptions>, ConfigureMvcOptions>();
+
+            // TODO: Figure out a clean way to merge ApiKey authentication into current
+            // authentication pipeline.
             services.AddSingleton<IAuthenticationService, ApiKeyAuthenticationService>(provider =>
             {
                 var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
 
                 return new ApiKeyAuthenticationService(options.ApiKeyHash);
             });
+
+            services.AddAzureAuthentication(configuration);
         }
     }
 }

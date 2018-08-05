@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BaGet.Core.Entities;
 using BaGet.Core.Services;
 using BaGet.Web.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -13,6 +14,7 @@ namespace BaGet.Controllers.Web.Registration
     /// <summary>
     /// The API to retrieve the metadata of a specific package.
     /// </summary>
+    [Authorize]
     public class RegistrationIndexController : Controller
     {
         private readonly IPackageService _packages;
