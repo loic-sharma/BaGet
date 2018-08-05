@@ -20,15 +20,18 @@ namespace BaGet
 
             app.HelpOption(inherited: true);
 
-            app.Command("import-downloads", testCommand =>
+            app.Command("import", import =>
             {
-                testCommand.OnExecute(async () =>
+                import.Command("downloads", downloads =>
                 {
-                    var provider = CreateHostBuilder(args).Build().Services;
+                    downloads.OnExecute(async () =>
+                    {
+                        var provider = CreateHostBuilder(args).Build().Services;
 
-                    await provider
-                        .GetRequiredService<DownloadsImporter>()
-                        .ImportAsync();
+                        await provider
+                            .GetRequiredService<DownloadsImporter>()
+                            .ImportAsync();
+                    });
                 });
             });
 
