@@ -14,6 +14,7 @@ For more information, please refer to [our documentation](https://loic-sharma.gi
 
 ## Features
 
+* Cross-platform
 * [Dockerized](https://loic-sharma.github.io/BaGet/#running-baget-on-docker)
 * [Cloud ready](https://loic-sharma.github.io/BaGet/cloud/azure/)
 * [Supports read-through caching](https://loic-sharma.github.io/BaGet/configuration/#enabling-read-through-caching)
