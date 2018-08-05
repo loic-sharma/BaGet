@@ -48,14 +48,18 @@ namespace BaGet.Extensions
             services.ConfigureAuthenticationProviders();
         }
 
-        public static void AddBaGetContext(this IServiceCollection services)
+        public static IServiceCollection AddBaGetContext(this IServiceCollection services)
         {
+            if (services == null) throw new ArgumentNullException(nameof(services));
             services.AddScoped<IContext>(provider =>
             {
                 var databaseOptions = provider.GetRequiredService<IOptions<BaGetOptions>>()
                     .Value
                     .Database;
-
+                if (databaseOptions == null)
+                {
+                    throw new InvalidOperationException($"The '{nameof(BaGetOptions.Database)}' configuration is missing");
+                }
                 switch (databaseOptions.Type)
                 {
                     case DatabaseType.Sqlite:
@@ -75,6 +79,10 @@ namespace BaGet.Extensions
                 var databaseOptions = provider.GetRequiredService<IOptions<BaGetOptions>>()
                     .Value
                     .Database;
+                if (string.IsNullOrEmpty(databaseOptions.ConnectionString))
+                {
+                    throw new InvalidOperationException($"The '{nameof(databaseOptions.ConnectionString)}' configuration is missing");
+                }
 
                 options.UseSqlite(databaseOptions.ConnectionString);
             });
@@ -87,6 +95,7 @@ namespace BaGet.Extensions
 
                 options.UseSqlServer(databaseOptions.ConnectionString);
             });
+            return services;
         }
 
         public static void ConfigureHttpServices(this IServiceCollection services)
