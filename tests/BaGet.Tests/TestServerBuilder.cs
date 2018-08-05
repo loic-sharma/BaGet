@@ -1,6 +1,7 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
+using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
@@ -18,16 +19,30 @@ namespace BaGet.Tests
     /// </summary>
     public class TestServerBuilder
     {
+
+        private const string DefaultPackagesFolderName = "Packages";
+
+        private readonly string DatabaseTypeKey = $"{nameof(BaGetOptions.Database)}:{nameof(DatabaseOptions.Type)}";
+        private readonly string ConnectionStringKey = $"{nameof(BaGetOptions.Database)}:{nameof(DatabaseOptions.ConnectionString)}";
+        private readonly string StorageTypeKey = $"{nameof(BaGetOptions.Storage)}:{nameof(StorageOptions.Type)}";
+        private readonly string FileSystemStoragePathKey = $"{nameof(BaGetOptions.Storage)}:{nameof(FileSystemStorageOptions.Path)}";
+
+        private ITestOutputHelper _helper;
+        private LogLevel _minimumLevel = LogLevel.None;
+
         /// <summary>
         /// private/hidden Constructor.
         /// Tests should use some of the static methods!
         /// </summary>
         private TestServerBuilder()
         {
+            Configuration = new Dictionary<string, string>();
         }
 
-        private ITestOutputHelper _helper;
-        private LogLevel _minimumLevel = LogLevel.None;
+        /// <summary>
+        /// In Memory representation of Config Settings
+        /// </summary>
+        public Dictionary<string, string> Configuration { get; private set; }
 
         /// <summary>
         /// Xunit.ITestOutputHelper is used as Logging-Target (Microsoft.Extensions.Logging)
@@ -35,7 +50,7 @@ namespace BaGet.Tests
         /// <param name="helper"></param>
         /// <param name="minimumLevel"></param>
         /// <returns></returns>
-        public TestServerBuilder TraceToTestOutputHelper(ITestOutputHelper helper, LogLevel minimumLevel )
+        public TestServerBuilder TraceToTestOutputHelper(ITestOutputHelper helper, LogLevel minimumLevel)
         {
             _helper = helper ?? throw new ArgumentNullException(nameof(helper));
             _minimumLevel = minimumLevel;
@@ -43,28 +58,37 @@ namespace BaGet.Tests
         }
 
         /// <summary>
-        /// Empty means: 
-        ///  - Sqlite Database with a new/empty file
-        ///  - StorageType FileSystem based on a empty/temporary directory
+        /// Test Server Builder instance that uses a empty subfolder of System.IO.Path.GetTempPath
         /// </summary>
         /// <returns></returns>
-        public static TestServerBuilder Empty()
+        public static TestServerBuilder Create()
         {
-            return new TestServerBuilder();
+            return new TestServerBuilder().UseEmptyTempFolder();
+        }
+
+
+        /// <summary>
+        /// Creates a subdirectory (Path.GetTempPath() + Guid) and uses this as location for
+        /// - Sqlite file  => .\BaGet.db 
+        /// - FilePackageStorageService => .\Packages\*.*
+        /// </summary>
+        /// <returns></returns>
+        private TestServerBuilder UseEmptyTempFolder()
+        {
+            Configuration.Add(DatabaseTypeKey, DatabaseType.Sqlite.ToString());
+            string uniqueTempFolder = Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(uniqueTempFolder);
+            string resolvedSqliteFile = Path.Combine(uniqueTempFolder, "BaGet.db");
+            string storageFolderPath = Path.Combine(uniqueTempFolder, DefaultPackagesFolderName);
+            Configuration.Add(ConnectionStringKey, string.Format("Data Source={0}", resolvedSqliteFile));
+            Configuration.Add(StorageTypeKey, StorageType.FileSystem.ToString());
+            Configuration.Add(FileSystemStoragePathKey, storageFolderPath);
+            return this;
         }
 
         public TestServer Build()
         {
-            
-            Dictionary<string, string> testHostConfig = new Dictionary<string, string>();
-            testHostConfig.Add("Database:Type", "Sqlite");
-            string resolvedSqliteFile = Path.GetFullPath("..\\..\\baget.db");
-
-            testHostConfig.Add("Database:ConnectionString", string.Format("Data Source={0}", resolvedSqliteFile));
-            testHostConfig.Add("Storage:Type", "FileSystem");
-            testHostConfig.Add("Mirror:Enabled", false.ToString());
-
-            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder().AddInMemoryCollection(testHostConfig);
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder().AddInMemoryCollection(Configuration);
             IWebHostBuilder hostBuilder = new WebHostBuilder()
                 .UseConfiguration(configurationBuilder.Build())
                 .UseStartup<Startup>();
