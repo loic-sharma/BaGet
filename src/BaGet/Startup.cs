@@ -32,18 +32,17 @@ namespace BaGet
             {
                 app.UseDeveloperExceptionPage();
                 app.UseStatusCodePages();
+            }
 
-                // Run migrations automatically in development mode.
-                var scopeFactory = app.ApplicationServices
-                    .GetRequiredService<IServiceScopeFactory>();
+            var scopeFactory = app.ApplicationServices
+                .GetRequiredService<IServiceScopeFactory>();
 
-                using (var scope = scopeFactory.CreateScope())
-                {
-                    scope.ServiceProvider
-                        .GetRequiredService<IContext>()
-                        .Database
-                        .Migrate();
-                }
+            using (var scope = scopeFactory.CreateScope())
+            {
+                scope.ServiceProvider
+                    .GetRequiredService<IContext>()
+                    .Database
+                    .Migrate();
             }
 
             app.UseForwardedHeaders();
