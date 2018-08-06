@@ -24,7 +24,7 @@ namespace BaGet.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static void ConfigureBaGet(
+        public static IServiceCollection ConfigureBaGet(
             this IServiceCollection services,
             IConfiguration configuration,
             bool httpServices = false)
@@ -46,6 +46,8 @@ namespace BaGet.Extensions
             services.ConfigureStorageProviders(configuration);
             services.ConfigureSearchProviders();
             services.ConfigureAuthenticationProviders();
+
+            return services;
         }
 
         public static IServiceCollection AddBaGetContext(this IServiceCollection services)
@@ -91,10 +93,11 @@ namespace BaGet.Extensions
 
                 options.UseSqlServer(databaseOptions.ConnectionString);
             });
+
             return services;
         }
 
-        public static void ConfigureHttpServices(this IServiceCollection services)
+        public static IServiceCollection ConfigureHttpServices(this IServiceCollection services)
         {
             services.AddMvc();
             services.AddCors();
@@ -108,9 +111,13 @@ namespace BaGet.Extensions
                 options.KnownNetworks.Clear();
                 options.KnownProxies.Clear();
             });
+
+            return services;
         }
 
-        public static void ConfigureStorageProviders(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigureStorageProviders(
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
             services.Configure<FileSystemStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
 
@@ -149,9 +156,11 @@ namespace BaGet.Extensions
             });
 
             services.AddBlobPackageStorageService();
+
+            return services;
         }
 
-        public static void ConfigureSearchProviders(this IServiceCollection services)
+        public static IServiceCollection ConfigureSearchProviders(this IServiceCollection services)
         {
             services.AddTransient<ISearchService>(provider =>
             {
@@ -178,13 +187,15 @@ namespace BaGet.Extensions
 
             services.AddTransient<DatabaseSearchService>();
             services.AddAzureSearch();
+
+            return services;
         }
 
         /// <summary>
         /// Add the services that mirror an upstream package source.
         /// </summary>
         /// <param name="services">The defined services.</param>
-        public static void AddMirrorServices(this IServiceCollection services)
+        public static IServiceCollection AddMirrorServices(this IServiceCollection services)
         {
             services.AddTransient<IMirrorService>(provider =>
             {
@@ -232,9 +243,11 @@ namespace BaGet.Extensions
                     new HttpClient(),
                     provider.GetRequiredService<ILogger<PackageDownloadsJsonSource>>());
             });
+
+            return services;
         }
 
-        public static void ConfigureAuthenticationProviders(this IServiceCollection services)
+        public static IServiceCollection ConfigureAuthenticationProviders(this IServiceCollection services)
         {
             services.AddSingleton<IAuthenticationService, ApiKeyAuthenticationService>(provider =>
             {
@@ -242,6 +255,8 @@ namespace BaGet.Extensions
 
                 return new ApiKeyAuthenticationService(options.ApiKeyHash);
             });
+
+            return services;
         }
     }
 }

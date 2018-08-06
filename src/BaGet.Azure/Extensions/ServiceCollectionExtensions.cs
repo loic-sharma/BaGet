@@ -12,13 +12,17 @@ namespace BaGet.Azure.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static void ConfigureAzure(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigureAzure(
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
             services.Configure<BlobStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
             services.Configure<AzureSearchOptions>(configuration.GetSection(nameof(BaGetOptions.Search)));
+
+            return services;
         }
 
-        public static void AddBlobPackageStorageService(this IServiceCollection services)
+        public static IServiceCollection AddBlobPackageStorageService(this IServiceCollection services)
         {
             services.AddSingleton(provider =>
             {
@@ -41,9 +45,11 @@ namespace BaGet.Azure.Extensions
 
                 return new BlobPackageStorageService(container);
             });
+
+            return services;
         }
 
-        public static void AddAzureSearch(this IServiceCollection services)
+        public static IServiceCollection AddAzureSearch(this IServiceCollection services)
         {
             services.AddTransient<BatchIndexer>();
             services.AddTransient<AzureSearchService>();
@@ -64,6 +70,7 @@ namespace BaGet.Azure.Extensions
                 return new SearchIndexClient(options.AccountName, PackageDocument.IndexName, credentials);
             });
 
+            return services;
         }
     }
 }
