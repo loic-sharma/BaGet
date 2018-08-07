@@ -22,6 +22,56 @@ using Microsoft.Extensions.Options;
 
 namespace BaGet.Extensions
 {
+
+    public static class ServiceProviderExtensions
+    {
+
+        public static DatabaseOptions GetDatabaseOptions(this IServiceProvider serviceProvider)
+        {
+            if (serviceProvider == null) throw new ArgumentNullException(nameof(serviceProvider));
+
+            var databaseOptions = serviceProvider.GetRequiredService<IOptions<BaGetOptions>>()
+                                    .Value
+                                    .Database ?? throw new ArgumentNullException(nameof(serviceProvider));
+
+            if (databaseOptions == null) BaGet.Core.Extensions.OptionsExtensions.ThrowMissingConfiguration(nameof(BaGetOptions.Database));
+
+            if (string.IsNullOrEmpty(databaseOptions.ConnectionString))
+            {
+                BaGet.Core.Extensions.OptionsExtensions.ThrowMissingConfiguration(
+                    nameof(BaGetOptions.Database),
+                    nameof(DatabaseOptions.ConnectionString));
+            }
+
+            return databaseOptions;
+        }
+
+
+
+        public static IContext GetDatabaseContext(this IServiceProvider serviceProvider)
+        {
+            if (serviceProvider == null) throw new ArgumentNullException(nameof(serviceProvider));
+
+            var databaseOptions = GetDatabaseOptions(serviceProvider);
+
+            switch (databaseOptions.Type)
+            {
+                case DatabaseType.Sqlite:
+                    return serviceProvider.GetRequiredService<SqliteContext>();
+
+                case DatabaseType.SqlServer:
+                    return serviceProvider.GetRequiredService<SqlServerContext>();
+                    
+                default:
+                    throw new InvalidOperationException(
+                        $"Unsupported database provider: {databaseOptions.Type}");
+            }
+        }
+
+
+
+
+    }
     public static class ServiceCollectionExtensions
     {
         public static IServiceCollection ConfigureBaGet(
@@ -56,24 +106,7 @@ namespace BaGet.Extensions
 
             services.AddScoped<IContext>(provider =>
             {
-                var databaseOptions = provider.GetRequiredService<IOptions<BaGetOptions>>()
-                    .Value
-                    .Database;
-
-                databaseOptions.EnsureValid();
-
-                switch (databaseOptions.Type)
-                {
-                    case DatabaseType.Sqlite:
-                        return provider.GetRequiredService<SqliteContext>();
-
-                    case DatabaseType.SqlServer:
-                        return provider.GetRequiredService<SqlServerContext>();
-
-                    default:
-                        throw new InvalidOperationException(
-                            $"Unsupported database provider: {databaseOptions.Type}");
-                }
+                return provider.GetDatabaseContext();
             });
 
             services.AddDbContext<SqliteContext>((provider, options) =>
