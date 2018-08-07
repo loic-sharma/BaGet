@@ -40,20 +40,31 @@ namespace BaGet.Core.Services
                 .Where(p => p.VersionString == version.ToNormalizedString())
                 .AnyAsync();
 
-        public async Task<IReadOnlyList<Package>> FindAsync(string id)
+        public async Task<IReadOnlyList<Package>> FindAsync(string id, bool includeUnlisted = false)
         {
-            var results = await _context.Packages
-                .Where(p => p.Id == id)
-                .ToListAsync();
+            var query = _context.Packages.Where(p => p.Id == id);
 
-            return results.AsReadOnly();
+            if (!includeUnlisted)
+            {
+                query = query.Where(p => p.Listed);
+            }
+
+            return (await query.ToListAsync()).AsReadOnly();
         }
 
-        public Task<Package> FindAsync(string id, NuGetVersion version)
-            => _context.Packages
+        public Task<Package> FindAsync(string id, NuGetVersion version, bool includeUnlisted = false)
+        {
+            var query = _context.Packages
                 .Where(p => p.Id == id)
-                .Where(p => p.VersionString == version.ToNormalizedString())
-                .FirstOrDefaultAsync();
+                .Where(p => p.VersionString == version.ToNormalizedString());
+
+            if (!includeUnlisted)
+            {
+                query = query.Where(p => p.Listed);
+            }
+
+            return query.FirstOrDefaultAsync();
+        }
 
         public Task<bool> UnlistPackageAsync(string id, NuGetVersion version)
         {
@@ -65,9 +76,14 @@ namespace BaGet.Core.Services
             return TryUpdatePackageAsync(id, version, p => p.Listed = true);
         }
 
+        public Task<bool> AddDownloadAsync(string id, NuGetVersion version)
+        {
+            return TryUpdatePackageAsync(id, version, p => p.Downloads += 1);
+        }
+
         private async Task<bool> TryUpdatePackageAsync(string id, NuGetVersion version, Action<Package> action)
         {
-            var package = await FindAsync(id, version);
+            var package = await FindAsync(id, version, includeUnlisted: true);
 
             if (package != null)
             {
@@ -78,15 +94,6 @@ namespace BaGet.Core.Services
             }
 
             return false;
-        }
-
-        public async Task AddDownloadAsync(string id, NuGetVersion version)
-        {
-            var package = await FindAsync(id, version);
-
-            package.Downloads += 1;
-
-            await _context.SaveChangesAsync();
         }
     }
 }

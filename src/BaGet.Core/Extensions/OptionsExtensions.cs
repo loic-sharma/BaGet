@@ -27,12 +27,12 @@ namespace BaGet.Core.Extensions
         {
             if (options == null) ThrowMissingConfiguration(nameof(BaGetOptions.Storage));
 
-            var path = string.IsNullOrEmpty(options.Path)
+            options.Path = string.IsNullOrEmpty(options.Path)
                 ? Path.Combine(Directory.GetCurrentDirectory(), "Packages")
                 : options.Path;
 
             // Ensure the package storage directory exists
-            Directory.CreateDirectory(path);
+            Directory.CreateDirectory(options.Path);
         }
 
         public static void EnsureValid(this SearchOptions options)

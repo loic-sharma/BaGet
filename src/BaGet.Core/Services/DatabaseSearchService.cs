@@ -31,6 +31,7 @@ namespace BaGet.Core.Services
             // TODO: These results are an approximation. There are many scenarios in which this query
             // will miss packages or package versions.
             var packages = await search
+                .Where(p => p.Listed)
                 .OrderByDescending(p => p.Downloads)
                 .Skip(skip)
                 .Take(take)

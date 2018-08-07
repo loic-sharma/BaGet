@@ -15,13 +15,12 @@ namespace BaGet.Core.Services
     {
         Task<PackageAddResult> AddAsync(Package package);
 
-        Task<Package> FindAsync(string id, NuGetVersion version);
-        Task<IReadOnlyList<Package>> FindAsync(string id);
+        Task<Package> FindAsync(string id, NuGetVersion version, bool includeUnlisted = false);
+        Task<IReadOnlyList<Package>> FindAsync(string id, bool includeUnlisted = false);
 
         Task<bool> ExistsAsync(string id, NuGetVersion version);
         Task<bool> UnlistPackageAsync(string id, NuGetVersion version);
         Task<bool> RelistPackageAsync(string id, NuGetVersion version);
-
-        Task AddDownloadAsync(string id, NuGetVersion version);
+        Task<bool> AddDownloadAsync(string id, NuGetVersion version);
     }
 }
