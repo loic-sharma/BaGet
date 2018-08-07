@@ -26,6 +26,8 @@ namespace BaGet.Tests
         private readonly string ConnectionStringKey = $"{nameof(BaGetOptions.Database)}:{nameof(DatabaseOptions.ConnectionString)}";
         private readonly string StorageTypeKey = $"{nameof(BaGetOptions.Storage)}:{nameof(StorageOptions.Type)}";
         private readonly string FileSystemStoragePathKey = $"{nameof(BaGetOptions.Storage)}:{nameof(FileSystemStorageOptions.Path)}";
+        private readonly string SearchTypeKey = $"{nameof(BaGetOptions.Search)}:{nameof(SearchOptions.Type)}";
+        private readonly string MirrorEnabledKey = $"{nameof(BaGetOptions.Mirror)}:{nameof(MirrorOptions.Enabled)}";
 
         private ITestOutputHelper _helper;
         private LogLevel _minimumLevel = LogLevel.None;
@@ -83,6 +85,8 @@ namespace BaGet.Tests
             Configuration.Add(ConnectionStringKey, string.Format("Data Source={0}", resolvedSqliteFile));
             Configuration.Add(StorageTypeKey, StorageType.FileSystem.ToString());
             Configuration.Add(FileSystemStoragePathKey, storageFolderPath);
+            Configuration.Add(SearchTypeKey, nameof(SearchType.Database));
+            Configuration.Add(MirrorEnabledKey, false.ToString());
             return this;
         }
 
@@ -103,16 +107,6 @@ namespace BaGet.Tests
             }
 
             TestServer server = new TestServer(hostBuilder);
-
-            //Ensure that the Database is created, we use the same feature like inside the Startup in case of Env.IsDevelopment (EF-Migrations)
-            var scopeFactory = server.Host.Services.GetRequiredService<IServiceScopeFactory>();
-            using (var scope = scopeFactory.CreateScope())
-            {
-                scope.ServiceProvider
-                    .GetRequiredService<IContext>()
-                    .Database
-                    .Migrate();
-            }
             return server;
         }
     }
