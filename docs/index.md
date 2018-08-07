@@ -40,8 +40,9 @@ Search__Type=Database
 ```
 
 !!! info
-    The `baget.env` file stores BaGet's configuration. Please refer to [the
-    configuration's documentation](../configuration) for more information.
+    The `baget.env` file stores [BaGet's configuration](configuration) as environment
+    variables. To learn how these configurations work, please refer to
+    [ASP.NET Core's Configuration documentation](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-2.1&tabs=basicconfiguration#configuration-by-environment).
 
 3. Create a folder named `baget-data`
 4. Run:
