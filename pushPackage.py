@@ -2,14 +2,14 @@ import os
 import subprocess
 import shutil
 
-packagesPath = "/Users/ron/dev/python/content"
-failedPushes = "/Users/ron/dev/python/failed"
+packagesPath = "/path/to/existed/package/directory"
+failedPushes = "/path/to/push/failed/uploads"
 uploadCount = 0
 failedCount = 0
 contentDir = os.listdir(packagesPath)
 
 for package in contentDir:
-    pushCommand = "dotnet nuget push %s -k ECB-NUGET-SERVER-KEY -s http://%s:80/v3/index.json" % (package, os.getenv('PRIMARY_IP_ADDRESS'))
+    pushCommand = "dotnet nuget push %s -k <YOUR_KEY> -s http://<HOST_IP>:<HOST_PORT>/v3/index.json" % (package)
     result = subprocess.call(['bash','-c', "cd %s && %s" % (packagesPath, pushCommand)]) 
     if result is not 0:
         try:
