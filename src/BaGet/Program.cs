@@ -48,7 +48,7 @@ namespace BaGet
                 .UseStartup<Startup>()
                 .UseKestrel(options =>
                 {
-                    options.Limits.MaxRequestBodySize = null;
+                    options.Limits.MaxRequestBodySize = 262_144_000;
                 });
 
         public static IHostBuilder CreateHostBuilder(string[] args)
