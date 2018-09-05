@@ -31,6 +31,7 @@ namespace BaGet.Core.Mirror
 
         public async Task MirrorAsync(string id, NuGetVersion version)
         {
+            // TODO: Return more information about the mirror result.
             if (await _localPackages.ExistsAsync(id, version))
             {
                 return;

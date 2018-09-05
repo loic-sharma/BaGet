@@ -30,11 +30,11 @@ namespace BaGet.Extensions
         {
             return builder
                 .ConfigureLogging((context, logging) =>
-                    {
-                        logging.AddConfiguration(context.Configuration.GetSection("Logging"));
-                        logging.AddConsole();
-                        logging.AddDebug();
-                    });
+                {
+                    logging.AddConfiguration(context.Configuration.GetSection("Logging"));
+                    logging.AddConsole();
+                    logging.AddDebug();
+                });
         }
 
         public static IHostBuilder ConfigureBaGetServices(this IHostBuilder builder)
