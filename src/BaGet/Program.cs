@@ -45,7 +45,11 @@ namespace BaGet
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+                .UseStartup<Startup>()
+                .UseKestrel(options =>
+                {
+                    options.Limits.MaxRequestBodySize = null;
+                });
 
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
