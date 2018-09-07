@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaGet.Migrations.Sqlite
 {
     [DbContext(typeof(SqliteContext))]
-    [Migration("20180804082808_Initial")]
+    [Migration("20180907104341_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
