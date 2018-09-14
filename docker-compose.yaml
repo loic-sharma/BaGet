@@ -1,0 +1,10 @@
+version: "3"
+services:
+  server:
+    image: baget:latest
+    ports:
+      - 5555:80
+    env_file:
+      - baget.env
+    volumes:
+      - './baget-data:/var/baget'
