@@ -10,6 +10,7 @@ RUN dotnet restore src/BaGet
 RUN dotnet build src/BaGet -c ${APP_BUILD} -o /app
 
 FROM build AS publish
+ARG APP_BUILD=Release
 RUN dotnet publish src/BaGet -c ${APP_BUILD} -o /app
 
 FROM base AS final
