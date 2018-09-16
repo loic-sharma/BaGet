@@ -61,6 +61,8 @@ namespace BaGet.Azure.Configuration
 
             using (var nuspecStream = package.GetNuspec())
             {
+                packageStream.Seek(0, SeekOrigin.Begin);
+
                 await UploadBlobAsync(GetPackageBlob(identity), packageStream, PackageContentType);
                 await UploadBlobAsync(GetNuspecBlob(identity), nuspecStream, TextContentType);
 
@@ -92,11 +94,9 @@ namespace BaGet.Azure.Configuration
 
         private async Task UploadBlobAsync(CloudBlockBlob blob, Stream content, string contentType)
         {
-            await blob.UploadFromStreamAsync(content);
-
             blob.Properties.ContentType = contentType;
 
-            await blob.SetPropertiesAsync();
+            await blob.UploadFromStreamAsync(content);
         }
 
         private async Task<Stream> DownloadBlobAsync(CloudBlockBlob blob)
