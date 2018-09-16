@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Mirror;
 using BaGet.Core.Services;
@@ -25,7 +26,7 @@ namespace BaGet.Controllers.Web.Registration
 
         // GET v3/registration/{id}/{version}.json
         [HttpGet]
-        public async Task<IActionResult> Get(string id, string version)
+        public async Task<IActionResult> Get(string id, string version, CancellationToken cancellationToken)
         {
             if (!NuGetVersion.TryParse(version, out var nugetVersion))
             {
@@ -33,7 +34,7 @@ namespace BaGet.Controllers.Web.Registration
             }
 
             // Allow read-through caching to happen if it is confiured.
-            await _mirror.MirrorAsync(id, nugetVersion);
+            await _mirror.MirrorAsync(id, nugetVersion, cancellationToken);
 
             var package = await _packages.FindAsync(id, nugetVersion);
 

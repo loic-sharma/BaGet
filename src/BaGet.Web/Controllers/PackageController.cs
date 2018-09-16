@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Mirror;
 using BaGet.Core.Services;
@@ -37,7 +38,7 @@ namespace BaGet.Controllers
             });
         }
 
-        public async Task<IActionResult> DownloadPackage(string id, string version)
+        public async Task<IActionResult> DownloadPackage(string id, string version, CancellationToken cancellationToken)
         {
             if (!NuGetVersion.TryParse(version, out var nugetVersion))
             {
@@ -45,7 +46,7 @@ namespace BaGet.Controllers
             }
 
             // Allow read-through caching if it is configured.
-            await _mirror.MirrorAsync(id, nugetVersion);
+            await _mirror.MirrorAsync(id, nugetVersion, cancellationToken);
 
             if (!await _packages.AddDownloadAsync(id, nugetVersion))
             {
@@ -58,7 +59,7 @@ namespace BaGet.Controllers
             return File(packageStream, "application/octet-stream");
         }
 
-        public async Task<IActionResult> DownloadNuspec(string id, string version)
+        public async Task<IActionResult> DownloadNuspec(string id, string version, CancellationToken cancellationToken)
         {
             if (!NuGetVersion.TryParse(version, out var nugetVersion))
             {
@@ -66,7 +67,7 @@ namespace BaGet.Controllers
             }
 
             // Allow read-through caching if it is configured.
-            await _mirror.MirrorAsync(id, nugetVersion);
+            await _mirror.MirrorAsync(id, nugetVersion, cancellationToken);
 
             if (!await _packages.ExistsAsync(id, nugetVersion))
             {
@@ -78,7 +79,7 @@ namespace BaGet.Controllers
             return File(await _storage.GetNuspecStreamAsync(identity), "text/xml");
         }
 
-        public async Task<IActionResult> DownloadReadme(string id, string version)
+        public async Task<IActionResult> DownloadReadme(string id, string version, CancellationToken cancellationToken)
         {
             if (!NuGetVersion.TryParse(version, out var nugetVersion))
             {
@@ -86,7 +87,7 @@ namespace BaGet.Controllers
             }
 
             // Allow read-through caching if it is configured.
-            await _mirror.MirrorAsync(id, nugetVersion);
+            await _mirror.MirrorAsync(id, nugetVersion, cancellationToken);
 
             if (!await _packages.ExistsAsync(id, nugetVersion))
             {

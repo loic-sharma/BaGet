@@ -29,76 +29,57 @@ namespace BaGet.Core.Mirror
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task MirrorAsync(string id, NuGetVersion version)
+        public async Task MirrorAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
             if (await _localPackages.ExistsAsync(id, version))
             {
                 return;
             }
 
-            await TryIndexFromSourceAsync(id, version);
-        }
-
-        private async Task<bool> TryIndexFromSourceAsync(string id, NuGetVersion version)
-        {
             var idString = id.ToLowerInvariant();
             var versionString = version.ToNormalizedString().ToLowerInvariant();
 
-            _logger.LogInformation(
-                "Attempting to index package {Id} {Version} from upstream source...",
-                idString,
-                versionString);
+            await IndexFromSourceAsync(idString, versionString, cancellationToken);
+        }
+
+        private async Task IndexFromSourceAsync(string id, string version, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            _logger.LogInformation("Attempting to mirror package {Id} {Version}...", id, version);
 
             try
             {
                 // See https://github.com/NuGet/NuGet.Client/blob/4eed67e7e159796ae486d2cca406b283e23b6ac8/src/NuGet.Core/NuGet.Protocol/Resources/DownloadResourceV3.cs#L82
-                var packageUri = new Uri(_packageBaseAddress, $"{idString}/{versionString}/{idString}.{versionString}.nupkg");
+                var packageUri = new Uri(_packageBaseAddress, $"{id}/{version}/{id}.{version}.nupkg");
 
-                // TODO: DownloadAsync throws when the package doesn't exist. This could be cleaner.
-                using (var stream = await _downloader.DownloadAsync(packageUri, CancellationToken.None))
+                using (var stream = await _downloader.DownloadOrNullAsync(packageUri, cancellationToken))
                 {
-                    _logger.LogInformation(
-                        "Downloaded package {Id} {Version}, indexing...",
-                        idString,
-                        versionString);
-
-                    var indexingResult = await _indexer.IndexAsync(stream);
-
-                    switch (indexingResult)
+                    if (stream == null)
                     {
-                        case IndexingResult.InvalidPackage:
-                            _logger.LogWarning(
-                                "Could not index {Id} {Version} as it is an invalid package",
-                                idString,
-                                versionString);
+                        _logger.LogWarning(
+                            "Failed to download package {Id} {Version} at {PackageUri}",
+                            id,
+                            version,
+                            packageUri);
 
-                            return false;
-
-                        case IndexingResult.Success:
-                        case IndexingResult.PackageAlreadyExists:
-                            _logger.LogInformation(
-                                "Successfully indexed {Id} {Version}",
-                                idString,
-                                versionString);
-
-                            return true;
-
-                        default:
-                            _logger.LogError(
-                                "Unknown indexing result for {Id} {Version}: {IndexingResult}",
-                                idString,
-                                versionString,
-                                indexingResult);
-
-                            throw new InvalidOperationException($"Unknown indexing result: {indexingResult}");
+                        return;
                     }
+
+                    _logger.LogInformation("Downloaded package {Id} {Version}, indexing...", id, version);
+
+                    var result = await _indexer.IndexAsync(stream);
+
+                    _logger.LogInformation(
+                        "Finished indexing package {Id} {Version} with result {Result}",
+                        id,
+                        version,
+                        result);
                 }
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Failed to index package {Id} {Version}", idString, versionString);
-
-                return false;
+                _logger.LogError(e, "Failed to mirror package {Id} {Version}", id, version);
             }
         }
     }

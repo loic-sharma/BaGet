@@ -23,8 +23,10 @@ namespace BaGet.Core.Mirror
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<Stream> DownloadAsync(Uri packageUri, CancellationToken cancellationToken)
+        public async Task<Stream> DownloadOrNullAsync(Uri packageUri, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             _logger.LogInformation("Attempting to download package from {PackageUri}...", packageUri);
 
             Stream packageStream = null;
@@ -33,7 +35,7 @@ namespace BaGet.Core.Mirror
             try
             {
                 // Download the package from the network to a temporary file.
-                using (var response = await _httpClient.GetAsync(packageUri, HttpCompletionOption.ResponseHeadersRead))
+                using (var response = await _httpClient.GetAsync(packageUri, HttpCompletionOption.ResponseHeadersRead, cancellationToken))
                 {
                     _logger.LogInformation(
                         "Received response {StatusCode}: {ReasonPhrase} of type {ContentType} for request {PackageUri}",
@@ -44,7 +46,11 @@ namespace BaGet.Core.Mirror
 
                     if (response.StatusCode != HttpStatusCode.OK)
                     {
-                        throw new InvalidOperationException($"Expected status code {HttpStatusCode.OK} for package download, actual: {response.StatusCode}");
+                        _logger.LogWarning(
+                            $"Expected status code {HttpStatusCode.OK} for package download, actual: {{ResponseStatusCode}}",
+                            response.StatusCode);
+
+                        return null;
                     }
 
                     using (var networkStream = await response.Content.ReadAsStreamAsync())
@@ -80,7 +86,7 @@ namespace BaGet.Core.Mirror
 
                 packageStream?.Dispose();
 
-                throw;
+                return null;
             }
         }
     }
