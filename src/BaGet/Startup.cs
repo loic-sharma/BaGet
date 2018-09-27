@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using BaGet.Configurations;
 using BaGet.Core.Entities;
 using BaGet.Extensions;
@@ -23,32 +24,42 @@ namespace BaGet
         public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigureBaGet(Configuration, httpServices: true);
+
+            // In production, the UI files will be served from this directory
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = Path.Combine("Baget.Ui", "dist");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
+            var scopeFactory = app.ApplicationServices
+                .GetRequiredService<IServiceScopeFactory>();
+
+            using (var scope = scopeFactory.CreateScope())
             {
-                app.UseDeveloperExceptionPage();
-                app.UseStatusCodePages();
+                IContext context = scope.ServiceProvider
+                    .GetRequiredService<IContext>();
 
-                // Run migrations automatically in development mode.
-                var scopeFactory = app.ApplicationServices
-                    .GetRequiredService<IServiceScopeFactory>();
+                // Always ensure the database is created.
+                context.Database.EnsureCreated();
 
-                using (var scope = scopeFactory.CreateScope())
+                if (env.IsDevelopment())
                 {
-                    scope.ServiceProvider
-                        .GetRequiredService<IContext>()
-                        .Database
-                        .Migrate();
+                    app.UseDeveloperExceptionPage();
+                    app.UseStatusCodePages();
+
+                    // Run migrations automatically in development mode.
+                    context.Database.Migrate();
                 }
             }
 
             app.UseForwardedHeaders();
             app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.UseSpaStaticFiles();
 
             app.UseCors(ConfigureCorsOptions.CorsPolicy);
 
@@ -60,6 +71,14 @@ namespace BaGet
                     .MapSearchRoutes()
                     .MapRegistrationRoutes()
                     .MapPackageContentRoutes();
+            });
+            
+            app.UseSpa(spa =>
+            {
+                if (env.IsDevelopment())
+                {
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:1234");
+                }
             });
         }
     }

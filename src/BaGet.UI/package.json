@@ -11,7 +11,7 @@
     "repository": "github:loic-sharma/BaGet",
     "scripts": {
         "develop": "parcel ./index.html",
-        "build": "parcel build ./index.html --out-dir ../BaGet/wwwroot"
+        "build": "parcel build ./index.html"
     },
     "dependencies": {
         "bootstrap": "3.3.7",
