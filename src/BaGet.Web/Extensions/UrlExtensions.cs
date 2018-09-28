@@ -6,8 +6,8 @@ namespace BaGet.Web.Extensions
 {
     public static class UrlExtensions
     {
-        public static string PackageBase(this IUrlHelper url) => url.AbsoluteUrl("v3/package");
-        public static string RegistrationsBase(this IUrlHelper url) => url.AbsoluteUrl("v3/registration");
+        public static string PackageBase(this IUrlHelper url) => url.AbsoluteUrl("v3/package/");
+        public static string RegistrationsBase(this IUrlHelper url) => url.AbsoluteUrl("v3/registration/");
         public static string PackagePublish(this IUrlHelper url) => url.AbsoluteRouteUrl(Routes.UploadRouteName);
         public static string PackageSearch(this IUrlHelper url) => url.AbsoluteRouteUrl(Routes.SearchRouteName);
         public static string PackageAutocomplete(this IUrlHelper url) => url.AbsoluteRouteUrl(Routes.AutocompleteRouteName);
