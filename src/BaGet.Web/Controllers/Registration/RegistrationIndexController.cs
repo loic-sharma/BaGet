@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
+using BaGet.Core.Mirror;
 using BaGet.Core.Services;
 using BaGet.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using NuGet.Protocol.Core.Types;
 
 namespace BaGet.Controllers.Web.Registration
 {
@@ -15,10 +18,12 @@ namespace BaGet.Controllers.Web.Registration
     /// </summary>
     public class RegistrationIndexController : Controller
     {
+        private readonly IMirrorService _mirror;
         private readonly IPackageService _packages;
 
-        public RegistrationIndexController(IPackageService packages)
+        public RegistrationIndexController(IMirrorService mirror, IPackageService packages)
         {
+            this._mirror = mirror;
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));
         }
 
@@ -32,6 +37,23 @@ namespace BaGet.Controllers.Web.Registration
 
             if (!packages.Any())
             {
+                var upstreamPackages = (await _mirror.FindUpstreamMetadataAsync(id, CancellationToken.None)).ToList();
+                if(upstreamPackages.Any()) {
+                    return Json(new
+                    {
+                        Count = upstreamPackages.Count,
+                        TotalDownloads = upstreamPackages.Sum(s => s.DownloadCount),
+                        Items = new[]
+                        {
+                            new RegistrationIndexItem(
+                                packageId: id,
+                                items: upstreamPackages.Select(ToRegistrationIndexLeaf).ToList(),
+                                lower: upstreamPackages.Select(p => p.Identity.Version).Min().ToNormalizedString(),
+                                upper: upstreamPackages.Select(p => p.Identity.Version).Max().ToNormalizedString()
+                            ),
+                        }
+                    });
+                }
                 return NotFound();
             }
 
@@ -53,6 +75,15 @@ namespace BaGet.Controllers.Web.Registration
                 }
             });
         }
+
+        private RegistrationIndexLeaf ToRegistrationIndexLeaf(IPackageSearchMetadata package) =>
+            new RegistrationIndexLeaf(
+                packageId: package.Identity.Id,
+                catalogEntry: new CatalogEntry(
+                    package: package,
+                    catalogUri: $"https://api.nuget.org/v3/catalog0/data/2015.02.01.06.24.15/{package.Identity.Id}.{package.Identity.Version}.json",
+                    packageContent: Url.PackageDownload(package.Identity.Id, package.Identity.Version)),
+                packageContent: Url.PackageDownload(package.Identity.Id, package.Identity.Version));
 
         private RegistrationIndexLeaf ToRegistrationIndexLeaf(Package package) =>
             new RegistrationIndexLeaf(
@@ -139,6 +170,41 @@ namespace BaGet.Controllers.Web.Registration
                 Summary = package.Summary;
                 Tags = package.Tags;
                 Title = package.Title;
+            }
+
+            public CatalogEntry(IPackageSearchMetadata package, string catalogUri, string packageContent)
+            {
+                if (package == null) throw new ArgumentNullException(nameof(package));
+
+                CatalogUri = catalogUri ?? throw new ArgumentNullException(nameof(catalogUri));
+
+                PackageId = package.Identity.Id;
+                Version = package.Identity.Version.ToFullString();
+                Authors = string.Join(", ", package.Authors);
+                Description = package.Description;
+                Downloads = package.DownloadCount.GetValueOrDefault(0);
+                HasReadme = false; // 
+                IconUrl = NullSafeToString(package.IconUrl);
+                Language = null; //
+                LicenseUrl = NullSafeToString(package.LicenseUrl);
+                Listed = package.IsListed;
+                //MinClientVersion =
+                PackageContent = packageContent;
+                ProjectUrl = NullSafeToString(package.ProjectUrl);
+                //RepositoryUrl = package.RepositoryUrlString;
+                //RepositoryType = package.RepositoryType;
+                //Published = package.Published.GetValueOrDefault(DateTimeOffset.MinValue);
+                RequireLicenseAcceptance = package.RequireLicenseAcceptance;
+                Summary = package.Summary;
+                Tags = package.Tags == null ? null : package.Tags.Split(",");
+                Title = package.Title;
+            }
+
+            private string NullSafeToString(object prop)
+            {
+                if(prop == null)
+                    return null;
+                return prop.ToString();
             }
 
             [JsonProperty(PropertyName = "@id")]
