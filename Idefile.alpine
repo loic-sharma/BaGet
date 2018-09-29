@@ -1,0 +1,2 @@
+IDE_DRIVER=docker
+IDE_DOCKER_IMAGE="tomzo/dotnet-ide:alpine-2.0.0"
