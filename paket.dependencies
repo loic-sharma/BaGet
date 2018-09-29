@@ -25,6 +25,13 @@ group Tools
   source https://api.nuget.org/v3/index.json
 
   nuget xunit.runner.console
+  nuget Fake.IO.FileSystem
+  nuget Fake.DotNet.MSBuild
+  nuget Fake.Core.Target
+  nuget Fake.Core.ReleaseNotes
+  nuget Fake.DotNet.Cli
+  nuget Fake.Tools.Git
+  nuget Fake.DotNet.Testing.XUnit2
 
 group Test
   source https://api.nuget.org/v3/index.json
