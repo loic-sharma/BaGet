@@ -1,0 +1,41 @@
+format_version: 3
+pipelines:
+  baget:
+    group: liget
+    label_template: "${git[:8]}"
+    materials:
+      git:
+        type: configrepo
+    stages:
+      - build:
+          clean_workspace: true
+          jobs:
+            build:
+              elastic_profile_id: w.c2.m2048.e10
+              artifacts:
+                - build:
+                    source: src/*/bin/Release/netcoreapp2.1/publish/**/*
+                    destination: src
+                - build:
+                    source: tests/*/bin/Release/netcoreapp2.1/publish/**/*
+                    destination: tests
+              tasks:
+               - exec:
+                  command: ide
+                  arguments:
+                    - "./build.sh --target Build"
+      - test_pack:
+          clean_workspace: true
+          jobs:
+            unit:
+              elastic_profile_id: w.c2.m2048.e10
+              tasks:
+               - fetch:
+                  stage: build
+                  job: build
+                  source: tests
+                  destination:
+               - exec:
+                  command: ide
+                  arguments:
+                    - "./build.sh --target RunUnitTests --single-target"
