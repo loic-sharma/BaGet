@@ -35,24 +35,21 @@ namespace BaGet
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            var scopeFactory = app.ApplicationServices
-                .GetRequiredService<IServiceScopeFactory>();
-
-            using (var scope = scopeFactory.CreateScope())
+            if (env.IsDevelopment())
             {
-                IContext context = scope.ServiceProvider
-                    .GetRequiredService<IContext>();
+                app.UseDeveloperExceptionPage();
+                app.UseStatusCodePages();
 
-                // Always ensure the database is created.
-                context.Database.EnsureCreated();
+                // Run migrations automatically in development mode.
+                var scopeFactory = app.ApplicationServices
+                    .GetRequiredService<IServiceScopeFactory>();
 
-                if (env.IsDevelopment())
+                using (var scope = scopeFactory.CreateScope())
                 {
-                    app.UseDeveloperExceptionPage();
-                    app.UseStatusCodePages();
-
-                    // Run migrations automatically in development mode.
-                    context.Database.Migrate();
+                    scope.ServiceProvider
+                        .GetRequiredService<IContext>()
+                        .Database
+                        .Migrate();
                 }
             }
 
