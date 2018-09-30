@@ -29,6 +29,15 @@ pipelines:
           jobs:
             unit:
               elastic_profile_id: w.c2.m2048.e10
+              tabs:
+                unit_tests: "test-results/UnitTestResults.html"
+              artifacts:
+                - test:
+                    source: "*TestsResults.xml"
+                    destination: test-results
+                - build:
+                    source: "*TestResults.html"
+                    destination: test-results
               tasks:
                - fetch:
                   stage: build

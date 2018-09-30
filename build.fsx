@@ -103,6 +103,8 @@ Target.create "RunUnitTests" (fun _ ->
             p with 
                 ExcludeTraits=[ ("Category","integration") ] 
                 TimeOut=System.TimeSpan.FromMinutes(5.0)
+                XmlOutputPath=Some "UnitTestsResults.xml"
+                HtmlOutputPath=Some "UnitTestResults.html"
         })
 )
 
