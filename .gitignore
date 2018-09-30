@@ -270,3 +270,5 @@ __pycache__/
 # tools/
 /.paket/paket
 /.paket/paket.bootstrapper
+/*TestsResults.xml
+/*TestResults.html
