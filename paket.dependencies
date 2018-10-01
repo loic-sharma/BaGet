@@ -1,0 +1,50 @@
+source https://api.nuget.org/v3/index.json
+framework netcoreapp2.1, netstandard2.0
+storage: none
+
+nuget McMaster.Extensions.CommandLineUtils
+nuget Microsoft.AspNetCore.App
+nuget Microsoft.AspNetCore.TestHost
+nuget Microsoft.Azure.Search
+nuget Microsoft.Data.SQLite
+nuget Microsoft.EntityFrameworkCore.Design
+nuget Microsoft.EntityFrameworkCore.Relational
+nuget Microsoft.EntityFrameworkCore.Sqlite
+nuget Microsoft.Extensions.Configuration.FileExtensions
+nuget Microsoft.Extensions.Configuration.Json
+nuget Microsoft.Extensions.Logging.Abstractions
+nuget Microsoft.Extensions.Logging.Configuration
+nuget Microsoft.Extensions.Logging.Console
+nuget Microsoft.Extensions.Options.ConfigurationExtensions
+nuget morelinq
+nuget NuGet.Client
+nuget NuGet.Packaging
+nuget WindowsAzure.Storage
+
+group Tools
+  source https://api.nuget.org/v3/index.json
+
+  nuget xunit.runner.console
+  nuget Fake.IO.FileSystem
+  nuget Fake.DotNet.MSBuild
+  nuget Fake.Core.Target
+  nuget Fake.Core.ReleaseNotes
+  nuget Fake.DotNet.Cli
+  nuget Fake.Tools.Git
+  nuget Fake.DotNet.Testing.XUnit2
+
+group Test
+  source https://api.nuget.org/v3/index.json
+  framework netcoreapp2.1, netstandard2.0
+  storage: none
+
+  clitool dotnet-xunit
+  nuget xunit
+  nuget xunit.runner.visualstudio
+  nuget xunit.runner.console
+  nuget Microsoft.NET.Test.Sdk
+  nuget Microsoft.AspNetCore.App
+  nuget Microsoft.AspNetCore.TestHost
+  nuget Microsoft.Extensions.Logging
+  nuget Microsoft.Extensions.Logging.Abstractions
+  nuget Microsoft.Extensions.Logging.Configuration

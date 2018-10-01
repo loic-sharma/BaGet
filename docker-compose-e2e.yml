@@ -1,0 +1,20 @@
+version: '2'
+services:
+  default:
+    container_name: default
+    # includes mono and dotnet sdk
+    image: tomzo/dotnet-ide:2.0.0
+    links:
+      - baget:baget
+    volumes:
+      - ${IDE_IDENTITY}:/ide/identity:ro
+      - ${IDE_WORK}:/ide/work
+    env_file:
+      - ${ENV_FILE}
+  baget:
+    image: ${AIT_DOCKER_IMAGE_NAME}:${AIT_DOCKER_IMAGE_TAG}
+    volumes:
+      - ${IDE_WORK}/e2e/data/:/var/baget
+    env_file:
+      - ${ENV_FILE}
+    mem_limit: 550m

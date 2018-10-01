@@ -1,0 +1,205 @@
+#!/bin/bash
+
+################################################################################
+# Generally:
+# * Each log output goes to stderrr, so that we can return value from functions
+# with stdout. (Curl does the same).
+# * Do not set here: `set -e`, because after this script is sourced, then
+# using it interactively would be troublesome: exit on each failure and
+# bash completion results in exit too.
+################################################################################
+# The Helpers functions:
+#  * are independent of the end user functions and all the variables sourced
+# from releaserrc
+#  * do not assume any default arguments, all variables must be explicitly set.
+#  * are here to have higher test coverage.
+################################################################################
+
+program_name() {
+  echo "RELEASER"
+}
+log_debug() {
+  if [ "${RELEASER_LOG_LEVEL}" == "debug" ]; then
+    echo -e "$(LANG=en_US date "+%d-%m-%Y %T") $(program_name) debug: ${1}" >&2
+  fi
+}
+log_info() {
+  echo -e "$(LANG=en_US date "+%d-%m-%Y %T") $(program_name) info: ${1}" >&2
+}
+log_error() {
+  echo -e "\e[31m$(LANG=en_US date "+%d-%m-%Y %T") $(program_name) error: $1\e[0m" >&2
+  echo -e "\e[31m$(LANG=en_US date "+%d-%m-%Y %T") $(program_name) error: File: ${BASH_SOURCE[0]}\e[0m" >&2
+  echo -e "\e[31m$(LANG=en_US date "+%d-%m-%Y %T") $(program_name) error: Line numbers: ${BASH_LINENO[*]}\e[0m" >&2
+}
+log_warn() {
+  echo -e "\e[33m$(LANG=en_US date "+%d-%m-%Y %T") $(program_name) warn: $1\e[0m" >&2
+}
+
+# In order to load all the releaser functions once you can run:
+# releaser_loaded || eval "$(curl http://gogs.ai-traders.com/platform/releaser/raw/0.2.0/src/releaser)"
+# Or you can simply wget that file and source it.
+function releaser_loaded {
+  return 0
+}
+
+# Arguments:
+#   changelog_file
+function get_last_version_from_changelog {
+  changelog_file="$1"
+  if [[ -z "${changelog_file}" ]];then
+    log_error "changelog_file not set"
+    return 1
+  fi
+  if [[ ! -f "${changelog_file}" ]];then
+    log_error "${changelog_file} does not exist"
+    return 1
+  fi
+  version=$(cat $changelog_file | head -1 | grep -o -e "[0-9]*\.[0-9]*\.[0-9]*")
+  if [[ "${version}" == "" ]];then
+    log_error "Could not get last version from ${changelog_file}"
+    return 1
+  fi
+  echo "${version}"
+}
+# Arguments: none
+function get_last_git_tagged_version {
+  tag="$(git tag 2>&1 | sort -V | tail -1)"
+  if [[ "${tag}" == *"Not a git repository"* ]];then
+    log_error "Not a git repository"
+    return 1
+  fi
+  echo "${tag}"
+}
+
+# Arguments:
+#   * version
+function validate_version_is_semver {
+  version="$1"
+  if [[ -z "${version}" ]];then
+    log_error "version not set"
+    return 1
+  fi
+  if [[ ! "${version}" =~ ^[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+    log_error "Version was not SemVer. It was: ${version}. Must be e.g. 0.1.2"
+    return 1
+  fi
+}
+
+# Replaces the whole line in a version file with that line and adds new version.
+# Arguments:
+#   line_pattern
+#   new_version
+#   version_file
+function set_version_in_file {
+  line_pattern="$1"
+  version_file="$2"
+  new_version="$3"
+
+  if [[ -z "${line_pattern}" ]];then
+    log_error "line_pattern not set"
+    return 1
+  fi
+  if [[ -z "${new_version}" ]];then
+    log_error "new_version not set"
+    return 1
+  fi
+  if [[ -z "${version_file}" ]];then
+    log_error "version_file not set"
+    return 1
+  fi
+  if [[ ! -f "${version_file}" ]];then
+    log_error "${version_file} does not exist"
+    return 1
+  fi
+  new_versionfile_contents=$(sed "s/${line_pattern}.*/${line_pattern}\"${new_version}\"/g" ${version_file})
+  log_debug "Will replace version file with:"
+  log_debug "${new_versionfile_contents}"
+  if [[ "${dryrun}" != "true" ]];then
+    echo "${new_versionfile_contents}" > "${version_file}"
+  fi
+}
+
+# Takes care of the first line of changelog file.
+# There are various cases supported. Suppose we bump to 0.2.0:
+#   Case 1 - changelog 1st line contains older version header or no header
+#     ### 0.1.0 (2017-Apr-29)
+#     Becomes:
+#     ### 0.2.0 (2017-Apr-30)
+#     ### 0.1.0 (2017-Apr-29)
+#   Case 2 - changelog 1st line contains the same version header
+#     ### 0.2.0 (2017-Apr-30)
+#     Becomes: (no changes, even if date is different)
+#     ### 0.2.0 (2017-Apr-30)
+#   Case 3 - changelog 1st line contains Unreleased and the same version header:
+#     ### 0.2.0 - Unreleased
+#     Becomes:
+#     ### 0.2.0 (2017-Apr-29)
+#   Case 4 - changelog 1st line contains Unreleased and older version header:
+#     ### 0.1.0 - Unreleased
+#     Becomes:
+#     ### 0.2.0 (2017-Apr-29)
+#
+# Arguments:
+#   new_version
+#   changelog_file
+function set_version_in_changelog {
+  changelog_file="$1"
+  new_version="$2"
+
+  if [[ -z "${new_version}" ]];then
+    log_error "new_version not set"
+    return 1
+  fi
+  if [[ -z "${changelog_file}" ]];then
+    log_error "changelog_file not set"
+    return 1
+  fi
+  if [[ ! -f "${changelog_file}" ]];then
+    log_error "${changelog_file} does not exist"
+    return 1
+  fi
+
+  changelog_first_line=$(cat ${changelog_file} | head -1)
+  if [[ "${changelog_first_line}" == "### "*" - Unreleased" ]];then
+    log_debug "Setting data in changelog from Unreleased"
+    release_date=$(LANG=en_US date +%Y-%b-%d)
+    new_line="### ${new_version} (${release_date})"
+    new_changelog_contents=$(sed "s/### .* - Unreleased/${new_line}/g" ${changelog_file})
+    if [[ "${dryrun}" != "true" ]];then
+      echo "${new_changelog_contents}" > "${changelog_file}"
+    fi
+    return $?
+  elif [[ "${changelog_first_line}" == "### ${new_version} "* ]];then
+    # idempotent
+    log_debug "Version in changelog is already set"
+    return 0
+  else
+    log_debug "Will add new line to changelog:"
+    release_date=$(LANG=en_US date +%Y-%b-%d)
+    new_line="### ${new_version} (${release_date})"
+    log_debug "${new_line}"
+    if [[ "${dryrun}" != "true" ]];then
+      old_changelog=$(cat "${changelog_file}")
+      echo "${new_line}" > "${changelog_file}"
+      echo "" >> "${changelog_file}"
+      echo "${old_changelog}" >> "${changelog_file}"
+      # this does not work, newline is not printed, even with echo -e:
+      # new_changelog="${new_line}\n${old_changelog}"
+      return $?
+    fi
+  fi
+}
+
+# You should invoke that function before running any end user functions.
+function releaser_init {
+  default_changelog_file="$(pwd)/CHANGELOG.md"
+  changelog_file="${changelog_file:-${default_changelog_file}}"
+  variables_file="$(pwd)/releaserrc"
+  if [[ -f "${variables_file}" ]]; then
+    source "${variables_file}"
+  else
+    log_debug "File: ${variables_file} does not exist, but it is ok."
+  fi
+  log_info "Current directory: $(pwd)"
+  log_debug "Changelog file: ${changelog_file}"
+}

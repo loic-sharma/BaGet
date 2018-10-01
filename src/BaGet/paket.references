@@ -1,0 +1,7 @@
+McMaster.Extensions.CommandLineUtils
+Microsoft.AspNetCore.App
+Microsoft.Data.SQLite
+Microsoft.EntityFrameworkCore.Sqlite
+Microsoft.Extensions.Logging.Configuration
+Microsoft.Extensions.Logging.Console
+NuGet.Client

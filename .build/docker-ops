@@ -1,0 +1,147 @@
+#!/bin/bash
+
+################################################################################
+# Generally:
+# * Each log output goes to stderrr, so that we can return value from functions
+# with stdout. (Curl does the same).
+# * Do not set here: `set -e`, because after this script is sourced, then
+# using it interactively would be troublesome: exit on each failure and
+# bash completion results in exit too.
+################################################################################
+
+program_name() {
+  echo "DOCKER-OPS"
+}
+log_debug() {
+  if [ "${RELEASER_LOG_LEVEL}" == "debug" ]; then
+    echo -e "$(date "+%d-%m-%Y %T") $(program_name) debug: ${1}" >&2
+  fi
+}
+log_info() {
+  echo -e "$(date "+%d-%m-%Y %T") $(program_name) info: ${1}" >&2
+}
+log_error() {
+  echo -e "\e[31m$(date "+%d-%m-%Y %T") $(program_name) error: $1\e[0m" >&2
+  echo -e "\e[31m$(date "+%d-%m-%Y %T") $(program_name) error: File: ${BASH_SOURCE[0]}\e[0m" >&2
+  echo -e "\e[31m$(date "+%d-%m-%Y %T") $(program_name) error: Line numbers: ${BASH_LINENO[*]}\e[0m" >&2
+}
+log_warn() {
+  echo -e "\e[33m$(date "+%d-%m-%Y %T") $(program_name) warn: $1\e[0m" >&2
+}
+
+# In order to load all the docker-ops functions once you can run:
+# docker_ops || eval "$(curl http://archive.ai-traders.com/docker-ops/0.1.3/docker-ops)"
+# Or you can simply wget that file and source it.
+function docker_ops_loaded {
+  return 0
+}
+
+function docker_build {
+  image_dir="$1"
+  imagerc_filename="$2"
+  image_name="$3"
+  image_tag="$4"
+
+  if [[ -z "${image_dir}" ]];then
+    log_error "image_dir not set"
+    return 1
+  fi
+  log_info "image_dir set to: ${image_dir}"
+  if [[ -z "${image_name}" ]];then
+    log_error "image_name not set"
+    return 1
+  fi
+  log_info "image_name set to: ${image_name}"
+  if [[ -z "${imagerc_filename}" ]];then
+    log_error "imagerc_filename not set"
+    return 1
+  fi
+  log_info "imagerc_filename set to: ${imagerc_filename}"
+  initial_dir="$(pwd)"
+  cd "${image_dir}"
+  if [[ -z "${image_tag}" ]];then
+    # set to the latest git commit hash
+    image_tag=$(git rev-parse HEAD)
+  fi
+  log_info "image_tag set to: ${image_tag}"
+
+  set -x -e
+  docker build ${docker_build_options} -t "${image_name}:${image_tag}" .
+  echo "export AIT_DOCKER_IMAGE_NAME=\"${image_name}\"" > "${imagerc_filename}"
+  echo "export AIT_DOCKER_IMAGE_TAG=\"${image_tag}\"" >> "${imagerc_filename}"
+
+  echo "{ \"docker_image_name\":\"${image_name}\"," > "${imagerc_filename}.json"
+  echo "\"docker_image_tag\":\"${image_tag}\"," >> "${imagerc_filename}.json"
+  echo "\"docker_image_url\":\"${image_name}:${image_tag}\" }" >> "${imagerc_filename}.json"
+
+  echo "---" > "${imagerc_filename}.yml"
+  echo "docker_image_name: ${image_name}" >> "${imagerc_filename}.yml"
+  echo "docker_image_tag: ${image_tag}" >> "${imagerc_filename}.yml"
+  echo "docker_image_url: ${image_name}:${image_tag}" >> "${imagerc_filename}.yml"
+  if [[ "${dryrun}" != "true" && "${ops_docker_push}" != "false" ]];then
+    docker push "${image_name}:${image_tag}"
+  fi
+  cd "${initial_dir}"
+  set +x +e
+}
+function source_imagerc {
+  image_dir="$1"
+  imagerc_filename="$2"
+
+  if [[ -z "${image_dir}" ]];then
+    log_error "image_dir not set"
+    return 1
+  fi
+  if [[ -z "${imagerc_filename}" ]];then
+    log_error "imagerc_filename not set"
+    return 1
+  fi
+  set -x -e
+  source "${image_dir}/${imagerc_filename}"
+  set +x +e
+}
+function docker_push {
+  image_name="$1"
+  testing_image_tag="$2"
+  production_image_tag="$3"
+
+  if [[ -z "${image_name}" ]];then
+    log_error "image_name not set"
+    return 1
+  fi
+  log_info "image_name set to: ${image_name}"
+  if [[ -z "${testing_image_tag}" ]];then
+    log_error "testing_image_tag not set"
+    return 1
+  fi
+  log_info "testing_image_tag set to: ${testing_image_tag}"
+  if [[ -z "${production_image_tag}" ]];then
+    log_error "production_image_tag not set"
+    return 1
+  fi
+  log_info "production_image_tag set to: ${production_image_tag}"
+  if ! docker images ${image_name} | awk '{print $2}' | grep ${testing_image_tag} 1>/dev/null ; then
+    # if docker image does not exist locally, then "docker tag" will fail,
+    # so pull it. However, do not always pull it, the image may be not pushed
+    # and only available locally.
+    set -x -e
+    docker pull "${image_name}:${testing_image_tag}"
+  fi
+  set -x -e
+  # When tagging a docker image using docker 1.8.3, we can use `docker tag -f`.
+  # When using docker 1.12, there is no `-f` option, but `docker tag`
+  # always works as if force was used.
+  docker tag -f "${image_name}:${testing_image_tag}" "${image_name}:${production_image_tag}" || docker tag "${image_name}:${testing_image_tag}" "${image_name}:${production_image_tag}"
+  docker tag -f "${image_name}:${testing_image_tag}" "${image_name}:latest" || docker tag "${image_name}:${testing_image_tag}" "${image_name}:latest"
+  if [[ "${dryrun}" != "true" ]];then
+    docker push "${image_name}:${production_image_tag}"
+    docker push "${image_name}:latest"
+  fi
+  set +x +e
+}
+
+### Defaults
+# allow those variables to be already set, so that user can set them in cli
+imagerc_filename="${imagerc_filename:-imagerc}"
+docker_build_options="${docker_build_options:-}"
+ops_docker_push="${ops_docker_push:-false}"

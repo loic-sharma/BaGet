@@ -1,0 +1,91 @@
+format_version: 3
+pipelines:
+  baget:
+    group: liget
+    label_template: "${git[:8]}"
+    materials:
+      git:
+        type: configrepo
+    stages:
+      - build:
+          clean_workspace: true
+          jobs:
+            build:
+              elastic_profile_id: w.c2.m2048.e10
+              artifacts:
+                - build:
+                    source: src/*/bin/Release/netcoreapp2.1/publish/**/*
+                    destination: src
+                - build:
+                    source: tests/*/bin/Release/netcoreapp2.1/publish/**/*
+                    destination: tests
+              tasks:
+               - exec:
+                  command: ide
+                  arguments:
+                    - "./build.sh --target Build"
+      - test_pack:
+          clean_workspace: true
+          jobs:
+            unit:
+              elastic_profile_id: w.c2.m2048.e10
+              tabs:
+                unit_tests: "test-results/UnitTestResults.html"
+              artifacts:
+                - test:
+                    source: "*TestsResults.xml"
+                    destination: test-results
+                - build:
+                    source: "*TestResults.html"
+                    destination: test-results
+              tasks:
+               - fetch:
+                  stage: build
+                  job: build
+                  source: tests
+                  destination:
+               - exec:
+                  command: ide
+                  arguments:
+                    - "./build.sh --target RunUnitTests --single-target"
+            docker:
+              resources:
+                - docker_builder
+              artifacts:
+                - build:
+                    source: "imagerc*"
+                    destination:
+              tasks:
+               - fetch:
+                  stage: build
+                  job: build
+                  source: src/BaGet/bin/Release/netcoreapp2.1/publish
+                  destination: src/BaGet/bin/Release/netcoreapp2.1
+               - exec:
+                  command: /bin/bash
+                  arguments:
+                    - -c
+                    - "ops_docker_push=true ./tasks.sh build_docker ${GO_PIPELINE_LABEL}"
+      - e2e:
+          clean_workspace: true
+          jobs:
+            functional:
+              elastic_profile_id: w.c2.m2048.e10
+              tasks:
+               - fetch:
+                  stage: test_pack
+                  job: docker
+                  source: imagerc
+                  destination: 
+                  is_file: true
+               - exec:
+                  command: /bin/bash
+                  arguments:
+                    - -c
+                    - "./tasks.sh test_docker"
+               - exec:
+                  run_if: failed
+                  command: /bin/bash
+                  arguments:
+                    - -c
+                    - dmesg | tail -n 100
