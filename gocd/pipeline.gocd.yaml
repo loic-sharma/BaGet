@@ -48,3 +48,44 @@ pipelines:
                   command: ide
                   arguments:
                     - "./build.sh --target RunUnitTests --single-target"
+            docker:
+              resources:
+                - docker_builder
+              artifacts:
+                - build:
+                    source: "imagerc*"
+                    destination:
+              tasks:
+               - fetch:
+                  stage: build
+                  job: build
+                  source: src/BaGet/bin/Release/netcoreapp2.1/publish
+                  destination: src/BaGet/bin/Release/netcoreapp2.1
+               - exec:
+                  command: /bin/bash
+                  arguments:
+                    - -c
+                    - "ops_docker_push=true ./tasks.sh build_docker ${GO_PIPELINE_LABEL}"
+      - e2e:
+          clean_workspace: true
+          jobs:
+            functional:
+              elastic_profile_id: w.c2.m2048.e10
+              tasks:
+               - fetch:
+                  stage: test_pack
+                  job: docker
+                  source: imagerc
+                  destination: 
+                  is_file: true
+               - exec:
+                  command: /bin/bash
+                  arguments:
+                    - -c
+                    - "./tasks.sh test_docker"
+               - exec:
+                  run_if: failed
+                  command: /bin/bash
+                  arguments:
+                    - -c
+                    - dmesg | tail -n 100

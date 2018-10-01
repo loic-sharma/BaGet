@@ -272,3 +272,10 @@ __pycache__/
 /.paket/paket.bootstrapper
 /*TestsResults.xml
 /*TestResults.html
+/e2e/.paket/paket.exe
+/e2e/data/db/sqlite.db
+/e2e/input
+/e2e/**/*.nupkg
+/e2e/**/*.dll
+
+/imagerc*
