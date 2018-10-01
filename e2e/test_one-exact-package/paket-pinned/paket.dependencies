@@ -1,0 +1,3 @@
+source http://baget:9090/v3/index.json
+
+nuget baget-test1 = 1.0.0
