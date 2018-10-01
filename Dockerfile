@@ -17,10 +17,11 @@ RUN mkdir -p /home/baget /home/baget/.nuget/NuGet &&\
     useradd -d /home/baget -s /bin/bash -u 1000 -g baget baget &&\
     chown -R baget:baget /home/baget /var/baget/
 
-ENV ASPNETCORE_ENVIRONMENT=Development \
+ENV ASPNETCORE_ENVIRONMENT=Production \
     ApiKeyHash=658489D79E218D2474D049E8729198D86DB0A4AF43981686A31C7DCB02DC0900 \
     Storage__Type=FileSystem \
     Storage__Path=/var/baget/packages \
+    Database__RunMigrations=true \
     Database__Type=Sqlite \
     Database__ConnectionString="Data Source=/var/baget/db/sqlite.db" \
     Search__Type=Database
