@@ -40,7 +40,7 @@
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
 
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
-    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="yarn install" />
 
     <!-- Remove the previous dist files to ensure we're getting a clean build. -->
     <RemoveDir Directories="$(SpaRoot)dist" />
