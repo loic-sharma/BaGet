@@ -8,7 +8,7 @@ load '/opt/bats-assert/load.bash'
 }
 
 @test "nuget install latest package version (1.0.0)" {
-  run /bin/bash -c "cd nuget && nuget install baget-two -DisableParallelProcessing -NoCache -Source http://baget:9090/v3/index.json"
+  run /bin/bash -c "cd nuget && nuget install baget-two -DisableParallelProcessing -NoCache -DirectDownload -Source http://baget:9090/v3/index.json"
   assert_output --partial "http://baget:9090/v3/index.json"
   assert_equal "$status" 0
   assert [ -e 'nuget/baget-two.1.0.0' ]
@@ -29,11 +29,17 @@ load '/opt/bats-assert/load.bash'
   assert_equal "$status" 0
 }
 
+@test "check registration endpoint includes v2.1.0" {
+  run /bin/bash -c "curl http://baget:9090/v3/registration/baget-two/index.json"
+  assert_output --partial "2.1.0"
+  assert_equal "$status" 0
+}
+
 @test "nuget install latest package version (2.1.0)" {
-  run /bin/bash -c "cd nuget && nuget install baget-two -DisableParallelProcessing -NoCache -Source http://baget:9090/v3/index.json"
+  run /bin/bash -c "cd nuget && nuget locals http-cache -clear && nuget install baget-two -DisableParallelProcessing -NoCache -DirectDownload -Source http://baget:9090/v3/index.json"
   refute_output --partial 'Could not download'
   refute_output --partial 'went wrong'
-  assert_output --partial "Installing baget-two 2.1.0"
+  assert_output --partial "Successfully installed 'baget-two 2.1.0'"
   assert_output --partial "http://baget:9090/v3/index.json"
   assert_equal "$status" 0
   assert [ -e 'nuget/baget-two.2.1.0' ]

@@ -290,3 +290,8 @@ __pycache__/
 **/baget.db
 /src/BaGet.UI/dist/
 /src/BaGet.UI/.cache/
+
+/src/BaGet/Packages/
+/e2e/.paket/paket.bootstrapper.exe.config
+/e2e/test_update-package/paket-constraint/paket.lock
+/e2e/test_update-package/paket/paket.locky client cache was failing
