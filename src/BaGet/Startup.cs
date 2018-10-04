@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using BaGet.Configurations;
 using BaGet.Core.Entities;
 using BaGet.Extensions;
@@ -23,6 +24,12 @@ namespace BaGet
         public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigureBaGet(Configuration, httpServices: true);
+
+            // In production, the UI files will be served from this directory
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = Path.Combine("Baget.Ui", "dist");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,6 +56,7 @@ namespace BaGet
             app.UseForwardedHeaders();
             app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.UseSpaStaticFiles();
 
             app.UseCors(ConfigureCorsOptions.CorsPolicy);
 
@@ -60,6 +68,14 @@ namespace BaGet
                     .MapSearchRoutes()
                     .MapRegistrationRoutes()
                     .MapPackageContentRoutes();
+            });
+            
+            app.UseSpa(spa =>
+            {
+                if (env.IsDevelopment())
+                {
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:1234");
+                }
             });
         }
     }
