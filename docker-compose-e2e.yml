@@ -3,7 +3,7 @@ services:
   default:
     container_name: default
     # includes mono and dotnet sdk
-    image: tomzo/dotnet-ide:2.0.0
+    image: tomzo/dotnet-ide:2.1.0
     links:
       - baget:baget
     volumes:

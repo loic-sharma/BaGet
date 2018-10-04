@@ -4,6 +4,7 @@
 #r "paket: groupref Tools //"
 #load "./.fake/build.fsx/intellisense.fsx"
 open Fake.IO
+open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
 open Fake.DotNet
 open Fake.Core
@@ -39,6 +40,37 @@ Target.create "Build" (fun _ ->
         MSBuild.build setParams ""
     msbuild "Restore"
     msbuild "Publish"
+)
+
+// Build SPA
+let spaRoot = "src" </> "BaGet.UI"
+let spaPublishDir = "src" </> "BaGet" </> "bin" </> "Release" </> "netcoreapp2.1" </> "publish" </> "wwwroot"
+
+let runSpaProcess exe args timeout =
+    let result =
+        Process.execWithResult (fun info ->
+        { info with
+            FileName = exe
+            WorkingDirectory = spaRoot
+            Arguments = args}) timeout
+    if result.ExitCode <> 0 then
+        let errors = System.String.Join(System.Environment.NewLine,result.Errors)
+        Trace.traceError <| System.String.Join(System.Environment.NewLine,result.Messages)
+        failwithf "%s process exited with %d: %s" exe result.ExitCode errors
+    Trace.trace <| System.String.Join(System.Environment.NewLine,result.Messages)
+
+Target.create "SpaRestore" (fun _ -> 
+    runSpaProcess "yarn" "install"  (System.TimeSpan.FromMinutes(10.0))
+)
+
+Target.create "SpaBuild" (fun _ -> 
+    runSpaProcess "npm" "run build"  (System.TimeSpan.FromMinutes(2.0))
+)
+
+Target.create "SpaPublish" (fun _ -> 
+    Directory.delete spaPublishDir
+    Directory.create spaPublishDir
+    !! "src/BaGet.UI/dist/**/*" |> Shell.copy spaPublishDir
 )
 
 // --------------------------------------------------------------------------------------
@@ -119,6 +151,11 @@ Target.create "RunIntegrationTests" (fun _ ->
 open Fake.Core.TargetOperators
 
 Target.create "All" ignore
+
+"SpaRestore" 
+    ==> "SpaBuild"
+    ==> "SpaPublish"
+    ==> "All"
 
 "Build"
   ==> "RunUnitTests"

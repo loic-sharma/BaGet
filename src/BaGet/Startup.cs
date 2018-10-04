@@ -30,7 +30,7 @@ namespace BaGet
             // In production, the UI files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = Path.Combine("BaGet.UI", "dist");
+                configuration.RootPath = "wwwroot";
             });
         }
 
