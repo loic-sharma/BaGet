@@ -279,3 +279,12 @@ __pycache__/
 /e2e/**/*.dll
 
 /imagerc*
+
+# Ignore client app cache
+**/Baget.UI/.cache
+
+# Ignore client dist files
+**/Baget.UI/dist/
+
+# Ignore database file
+**/baget.db
