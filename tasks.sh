@@ -26,6 +26,7 @@ command="$1"
 case "${command}" in
   _build)
       ./build.sh --target Build
+      ./build.sh --target SpaPublish
       ;;
   _unit_test)
       ./build.sh --target Build --single-target

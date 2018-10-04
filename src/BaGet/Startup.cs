@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using System.Reflection;
 
 namespace BaGet
 {
@@ -26,11 +27,29 @@ namespace BaGet
         public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigureBaGet(Configuration, httpServices: true);
-
-            // In production, the UI files will be served from this directory
+            
             services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "wwwroot";
+            {                
+                var sourceDist = Path.Combine(Environment.CurrentDirectory, "src", "BaGet.UI" , "dist");
+                if(Directory.Exists(sourceDist)) 
+                {
+                    // we are running tests from root of project
+                    configuration.RootPath = sourceDist;
+                    return;
+                }
+                sourceDist = Path.Combine("src", "BaGet.UI" , "dist");
+                for(int depth=0; depth < 5; depth++) {
+                    sourceDist = Path.Combine("..", sourceDist);
+                    if(Directory.Exists(sourceDist)) 
+                    {
+                        // we are running tests from debugger/editor
+                        configuration.RootPath = sourceDist;
+                        return;
+                    }
+                }                
+                // In production, the UI files will be served from wwwroot directory next to BaGet.dll file
+                string codeBase = Path.GetDirectoryName(typeof(Startup).Assembly.CodeBase);
+                configuration.RootPath = Path.Combine(codeBase, "wwwroot");
             });
         }
 
@@ -77,13 +96,13 @@ namespace BaGet
                     .MapPackageContentRoutes();
             });
 
-            app.UseSpa(spa =>
+            if(env.IsDevelopment()) 
             {
-                if (env.IsDevelopment())
+                app.UseSpa(spa => 
                 {
                     spa.UseProxyToSpaDevelopmentServer("http://localhost:1234");
-                }
-            });
+                });                            
+            }
         }
     }
 }
