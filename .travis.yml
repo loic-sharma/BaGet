@@ -1,7 +1,10 @@
-language: csharp
-mono: none
-dotnet: 2.1.302
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - sudo bash -c "`curl -L https://raw.githubusercontent.com/ai-traders/ide/master/install.sh`"
+
 script:
- - dotnet build
- - dotnet test tests/BaGet.Tests/BaGet.Tests.csproj
- - dotnet test tests/BaGet.Core.Tests/BaGet.Core.Tests.csproj
+ - ide ./build.sh
