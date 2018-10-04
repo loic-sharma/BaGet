@@ -1,0 +1,42 @@
+<Project ToolsVersion="15.0">
+
+    <Import Project="$(MSBuildThisFileDirectory)paket.bootstrapper.props" Condition="Exists('$(MSBuildThisFileDirectory)paket.bootstrapper.props')" />
+
+    <PropertyGroup>
+        <RepoRoot>$(MSBuildThisFileDirectory.TrimEnd('\\').TrimEnd('/'))</RepoRoot>
+
+        <PaketBootstrapperExe>$(RepoRoot)\paket.bootstrapper.exe</PaketBootstrapperExe>
+        <PaketBootstrapperExe Condition=" '$(OS)' != 'Windows_NT' ">$(RepoRoot)/paket.bootstrapper</PaketBootstrapperExe>
+        <PaketExe>$(RepoRoot)\paket.exe</PaketExe>
+        <PaketExe Condition=" '$(OS)' != 'Windows_NT' ">$(RepoRoot)/paket</PaketExe>
+    </PropertyGroup>
+
+    <Target Name="InstallPaketBootstrapper" Condition="Exists('$(PaketBootstrapperExe)') == false">
+        <Message Text='Installing paket.bootstrapper' Importance="High"/>
+        <PropertyGroup>
+            <InstallBootstrapperCommand>dotnet tool install paket.bootstrapper --tool-path "$(RepoRoot)"</InstallBootstrapperCommand>
+            <InstallBootstrapperCommand Condition=" '$(PaketBootstrapperVersion)' != '' ">$(InstallBootstrapperCommand) --version "[$(PaketBootstrapperVersion)]"</InstallBootstrapperCommand>
+            <InstallBootstrapperCommand Condition=" '$(PaketBootstrapperFeed)' != '' ">$(InstallBootstrapperCommand) --add-source "$(PaketBootstrapperFeed)"</InstallBootstrapperCommand>
+            <InstallBootstrapperCommand Condition=" '$(InstallBootstrapperOtherArgs)' != '' ">$(InstallBootstrapperCommand) $(InstallBootstrapperOtherArgs)"</InstallBootstrapperCommand>
+        </PropertyGroup>
+        <Exec Command="$(InstallBootstrapperCommand)" WorkingDirectory="$(RepoRoot)" />
+    </Target>
+
+    <Target Name="InstallPaket" DependsOnTargets="InstallPaketBootstrapper" Condition="Exists('$(PaketExe)') == false">
+        <Message Text='Running paket.bootstrapper to install paket' Importance="High"/>
+        <PropertyGroup>
+            <RunBootstrapperCommand>$(PaketBootstrapperExe) --as-tool --output-dir=$(RepoRoot)</RunBootstrapperCommand>
+            <RunBootstrapperCommand Condition=" Exists('$(RepoRoot)\paket.bootstrapper.exe.config') ">$(RunBootstrapperCommand) --config-file=$(RepoRoot)/paket.bootstrapper.exe.config</RunBootstrapperCommand>
+            <RunBootstrapperCommand Condition=" '$(RunBootstrapperOtherArgs)' != '' ">$(RunBootstrapperCommand) $(RunBootstrapperOtherArgs)</RunBootstrapperCommand>
+        </PropertyGroup>
+        <Exec Command='$(RunBootstrapperCommand)' WorkingDirectory="$(RepoRoot)" />
+    </Target>
+
+    <Target Name="Restore" DependsOnTargets="InstallPaket">
+        <Message Text='Paket ready, checking version:' Importance="High"/>
+        <Exec Command='$(PaketExe) --version' WorkingDirectory="$(RepoRoot)" />
+    </Target>
+
+    <Import Project="$(MSBuildThisFileDirectory)paket.bootstrapper.targets" Condition="Exists('$(MSBuildThisFileDirectory)paket.bootstrapper.targets')" />
+
+</Project>
