@@ -48,3 +48,4 @@ group Test
   nuget Microsoft.Extensions.Logging
   nuget Microsoft.Extensions.Logging.Abstractions
   nuget Microsoft.Extensions.Logging.Configuration
+  nuget NuGet.Protocol
