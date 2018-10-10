@@ -1,5 +1,7 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
 
 namespace BaGet.Core.Mirror
@@ -17,5 +19,9 @@ namespace BaGet.Core.Mirror
         /// <param name="cancellationToken">The token to cancel the mirroring</param>
         /// <returns>A task that completes when the package has been mirrored.</returns>
         Task MirrorAsync(string id, NuGetVersion version, CancellationToken cancellationToken);
+
+        Task<IReadOnlyList<string>> FindUpstreamAsync(string id, CancellationToken ct);
+
+        Task<IEnumerable<IPackageSearchMetadata>> FindUpstreamMetadataAsync(string id, CancellationToken ct);
     }
 }

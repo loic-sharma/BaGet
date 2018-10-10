@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,6 +30,13 @@ namespace BaGet.Controllers
 
             if (!packages.Any())
             {
+                IReadOnlyList<string> upstreamVersions = await _mirror.FindUpstreamAsync(id, CancellationToken.None);
+                if(upstreamVersions.Any()) {
+                    return Json(new
+                    {
+                        Versions = upstreamVersions.ToList()
+                    });
+                }
                 return NotFound();
             }
 
