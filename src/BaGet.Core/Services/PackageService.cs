@@ -55,7 +55,7 @@ namespace BaGet.Core.Services
         public Task<Package> FindAsync(string id, NuGetVersion version, bool includeUnlisted = false)
         {
             var query = _context.Packages
-                .Include(a=>a.Dependencies)
+                .Include(a => a.Dependencies)
                 .Where(p => p.Id == id)
                 .Where(p => p.VersionString == version.ToNormalizedString());
 

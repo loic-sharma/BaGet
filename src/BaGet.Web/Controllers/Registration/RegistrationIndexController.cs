@@ -142,7 +142,7 @@ namespace BaGet.Controllers.Web.Registration
                 DependencyGroups = ToDependencyItems(package);
             }
           
-            private DependencyGroupItem[] ToDependencyItems(Package package)
+            private IReadOnlyList<DependencyGroupItem> ToDependencyItems(Package package)
             {
                 List<DependencyGroupItem> groups = new List<DependencyGroupItem>();
 
@@ -150,24 +150,12 @@ namespace BaGet.Controllers.Web.Registration
                 foreach(var tf in targetFrameworks)
                 {
                     var depGroupId = $"https://api.nuget.org/v3/catalog0/data/2015.02.01.06.24.15/{package.Id}.{package.Version}.json#dependencygroup/{tf}";
-                    var groupItem = new DependencyGroupItem
-                    {
-                        Id=depGroupId,
-                        Type= "PackageDependencyGroup",
-                        TargetFramework=tf
-
-                    };
-
-                    foreach(var dep in package.Dependencies.Where(a => a.TargetFramework == tf)){
-                        var depItem = new DependencyItem
-                        {
-                            DepId= depGroupId+"/"+dep.Id,
-                            Type= "PackageDependency",
-                            Id=dep.Id,
-                            Range=dep.VersionRange
-                        };
-                        groupItem.Dependencies.Add(depItem);
+                    var dependencyItems = new List<DependencyItem>();
+                    foreach (var dep in package.Dependencies.Where(a => a.TargetFramework == tf)){
+                        var depItem = new DependencyItem(depGroupId, dep.Id, dep.VersionRange);
+                        dependencyItems.Add(depItem);
                     }
+                    var groupItem = new DependencyGroupItem(depGroupId, tf, dependencyItems);
 
                     groups.Add(groupItem);
                 }
@@ -199,25 +187,40 @@ namespace BaGet.Controllers.Web.Registration
             public string Summary { get; }
             public string[] Tags { get; }
             public string Title { get; }
-            public DependencyGroupItem[] DependencyGroups { get; }
+            public IReadOnlyList<DependencyGroupItem> DependencyGroups { get; }
         }
         private class DependencyGroupItem
         {
+            public DependencyGroupItem(string id, string targetFramework,IReadOnlyList<DependencyItem> dependencyItems)
+            {
+                this.Id = id;
+                this.Type = "PackageDependencyGroup";
+                this.TargetFramework = targetFramework;
+                this.Dependencies = dependencyItems;
+            }
+
             [JsonProperty(PropertyName = "@id")]
-            public string Id { get; set; }
+            public string Id { get; }
             [JsonProperty(PropertyName = "@type")]
-            public string Type { get; set; }
-            public string TargetFramework { get; set; }
-            public List<DependencyItem> Dependencies { get; set; } = new List<DependencyItem>();
+            public string Type { get; }
+            public string TargetFramework { get;  }
+            public IReadOnlyList<DependencyItem> Dependencies { get; } = new List<DependencyItem>();
         }
         private class DependencyItem
         {
             [JsonProperty(PropertyName = "@id")]
-            public string DepId { get; internal set; }
+            public string DepId { get; }
             [JsonProperty(PropertyName = "@type")]
-            public string Type { get; internal set; }
-            public string Id { get; internal set; }
-            public string Range { get; internal set; }
+            public string Type { get; }
+            public string Id { get; }
+            public string Range { get; }
+            public DependencyItem(string groupId,string depId, string versionRange)
+            {
+                DepId = groupId + "/" + depId;
+                Type = "PackageDependency";
+                Id = depId;
+                Range = versionRange;
+            }
         }
     }
 }
