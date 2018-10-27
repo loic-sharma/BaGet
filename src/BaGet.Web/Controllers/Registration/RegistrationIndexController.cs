@@ -139,6 +139,27 @@ namespace BaGet.Controllers.Web.Registration
                 Summary = package.Summary;
                 Tags = package.Tags;
                 Title = package.Title;
+                DependencyGroups = ToDependencyItems(package);
+            }
+          
+            private IReadOnlyList<DependencyGroupItem> ToDependencyItems(Package package)
+            {
+                List<DependencyGroupItem> groups = new List<DependencyGroupItem>();
+
+                var targetFrameworks = package.Dependencies.Select(a => a.TargetFramework).Distinct();
+                foreach(var tf in targetFrameworks)
+                {
+                    var depGroupId = $"https://api.nuget.org/v3/catalog0/data/2015.02.01.06.24.15/{package.Id}.{package.Version}.json#dependencygroup/{tf}";
+                    var dependencyItems = new List<DependencyItem>();
+                    foreach (var dep in package.Dependencies.Where(a => a.TargetFramework == tf)){
+                        var depItem = new DependencyItem(depGroupId, dep.Id, dep.VersionRange);
+                        dependencyItems.Add(depItem);
+                    }
+                    var groupItem = new DependencyGroupItem(depGroupId, tf, dependencyItems);
+
+                    groups.Add(groupItem);
+                }
+                return groups.Count>0?groups.ToArray():null;
             }
 
             [JsonProperty(PropertyName = "@id")]
@@ -166,6 +187,40 @@ namespace BaGet.Controllers.Web.Registration
             public string Summary { get; }
             public string[] Tags { get; }
             public string Title { get; }
+            public IReadOnlyList<DependencyGroupItem> DependencyGroups { get; }
+        }
+        private class DependencyGroupItem
+        {
+            public DependencyGroupItem(string id, string targetFramework,IReadOnlyList<DependencyItem> dependencyItems)
+            {
+                this.Id = id;
+                this.Type = "PackageDependencyGroup";
+                this.TargetFramework = targetFramework;
+                this.Dependencies = dependencyItems;
+            }
+
+            [JsonProperty(PropertyName = "@id")]
+            public string Id { get; }
+            [JsonProperty(PropertyName = "@type")]
+            public string Type { get; }
+            public string TargetFramework { get;  }
+            public IReadOnlyList<DependencyItem> Dependencies { get; } = new List<DependencyItem>();
+        }
+        private class DependencyItem
+        {
+            [JsonProperty(PropertyName = "@id")]
+            public string DepId { get; }
+            [JsonProperty(PropertyName = "@type")]
+            public string Type { get; }
+            public string Id { get; }
+            public string Range { get; }
+            public DependencyItem(string groupId,string depId, string versionRange)
+            {
+                DepId = groupId + "/" + depId;
+                Type = "PackageDependency";
+                Id = depId;
+                Range = versionRange;
+            }
         }
     }
 }
