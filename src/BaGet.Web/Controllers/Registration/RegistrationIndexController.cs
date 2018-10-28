@@ -141,25 +141,28 @@ namespace BaGet.Controllers.Web.Registration
                 Title = package.Title;
                 DependencyGroups = ToDependencyItems(package);
             }
-          
+
             private IReadOnlyList<DependencyGroupItem> ToDependencyItems(Package package)
             {
-                List<DependencyGroupItem> groups = new List<DependencyGroupItem>();
+                var groups = new List<DependencyGroupItem>();
 
-                var targetFrameworks = package.Dependencies.Select(a => a.TargetFramework).Distinct();
-                foreach(var tf in targetFrameworks)
+                var targetFrameworks = package.Dependencies.Select(d => d.TargetFramework).Distinct();
+
+                foreach(var target in targetFrameworks)
                 {
-                    var depGroupId = $"https://api.nuget.org/v3/catalog0/data/2015.02.01.06.24.15/{package.Id}.{package.Version}.json#dependencygroup/{tf}";
-                    var dependencyItems = new List<DependencyItem>();
-                    foreach (var dep in package.Dependencies.Where(a => a.TargetFramework == tf)){
-                        var depItem = new DependencyItem(depGroupId, dep.Id, dep.VersionRange);
-                        dependencyItems.Add(depItem);
-                    }
-                    var groupItem = new DependencyGroupItem(depGroupId, tf, dependencyItems);
+                    // A package may have no dependencies for a target framework. This is represented
+                    // by a single dependency item with a null "Id" and "VersionRange".
+                    var groupId = $"https://api.nuget.org/v3/catalog0/data/2015.02.01.06.24.15/{package.Id}.{package.Version}.json#dependencygroup/{target}";
+                    var dependencyItems = package.Dependencies
+                        .Where(d => d.TargetFramework == target)
+                        .Where(d => d.Id != null && d.VersionRange != null)
+                        .Select(d => new DependencyItem(groupId, d.Id, d.VersionRange))
+                        .ToList();
 
-                    groups.Add(groupItem);
+                    groups.Add(new DependencyGroupItem(groupId, target, dependencyItems));
                 }
-                return groups.Count>0?groups.ToArray():null;
+
+                return groups;
             }
 
             [JsonProperty(PropertyName = "@id")]
@@ -189,32 +192,44 @@ namespace BaGet.Controllers.Web.Registration
             public string Title { get; }
             public IReadOnlyList<DependencyGroupItem> DependencyGroups { get; }
         }
+
         private class DependencyGroupItem
         {
-            public DependencyGroupItem(string id, string targetFramework,IReadOnlyList<DependencyItem> dependencyItems)
+            public DependencyGroupItem(
+                string id,
+                string targetFramework,
+                IReadOnlyList<DependencyItem> dependencyItems)
             {
-                this.Id = id;
-                this.Type = "PackageDependencyGroup";
-                this.TargetFramework = targetFramework;
-                this.Dependencies = dependencyItems;
+                Id = id;
+                Type = "PackageDependencyGroup";
+                TargetFramework = targetFramework;
+                Dependencies = (dependencyItems.Count > 0) ? dependencyItems : null;
             }
 
             [JsonProperty(PropertyName = "@id")]
             public string Id { get; }
+
             [JsonProperty(PropertyName = "@type")]
             public string Type { get; }
+
             public string TargetFramework { get;  }
-            public IReadOnlyList<DependencyItem> Dependencies { get; } = new List<DependencyItem>();
+
+            [JsonProperty(DefaultValueHandling=DefaultValueHandling.Ignore)]
+            public IReadOnlyList<DependencyItem> Dependencies { get; }
         }
+
         private class DependencyItem
         {
             [JsonProperty(PropertyName = "@id")]
             public string DepId { get; }
+
             [JsonProperty(PropertyName = "@type")]
             public string Type { get; }
+
             public string Id { get; }
             public string Range { get; }
-            public DependencyItem(string groupId,string depId, string versionRange)
+
+            public DependencyItem(string groupId, string depId, string versionRange)
             {
                 DepId = groupId + "/" + depId;
                 Type = "PackageDependency";
