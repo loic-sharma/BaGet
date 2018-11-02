@@ -8,6 +8,11 @@
         /// </summary>
         public string ApiKeyHash { get; set; }
 
+        /// <summary>
+        /// The application root URL for usage in reverse proxy scenarios.
+        /// </summary>
+        public string PathBase { get; set; }
+
         public DatabaseOptions Database { get; set; }
         public StorageOptions Storage { get; set; }
         public SearchOptions Search { get; set; }

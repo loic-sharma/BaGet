@@ -1,5 +1,6 @@
 ﻿using System;
 using BaGet.Configurations;
+using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
 using BaGet.Extensions;
 using BaGet.Web.Extensions;
@@ -46,6 +47,7 @@ namespace BaGet
                 }
             }
 
+            app.UsePathBase(Configuration.Get<BaGetOptions>().PathBase);
             app.UseForwardedHeaders();
             app.UseDefaultFiles();
             app.UseStaticFiles();
