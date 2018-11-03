@@ -1,5 +1,6 @@
 ﻿using System;
 using BaGet.Configurations;
+using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
 using BaGet.Extensions;
 using BaGet.Web.Extensions;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace BaGet
 {
@@ -32,12 +34,12 @@ namespace BaGet
             {
                 app.UseDeveloperExceptionPage();
                 app.UseStatusCodePages();
+            }
 
-                // Run migrations automatically in development mode.
-                var scopeFactory = app.ApplicationServices
-                    .GetRequiredService<IServiceScopeFactory>();
-
-                using (var scope = scopeFactory.CreateScope())
+            // Run migrations if necessary.
+            if (Configuration.Get<BaGetOptions>().RunMigrationsAtStartup)
+            {
+                using (var scope = app.ApplicationServices.CreateScope())
                 {
                     scope.ServiceProvider
                         .GetRequiredService<IContext>()
