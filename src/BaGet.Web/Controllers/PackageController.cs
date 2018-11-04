@@ -53,8 +53,7 @@ namespace BaGet.Controllers
                 return NotFound();
             }
 
-            var identity = new PackageIdentity(id, nugetVersion);
-            var packageStream = await _storage.GetPackageStreamAsync(identity);
+            var packageStream = await _storage.GetPackageStreamAsync(id, nugetVersion);
 
             return File(packageStream, "application/octet-stream");
         }
@@ -74,9 +73,9 @@ namespace BaGet.Controllers
                 return NotFound();
             }
 
-            var identity = new PackageIdentity(id, nugetVersion);
+            var nuspecStream = await _storage.GetNuspecStreamAsync(id, nugetVersion);
 
-            return File(await _storage.GetNuspecStreamAsync(identity), "text/xml");
+            return File(nuspecStream, "text/xml");
         }
 
         public async Task<IActionResult> DownloadReadme(string id, string version, CancellationToken cancellationToken)
@@ -94,9 +93,9 @@ namespace BaGet.Controllers
                 return NotFound();
             }
 
-            var identity = new PackageIdentity(id, nugetVersion);
+            var readmeStream = await _storage.GetReadmeStreamAsync(id, nugetVersion);
 
-            return File(await _storage.GetReadmeStreamAsync(identity), "text/markdown");
+            return File(readmeStream, "text/markdown");
         }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
 using BaGet.Core.Extensions;
@@ -31,10 +32,9 @@ namespace BaGet.Core.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<IndexingResult> IndexAsync(Stream stream)
+        public async Task<IndexingResult> IndexAsync(Stream stream, CancellationToken cancellationToken)
         {
             // Try to save the package stream to storage.
-            // TODO: On exception, roll back storage save.
             Package package;
 
             try
@@ -56,13 +56,13 @@ namespace BaGet.Core.Services
                             packageId,
                             packageVersion.ToNormalizedString());
 
-                        await _storage.SavePackageStreamAsync(packageReader, stream);
+                        await _storage.SavePackageStreamAsync(packageReader, stream, cancellationToken);
                     }
                     catch (Exception e)
                     {
                         // This may happen due to concurrent pushes.
                         // TODO: Make IStorageService.SaveAsync return a result enum so this can be properly handled.
-                        _logger.LogError(e, "Failed to save package {Id} {Version}", packageId, packageVersion.ToNormalizedString());
+                        _logger.LogError(e, "Failed to save package {PackageId} {PackageVersion} to storage", packageId, packageVersion);
 
                         throw;
                     }
@@ -75,9 +75,9 @@ namespace BaGet.Core.Services
                     {
                         _logger.LogError(
                             e,
-                            "Failed to extract metadata for package {Id} {Version}",
+                            "Failed to extract metadata for package {PackageId} {PackageVersion}",
                             packageId,
-                            packageVersion.ToNormalizedString());
+                            packageVersion);
 
                         throw;
                     }

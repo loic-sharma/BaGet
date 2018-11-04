@@ -21,6 +21,7 @@ namespace BaGet.Core.Extensions
         public static bool HasReadme(this PackageArchiveReader package)
             => package.GetFiles().Any(ReadmeFileNames.Contains);
 
+        // TODO: This should be async and accept a CancellationToken.
         public static Stream GetReadme(this PackageArchiveReader package)
         {
             var packageFiles = package.GetFiles();
