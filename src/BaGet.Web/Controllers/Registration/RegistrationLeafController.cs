@@ -36,7 +36,7 @@ namespace BaGet.Controllers.Web.Registration
             // Allow read-through caching to happen if it is confiured.
             await _mirror.MirrorAsync(id, nugetVersion, cancellationToken);
 
-            var package = await _packages.FindAsync(id, nugetVersion);
+            var package = await _packages.FindOrNullAsync(id, nugetVersion);
 
             if (package == null)
             {

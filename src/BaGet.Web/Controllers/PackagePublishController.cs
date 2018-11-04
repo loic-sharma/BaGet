@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+using BaGet.Core.Extensions;
 using BaGet.Core.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,22 +17,25 @@ namespace BaGet.Controllers
         private readonly IAuthenticationService _authentication;
         private readonly IIndexingService _indexer;
         private readonly IPackageService _packages;
+        private readonly IPackageDeletionService _deleteService;
         private readonly ILogger<PackagePublishController> _logger;
 
         public PackagePublishController(
             IAuthenticationService authentication,
             IIndexingService indexer,
             IPackageService packages,
+            IPackageDeletionService deletionService,
             ILogger<PackagePublishController> logger)
         {
             _authentication = authentication ?? throw new ArgumentNullException(nameof(authentication));
             _indexer = indexer ?? throw new ArgumentNullException(nameof(indexer));
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));
+            _deleteService = deletionService ?? throw new ArgumentNullException(nameof(deletionService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         // See: https://docs.microsoft.com/en-us/nuget/api/package-publish-resource#push-a-package
-        public async Task Upload(IFormFile package)
+        public async Task Upload(IFormFile package, CancellationToken cancellationToken)
         {
             if (package == null)
             {
@@ -46,9 +51,10 @@ namespace BaGet.Controllers
 
             try
             {
-                using (var uploadStream = package.OpenReadStream())
+                using (var rawUploadStream = package.OpenReadStream())
+                using (var uploadStream = await rawUploadStream.AsTemporaryFileStreamAsync(cancellationToken))
                 {
-                    var result = await _indexer.IndexAsync(uploadStream);
+                    var result = await _indexer.IndexAsync(uploadStream, cancellationToken);
 
                     switch (result)
                     {
@@ -86,7 +92,7 @@ namespace BaGet.Controllers
                 return Unauthorized();
             }
 
-            if (await _packages.UnlistPackageAsync(id, nugetVersion))
+            if (await _deleteService.TryDeletePackageAsync(id, nugetVersion))
             {
                 return NoContent();
             }

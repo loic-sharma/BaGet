@@ -68,7 +68,7 @@ namespace BaGet.Core.Mirror
 
                     _logger.LogInformation("Downloaded package {Id} {Version}, indexing...", id, version);
 
-                    var result = await _indexer.IndexAsync(stream);
+                    var result = await _indexer.IndexAsync(stream, cancellationToken);
 
                     _logger.LogInformation(
                         "Finished indexing package {Id} {Version} with result {Result}",

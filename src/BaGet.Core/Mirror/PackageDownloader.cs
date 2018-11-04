@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using BaGet.Core.Extensions;
 using Microsoft.Extensions.Logging;
 
 namespace BaGet.Core.Mirror
@@ -12,8 +13,6 @@ namespace BaGet.Core.Mirror
     // See: https://github.com/NuGet/NuGet.Jobs/blob/master/src/Validation.Common.Job/PackageDownloader.cs
     public class PackageDownloader : IPackageDownloader
     {
-        private const int BufferSize = 8192;
-
         private readonly HttpClient _httpClient;
         private readonly ILogger<PackageDownloader> _logger;
 
@@ -55,19 +54,9 @@ namespace BaGet.Core.Mirror
 
                     using (var networkStream = await response.Content.ReadAsStreamAsync())
                     {
-                        packageStream = new FileStream(
-                                            Path.GetTempFileName(),
-                                            FileMode.Create,
-                                            FileAccess.ReadWrite,
-                                            FileShare.None,
-                                            BufferSize,
-                                            FileOptions.DeleteOnClose | FileOptions.Asynchronous);
-
-                        await networkStream.CopyToAsync(packageStream, BufferSize, cancellationToken);
+                        packageStream = await networkStream.AsTemporaryFileStreamAsync(cancellationToken);
                     }
                 }
-
-                packageStream.Position = 0;
 
                 _logger.LogInformation(
                     "Downloaded {PackageSizeInBytes} bytes in {DownloadElapsedTime} seconds for request {PackageUri}",
