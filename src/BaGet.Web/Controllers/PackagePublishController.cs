@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using BaGet.Core.Extensions;
 using BaGet.Core.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -50,7 +51,8 @@ namespace BaGet.Controllers
 
             try
             {
-                using (var uploadStream = package.OpenReadStream())
+                using (var rawUploadStream = package.OpenReadStream())
+                using (var uploadStream = await rawUploadStream.AsTemporaryFileStreamAsync(cancellationToken))
                 {
                     var result = await _indexer.IndexAsync(uploadStream, cancellationToken);
 
