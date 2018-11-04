@@ -299,6 +299,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#enabling-package-hard-deletions" title="Enabling Package Hard Deletions" class="md-nav__link">
+    Enabling Package Hard Deletions
+  </a>
+  
+</li>
+      
       
       
       
@@ -572,6 +579,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#enabling-package-hard-deletions" title="Enabling Package Hard Deletions" class="md-nav__link">
+    Enabling Package Hard Deletions
+  </a>
+  
+</li>
+      
       
       
       
@@ -639,6 +653,16 @@ caching to:</p>
 <p><code>PackageSource</code> is the value of the <a href="https://docs.microsoft.com/en-us/nuget/api/overview#resources-and-schema"><code>PackageBaseAddress</code></a> resource
 on a <a href="https://docs.microsoft.com/en-us/nuget/api/service-index">NuGet service index</a>.</p>
 </div>
+<h2 id="enabling-package-hard-deletions">Enabling Package Hard Deletions<a class="headerlink" href="#enabling-package-hard-deletions" title="Permanent link">&para;</a></h2>
+<p>To prevent the <a href="https://blog.npmjs.org/post/141577284765/kik-left-pad-and-npm">"left pad" problem</a>, BaGet's default configuration doesn't allow package deletions. Whenever BaGet receives a package deletion request, it will instead "unlist" the package. An unlisted package is undiscoverable but can still be downloaded if you know the package's id and version. You can override this behavior by setting the <code>PackageDeletionBehavior</code>:</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+    <span class="err">...</span>
+
+    <span class="nt">&quot;PackageDeletionBehavior&quot;</span><span class="p">:</span> <span class="s2">&quot;HardDelete&quot;</span><span class="p">,</span>
+
+    <span class="err">...</span>
+<span class="p">}</span>
+</pre></div>
                 
                   
                 
