@@ -24,8 +24,12 @@ namespace BaGet.Core.Services
             Stream packageStream,
             Stream nuspecStream,
             Stream readmeStream,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken = default)
         {
+            package = package ?? throw new ArgumentNullException(nameof(package));
+            packageStream = packageStream ?? throw new ArgumentNullException(nameof(packageStream));
+            nuspecStream = nuspecStream ?? throw new ArgumentNullException(nameof(nuspecStream));
+
             var lowercasedId = package.Id.ToLowerInvariant();
             var lowercasedNormalizedVersion = package.VersionString.ToLowerInvariant();
 
@@ -86,9 +90,15 @@ namespace BaGet.Core.Services
             var nuspecPath = NuspecPath(lowercasedId, lowercasedNormalizedVersion);
             var readmePath = ReadmePath(lowercasedId, lowercasedNormalizedVersion);
 
-            File.Delete(packagePath);
-            File.Delete(nuspecPath);
-            File.Delete(readmePath);
+            try
+            {
+                File.Delete(packagePath);
+                File.Delete(nuspecPath);
+                File.Delete(readmePath);
+            }
+            catch (DirectoryNotFoundException)
+            {
+            }
 
             return Task.CompletedTask;
         }
