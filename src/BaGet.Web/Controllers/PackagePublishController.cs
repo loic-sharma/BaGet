@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Extensions;
@@ -35,14 +36,8 @@ namespace BaGet.Controllers
         }
 
         // See: https://docs.microsoft.com/en-us/nuget/api/package-publish-resource#push-a-package
-        public async Task Upload(IFormFile package, CancellationToken cancellationToken)
+        public async Task Upload(CancellationToken cancellationToken)
         {
-            if (package == null)
-            {
-                HttpContext.Response.StatusCode = 400;
-                return;
-            }
-
             if (!await _authentication.AuthenticateAsync(ApiKey))
             {
                 HttpContext.Response.StatusCode = 401;
@@ -51,9 +46,14 @@ namespace BaGet.Controllers
 
             try
             {
-                using (var rawUploadStream = package.OpenReadStream())
-                using (var uploadStream = await rawUploadStream.AsTemporaryFileStreamAsync(cancellationToken))
+                using (var uploadStream = await GetPackageUploadStreamOrNullAsync(cancellationToken))
                 {
+                    if (uploadStream == null)
+                    {
+                        HttpContext.Response.StatusCode = 400;
+                        return;
+                    }
+
                     var result = await _indexer.IndexAsync(uploadStream, cancellationToken);
 
                     switch (result)
@@ -77,6 +77,32 @@ namespace BaGet.Controllers
                 _logger.LogError(e, "Exception thrown during package upload");
 
                 HttpContext.Response.StatusCode = 500;
+            }
+        }
+
+        private async Task<Stream> GetPackageUploadStreamOrNullAsync(CancellationToken cancellationToken)
+        {
+            // Try to get the nupkg from the multipart/form-data. If that's empty,
+            // fallback to the request's body.
+            Stream rawUploadStream = null;
+            try
+            {
+                if (Request.HasFormContentType && Request.Form.Files.Count > 0)
+                {
+                    rawUploadStream = Request.Form.Files[0].OpenReadStream();
+                }
+                else
+                {
+                    rawUploadStream = Request.Body;
+                }
+
+                // Convert the upload stream into a temporary file stream to
+                // minimize memory usage.
+                return await rawUploadStream?.AsTemporaryFileStreamAsync(cancellationToken);
+            }
+            finally
+            {
+                rawUploadStream?.Dispose();
             }
         }
 
