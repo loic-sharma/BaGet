@@ -1,5 +1,7 @@
 # BaGet :baguette_bread:
 
+[![Build Status](https://sharml.visualstudio.com/BaGet/_apis/build/status/loic-sharma.BaGet)](https://sharml.visualstudio.com/BaGet/_build/latest?definitionId=2)
+
 A lightweight [NuGet service](https://docs.microsoft.com/en-us/nuget/api/overview) implementation.
 
 ## Getting Started
