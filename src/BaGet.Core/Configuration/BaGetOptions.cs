@@ -14,6 +14,11 @@
         /// </summary>
         public bool RunMigrationsAtStartup { get; set; } = true;
 
+        /// <summary>
+        /// How BaGet should interpret package deletion requests.
+        /// </summary>
+        public PackageDeletionBehavior PackageDeletionBehavior { get; set; } = PackageDeletionBehavior.Unlist;
+
         public DatabaseOptions Database { get; set; }
         public StorageOptions Storage { get; set; }
         public SearchOptions Search { get; set; }

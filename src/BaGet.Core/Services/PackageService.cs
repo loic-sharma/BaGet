@@ -52,7 +52,7 @@ namespace BaGet.Core.Services
             return (await query.ToListAsync()).AsReadOnly();
         }
 
-        public Task<Package> FindAsync(string id, NuGetVersion version, bool includeUnlisted = false)
+        public Task<Package> FindOrNullAsync(string id, NuGetVersion version, bool includeUnlisted = false)
         {
             var query = _context.Packages
                 .Include(a => a.Dependencies)
@@ -82,9 +82,31 @@ namespace BaGet.Core.Services
             return TryUpdatePackageAsync(id, version, p => p.Downloads += 1);
         }
 
+        public async Task<bool> HardDeletePackageAsync(string id, NuGetVersion version)
+        {
+            var package = await _context.Packages
+                .Where(p => p.Id == id)
+                .Where(p => p.VersionString == version.ToNormalizedString())
+                .Include(p => p.Dependencies)
+                .FirstOrDefaultAsync();
+
+            if (package == null)
+            {
+                return false;
+            }
+
+            _context.Packages.Remove(package);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
         private async Task<bool> TryUpdatePackageAsync(string id, NuGetVersion version, Action<Package> action)
         {
-            var package = await FindAsync(id, version, includeUnlisted: true);
+            var package = await _context.Packages
+                .Where(p => p.Id == id)
+                .Where(p => p.VersionString == version.ToNormalizedString())
+                .FirstOrDefaultAsync();
 
             if (package != null)
             {
