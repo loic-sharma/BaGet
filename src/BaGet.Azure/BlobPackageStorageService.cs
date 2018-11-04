@@ -48,9 +48,12 @@ namespace BaGet.Azure.Configuration
             }
 
             // Save the package's reamde
-            using (var readmeStream = package.GetReadme())
+            if (package.HasReadme())
             {
-                await UploadBlobAsync(readmeBlob, readmeStream, TextContentType);
+                using (var readmeStream = package.GetReadme())
+                {
+                    await UploadBlobAsync(readmeBlob, readmeStream, TextContentType);
+                }
             }
         }
 

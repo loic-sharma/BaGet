@@ -88,7 +88,9 @@ namespace BaGet.Controllers
             // Allow read-through caching if it is configured.
             await _mirror.MirrorAsync(id, nugetVersion, cancellationToken);
 
-            if (!await _packages.ExistsAsync(id, nugetVersion))
+            var package = await _packages.FindOrNullAsync(id, nugetVersion);
+
+            if (package == null || !package.HasReadme)
             {
                 return NotFound();
             }

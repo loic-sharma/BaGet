@@ -50,10 +50,13 @@ namespace BaGet.Core.Services
                 await nuspec.CopyToAsync(fileStream, DefaultCopyBufferSize, cancellationToken);
             }
 
-            using (var readme = package.GetReadme())
-            using (var fileStream = File.Open(readmePath, FileMode.CreateNew))
+            if (package.HasReadme())
             {
-                await readme.CopyToAsync(fileStream, DefaultCopyBufferSize, cancellationToken);
+                using (var readme = package.GetReadme())
+                using (var fileStream = File.Open(readmePath, FileMode.CreateNew))
+                {
+                    await readme.CopyToAsync(fileStream, DefaultCopyBufferSize, cancellationToken);
+                }
             }
         }
 
