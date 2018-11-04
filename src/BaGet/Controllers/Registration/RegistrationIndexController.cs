@@ -4,11 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
 using BaGet.Core.Services;
-using BaGet.Web.Extensions;
+using BaGet.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace BaGet.Controllers.Web.Registration
+namespace BaGet.Controllers.Registration
 {
     /// <summary>
     /// The API to retrieve the metadata of a specific package.

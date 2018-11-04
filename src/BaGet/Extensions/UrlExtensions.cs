@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Versioning;
 
-namespace BaGet.Web.Extensions
+namespace BaGet.Extensions
 {
     public static class UrlExtensions
     {

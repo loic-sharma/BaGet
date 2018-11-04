@@ -100,7 +100,7 @@ namespace BaGet.Extensions
 
         public static IServiceCollection ConfigureHttpServices(this IServiceCollection services)
         {
-            services.AddMvc().AddApplicationPart(typeof(BaGet.Web.Routes).Assembly);
+            services.AddMvc();
             services.AddCors();
             services.AddSingleton<IConfigureOptions<CorsOptions>, ConfigureCorsOptions>();
 

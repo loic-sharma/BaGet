@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BaGet.Web.Extensions;
+using BaGet.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace BaGet.Web.Controllers
+namespace BaGet.Controllers
 {
     /// <summary>
     /// The NuGet Service Index. This aids NuGet client to discover this server's services.

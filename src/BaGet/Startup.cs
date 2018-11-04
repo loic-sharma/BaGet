@@ -3,7 +3,6 @@ using BaGet.Configurations;
 using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
 using BaGet.Extensions;
-using BaGet.Web.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;

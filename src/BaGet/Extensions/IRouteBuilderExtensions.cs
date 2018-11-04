@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Routing.Constraints;
 
-namespace BaGet.Web.Extensions
+namespace BaGet.Extensions
 {
     public static class IRouteBuilderExtensions
     {
