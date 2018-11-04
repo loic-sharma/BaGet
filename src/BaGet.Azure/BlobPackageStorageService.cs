@@ -2,11 +2,10 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.Extensions;
+using BaGet.Core.Entities;
 using BaGet.Core.Services;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
-using NuGet.Packaging;
 using NuGet.Versioning;
 
 namespace BaGet.Azure.Configuration
@@ -24,36 +23,26 @@ namespace BaGet.Azure.Configuration
             _container = container ?? throw new ArgumentNullException(nameof(container));
         }
 
-        public async Task SavePackageStreamAsync(
-            PackageArchiveReader package,
+        public async Task SavePackageContentAsync(
+            Package package,
             Stream packageStream,
+            Stream nuspecStream,
+            Stream readmeStream,
             CancellationToken cancellationToken)
         {
-            var identity = await package.GetIdentityAsync(cancellationToken);
-            var lowercasedId = identity.Id.ToLowerInvariant();
-            var lowercasedNormalizedVersion = identity.Version.ToNormalizedString().ToLowerInvariant();
+            var lowercasedId = package.Id.ToLowerInvariant();
+            var lowercasedNormalizedVersion = package.VersionString.ToLowerInvariant();
 
             var packageBlob = GetPackageBlob(lowercasedId, lowercasedNormalizedVersion);
             var nuspecBlob = GetNuspecBlob(lowercasedId, lowercasedNormalizedVersion);
             var readmeBlob = GetReadmeBlob(lowercasedId, lowercasedNormalizedVersion);
 
-            // Save the package's nupkg
-            packageStream.Seek(0, SeekOrigin.Begin);
             await UploadBlobAsync(packageBlob, packageStream, PackageContentType);
+            await UploadBlobAsync(nuspecBlob, nuspecStream, TextContentType);
 
-            // Save the package's nuspec
-            using (var nuspecStream = await package.GetNuspecAsync(cancellationToken))
+            if (readmeStream != null)
             {
-                await UploadBlobAsync(nuspecBlob, nuspecStream, TextContentType);
-            }
-
-            // Save the package's reamde
-            if (package.HasReadme())
-            {
-                using (var readmeStream = package.GetReadme())
-                {
-                    await UploadBlobAsync(readmeBlob, readmeStream, TextContentType);
-                }
+                await UploadBlobAsync(readmeBlob, readmeStream, TextContentType);
             }
         }
 

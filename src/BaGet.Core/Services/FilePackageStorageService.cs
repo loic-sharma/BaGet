@@ -2,8 +2,7 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.Extensions;
-using NuGet.Packaging;
+using BaGet.Core.Entities;
 using NuGet.Versioning;
 
 namespace BaGet.Core.Services
@@ -20,43 +19,40 @@ namespace BaGet.Core.Services
             _storePath = storePath ?? throw new ArgumentNullException(nameof(storePath));
         }
 
-        public async Task SavePackageStreamAsync(
-            PackageArchiveReader package,
+        public async Task SavePackageContentAsync(
+            Package package,
             Stream packageStream,
+            Stream nuspecStream,
+            Stream readmeStream,
             CancellationToken cancellationToken)
         {
-            var identity = await package.GetIdentityAsync(cancellationToken);
-            var lowercasedId = identity.Id.ToLowerInvariant();
-            var lowercasedNormalizedVersion = identity.Version.ToNormalizedString().ToLowerInvariant();
-
-            var packagePath = PackagePath(lowercasedId, lowercasedNormalizedVersion);
-            var nuspecPath = NuspecPath(lowercasedId, lowercasedNormalizedVersion);
-            var readmePath = ReadmePath(lowercasedId, lowercasedNormalizedVersion);
+            var lowercasedId = package.Id.ToLowerInvariant();
+            var lowercasedNormalizedVersion = package.VersionString.ToLowerInvariant();
 
             EnsurePathExists(lowercasedId, lowercasedNormalizedVersion);
 
-            // TODO: Uploads should be idempotent. This should fail if and only if the blob
-            // already exists but has different content.
-            using (var fileStream = File.Open(packagePath, FileMode.CreateNew))
-            {
-                packageStream.Seek(0, SeekOrigin.Begin);
+            await SaveFileStreamAsync(
+                lowercasedId,
+                lowercasedNormalizedVersion,
+                PackagePath,
+                packageStream,
+                cancellationToken);
 
-                await packageStream.CopyToAsync(fileStream, DefaultCopyBufferSize, cancellationToken);
-            }
+            await SaveFileStreamAsync(
+                lowercasedId,
+                lowercasedNormalizedVersion,
+                NuspecPath,
+                nuspecStream,
+                cancellationToken);
 
-            using (var nuspec = await package.GetNuspecAsync(cancellationToken))
-            using (var fileStream = File.Open(nuspecPath, FileMode.CreateNew))
+            if (readmeStream != null)
             {
-                await nuspec.CopyToAsync(fileStream, DefaultCopyBufferSize, cancellationToken);
-            }
-
-            if (package.HasReadme())
-            {
-                using (var readme = package.GetReadme())
-                using (var fileStream = File.Open(readmePath, FileMode.CreateNew))
-                {
-                    await readme.CopyToAsync(fileStream, DefaultCopyBufferSize, cancellationToken);
-                }
+                await SaveFileStreamAsync(
+                    lowercasedId,
+                    lowercasedNormalizedVersion,
+                    ReadmePath,
+                    readmeStream,
+                    cancellationToken);
             }
         }
 
@@ -95,6 +91,23 @@ namespace BaGet.Core.Services
             File.Delete(readmePath);
 
             return Task.CompletedTask;
+        }
+
+        private async Task SaveFileStreamAsync(
+            string lowercasedId,
+            string lowercasedNormalizedVersion,
+            Func<string, string, string> pathFunc,
+            Stream content,
+            CancellationToken cancellationToken)
+        {
+            var path = pathFunc(lowercasedId, lowercasedNormalizedVersion);
+
+            // TODO: Uploads should be idempotent. This should fail if and only if the blob
+            // already exists but has different content.
+            using (var fileStream = File.Open(path, FileMode.CreateNew))
+            {
+                await content.CopyToAsync(fileStream, DefaultCopyBufferSize, cancellationToken);
+            }
         }
 
         private Stream GetFileStream(string id, NuGetVersion version, Func<string, string, string> pathFunc)

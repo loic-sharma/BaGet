@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using NuGet.Packaging;
+using BaGet.Core.Entities;
 using NuGet.Versioning;
 
 namespace BaGet.Core.Services
@@ -18,11 +18,15 @@ namespace BaGet.Core.Services
         /// </summary>
         /// <param name="package">The package's metadata.</param>
         /// <param name="packageStream">The package's nupkg stream.</param>
+        /// <param name="nuspecStream">The package's nuspec stream.</param>
+        /// <param name="readmeStream">The package's readme stream, or null if none.</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task SavePackageStreamAsync(
-            PackageArchiveReader package,
+        Task SavePackageContentAsync(
+            Package package,
             Stream packageStream,
+            Stream nuspecStream,
+            Stream readmeStream,
             CancellationToken cancellationToken);
 
         /// <summary>

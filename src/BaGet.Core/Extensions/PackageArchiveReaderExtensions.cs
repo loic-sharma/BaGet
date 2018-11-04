@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using NuGet.Packaging;
 
 namespace BaGet.Core.Extensions
@@ -21,8 +23,9 @@ namespace BaGet.Core.Extensions
         public static bool HasReadme(this PackageArchiveReader package)
             => package.GetFiles().Any(ReadmeFileNames.Contains);
 
-        // TODO: This should be async and accept a CancellationToken.
-        public static Stream GetReadme(this PackageArchiveReader package)
+        public async static Task<Stream> GetReadmeAsync(
+            this PackageArchiveReader package,
+            CancellationToken cancellationToken)
         {
             var packageFiles = package.GetFiles();
 
@@ -32,11 +35,11 @@ namespace BaGet.Core.Extensions
 
                 if (readmePath != null)
                 {
-                    return package.GetStream(readmePath);
+                    return await package.GetStreamAsync(readmePath, cancellationToken);
                 }
             }
 
-            return Stream.Null;
+            throw new InvalidOperationException("Package does not have a readme!");
         }
     }
 }
