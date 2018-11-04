@@ -69,7 +69,6 @@ namespace BaGet.Core.Tests.Services
         [Theory]
         [InlineData(false)]
         [InlineData(true)]
-
         public async Task WhenHardDelete_ReturnsTrueOnlyIfPackageExists(bool packageExists)
         {
             // Arrange
