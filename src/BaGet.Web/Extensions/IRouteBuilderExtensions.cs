@@ -18,19 +18,19 @@ namespace BaGet.Web.Extensions
         {
             routes.MapRoute(
                 name: Routes.UploadRouteName,
-                template: "v2/package",
+                template: "api/v2/package",
                 defaults: new { controller = "PackagePublish", action = "Upload" },
                 constraints: new { httpMethod = new HttpMethodRouteConstraint("PUT") });
 
             routes.MapRoute(
                 name: Routes.DeleteRouteName,
-                template: "v2/package/{id}/{version}",
+                template: "api/v2/package/{id}/{version}",
                 defaults: new { controller = "PackagePublish", action = "Delete" },
                 constraints: new { httpMethod = new HttpMethodRouteConstraint("DELETE") });
 
             routes.MapRoute(
                 name: Routes.RelistRouteName,
-                template: "v2/package/{id}/{version}",
+                template: "api/v2/package/{id}/{version}",
                 defaults: new { controller = "PackagePublish", action = "Relist" },
                 constraints: new { httpMethod = new HttpMethodRouteConstraint("POST") });
 
