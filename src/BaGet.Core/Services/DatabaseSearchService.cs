@@ -28,13 +28,14 @@ namespace BaGet.Core.Services
                 search = search.Where(p => p.Id.ToLower().Contains(query));
             }
 
-            // TODO: These results are an approximation. There are many scenarios in which this query
-            // will miss packages or package versions.
-            var packages = await search
-                .Where(p => p.Listed)
-                .OrderByDescending(p => p.Downloads)
-                .Skip(skip)
-                .Take(take)
+            var packages = await _context.Packages
+                .Where(p =>
+                    search.Select(p2 => p2.Id)
+                        .OrderBy(id => id)
+                        .Distinct()
+                        .Skip(skip)
+                        .Take(take)
+                        .Contains(p.Id))
                 .GroupBy(p => p.Id)
                 .ToListAsync();
 
