@@ -3,15 +3,13 @@ WORKDIR /app
 EXPOSE 80
 
 FROM microsoft/dotnet:2.1-sdk AS build
-ARG APP_BUILD=Release
 WORKDIR /src
 COPY . .
 RUN dotnet restore src/BaGet
-RUN dotnet build src/BaGet -c ${APP_BUILD} -o /app
+RUN dotnet build src/BaGet -c Release -o /app
 
 FROM build AS publish
-ARG APP_BUILD=Release
-RUN dotnet publish src/BaGet -c ${APP_BUILD} -o /app
+RUN dotnet publish src/BaGet -c Release -o /app
 
 FROM base AS final
 WORKDIR /app

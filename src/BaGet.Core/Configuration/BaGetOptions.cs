@@ -13,6 +13,17 @@
         /// </summary>
         public string PathBase { get; set; }
 
+        /// <summary>
+        /// If enabled, the database will be updated at app startup by running
+        /// Entity Framework migrations. This is not recommended in production.
+        /// </summary>
+        public bool RunMigrationsAtStartup { get; set; } = true;
+
+        /// <summary>
+        /// How BaGet should interpret package deletion requests.
+        /// </summary>
+        public PackageDeletionBehavior PackageDeletionBehavior { get; set; } = PackageDeletionBehavior.Unlist;
+
         public DatabaseOptions Database { get; set; }
         public StorageOptions Storage { get; set; }
         public SearchOptions Search { get; set; }

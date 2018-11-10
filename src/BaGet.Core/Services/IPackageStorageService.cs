@@ -1,19 +1,65 @@
 ﻿using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
-using NuGet.Packaging;
-using NuGet.Packaging.Core;
+using BaGet.Core.Entities;
+using NuGet.Versioning;
 
 namespace BaGet.Core.Services
 {
+    /// <summary>
+    /// Stores packages' content. Packages' state are stored by the
+    /// <see cref="IPackageService"/>.
+    /// </summary>
     public interface IPackageStorageService
     {
-        // TODO: Add overwrite option?
-        Task SavePackageStreamAsync(PackageArchiveReader package, Stream packageStream);
+        /// <summary>
+        /// Persist a package's content to storage. This operation MUST fail if a package
+        /// with the same id/version but different content has already been stored.
+        /// </summary>
+        /// <param name="package">The package's metadata.</param>
+        /// <param name="packageStream">The package's nupkg stream.</param>
+        /// <param name="nuspecStream">The package's nuspec stream.</param>
+        /// <param name="readmeStream">The package's readme stream, or null if none.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task SavePackageContentAsync(
+            Package package,
+            Stream packageStream,
+            Stream nuspecStream,
+            Stream readmeStream,
+            CancellationToken cancellationToken);
 
-        Task<Stream> GetPackageStreamAsync(PackageIdentity package);
-        Task<Stream> GetNuspecStreamAsync(PackageIdentity package);
-        Task<Stream> GetReadmeStreamAsync(PackageIdentity package);
+        /// <summary>
+        /// Retrieve a package's nupkg stream.
+        /// </summary>
+        /// <param name="id">The package's id.</param>
+        /// <param name="version">The package's version.</param>
+        /// <returns>The package's nupkg stream.</returns>
+        Task<Stream> GetPackageStreamAsync(string id, NuGetVersion version);
 
-        Task DeleteAsync(PackageIdentity package);
+        /// <summary>
+        /// Retrieve a package's nuspec stream.
+        /// </summary>
+        /// <param name="id">The package's id.</param>
+        /// <param name="version">The package's version.</param>
+        /// <returns>The package's nuspec stream.</returns>
+        Task<Stream> GetNuspecStreamAsync(string id, NuGetVersion version);
+
+        /// <summary>
+        /// Retrieve a package's readme stream.
+        /// </summary>
+        /// <param name="id">The package's id.</param>
+        /// <param name="version">The package's version.</param>
+        /// <returns>The package's readme stream.</returns>
+        Task<Stream> GetReadmeStreamAsync(string id, NuGetVersion version);
+
+        /// <summary>
+        /// Remove a package's content from storage. This operation SHOULD succeed
+        /// even if the package does not exist.
+        /// </summary>
+        /// <param name="id">The package's id.</param>
+        /// <param name="version">The package's version.</param>
+        /// <returns></returns>
+        Task DeleteAsync(string id, NuGetVersion version);
     }
 }

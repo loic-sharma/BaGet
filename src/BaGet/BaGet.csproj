@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,7 +16,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\BaGet.Web\BaGet.Web.csproj" />
     <ProjectReference Include="..\BaGet.Azure\BaGet.Azure.csproj" />
     <ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
   </ItemGroup>

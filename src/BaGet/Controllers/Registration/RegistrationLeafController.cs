@@ -3,12 +3,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Mirror;
 using BaGet.Core.Services;
-using BaGet.Web.Extensions;
+using BaGet.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using NuGet.Versioning;
 
-namespace BaGet.Controllers.Web.Registration
+namespace BaGet.Controllers.Registration
 {
     /// <summary>
     /// The API to retrieve the metadata of a specific version of a specific package.
@@ -36,7 +36,7 @@ namespace BaGet.Controllers.Web.Registration
             // Allow read-through caching to happen if it is confiured.
             await _mirror.MirrorAsync(id, nugetVersion, cancellationToken);
 
-            var package = await _packages.FindAsync(id, nugetVersion);
+            var package = await _packages.FindOrNullAsync(id, nugetVersion);
 
             if (package == null)
             {
