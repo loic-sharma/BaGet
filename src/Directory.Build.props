@@ -1,6 +1,7 @@
 <Project>
 
   <PropertyGroup>
+    <Product>BaGet</Product>
     <PackageProjectUrl>https://loic-sharma.github.io/BaGet/</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/loic-sharma/BaGet/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/loic-sharma/BaGet</RepositoryUrl>
@@ -17,6 +18,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All"/>
+    <PackageReference Include="Nerdbank.GitVersioning" Version="2.2.13" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>
