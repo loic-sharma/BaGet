@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
 
+    <Description>A lightweight NuGet service implementation.</Description>
+
     <IsPackable>true</IsPackable>
     <PackAsTool>true</PackAsTool>
   </PropertyGroup>
