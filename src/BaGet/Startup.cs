@@ -72,6 +72,8 @@ namespace BaGet
             {
                 if (env.IsDevelopment())
                 {
+                    // TODO: This could launch the react frontend, like "UseReactDevelopmentServer".
+                    // See: https://github.com/aspnet/JavaScriptServices/blob/7a0413434577274666ff72ee790b53cc71b22970/src/Microsoft.AspNetCore.SpaServices.Extensions/ReactDevelopmentServer/ReactDevelopmentServerMiddleware.cs#L63
                     spa.UseProxyToSpaDevelopmentServer("http://localhost:1234");
                 }
             });
