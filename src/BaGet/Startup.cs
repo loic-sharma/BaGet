@@ -23,6 +23,12 @@ namespace BaGet
         public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigureBaGet(Configuration, httpServices: true);
+
+            // In production, the UI files will be served from this directory
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "Baget.UI/dist";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,8 +54,7 @@ namespace BaGet
 
             app.UsePathBase(Configuration.Get<BaGetOptions>().PathBase);
             app.UseForwardedHeaders();
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
 
             app.UseCors(ConfigureCorsOptions.CorsPolicy);
 
@@ -61,6 +66,16 @@ namespace BaGet
                     .MapSearchRoutes()
                     .MapRegistrationRoutes()
                     .MapPackageContentRoutes();
+            });
+
+            app.UseSpa(spa =>
+            {
+                if (env.IsDevelopment())
+                {
+                    // TODO: This could launch the react frontend, like "UseReactDevelopmentServer".
+                    // See: https://github.com/aspnet/JavaScriptServices/blob/7a0413434577274666ff72ee790b53cc71b22970/src/Microsoft.AspNetCore.SpaServices.Extensions/ReactDevelopmentServer/ReactDevelopmentServerMiddleware.cs#L63
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:1234");
+                }
             });
         }
     }
