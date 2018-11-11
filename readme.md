@@ -7,7 +7,7 @@ A lightweight [NuGet service](https://docs.microsoft.com/en-us/nuget/api/overvie
 ## Getting Started
 
 1. Install [.NET Core SDK](https://www.microsoft.com/net/download)
-2. Download and extract the latest release: https://github.com/loic-sharma/BaGet/releases
+2. Download and extract [BaGet's latest release](https://github.com/loic-sharma/BaGet/releases)
 3. Start the service with `dotnet BaGet.dll`
 4. Push your first package using `dotnet nuget push -s http://localhost:5000/v3/index.json newtonsoft.json.11.0.2.nupkg`
 5. Browse `http://localhost:5000/` in your browser
