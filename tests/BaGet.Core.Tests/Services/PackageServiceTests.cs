@@ -35,6 +35,7 @@ namespace BaGet.Core.Tests.Services
             [InlineData("Fake.Package", "1.0.0", false)]
             public async Task ReturnsTrueIfPackageExists(string packageId, string packageVersion, bool exists)
             {
+                System.Console.WriteLine($"TODO: {packageId} {packageVersion} {exists}");
                 await Task.Yield();
             }
         }
@@ -53,6 +54,7 @@ namespace BaGet.Core.Tests.Services
             public async Task ReturnsPackages(string packageId, string packageVersion, bool includeUnlisted, bool exists)
             {
                 // TODO: Ensure resulting versions are normalized.
+                System.Console.WriteLine($"TODO: {packageId} {packageVersion} {includeUnlisted} {exists}");
                 await Task.Yield();
             }
 
@@ -92,6 +94,7 @@ namespace BaGet.Core.Tests.Services
             public async Task ReturnsPackage(string packageId, string packageVersion, bool includeUnlisted, bool exists)
             {
                 // TODO: Ensure resulting versions are normalized.
+                System.Console.WriteLine($"TODO: {packageId} {packageVersion} {includeUnlisted} {exists}");
                 await Task.Yield();
             }
 
@@ -133,6 +136,7 @@ namespace BaGet.Core.Tests.Services
             {
                 // TODO: This should succeed if the package is unlisted.
                 // TODO: Returns true
+                System.Console.WriteLine($"TODO: {listed}");
                 await Task.Yield();
             }
         }
@@ -152,6 +156,7 @@ namespace BaGet.Core.Tests.Services
             {
                 // TODO: This should succeed if the package is listed.
                 // TODO: Return true
+                System.Console.WriteLine($"TODO: {listed}");
                 await Task.Yield();
             }
         }
