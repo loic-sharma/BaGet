@@ -20,7 +20,7 @@
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All"/>
   </ItemGroup>
 
-  <ItemGroup Condition="$(IsPackable) == 'true'">
+  <ItemGroup Condition="$(IsPackable) == 'true' AND $(IS_DOCKER) == ''">
     <PackageReference Include="Nerdbank.GitVersioning" Version="2.2.13" PrivateAssets="all" />
   </ItemGroup>
 
