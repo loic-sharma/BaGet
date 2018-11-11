@@ -28,10 +28,7 @@ Stay tuned, more features are planned!
 
 ## Develop
 
-1. Install:
-    1. [.NET Core SDK](https://www.microsoft.com/net/download)
-    2. [Node.js](https://nodejs.org/)
-    3. [Yarn](https://yarnpkg.com/en/docs/install)
+1. Install [.NET Core SDK](https://www.microsoft.com/net/download), [Node.js](https://nodejs.org/), and [Yarn](https://yarnpkg.com/en/docs/install)
 2. Run `git clone https://github.com/loic-sharma/BaGet.git`
 3. Launch the backend:
     1. Navigate to `.\BaGet\src\BaGet`
