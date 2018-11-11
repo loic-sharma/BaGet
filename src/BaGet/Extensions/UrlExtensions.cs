@@ -44,7 +44,11 @@ namespace BaGet.Extensions
         {
             var request = url.ActionContext.HttpContext.Request;
 
-            return new Uri(new Uri(request.Scheme + "://" + request.Host.Value), relativePath).ToString();
+            return string.Concat(
+                request.Scheme, "://",
+                request.Host.ToUriComponent(),
+                request.PathBase.ToUriComponent(),
+                "/", relativePath);
         }
 
         public static string AbsoluteRouteUrl(this IUrlHelper url, string routeName, object routeValues = null)

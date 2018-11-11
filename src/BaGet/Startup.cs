@@ -46,6 +46,7 @@ namespace BaGet
                 }
             }
 
+            app.UsePathBase(Configuration.Get<BaGetOptions>().PathBase);
             app.UseForwardedHeaders();
             app.UseDefaultFiles();
             app.UseStaticFiles();
