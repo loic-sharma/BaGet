@@ -25,3 +25,19 @@ For more information, please refer to [our documentation](https://loic-sharma.gi
 * And more!
 
 Stay tuned, more features are planned!
+
+## Develop
+
+1. Install:
+    1. [.NET Core SDK](https://www.microsoft.com/net/download)
+    2. [Node.js](https://nodejs.org/)
+    3. [Yarn](https://yarnpkg.com/en/docs/install)
+2. Run `git clone https://github.com/loic-sharma/BaGet.git`
+3. Launch the backend:
+    1. Navigate to `.\BaGet\src\BaGet`
+    2. Start the backend with `dotnet run`
+4. Launch the frontend:
+    1. Navigate to `.\BaGet\src\BaGet.UI`
+    2. Run `yarn install`
+    3. Start the frontend with `yarn develop`
+5. Open the URL `http://localhost:5000/v3/index.json` in your browser
