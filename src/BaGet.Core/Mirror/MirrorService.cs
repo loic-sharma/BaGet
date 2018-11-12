@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Services;
@@ -42,11 +43,11 @@ namespace BaGet.Core.Mirror
             var versions = await _upstreamFeed.GetAllVersionsAsync(id, includeUnlisted: true);
 
             _logger.LogInformation(
-                "Found {VersionsCount} versions for package {PackageId} on upstream feed. Indexing...",
+                "Found {VersionsCount} versions for package {PackageId} on upstream feed. Indexing the 10 latest...",
                 versions.Count,
                 id);
 
-            foreach (var version in versions)
+            foreach (var version in versions.OrderByDescending(v => v).Take(10))
             {
                 var packageUri = await _upstreamFeed.GetPackageContentUriAsync(id, version);
 
