@@ -12,6 +12,7 @@ using BaGet.Core.Extensions;
 using BaGet.Core.Mirror;
 using BaGet.Core.Services;
 using BaGet.Entities;
+using BaGet.Protocol;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -199,6 +200,9 @@ namespace BaGet.Extensions
         /// <param name="services">The defined services.</param>
         public static IServiceCollection AddMirrorServices(this IServiceCollection services)
         {
+            services.AddTransient<FakeMirrorService>();
+            services.AddTransient<MirrorService>();
+
             services.AddTransient<IMirrorService>(provider =>
             {
                 var mirrorOptions = provider
@@ -210,15 +214,31 @@ namespace BaGet.Extensions
 
                 if (!mirrorOptions.Enabled)
                 {
-                    return new FakeMirrorService();
+                    return provider.GetRequiredService<FakeMirrorService>();
                 }
+                else
+                {
+                    return provider.GetRequiredService<MirrorService>();
+                }
+            });
 
-                return new MirrorService(
-                    mirrorOptions.PackageSource,
-                    provider.GetRequiredService<IPackageService>(),
-                    provider.GetRequiredService<IPackageDownloader>(),
-                    provider.GetRequiredService<IIndexingService>(),
-                    provider.GetRequiredService<ILogger<MirrorService>>());
+            services.AddTransient<IPackageContentClient, PackageContentClient>();
+            services.AddTransient<IRegistrationClient, RegistrationClient>();
+            services.AddTransient<IServiceIndexClient, ServiceIndexClient>();
+            services.AddTransient<IPackageMetadataService, PackageMetadataService>();
+
+            services.AddSingleton<IServiceIndexService>(provider =>
+            {
+                var mirrorOptions = provider
+                    .GetRequiredService<IOptions<BaGetOptions>>()
+                    .Value
+                    .Mirror;
+
+                mirrorOptions.EnsureValid();
+
+                return new ServiceIndexService(
+                    mirrorOptions.PackageSource.ToString(),
+                    provider.GetRequiredService<IServiceIndexClient>());
             });
 
             services.AddTransient<IPackageDownloader, PackageDownloader>();

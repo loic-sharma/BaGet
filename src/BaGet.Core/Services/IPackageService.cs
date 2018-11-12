@@ -58,7 +58,7 @@ namespace BaGet.Core.Services
         /// <param name="id">The package id to search.</param>
         /// <param name="version">The package version to search.</param>
         /// <returns>Whether the package exists in the database.</returns>
-        Task<bool> ExistsAsync(string id, NuGetVersion version);
+        Task<bool> ExistsAsync(string id, NuGetVersion version = null);
 
         /// <summary>
         /// Unlist a package, making it undiscoverable.

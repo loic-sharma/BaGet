@@ -1,14 +1,16 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Core.Services;
 using BaGet.Extensions;
+using BaGet.Protocol;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace BaGet.Controllers
 {
+    using ProtocolSearchResult = Protocol.SearchResult;
+    using QuerySearchResult = Core.Services.SearchResult;
+
     public class SearchController : Controller
     {
         private readonly ISearchService _searchService;
@@ -18,83 +20,48 @@ namespace BaGet.Controllers
             _searchService = searchService ?? throw new ArgumentNullException(nameof(searchService));
         }
 
-        public async Task<object> Get([FromQuery(Name = "q")] string query = null)
+        public async Task<IActionResult> Get([FromQuery(Name = "q")] string query = null)
         {
             query = query ?? string.Empty;
 
             var results = await _searchService.SearchAsync(query);
+            var response = new SearchResponse(
+                totalHits: results.Count,
+                data: results.Select(ToSearchResult).ToList());
 
-            return new
-            {
-                TotalHits = results.Count,
-                Data = results.Select(p => new SearchResultModel(p, Url))
-            };
+            return Json(response);
         }
 
         public async Task<IActionResult> Autocomplete([FromQuery(Name = "q")] string query = null)
         {
             var results = await _searchService.AutocompleteAsync(query);
+            var response = new AutocompleteResult(results.Count, results);
 
-            return Json(new
-            {
-                TotalHits = results.Count,
-                Data = results,
-            });
+            return Json(response);
         }
 
-        private class SearchResultModel
+        private ProtocolSearchResult ToSearchResult(QuerySearchResult result)
         {
-            private readonly SearchResult _result;
-            private readonly IUrlHelper _url;
+            var versions = result.Versions.Select(
+                v => new Protocol.SearchResultVersion(
+                    registrationLeafUrl: Url.PackageRegistration(result.Id, v.Version),
+                    version: v.Version,
+                    downloads: v.Downloads));
 
-            public SearchResultModel(SearchResult result, IUrlHelper url)
-            {
-                _result = result ?? throw new ArgumentNullException(nameof(result));
-                _url = url ?? throw new ArgumentNullException(nameof(url));
-
-                var versions = result.Versions.Select(
-                    v => new SearchResultVersionModel(
-                        url.PackageRegistration(result.Id, v.Version),
-                        v.Version.ToNormalizedString(),
-                        v.Downloads));
-
-                Versions = versions.ToList().AsReadOnly();
-            }
-
-            public string Id => _result.Id;
-            public string Version => _result.Version.ToNormalizedString();
-            public string Description => _result.Description;
-            public string Authors => _result.Authors;
-            public string IconUrl => _result.IconUrl;
-            public string LicenseUrl => _result.LicenseUrl;
-            public string ProjectUrl => _result.ProjectUrl;
-            public string Registration => _url.PackageRegistration(_result.Id);
-            public string Summary => _result.Summary;
-            public string[] Tags => _result.Tags;
-            public string Title => _result.Title;
-            public long TotalDownloads => _result.TotalDownloads;
-
-            public IReadOnlyList<SearchResultVersionModel> Versions { get; }
-        }
-
-        private class SearchResultVersionModel
-        {
-            public SearchResultVersionModel(string registrationUrl, string version, long downloads)
-            {
-                if (string.IsNullOrEmpty(registrationUrl)) throw new ArgumentNullException(nameof(registrationUrl));
-                if (string.IsNullOrEmpty(version)) throw new ArgumentNullException(nameof(version));
-
-                RegistrationUrl = registrationUrl;
-                Version = version;
-                Downloads = downloads;
-            }
-
-            [JsonProperty(PropertyName = "id")]
-            public string RegistrationUrl { get; }
-
-            public string Version { get; }
-
-            public long Downloads { get; }
+            return new ProtocolSearchResult(
+                id: result.Id,
+                version: result.Version,
+                description: result.Description,
+                authors: result.Authors,
+                iconUrl: result.IconUrl,
+                licenseUrl: result.LicenseUrl,
+                projectUrl: result.ProjectUrl,
+                registrationUrl: Url.PackageRegistration(result.Id),
+                summary: result.Summary,
+                tags: result.Tags,
+                title: result.Title,
+                totalDownloads: result.TotalDownloads,
+                versions: versions.ToList());
         }
     }
 }

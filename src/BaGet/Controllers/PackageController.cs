@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Mirror;
 using BaGet.Core.Services;
+using BaGet.Protocol;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
@@ -32,10 +33,9 @@ namespace BaGet.Controllers
                 return NotFound();
             }
 
-            return Json(new
-            {
-                Versions = packages.Select(p => p.VersionString).ToList()
-            });
+            var versions = packages.Select(p => p.Version).ToList();
+
+            return Json(new PackageVersions(versions));
         }
 
         public async Task<IActionResult> DownloadPackage(string id, string version, CancellationToken cancellationToken)
@@ -46,7 +46,7 @@ namespace BaGet.Controllers
             }
 
             // Allow read-through caching if it is configured.
-            await _mirror.MirrorAsync(id, nugetVersion, cancellationToken);
+            await _mirror.MirrorAsync(id, cancellationToken);
 
             if (!await _packages.AddDownloadAsync(id, nugetVersion))
             {
@@ -66,7 +66,7 @@ namespace BaGet.Controllers
             }
 
             // Allow read-through caching if it is configured.
-            await _mirror.MirrorAsync(id, nugetVersion, cancellationToken);
+            await _mirror.MirrorAsync(id, cancellationToken);
 
             if (!await _packages.ExistsAsync(id, nugetVersion))
             {
@@ -86,7 +86,7 @@ namespace BaGet.Controllers
             }
 
             // Allow read-through caching if it is configured.
-            await _mirror.MirrorAsync(id, nugetVersion, cancellationToken);
+            await _mirror.MirrorAsync(id, cancellationToken);
 
             var package = await _packages.FindOrNullAsync(id, nugetVersion);
 

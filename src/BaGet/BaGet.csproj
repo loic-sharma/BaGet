@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BaGet.Azure\BaGet.Azure.csproj" />
     <ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
+    <ProjectReference Include="..\BaGet.Protocol\BaGet.Protocol.csproj" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

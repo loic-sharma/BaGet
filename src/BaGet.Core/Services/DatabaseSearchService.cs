@@ -53,7 +53,7 @@ namespace BaGet.Core.Services
                     Id = latest.Id,
                     Version = latest.Version,
                     Description = latest.Description,
-                    Authors = string.Join(", ", latest.Authors),
+                    Authors = latest.Authors,
                     IconUrl = latest.IconUrlString,
                     LicenseUrl = latest.LicenseUrlString,
                     ProjectUrl = latest.ProjectUrlString,
