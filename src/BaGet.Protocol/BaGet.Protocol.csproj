@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
 
-    <Details>Libraries to interact with NuGet server APIs</Details>
+    <Description>Libraries to interact with NuGet server APIs</Description>
   </PropertyGroup>
 
   <ItemGroup>
