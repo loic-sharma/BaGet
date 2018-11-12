@@ -25,12 +25,12 @@ namespace BaGet.Protocol
         public static readonly string[] RepositorySignatures = { "RepositorySignatures" + Version490, "RepositorySignatures" + Version470 };
         public static readonly string[] SymbolPackagePublish = { "SymbolPackagePublish" + Version490 };
 
-        private readonly ServiceIndexClient _client;
+        private readonly IServiceIndexClient _client;
         private readonly Lazy<Task<ServiceIndex>> _serviceIndexTask;
 
         public ServiceIndexService(
             string serviceIndexUrl,
-            ServiceIndexClient client)
+            IServiceIndexClient client)
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _serviceIndexTask = new Lazy<Task<ServiceIndex>>(() =>

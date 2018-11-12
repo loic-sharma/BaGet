@@ -34,11 +34,17 @@ namespace BaGet.Core.Services
             }
         }
 
-        public Task<bool> ExistsAsync(string id, NuGetVersion version)
-            => _context.Packages
-                .Where(p => p.Id == id)
-                .Where(p => p.VersionString == version.ToNormalizedString())
-                .AnyAsync();
+        public Task<bool> ExistsAsync(string id, NuGetVersion version = null)
+        {
+            var query = _context.Packages.Where(p => p.Id == id);
+
+            if (version != null)
+            {
+                query = query.Where(p => p.VersionString == version.ToNormalizedString());
+            }
+
+            return query.AnyAsync();
+        }
 
         public async Task<IReadOnlyList<Package>> FindAsync(string id, bool includeUnlisted = false)
         {

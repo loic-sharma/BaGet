@@ -46,7 +46,7 @@ namespace BaGet.Controllers
             }
 
             // Allow read-through caching if it is configured.
-            await _mirror.MirrorAsync(id, nugetVersion, cancellationToken);
+            await _mirror.MirrorAsync(id, cancellationToken);
 
             if (!await _packages.AddDownloadAsync(id, nugetVersion))
             {
@@ -66,7 +66,7 @@ namespace BaGet.Controllers
             }
 
             // Allow read-through caching if it is configured.
-            await _mirror.MirrorAsync(id, nugetVersion, cancellationToken);
+            await _mirror.MirrorAsync(id, cancellationToken);
 
             if (!await _packages.ExistsAsync(id, nugetVersion))
             {
@@ -86,7 +86,7 @@ namespace BaGet.Controllers
             }
 
             // Allow read-through caching if it is configured.
-            await _mirror.MirrorAsync(id, nugetVersion, cancellationToken);
+            await _mirror.MirrorAsync(id, cancellationToken);
 
             var package = await _packages.FindOrNullAsync(id, nugetVersion);
 

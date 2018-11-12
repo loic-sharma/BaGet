@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
+using BaGet.Core.Mirror;
 using BaGet.Core.Services;
 using BaGet.Extensions;
 using BaGet.Protocol;
@@ -15,18 +17,22 @@ namespace BaGet.Controllers.Registration
     /// </summary>
     public class RegistrationIndexController : Controller
     {
+        private readonly IMirrorService _mirror;
         private readonly IPackageService _packages;
 
-        public RegistrationIndexController(IPackageService packages)
+        public RegistrationIndexController(IMirrorService mirror, IPackageService packages)
         {
+            _mirror = mirror ?? throw new ArgumentNullException(nameof(mirror));
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));
         }
 
         // GET v3/registration/{id}.json
         [HttpGet]
-        public async Task<IActionResult> Get(string id)
+        public async Task<IActionResult> Get(string id, CancellationToken cancellationToken)
         {
-            // Documentation: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
+            // Allow read-through caching to happen if it is configured.
+            await _mirror.MirrorAsync(id, cancellationToken);
+
             var packages = await _packages.FindAsync(id);
             var versions = packages.Select(p => p.Version).ToList();
 

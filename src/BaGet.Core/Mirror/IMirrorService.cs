@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using NuGet.Versioning;
 
 namespace BaGet.Core.Mirror
 {
@@ -13,9 +12,8 @@ namespace BaGet.Core.Mirror
         /// If the package is unknown, attempt to index it from an upstream source.
         /// </summary>
         /// <param name="id">The package's id</param>
-        /// <param name="version">The package's version</param>
         /// <param name="cancellationToken">The token to cancel the mirroring</param>
         /// <returns>A task that completes when the package has been mirrored.</returns>
-        Task MirrorAsync(string id, NuGetVersion version, CancellationToken cancellationToken);
+        Task MirrorAsync(string id, CancellationToken cancellationToken);
     }
 }

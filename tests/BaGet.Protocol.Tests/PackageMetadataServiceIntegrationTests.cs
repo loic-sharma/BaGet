@@ -4,11 +4,11 @@ using Xunit;
 
 namespace BaGet.Protocol.Tests
 {
-    public class PackageMetadataServiceTests
+    public class PackageMetadataServiceIntegrationTests
     {
         private readonly PackageMetadataService _target;
 
-        public PackageMetadataServiceTests()
+        public PackageMetadataServiceIntegrationTests()
         {
             var httpClient = new HttpClient();
             var serviceIndexClient = new ServiceIndexClient(httpClient);

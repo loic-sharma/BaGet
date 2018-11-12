@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using NuGet.Versioning;
 
@@ -22,19 +23,33 @@ namespace BaGet.Protocol
             _packageContentClient = packageContentClient ?? throw new ArgumentNullException(nameof(packageContentClient));
         }
 
-        public async Task<IReadOnlyList<NuGetVersion>> GetAllVersionsAsync(string packageId, bool includeUnlisted = false)
+        public async Task<IReadOnlyList<NuGetVersion>> GetAllVersionsAsync(
+            string packageId,
+            bool includeUnlisted = false,
+            CancellationToken cancellationToken = default)
         {
             if (!includeUnlisted)
             {
-                return await GetAllListedVersionsFromRegistrationResourceAsync(packageId);
+                return await GetAllListedVersionsFromRegistrationResourceAsync(packageId, cancellationToken);
             }
             {
-                return await GetAllVersionsFromPackageContentResourceAsync(packageId);
+                return await GetAllVersionsFromPackageContentResourceAsync(packageId, cancellationToken);
             }
         }
 
-        private async Task<IReadOnlyList<NuGetVersion>> GetAllListedVersionsFromRegistrationResourceAsync(string packageId)
+        public async Task<Uri> GetPackageContentUriAsync(string id, NuGetVersion version)
         {
+            var packageContentUrl = await _serviceIndexService.GetPackageContentUrlAsync();
+            var packageId = id.ToLowerInvariant();
+            var packageVersion = version.ToNormalizedString().ToLowerInvariant();
+
+            return new Uri($"{packageContentUrl}/{packageId}/{packageVersion}/{packageId}.{packageVersion}.nupkg");
+        }
+
+        private async Task<IReadOnlyList<NuGetVersion>> GetAllListedVersionsFromRegistrationResourceAsync(string packageId, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var registrationUrl = await _serviceIndexService.GetRegistrationUrlAsync();
             var requestUrl = $"{registrationUrl}/{packageId.ToLowerInvariant()}/index.json";
 
@@ -43,6 +58,8 @@ namespace BaGet.Protocol
 
             foreach (var page in packageIndex.Pages)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 // If the package's registration index is too big, its pages' items will be
                 // stored at different URLs. We will need to fetch each page's items individually.
                 // We can detect this case as the index's pages will have "null" items.
@@ -68,8 +85,10 @@ namespace BaGet.Protocol
             return result;
         }
 
-        private async Task<IReadOnlyList<NuGetVersion>> GetAllVersionsFromPackageContentResourceAsync(string packageId)
+        private async Task<IReadOnlyList<NuGetVersion>> GetAllVersionsFromPackageContentResourceAsync(string packageId, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var packageContentUrl = await _serviceIndexService.GetPackageContentUrlAsync();
             var requestUrl = $"{packageContentUrl}/{packageId.ToLowerInvariant()}/index.json";
 

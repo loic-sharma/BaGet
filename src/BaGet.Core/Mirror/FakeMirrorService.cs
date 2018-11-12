@@ -9,10 +9,7 @@ namespace BaGet.Core.Mirror
     /// </summary>
     public class FakeMirrorService : IMirrorService
     {
-        public Task MirrorAsync(
-            string id,
-            NuGetVersion version,
-            CancellationToken cancellationToken)
+        public Task MirrorAsync(string id, CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
         }
