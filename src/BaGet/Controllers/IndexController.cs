@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using BaGet.Extensions;
+using BaGet.Protocol;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using NuGet.Versioning;
 
 namespace BaGet.Controllers
 {
@@ -12,50 +14,33 @@ namespace BaGet.Controllers
     /// </summary>
     public class IndexController : Controller
     {
-        private IEnumerable<ServiceResource> ServiceWithAliases(string name, string url, params string[] versions) 
+        private IEnumerable<ServiceIndexResource> BuildResource(string name, string url, params string[] versions) 
         {
             foreach (var version in versions) 
             {
-                string fullname = string.IsNullOrEmpty(version) ? name : name + "/" + version;
-                yield return new ServiceResource(fullname, url);
+                var type = string.IsNullOrEmpty(version) ? name : $"{name}/{version}";
+
+                yield return new ServiceIndexResource(type, url);
             }
         }
 
         // GET v3/index
         [HttpGet]
-        public object Get()
+        public ServiceIndex Get()
         {
-            // Documentation: https://docs.microsoft.com/en-us/nuget/api/overview
-            // NuGet.org: https://api.nuget.org/v3-index/index.json            
-            return new
+            var resources = new List<ServiceIndexResource>();
+
+            resources.AddRange(BuildResource("PackagePublish", Url.PackagePublish(), "2.0.0"));
+            resources.AddRange(BuildResource("SearchQueryService", Url.PackageSearch(), "", "3.0.0-beta", "3.0.0-rc"));
+            resources.AddRange(BuildResource("RegistrationsBaseUrl", Url.RegistrationsBase(), "", "3.0.0-rc", "3.0.0-beta"));
+            resources.AddRange(BuildResource("PackageBaseAddress", Url.PackageBase(), "3.0.0"));
+            resources.AddRange(BuildResource("SearchAutocompleteService", Url.PackageAutocomplete(), "", "3.0.0-rc", "3.0.0-beta"));
+
+            return new ServiceIndex
             {
-                Version = "3.0.0",
-                Resources = 
-                    ServiceWithAliases("PackagePublish", Url.PackagePublish(), "2.0.0") // api.nuget.org returns this too.
-                    .Concat(ServiceWithAliases("SearchQueryService", Url.PackageSearch(), "", "3.0.0-beta", "3.0.0-rc")) // each version is an alias of others
-                    .Concat(ServiceWithAliases("RegistrationsBaseUrl", Url.RegistrationsBase(), "", "3.0.0-rc", "3.0.0-beta"))
-                    .Concat(ServiceWithAliases("PackageBaseAddress", Url.PackageBase(), "3.0.0"))
-                    .Concat(ServiceWithAliases("SearchAutocompleteService", Url.PackageAutocomplete(), "", "3.0.0-rc", "3.0.0-beta"))
-                    .ToList()
+                Version = new NuGetVersion("3.0.0"),
+                Resources = resources
             };
-        }
-
-        private class ServiceResource
-        {
-            public ServiceResource(string type, string id, string comment = null)
-            {
-                Id = id ?? throw new ArgumentNullException(nameof(id));
-                Type = type ?? throw new ArgumentNullException(nameof(type));
-                Comment = comment ?? string.Empty;
-            }
-
-            [JsonProperty(PropertyName = "@id")]
-            public string Id { get; }
-
-            [JsonProperty(PropertyName = "@type")]
-            public string Type { get; }
-
-            public string Comment { get; }
         }
     }
 }
