@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using BaGet.Core.Mirror;
 using BaGet.Core.Services;
 using BaGet.Extensions;
+using BaGet.Protocol;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using NuGet.Versioning;
 
 namespace BaGet.Controllers.Registration
@@ -33,7 +33,7 @@ namespace BaGet.Controllers.Registration
                 return NotFound();
             }
 
-            // Allow read-through caching to happen if it is confiured.
+            // Allow read-through caching to happen if it is configured.
             await _mirror.MirrorAsync(id, nugetVersion, cancellationToken);
 
             var package = await _packages.FindOrNullAsync(id, nugetVersion);
@@ -43,49 +43,15 @@ namespace BaGet.Controllers.Registration
                 return NotFound();
             }
 
-            // Documentation: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
             var result = new RegistrationLeaf(
                 registrationUri: Url.PackageRegistration(id, nugetVersion),
                 listed: package.Listed,
                 downloads: package.Downloads,
-                packageContentUri: Url.PackageDownload(id, nugetVersion),
+                packageContentUrl: Url.PackageDownload(id, nugetVersion),
                 published: package.Published,
-                registrationIndexUri: Url.PackageRegistration(id));
+                registrationIndexUrl: Url.PackageRegistration(id));
 
             return Json(result);
-        }
-
-        public class RegistrationLeaf
-        {
-            public RegistrationLeaf(
-                string registrationUri,
-                bool listed,
-                long downloads,
-                string packageContentUri,
-                DateTimeOffset published,
-                string registrationIndexUri)
-            {
-                RegistrationUri = registrationUri ?? throw new ArgumentNullException(nameof(registrationIndexUri));
-                Listed = listed;
-                Published = published;
-                Downloads = downloads;
-                PackageContent = packageContentUri ?? throw new ArgumentNullException(nameof(packageContentUri));
-                RegistrationIndexUri = registrationIndexUri ?? throw new ArgumentNullException(nameof(registrationIndexUri));
-            }
-
-            [JsonProperty(PropertyName = "@id")]
-            public string RegistrationUri { get; }
-
-            public bool Listed { get; }
-
-            public long Downloads { get; }
-
-            public string PackageContent { get; }
-
-            public DateTimeOffset Published { get; }
-
-            [JsonProperty(PropertyName = "registration")]
-            public string RegistrationIndexUri { get; }
         }
     }
 }

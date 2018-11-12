@@ -3,6 +3,10 @@ using Newtonsoft.Json;
 
 namespace BaGet.Protocol
 {
+    /// <summary>
+    /// A resource in the <see cref="ServiceIndex"/>.
+    /// See: https://docs.microsoft.com/en-us/nuget/api/service-index#resources
+    /// </summary>
     public class ServiceIndexResource
     {
         public ServiceIndexResource(string type, string url, string comment = null)
@@ -12,12 +16,21 @@ namespace BaGet.Protocol
             Comment = comment ?? string.Empty;
         }
 
+        /// <summary>
+        /// The resource's base URL.
+        /// </summary>
         [JsonProperty(PropertyName = "@id")]
         public string Url { get; }
 
+        /// <summary>
+        /// The resource's type.
+        /// </summary>
         [JsonProperty(PropertyName = "@type")]
         public string Type { get; }
 
+        /// <summary>
+        /// Human readable comments about the resource.
+        /// </summary>
         public string Comment { get; }
     }
 }

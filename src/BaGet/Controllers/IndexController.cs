@@ -1,10 +1,7 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using BaGet.Extensions;
 using BaGet.Protocol;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using NuGet.Versioning;
 
 namespace BaGet.Controllers
@@ -36,11 +33,7 @@ namespace BaGet.Controllers
             resources.AddRange(BuildResource("PackageBaseAddress", Url.PackageBase(), "3.0.0"));
             resources.AddRange(BuildResource("SearchAutocompleteService", Url.PackageAutocomplete(), "", "3.0.0-rc", "3.0.0-beta"));
 
-            return new ServiceIndex
-            {
-                Version = new NuGetVersion("3.0.0"),
-                Resources = resources
-            };
+            return new ServiceIndex(new NuGetVersion("3.0.0"), resources);
         }
     }
 }

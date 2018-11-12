@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Core.Services;
 using BaGet.Extensions;
+using BaGet.Protocol;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -35,11 +36,7 @@ namespace BaGet.Controllers
         {
             var results = await _searchService.AutocompleteAsync(query);
 
-            return Json(new
-            {
-                TotalHits = results.Count,
-                Data = results,
-            });
+            return Json(new AutocompleteResult(results.Count, results));
         }
 
         private class SearchResultModel
