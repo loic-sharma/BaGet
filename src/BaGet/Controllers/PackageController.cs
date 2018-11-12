@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Mirror;
 using BaGet.Core.Services;
+using BaGet.Protocol;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
@@ -32,9 +33,9 @@ namespace BaGet.Controllers
                 return NotFound();
             }
 
-            return Json(new
+            return Json(new PackageVersions
             {
-                Versions = packages.Select(p => p.VersionString).ToList()
+                Versions = packages.Select(p => p.Version).ToList()
             });
         }
 
