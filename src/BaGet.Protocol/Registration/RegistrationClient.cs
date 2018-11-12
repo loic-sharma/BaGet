@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace BaGet.Protocol
 {
-    public class RegistrationClient
+    public class RegistrationClient : IRegistrationClient
     {
         private readonly HttpClient _httpClient;
 

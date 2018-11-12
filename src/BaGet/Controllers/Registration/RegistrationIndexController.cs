@@ -46,7 +46,7 @@ namespace BaGet.Controllers.Registration
                     new RegistrationIndexPage(
                         Url.PackageRegistration(packages.First().Id),
                         count: packages.Count(),
-                        items: packages.Select(ToRegistrationIndexPageItem).ToList(),
+                        itemsOrNull: packages.Select(ToRegistrationIndexPageItem).ToList(),
                         lower: versions.Min(),
                         upper: versions.Max())
                 }));

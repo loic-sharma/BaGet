@@ -7,7 +7,7 @@ namespace BaGet.Protocol
     /// <summary>
     /// See: https://docs.microsoft.com/en-us/nuget/api/service-index
     /// </summary>
-    public class ServiceIndexClient
+    public class ServiceIndexClient : IServiceIndexClient
     {
         private readonly HttpClient _httpClient;
 

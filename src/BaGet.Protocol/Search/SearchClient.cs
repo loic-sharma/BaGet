@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace BaGet.Protocol
 {
-    public class SearchClient
+    public class SearchClient : ISearchClient
     {
         private readonly HttpClient _httpClient;
 

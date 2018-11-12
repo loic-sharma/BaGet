@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BaGet.Protocol
 {
-    public class PackageContentClient
+    public class PackageContentClient : IPackageContentClient
     {
         private readonly HttpClient _httpClient;
 

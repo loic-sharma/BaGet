@@ -25,7 +25,7 @@ namespace BaGet.Protocol.Tests
             Assert.NotNull(result);
             Assert.Equal(1, result.Pages.Count);
             Assert.True(result.Pages[0].Count >= 63);
-            Assert.True(result.Pages[0].Items.Count >= 63);
+            Assert.True(result.Pages[0].ItemsOrNull.Count >= 63);
             Assert.Equal(new NuGetVersion("3.5.8"), result.Pages[0].Lower);
             Assert.Equal(new NuGetVersion("12.0.1-beta1"), result.Pages[0].Upper);
         }
@@ -39,7 +39,7 @@ namespace BaGet.Protocol.Tests
 
             Assert.NotNull(result);
             Assert.True(result.Pages.Count >= 27);
-            Assert.Null(result.Pages[0].Items);
+            Assert.Null(result.Pages[0].ItemsOrNull);
             Assert.Equal(64, result.Pages[0].Count);
             Assert.Equal(new NuGetVersion("1.0.0-alpha-10"), result.Pages[0].Lower);
             Assert.Equal(new NuGetVersion("1.66.1"), result.Pages[0].Upper);
@@ -65,7 +65,7 @@ namespace BaGet.Protocol.Tests
             var url = "https://api.nuget.org/v3/registration3/newtonsoft.json/index.json";
 
             var index = await _target.GetRegistrationIndexAsync(url);
-            var leaf = await _target.GetRegistrationLeafAsync(index.Pages[0].Items[0].LeafUrl);
+            var leaf = await _target.GetRegistrationLeafAsync(index.Pages[0].ItemsOrNull[0].LeafUrl);
 
             Assert.Equal(url, leaf.RegistrationIndexUrl);
         }
@@ -77,7 +77,7 @@ namespace BaGet.Protocol.Tests
 
             var index = await _target.GetRegistrationIndexAsync(url);
             var page = await _target.GetRegistrationIndexPageAsync(index.Pages[0].PageUrl);
-            var leaf = await _target.GetRegistrationLeafAsync(page.Items[0].LeafUrl);
+            var leaf = await _target.GetRegistrationLeafAsync(page.ItemsOrNull[0].LeafUrl);
 
             Assert.Equal(url, leaf.RegistrationIndexUrl);
         }

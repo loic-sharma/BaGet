@@ -11,7 +11,7 @@ namespace BaGet.Protocol
         public RegistrationIndexPage(
             string pageUrl,
             int count,
-            IReadOnlyList<RegistrationIndexPageItem> items,
+            IReadOnlyList<RegistrationIndexPageItem> itemsOrNull,
             NuGetVersion lower,
             NuGetVersion upper)
         {
@@ -19,7 +19,7 @@ namespace BaGet.Protocol
 
             PageUrl = pageUrl;
             Count = count;
-            Items = items;
+            ItemsOrNull = itemsOrNull;
             Lower = lower ?? throw new ArgumentNullException(nameof(lower));
             Upper = upper ?? throw new ArgumentNullException(nameof(upper));
         }
@@ -33,7 +33,8 @@ namespace BaGet.Protocol
         /// Null if this package's registration is paged. The items can be found
         /// by following the page's <see cref="PageUrl"/>.
         /// </summary>
-        public IReadOnlyList<RegistrationIndexPageItem> Items { get; }
+        [JsonProperty(PropertyName = "items")]
+        public IReadOnlyList<RegistrationIndexPageItem> ItemsOrNull { get; }
 
         /// <summary>
         /// This page's lowest package version.
