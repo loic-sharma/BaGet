@@ -43,11 +43,15 @@ namespace BaGet.Core.Mirror
             var versions = await _upstreamFeed.GetAllVersionsAsync(id, includeUnlisted: true);
 
             _logger.LogInformation(
-                "Found {VersionsCount} versions for package {PackageId} on upstream feed. Indexing the 10 latest...",
+                "Found {VersionsCount} versions for package {PackageId} on upstream feed. Indexing...",
                 versions.Count,
                 id);
 
-            foreach (var version in versions.OrderByDescending(v => v).Take(10))
+            // TODO: This will synchronously index packages one-by-one. This won't perform well
+            // for packages with many versions. Instead, this should index a few packages and
+            // let a background queue index the rest.
+            // See: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-2.1#queued-background-tasks
+            foreach (var version in versions)
             {
                 var packageUri = await _upstreamFeed.GetPackageContentUriAsync(id, version);
 
