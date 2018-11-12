@@ -4,10 +4,15 @@ using System.Linq;
 using Newtonsoft.Json;
 using NuGet.Versioning;
 
-namespace BaGet.Protocol
+namespace BaGet.Protocol.Converters
 {
     public class NuGetVersionListConverter : JsonConverter
     {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(IReadOnlyList<NuGetVersion>);
+        }
+
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             var versions = ((IReadOnlyList<NuGetVersion>)value);
@@ -21,7 +26,5 @@ namespace BaGet.Protocol
                 .Select(NuGetVersion.Parse)
                 .ToList();
         }
-
-        public override bool CanConvert(Type objectType) => objectType == typeof(IReadOnlyList<NuGetVersion>);
     }
 }

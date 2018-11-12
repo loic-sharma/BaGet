@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BaGet.Protocol.Converters;
 using Newtonsoft.Json;
 using NuGet.Versioning;
 

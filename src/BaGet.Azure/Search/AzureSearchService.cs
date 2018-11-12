@@ -58,7 +58,7 @@ namespace BaGet.Azure.Search
                     Id = document.Id,
                     Version = NuGetVersion.Parse(document.Version),
                     Description = document.Description,
-                    Authors = string.Join(",", document.Authors),
+                    Authors = document.Authors,
                     IconUrl = document.IconUrl,
                     LicenseUrl = document.LicenseUrl,
                     Summary = document.Summary,
