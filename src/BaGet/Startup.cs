@@ -5,6 +5,7 @@ using BaGet.Core.Entities;
 using BaGet.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,7 +28,7 @@ namespace BaGet
             // In production, the UI files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "Baget.UI/dist";
+                configuration.RootPath = "Baget.UI/build";
             });
         }
 
@@ -70,11 +71,11 @@ namespace BaGet
 
             app.UseSpa(spa =>
             {
+                spa.Options.SourcePath = "../BaGet.UI";
+
                 if (env.IsDevelopment())
                 {
-                    // TODO: This could launch the react frontend, like "UseReactDevelopmentServer".
-                    // See: https://github.com/aspnet/JavaScriptServices/blob/7a0413434577274666ff72ee790b53cc71b22970/src/Microsoft.AspNetCore.SpaServices.Extensions/ReactDevelopmentServer/ReactDevelopmentServerMiddleware.cs#L63
-                    spa.UseProxyToSpaDevelopmentServer("http://localhost:1234");
+                    spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
         }

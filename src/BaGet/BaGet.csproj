@@ -30,26 +30,18 @@
       <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
     </Exec>
     <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
-    <!-- Ensure Yarn is installed -->
-    <Exec Command="yarn --version" ContinueOnError="true">
-      <Output TaskParameter="ExitCode" PropertyName="YarnErrorCode" />
-    </Exec>
-    <Error Condition="'$(YarnErrorCode)' != '0'" Text="Yarn is required to build and run this project. To continue, please install Yarn from https://yarnpkg.com/, and then restart your command prompt or IDE." />
-    <Message Importance="high" Text="Restoring dependencies using 'yarn'. This may take several minutes..." />
-    <Exec WorkingDirectory="$(SpaRoot)" Command="yarn install" />
+    <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
   </Target>
 
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
-
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
-    <RemoveDir Directories="$(SpaRoot)dist" />
-
-    <Exec WorkingDirectory="$(SpaRoot)" Command="yarn install" />
-    <Exec WorkingDirectory="$(SpaRoot)" Command="yarn build" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
 
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
-      <DistFiles Include="$(SpaRoot)dist\**" />
+      <DistFiles Include="$(SpaRoot)build\**" />
       <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
         <!-- Because the root is relative and has ..\, the "Workaround" folder just tricks msbuild to put 
           the files where we want them. Otherwise they would be placed up a directory under the BaGet folder. -->
