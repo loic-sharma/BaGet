@@ -89,8 +89,6 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
     fetch(url).then(response => {
       return response.json();
     }).then(json => {
-      // tslint:disable-next-line:no-console
-      console.log(json);
       const results = json as IRegistrationIndex;
 
       const id = results.items[0].id;
@@ -222,8 +220,6 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
   }
 
   private dateToString(date: Date): string {
-    // tslint:disable-next-line:no-console
-    console.log("date", date);
     return `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`;
   }
 }
