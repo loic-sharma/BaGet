@@ -24,16 +24,24 @@ namespace BaGet.Controllers
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
         }
 
-        public async Task<IActionResult> Versions(string id)
+        public async Task<IActionResult> Versions(string id, CancellationToken cancellationToken)
         {
-            var packages = await _packages.FindAsync(id);
+            // First, attempt to find all package versions using the upstream source.
+            var versions = await _mirror.FindPackageVersionsOrNullAsync(id, cancellationToken);
 
-            if (!packages.Any())
+            if (versions == null)
             {
-                return NotFound();
-            }
+                // Fallback to the local packages if the package couldn't be found
+                // on the upstream source.
+                var packages = await _packages.FindAsync(id);
 
-            var versions = packages.Select(p => p.Version).ToList();
+                if (!packages.Any())
+                {
+                    return NotFound();
+                }
+
+                versions = packages.Select(p => p.Version).ToList();
+            }
 
             return Json(new PackageVersions(versions));
         }
@@ -46,7 +54,7 @@ namespace BaGet.Controllers
             }
 
             // Allow read-through caching if it is configured.
-            await _mirror.MirrorAsync(id, cancellationToken);
+            await _mirror.MirrorAsync(id, nugetVersion, cancellationToken);
 
             if (!await _packages.AddDownloadAsync(id, nugetVersion))
             {
@@ -66,7 +74,7 @@ namespace BaGet.Controllers
             }
 
             // Allow read-through caching if it is configured.
-            await _mirror.MirrorAsync(id, cancellationToken);
+            await _mirror.MirrorAsync(id, nugetVersion, cancellationToken);
 
             if (!await _packages.ExistsAsync(id, nugetVersion))
             {
@@ -86,7 +94,7 @@ namespace BaGet.Controllers
             }
 
             // Allow read-through caching if it is configured.
-            await _mirror.MirrorAsync(id, cancellationToken);
+            await _mirror.MirrorAsync(id, nugetVersion, cancellationToken);
 
             var package = await _packages.FindOrNullAsync(id, nugetVersion);
 

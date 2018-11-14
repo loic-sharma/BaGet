@@ -30,16 +30,22 @@ namespace BaGet.Controllers.Registration
         [HttpGet]
         public async Task<IActionResult> Get(string id, CancellationToken cancellationToken)
         {
-            // Allow read-through caching to happen if it is configured.
-            await _mirror.MirrorAsync(id, cancellationToken);
+            // Find the packages that match the given package id from the upstream, if
+            // one is configured. If these packages cannot be found on the upstream,
+            // we'll return the local packages instead.
+            var packages = await _mirror.FindPackagesOrNullAsync(id, cancellationToken);
 
-            var packages = await _packages.FindAsync(id);
-            var versions = packages.Select(p => p.Version).ToList();
+            if (packages == null)
+            {
+                packages = await _packages.FindAsync(id, includeUnlisted: true);
+            }
 
             if (!packages.Any())
             {
                 return NotFound();
             }
+
+            var versions = packages.Select(p => p.Version).ToList();
 
             // TODO: Paging of registration items.
             // "Un-paged" example: https://api.nuget.org/v3/registration3/newtonsoft.json/index.json
@@ -61,7 +67,7 @@ namespace BaGet.Controllers.Registration
         private RegistrationIndexPageItem ToRegistrationIndexPageItem(Package package) =>
             new RegistrationIndexPageItem(
                 leafUrl: Url.PackageRegistration(package.Id, package.Version),
-                catalogEntry: new CatalogEntry(
+                packageMetadata: new PackageMetadata(
                     catalogUri: $"https://api.nuget.org/v3/catalog0/data/2015.02.01.06.24.15/{package.Id}.{package.Version}.json",
                     packageId: package.Id,
                     version: package.Version,
@@ -100,7 +106,7 @@ namespace BaGet.Controllers.Registration
                 var dependencyItems = package.Dependencies
                     .Where(d => d.TargetFramework == target)
                     .Where(d => d.Id != null && d.VersionRange != null)
-                    .Select(d => new DependencyItem(groupId, d.Id, d.VersionRange))
+                    .Select(d => new DependencyItem($"{groupId}/{d.Id}", d.Id, d.VersionRange))
                     .ToList();
 
                 groups.Add(new DependencyGroupItem(groupId, target, dependencyItems));
