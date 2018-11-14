@@ -4,7 +4,7 @@
     
     <url>
      <loc>https://loic-sharma.github.io/BaGet//</loc>
-     <lastmod>2018-11-03</lastmod>
+     <lastmod>2018-11-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -12,7 +12,7 @@
     
     <url>
      <loc>https://loic-sharma.github.io/BaGet//configuration/</loc>
-     <lastmod>2018-11-03</lastmod>
+     <lastmod>2018-11-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -20,7 +20,7 @@
     
     <url>
      <loc>https://loic-sharma.github.io/BaGet//private-feeds/</loc>
-     <lastmod>2018-11-03</lastmod>
+     <lastmod>2018-11-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -29,19 +29,19 @@
         
     <url>
      <loc>https://loic-sharma.github.io/BaGet//cloud/azure/</loc>
-     <lastmod>2018-11-03</lastmod>
+     <lastmod>2018-11-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>https://loic-sharma.github.io/BaGet//cloud/gcp/</loc>
-     <lastmod>2018-11-03</lastmod>
+     <lastmod>2018-11-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>https://loic-sharma.github.io/BaGet//cloud/aws/</loc>
-     <lastmod>2018-11-03</lastmod>
+     <lastmod>2018-11-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -51,7 +51,7 @@
         
     <url>
      <loc>https://loic-sharma.github.io/BaGet//tools/mirroring/</loc>
-     <lastmod>2018-11-03</lastmod>
+     <lastmod>2018-11-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -61,49 +61,49 @@
         
     <url>
      <loc>https://loic-sharma.github.io/BaGet//vs/nugetorg/</loc>
-     <lastmod>2018-11-03</lastmod>
+     <lastmod>2018-11-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>https://loic-sharma.github.io/BaGet//vs/nugetserver/</loc>
-     <lastmod>2018-11-03</lastmod>
+     <lastmod>2018-11-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>https://loic-sharma.github.io/BaGet//vs/vsts/</loc>
-     <lastmod>2018-11-03</lastmod>
+     <lastmod>2018-11-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>https://loic-sharma.github.io/BaGet//vs/myget/</loc>
-     <lastmod>2018-11-03</lastmod>
+     <lastmod>2018-11-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>https://loic-sharma.github.io/BaGet//vs/liget/</loc>
-     <lastmod>2018-11-03</lastmod>
+     <lastmod>2018-11-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>https://loic-sharma.github.io/BaGet//vs/artifactory/</loc>
-     <lastmod>2018-11-03</lastmod>
+     <lastmod>2018-11-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>https://loic-sharma.github.io/BaGet//vs/nexus/</loc>
-     <lastmod>2018-11-03</lastmod>
+     <lastmod>2018-11-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>https://loic-sharma.github.io/BaGet//vs/teamcity/</loc>
-     <lastmod>2018-11-03</lastmod>
+     <lastmod>2018-11-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         

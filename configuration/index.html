@@ -640,7 +640,7 @@ caching to:</p>
 
     <span class="nt">&quot;Mirror&quot;</span><span class="p">:</span> <span class="p">{</span>
         <span class="nt">&quot;Enabled&quot;</span><span class="p">:</span>  <span class="kc">true</span><span class="p">,</span>
-        <span class="nt">&quot;PackageSource&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.nuget.org/v3-flatcontainer/&quot;</span>
+        <span class="nt">&quot;PackageSource&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.nuget.org/v3/index.json/&quot;</span>
     <span class="p">},</span>
 
     <span class="err">...</span>
@@ -650,8 +650,7 @@ caching to:</p>
 
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-<p><code>PackageSource</code> is the value of the <a href="https://docs.microsoft.com/en-us/nuget/api/overview#resources-and-schema"><code>PackageBaseAddress</code></a> resource
-on a <a href="https://docs.microsoft.com/en-us/nuget/api/service-index">NuGet service index</a>.</p>
+<p><code>PackageSource</code> is the value of the <a href="https://docs.microsoft.com/en-us/nuget/api/service-index">NuGet service index</a>.</p>
 </div>
 <h2 id="enabling-package-hard-deletions">Enabling Package Hard Deletions<a class="headerlink" href="#enabling-package-hard-deletions" title="Permanent link">&para;</a></h2>
 <p>To prevent the <a href="https://blog.npmjs.org/post/141577284765/kik-left-pad-and-npm">"left pad" problem</a>, BaGet's default configuration doesn't allow package deletions. Whenever BaGet receives a package deletion request, it will instead "unlist" the package. An unlisted package is undiscoverable but can still be downloaded if you know the package's id and version. You can override this behavior by setting the <code>PackageDeletionBehavior</code>:</p>
