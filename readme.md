@@ -28,13 +28,8 @@ Stay tuned, more features are planned!
 
 ## Develop
 
-1. Install [.NET Core SDK](https://www.microsoft.com/net/download), [Node.js](https://nodejs.org/), and [Yarn](https://yarnpkg.com/en/docs/install)
+1. Install [.NET Core SDK](https://www.microsoft.com/net/download) and [Node.js](https://nodejs.org/)
 2. Run `git clone https://github.com/loic-sharma/BaGet.git`
-3. Launch the backend:
-    1. Navigate to `.\BaGet\src\BaGet`
-    2. Start the backend with `dotnet run`
-4. Launch the frontend:
-    1. Navigate to `.\BaGet\src\BaGet.UI`
-    2. Run `yarn install`
-    3. Start the frontend with `yarn develop`
+3. Navigate to `.\BaGet\src\BaGet`
+4. Start the service with `dotnet run`
 5. Open the URL `http://localhost:5000/v3/index.json` in your browser
