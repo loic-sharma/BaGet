@@ -40,7 +40,7 @@ The following `Mirror` settings configures BaGet to index packages from [nuget.o
 
     "Mirror": {
         "Enabled":  true,
-        "PackageSource": "https://api.nuget.org/v3/index.json/"
+        "PackageSource": "https://api.nuget.org/v3/index.json"
     },
 
     ...
