@@ -55,6 +55,7 @@ interface IRegistrationPageItem {
 }
 
 interface ICatalogEntry {
+  id: string;
   version: string;
   downloads: number;
   published: string;
@@ -91,7 +92,6 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
     }).then(json => {
       const results = json as IRegistrationIndex;
 
-      const id = results.items[0].id;
       const latestVersion = results.items[0].upper;
       let latestItem: IRegistrationPageItem | undefined;
 
@@ -120,7 +120,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
             authors: latestItem.catalogEntry.authors,
             downloadUrl: latestItem.packageContent,
             iconUrl: latestItem.catalogEntry.iconUrl,
-            id,
+            id: latestItem.catalogEntry.id,
             lastUpdate: new Date(latestItem.catalogEntry.published),
             latestDownloads: latestItem.catalogEntry.downloads,
             latestVersion,
