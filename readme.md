@@ -32,4 +32,4 @@ Stay tuned, more features are planned!
 2. Run `git clone https://github.com/loic-sharma/BaGet.git`
 3. Navigate to `.\BaGet\src\BaGet`
 4. Start the service with `dotnet run`
-5. Open the URL `http://localhost:5000/v3/index.json` in your browser
+5. Open the URL `http://localhost/v3/index.json` in your browser
