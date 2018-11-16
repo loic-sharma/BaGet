@@ -28,7 +28,7 @@ namespace BaGet
             // In production, the UI files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "Baget.UI/build";
+                configuration.RootPath = "BaGet.UI/build";
             });
         }
 
