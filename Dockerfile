@@ -10,6 +10,8 @@ RUN dotnet restore src/BaGet
 RUN dotnet build src/BaGet -c Release -o /app
 
 FROM build AS publish
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
+RUN apt-get update && apt-get install nodejs -y
 RUN dotnet publish src/BaGet -c Release -o /app
 
 FROM base AS final
