@@ -39,17 +39,15 @@ namespace BaGet.Core.Mirror
             string id,
             CancellationToken cancellationToken)
         {
-            var versions = await _upstreamFeed.GetAllVersionsOrNullAsync(
-                id,
-                includeUnlisted: true,
-                cancellationToken: cancellationToken);
+            var includeUnlisted = true;
+            var versions = await _upstreamFeed.GetAllVersionsOrNullAsync(id, includeUnlisted, cancellationToken);
             if (versions == null)
             {
-                return versions;
+                return null;
             }
 
             // Merge the local package versions into the upstream package versions.
-            var localPackages = await _localPackages.FindAsync(id, includeUnlisted: true);
+            var localPackages = await _localPackages.FindAsync(id, includeUnlisted);
             var localVersions = localPackages.Select(p => p.Version);
 
             return versions.Concat(localVersions).Distinct().ToList();
