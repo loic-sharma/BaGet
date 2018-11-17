@@ -34,9 +34,9 @@ namespace BaGet.Controllers.Registration
             }
 
             // Allow read-through caching to happen if it is configured.
-            await _mirror.MirrorAsync(id, cancellationToken);
+            await _mirror.MirrorAsync(id, nugetVersion, cancellationToken);
 
-            var package = await _packages.FindOrNullAsync(id, nugetVersion);
+            var package = await _packages.FindOrNullAsync(id, nugetVersion, includeUnlisted: true);
 
             if (package == null)
             {

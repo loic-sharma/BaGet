@@ -23,22 +23,10 @@ namespace BaGet.Protocol
             _packageContentClient = packageContentClient ?? throw new ArgumentNullException(nameof(packageContentClient));
         }
 
-        public async Task<IReadOnlyList<NuGetVersion>> GetAllVersionsAsync(
-            string packageId,
-            bool includeUnlisted = false,
-            CancellationToken cancellationToken = default)
-        {
-            if (!includeUnlisted)
-            {
-                return await GetAllListedVersionsFromRegistrationResourceAsync(packageId, cancellationToken);
-            }
-            {
-                return await GetAllVersionsFromPackageContentResourceAsync(packageId, cancellationToken);
-            }
-        }
-
         public async Task<Uri> GetPackageContentUriAsync(string id, NuGetVersion version)
         {
+            // TODO: This should first try to load the package content URL. If the service index
+            // has no package content resource, this should fallback to the registration resource.
             var packageContentUrl = await _serviceIndexService.GetPackageContentUrlAsync();
             var packageId = id.ToLowerInvariant();
             var packageVersion = version.ToNormalizedString().ToLowerInvariant();
@@ -46,15 +34,74 @@ namespace BaGet.Protocol
             return new Uri($"{packageContentUrl}/{packageId}/{packageVersion}/{packageId}.{packageVersion}.nupkg");
         }
 
-        private async Task<IReadOnlyList<NuGetVersion>> GetAllListedVersionsFromRegistrationResourceAsync(string packageId, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<PackageMetadata>> GetAllMetadataOrNullAsync(
+            string packageId,
+            CancellationToken cancellationToken = default)
+        {
+            return await GetAllRegistrationEntriesOrNull(packageId, e => e, cancellationToken);
+        }
+
+        public async Task<IReadOnlyList<NuGetVersion>> GetAllVersionsOrNullAsync(
+            string packageId,
+            bool includeUnlisted = false,
+            CancellationToken cancellationToken = default)
+        {
+            if (!includeUnlisted)
+            {
+                return await GetListedVersionsFromRegistrationResourceAsync(packageId, cancellationToken);
+            }
+            {
+                return await GetAllVersionsFromPackageContentResourceAsync(packageId, cancellationToken);
+            }
+        }
+
+        private async Task<IReadOnlyList<NuGetVersion>> GetListedVersionsFromRegistrationResourceAsync(
+            string packageId,
+            CancellationToken cancellationToken)
+        {
+            IEnumerable<NuGetVersion> GetVersionFromRegistrationEntry(IEnumerable<PackageMetadata> entries)
+            {
+                return entries.Where(e => e.Listed).Select(e => e.Version);
+            }
+
+            return await GetAllRegistrationEntriesOrNull(packageId, GetVersionFromRegistrationEntry, cancellationToken);
+        }
+
+        private async Task<IReadOnlyList<NuGetVersion>> GetAllVersionsFromPackageContentResourceAsync(
+            string packageId,
+            CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var packageContentUrl = await _serviceIndexService.GetPackageContentUrlAsync();
+            var requestUrl = $"{packageContentUrl}/{packageId.ToLowerInvariant()}/index.json";
+
+            var result = await _packageContentClient.GetPackageVersionsOrNullAsync(requestUrl);
+            if (result == null)
+            {
+                return new NuGetVersion[0];
+            }
+
+            return result.Versions;
+        }
+
+        private async Task<IReadOnlyList<T>> GetAllRegistrationEntriesOrNull<T>(
+            string packageId,
+            Func<IEnumerable<PackageMetadata>, IEnumerable<T>> handler,
+            CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             var registrationUrl = await _serviceIndexService.GetRegistrationUrlAsync();
             var requestUrl = $"{registrationUrl}/{packageId.ToLowerInvariant()}/index.json";
 
-            var packageIndex = await _registrationClient.GetRegistrationIndexAsync(requestUrl);
-            var result = new List<NuGetVersion>();
+            var packageIndex = await _registrationClient.GetRegistrationIndexOrNullAsync(requestUrl);
+            if (packageIndex == null)
+            {
+                return null;
+            }
+
+            var result = new List<T>();
 
             foreach (var page in packageIndex.Pages)
             {
@@ -78,27 +125,10 @@ namespace BaGet.Protocol
                     items = externalPage.ItemsOrNull;
                 }
 
-                result.AddRange(
-                    items.Where(i => i.CatalogEntry.Listed).Select(i => i.CatalogEntry.Version));
+                result.AddRange(handler(items.Select(i => i.PackageMetadata)));
             }
 
             return result;
-        }
-
-        private async Task<IReadOnlyList<NuGetVersion>> GetAllVersionsFromPackageContentResourceAsync(string packageId, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var packageContentUrl = await _serviceIndexService.GetPackageContentUrlAsync();
-            var requestUrl = $"{packageContentUrl}/{packageId.ToLowerInvariant()}/index.json";
-
-            var result = await _packageContentClient.GetPackageVersionsOrNullAsync(requestUrl);
-            if (result == null)
-            {
-                return new NuGetVersion[0];
-            }
-
-            return result.Versions;
         }
     }
 }

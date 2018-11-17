@@ -20,7 +20,7 @@ namespace BaGet.Protocol.Tests
         {
             var url = "https://api.nuget.org/v3/registration3/newtonsoft.json/index.json";
 
-            var result = await _target.GetRegistrationIndexAsync(url);
+            var result = await _target.GetRegistrationIndexOrNullAsync(url);
 
             Assert.NotNull(result);
             Assert.Equal(1, result.Pages.Count);
@@ -35,7 +35,7 @@ namespace BaGet.Protocol.Tests
         {
             var url = "https://api.nuget.org/v3/registration3/fake/index.json";
 
-            var result = await _target.GetRegistrationIndexAsync(url);
+            var result = await _target.GetRegistrationIndexOrNullAsync(url);
 
             Assert.NotNull(result);
             Assert.True(result.Pages.Count >= 27);
@@ -50,7 +50,7 @@ namespace BaGet.Protocol.Tests
         {
             var url = "https://api.nuget.org/v3/registration3/fake/index.json";
 
-            var index = await _target.GetRegistrationIndexAsync(url);
+            var index = await _target.GetRegistrationIndexOrNullAsync(url);
             var result = await _target.GetRegistrationIndexPageAsync(index.Pages[0].PageUrl);
 
             Assert.NotNull(result);
@@ -64,7 +64,7 @@ namespace BaGet.Protocol.Tests
         {
             var url = "https://api.nuget.org/v3/registration3/newtonsoft.json/index.json";
 
-            var index = await _target.GetRegistrationIndexAsync(url);
+            var index = await _target.GetRegistrationIndexOrNullAsync(url);
             var leaf = await _target.GetRegistrationLeafAsync(index.Pages[0].ItemsOrNull[0].LeafUrl);
 
             Assert.Equal(url, leaf.RegistrationIndexUrl);
@@ -75,7 +75,7 @@ namespace BaGet.Protocol.Tests
         {
             var url = "https://api.nuget.org/v3/registration3/fake/index.json";
 
-            var index = await _target.GetRegistrationIndexAsync(url);
+            var index = await _target.GetRegistrationIndexOrNullAsync(url);
             var page = await _target.GetRegistrationIndexPageAsync(index.Pages[0].PageUrl);
             var leaf = await _target.GetRegistrationLeafAsync(page.ItemsOrNull[0].LeafUrl);
 

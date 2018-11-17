@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -13,9 +14,13 @@ namespace BaGet.Protocol
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
-        public async Task<RegistrationIndex> GetRegistrationIndexAsync(string indexUrl)
+        public async Task<RegistrationIndex> GetRegistrationIndexOrNullAsync(string indexUrl)
         {
             var response = await _httpClient.GetAsync(indexUrl);
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
 
             response.EnsureSuccessStatusCode();
 

@@ -29,7 +29,7 @@ namespace BaGet.Protocol.Tests
         [InlineData(true)]
         public async Task GetsAllVersionsForNewtonsoftJson(bool includeUnlisted)
         {
-            var result = await _target.GetAllVersionsAsync("Newtonsoft.Json", includeUnlisted);
+            var result = await _target.GetAllVersionsOrNullAsync("Newtonsoft.Json", includeUnlisted);
 
             Assert.NotEmpty(result);
         }
@@ -39,7 +39,7 @@ namespace BaGet.Protocol.Tests
         [InlineData(true)]
         public async Task GetsAllVersionsForFake(bool includeUnlisted)
         {
-            var result = await _target.GetAllVersionsAsync("Fake", includeUnlisted);
+            var result = await _target.GetAllVersionsOrNullAsync("Fake", includeUnlisted);
         }
     }
 }
