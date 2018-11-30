@@ -14,5 +14,6 @@ namespace BaGet.Core.Configuration
     {
         Sqlite,
         SqlServer,
+        PostgresSql
     }
 }

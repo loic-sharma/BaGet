@@ -82,6 +82,9 @@ namespace BaGet.Extensions
                     case DatabaseType.SqlServer:
                         return provider.GetRequiredService<SqlServerContext>();
 
+                    case DatabaseType.PostgresSql:
+                        return provider.GetRequiredService<PostgresSqlContext>();
+
                     default:
                         throw new InvalidOperationException(
                             $"Unsupported database provider: {databaseOptions.Value.Type}");
@@ -100,6 +103,13 @@ namespace BaGet.Extensions
                 var databaseOptions = provider.GetRequiredService<IOptionsSnapshot<DatabaseOptions>>();
 
                 options.UseSqlServer(databaseOptions.Value.ConnectionString);
+            });
+
+            services.AddDbContext<PostgresSqlContext>((provider, options) =>
+            {
+                var databaseOptions = provider.GetRequiredService<IOptionsSnapshot<DatabaseOptions>>();
+
+                options.UseNpgsql(databaseOptions.Value.ConnectionString);
             });
 
             return services;
