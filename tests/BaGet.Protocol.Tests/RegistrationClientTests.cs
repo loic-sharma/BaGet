@@ -23,11 +23,11 @@ namespace BaGet.Protocol.Tests
             var result = await _target.GetRegistrationIndexOrNullAsync(url);
 
             Assert.NotNull(result);
-            Assert.Equal(1, result.Pages.Count);
-            Assert.True(result.Pages[0].Count >= 63);
-            Assert.True(result.Pages[0].ItemsOrNull.Count >= 63);
+            Assert.Equal(2, result.Pages.Count);
+            Assert.True(result.Pages[0].Count == 64);
+            Assert.True(result.Pages[0].ItemsOrNull.Count == 64);
             Assert.Equal(new NuGetVersion("3.5.8"), result.Pages[0].Lower);
-            Assert.Equal(new NuGetVersion("12.0.1-beta1"), result.Pages[0].Upper);
+            Assert.Equal(new NuGetVersion("12.0.1-beta2"), result.Pages[0].Upper);
         }
 
         [Fact]
