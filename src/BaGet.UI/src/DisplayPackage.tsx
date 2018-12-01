@@ -1,6 +1,7 @@
 import { HtmlRenderer, Parser } from 'commonmark';
 import * as React from 'react';
 import timeago from 'timeago.js';
+import LicenseInfo from './LicenseInfo';
 import SourceRepository from './SourceRepository';
 
 import './DisplayPackage.css';
@@ -182,12 +183,13 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
             <div>
               <h1>Info</h1>
 
-              <div>last updated {timeago().format(this.state.package.lastUpdate)}</div>
+              <div>Last updated {timeago().format(this.state.package.lastUpdate)}</div>
               <div><a href={this.state.package.projectUrl}>{this.state.package.projectUrl}</a></div>
 
               <SourceRepository url={this.state.package.repositoryUrl} type={this.state.package.repositoryType} />
+              <LicenseInfo url={this.state.package.licenseUrl} />
 
-              <div><a href={this.state.package.licenseUrl}>License Info</a></div>
+              <div><a href={this.state.package.downloadUrl}>Download Package</a></div>
             </div>
 
             <div>
