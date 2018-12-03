@@ -106,7 +106,7 @@ namespace BaGet.Controllers
             }
         }
 
-        public async Task<IActionResult> Delete(string id, string version)
+        public async Task<IActionResult> Delete(string id, string version, CancellationToken cancellationToken)
         {
             if (!NuGetVersion.TryParse(version, out var nugetVersion))
             {
@@ -118,7 +118,7 @@ namespace BaGet.Controllers
                 return Unauthorized();
             }
 
-            if (await _deleteService.TryDeletePackageAsync(id, nugetVersion))
+            if (await _deleteService.TryDeletePackageAsync(id, nugetVersion, cancellationToken))
             {
                 return NoContent();
             }

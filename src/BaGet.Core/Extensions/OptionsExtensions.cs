@@ -28,10 +28,10 @@ namespace BaGet.Core.Extensions
             if (options == null) ThrowMissingConfiguration(nameof(BaGetOptions.Storage));
 
             options.Path = string.IsNullOrEmpty(options.Path)
-                ? Path.Combine(Directory.GetCurrentDirectory(), "Packages")
+                ? Directory.GetCurrentDirectory()
                 : options.Path;
 
-            // Ensure the package storage directory exists
+            // Ensure the storage directory exists
             Directory.CreateDirectory(options.Path);
         }
 
