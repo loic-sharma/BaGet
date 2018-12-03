@@ -2,11 +2,10 @@
 
 ## Getting Started
 
-1. Install [.NET Core](https://www.microsoft.com/net/download)
-2. Run `git clone https://github.com/loic-sharma/BaGet.git`
-3. Navigate to `.\BaGet\src\BaGet`
-4. Start the service with `dotnet run`
-5. Open the URL `http://localhost:5000/v3/index.json` in your browser
+1. Install [.NET Core SDK](https://www.microsoft.com/net/download)
+2. Download and extract [BaGet's latest release](https://github.com/loic-sharma/BaGet/releases)
+3. Start the service with `dotnet BaGet.dll`
+4. Browse `http://localhost:5000/` in your browser
 
 ## Pushing Packages
 
@@ -30,7 +29,6 @@ docker build . -t baget
 
 ```
 # The default API key is "NUGET-SERVER-API-KEY"
-ASPNETCORE_ENVIRONMENT=Development
 ApiKeyHash=658489D79E218D2474D049E8729198D86DB0A4AF43981686A31C7DCB02DC0900
 Storage__Type=FileSystem
 Storage__Path=/var/baget/packages

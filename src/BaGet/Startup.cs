@@ -1,10 +1,11 @@
 ﻿using System;
 using BaGet.Configurations;
+using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
 using BaGet.Extensions;
-using BaGet.Web.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +24,12 @@ namespace BaGet
         public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigureBaGet(Configuration, httpServices: true);
+
+            // In production, the UI files will be served from this directory
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "BaGet.UI/build";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -32,12 +39,12 @@ namespace BaGet
             {
                 app.UseDeveloperExceptionPage();
                 app.UseStatusCodePages();
+            }
 
-                // Run migrations automatically in development mode.
-                var scopeFactory = app.ApplicationServices
-                    .GetRequiredService<IServiceScopeFactory>();
-
-                using (var scope = scopeFactory.CreateScope())
+            // Run migrations if necessary.
+            if (Configuration.Get<BaGetOptions>().RunMigrationsAtStartup)
+            {
+                using (var scope = app.ApplicationServices.CreateScope())
                 {
                     scope.ServiceProvider
                         .GetRequiredService<IContext>()
@@ -46,9 +53,9 @@ namespace BaGet
                 }
             }
 
+            app.UsePathBase(Configuration.Get<BaGetOptions>().PathBase);
             app.UseForwardedHeaders();
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
 
             app.UseCors(ConfigureCorsOptions.CorsPolicy);
 
@@ -60,6 +67,16 @@ namespace BaGet
                     .MapSearchRoutes()
                     .MapRegistrationRoutes()
                     .MapPackageContentRoutes();
+            });
+
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "../BaGet.UI";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseReactDevelopmentServer(npmScript: "start");
+                }
             });
         }
     }

@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using BaGet.Core.Extensions;
 using Microsoft.Extensions.Logging;
 
 namespace BaGet.Core.Mirror
@@ -12,8 +13,6 @@ namespace BaGet.Core.Mirror
     // See: https://github.com/NuGet/NuGet.Jobs/blob/master/src/Validation.Common.Job/PackageDownloader.cs
     public class PackageDownloader : IPackageDownloader
     {
-        private const int BufferSize = 8192;
-
         private readonly HttpClient _httpClient;
         private readonly ILogger<PackageDownloader> _logger;
 
@@ -23,8 +22,10 @@ namespace BaGet.Core.Mirror
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<Stream> DownloadAsync(Uri packageUri, CancellationToken cancellationToken)
+        public async Task<Stream> DownloadOrNullAsync(Uri packageUri, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             _logger.LogInformation("Attempting to download package from {PackageUri}...", packageUri);
 
             Stream packageStream = null;
@@ -33,7 +34,7 @@ namespace BaGet.Core.Mirror
             try
             {
                 // Download the package from the network to a temporary file.
-                using (var response = await _httpClient.GetAsync(packageUri, HttpCompletionOption.ResponseHeadersRead))
+                using (var response = await _httpClient.GetAsync(packageUri, HttpCompletionOption.ResponseHeadersRead, cancellationToken))
                 {
                     _logger.LogInformation(
                         "Received response {StatusCode}: {ReasonPhrase} of type {ContentType} for request {PackageUri}",
@@ -44,24 +45,18 @@ namespace BaGet.Core.Mirror
 
                     if (response.StatusCode != HttpStatusCode.OK)
                     {
-                        throw new InvalidOperationException($"Expected status code {HttpStatusCode.OK} for package download, actual: {response.StatusCode}");
+                        _logger.LogWarning(
+                            $"Expected status code {HttpStatusCode.OK} for package download, actual: {{ResponseStatusCode}}",
+                            response.StatusCode);
+
+                        return null;
                     }
 
                     using (var networkStream = await response.Content.ReadAsStreamAsync())
                     {
-                        packageStream = new FileStream(
-                                            Path.GetTempFileName(),
-                                            FileMode.Create,
-                                            FileAccess.ReadWrite,
-                                            FileShare.None,
-                                            BufferSize,
-                                            FileOptions.DeleteOnClose | FileOptions.Asynchronous);
-
-                        await networkStream.CopyToAsync(packageStream, BufferSize, cancellationToken);
+                        packageStream = await networkStream.AsTemporaryFileStreamAsync(cancellationToken);
                     }
                 }
-
-                packageStream.Position = 0;
 
                 _logger.LogInformation(
                     "Downloaded {PackageSizeInBytes} bytes in {DownloadElapsedTime} seconds for request {PackageUri}",
@@ -80,7 +75,7 @@ namespace BaGet.Core.Mirror
 
                 packageStream?.Dispose();
 
-                throw;
+                return null;
             }
         }
     }

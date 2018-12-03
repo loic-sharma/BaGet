@@ -1,37 +1,36 @@
 {
-    "name": "baget",
-    "version": "1.0.0",
-    "description": "Single-page application for NuGet",
-    "keywords": [
-        "NuGet",
-        "BaGet"
-    ],
-    "license": "MIT",
-    "author": "Loic Sharma",
-    "repository": "github:loic-sharma/BaGet",
-    "scripts": {
-        "develop": "parcel ./index.html",
-        "build": "parcel build ./index.html --out-dir ../BaGet/wwwroot"
-    },
-    "dependencies": {
-        "bootstrap": "3.3.7",
-        "commonmark": "^0.27.0",
-        "commonmark-react-renderer": "^4.3.4",
-        "react": "^16.3.0",
-        "react-dom": "^16.3.0",
-        "timeago.js": "^3.0.2"
-    },
-    "devDependencies": {
-        "@types/commonmark": "^0.27.0",
-        "@types/react": "^16.1.0",
-        "@types/react-dom": "^16.0.4",
-        "parcel-bundler": "^1.7.0",
-        "parcel-plugin-typescript": "^0.7.0",
-        "prettier": "^1.11.1",
-        "tslint": "^5.9.1",
-        "tslint-config-airbnb": "^5.8.0",
-        "tslint-config-prettier": "^1.10.0",
-        "tslint-react": "^3.5.1",
-        "typescript": "^2.8.1"
-    }
+  "name": "baget",
+  "version": "1.0.0",
+  "description": "Single-page application for NuGet",
+  "keywords": [
+    "NuGet",
+    "BaGet"
+  ],
+  "license": "MIT",
+  "author": "Loic Sharma",
+  "repository": "github:loic-sharma/BaGet",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "3.3.7",
+    "commonmark": "^0.27.0",
+    "commonmark-react-renderer": "^4.3.4",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
+    "react-scripts-ts": "3.1.0",
+    "timeago.js": "^3.0.2"
+  },
+  "scripts": {
+    "start": "react-scripts-ts start",
+    "build": "react-scripts-ts build",
+    "test": "react-scripts-ts test --env=jsdom",
+    "eject": "react-scripts-ts eject"
+  },
+  "devDependencies": {
+    "@types/commonmark": "^0.27.0",
+    "@types/jest": "^23.3.9",
+    "@types/node": "^10.12.6",
+    "@types/react": "^16.7.3",
+    "@types/react-dom": "^16.0.9",
+    "typescript": "^3.1.6"
+  }
 }

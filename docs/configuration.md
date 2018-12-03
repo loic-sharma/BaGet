@@ -40,7 +40,7 @@ The following `Mirror` settings configures BaGet to index packages from [nuget.o
 
     "Mirror": {
         "Enabled":  true,
-        "PackageSource": "https://api.nuget.org/v3-flatcontainer/"
+        "PackageSource": "https://api.nuget.org/v3/index.json"
     },
 
     ...
@@ -48,5 +48,18 @@ The following `Mirror` settings configures BaGet to index packages from [nuget.o
 ```
 
 !!! info
-    `PackageSource` is the value of the [`PackageBaseAddress`](https://docs.microsoft.com/en-us/nuget/api/overview#resources-and-schema) resource
-    on a [NuGet service index](https://docs.microsoft.com/en-us/nuget/api/service-index).
+    `PackageSource` is the value of the [NuGet service index](https://docs.microsoft.com/en-us/nuget/api/service-index).
+
+## Enabling Package Hard Deletions
+
+To prevent the ["left pad" problem](https://blog.npmjs.org/post/141577284765/kik-left-pad-and-npm), BaGet's default configuration doesn't allow package deletions. Whenever BaGet receives a package deletion request, it will instead "unlist" the package. An unlisted package is undiscoverable but can still be downloaded if you know the package's id and version. You can override this behavior by setting the `PackageDeletionBehavior`:
+
+```json
+{
+    ...
+
+    "PackageDeletionBehavior": "HardDelete",
+
+    ...
+}
+```

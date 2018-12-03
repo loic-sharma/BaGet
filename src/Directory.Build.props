@@ -1,0 +1,27 @@
+<Project>
+
+  <PropertyGroup>
+    <Product>BaGet</Product>
+    <PackageProjectUrl>https://loic-sharma.github.io/BaGet/</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/loic-sharma/BaGet/blob/master/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/loic-sharma/BaGet</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DebugType>portable</DebugType>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+  </PropertyGroup>
+
+  <ItemGroup Condition="$(IS_DOCKER) == ''">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All"/>
+  </ItemGroup>
+
+  <ItemGroup Condition="$(IsPackable) == 'true' AND $(IS_DOCKER) == ''">
+    <PackageReference Include="Nerdbank.GitVersioning" Version="2.2.13" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>

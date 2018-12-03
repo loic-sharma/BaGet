@@ -48,7 +48,9 @@ namespace BaGet
                 .UseStartup<Startup>()
                 .UseKestrel(options =>
                 {
-                    options.Limits.MaxRequestBodySize = 262_144_000;
+                    // Remove the upload limit from Kestrel. If needed, an upload limit can
+                    // be enforced by a reverse proxy server, like IIS.
+                    options.Limits.MaxRequestBodySize = null;
                 });
 
         public static IHostBuilder CreateHostBuilder(string[] args)

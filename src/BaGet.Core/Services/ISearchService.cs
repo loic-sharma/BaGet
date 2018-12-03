@@ -22,7 +22,7 @@ namespace BaGet.Core.Services
         public NuGetVersion Version { get; set; }
 
         public string Description { get; set; }
-        public string Authors { get; set; }
+        public IReadOnlyList<string> Authors { get; set; }
         public string IconUrl { get; set; }
         public string LicenseUrl { get; set; }
         public string ProjectUrl { get; set; }
