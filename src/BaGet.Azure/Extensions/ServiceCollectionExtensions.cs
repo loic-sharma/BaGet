@@ -1,12 +1,14 @@
 ﻿using BaGet.Azure.Configuration;
 using BaGet.Azure.Search;
 using BaGet.Core.Configuration;
+using BaGet.Core.Services;
 using Microsoft.Azure.Search;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Auth;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace BaGet.Azure.Extensions
 {
@@ -22,7 +24,7 @@ namespace BaGet.Azure.Extensions
             return services;
         }
 
-        public static IServiceCollection AddBlobPackageStorageService(this IServiceCollection services)
+        public static IServiceCollection AddBlobStorageService(this IServiceCollection services)
         {
             services.AddSingleton(provider =>
             {
@@ -41,10 +43,11 @@ namespace BaGet.Azure.Extensions
                 var account = provider.GetRequiredService<CloudStorageAccount>();
 
                 var client = account.CreateCloudBlobClient();
-                var container = client.GetContainerReference(options.Container);
 
-                return new BlobPackageStorageService(container);
+                return client.GetContainerReference(options.Container);
             });
+
+            services.AddTransient<IStorageService, BlobStorageService>();
 
             return services;
         }

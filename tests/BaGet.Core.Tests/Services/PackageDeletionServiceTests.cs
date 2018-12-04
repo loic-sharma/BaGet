@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using BaGet.Core.Configuration;
 using BaGet.Core.Services;
 using Microsoft.Extensions.Logging;
@@ -42,6 +43,7 @@ namespace BaGet.Core.Tests.Services
         public async Task WhenUnlist_ReturnsTrueOnlyIfPackageExists(bool packageExists)
         {
             // Arrange
+            var cancellationToken = CancellationToken.None;
             _options.PackageDeletionBehavior = PackageDeletionBehavior.Unlist;
 
             _packages
@@ -49,7 +51,7 @@ namespace BaGet.Core.Tests.Services
                 .ReturnsAsync(packageExists);
 
             // Act
-            var result = await _target.TryDeletePackageAsync(PackageId, PackageVersion);
+            var result = await _target.TryDeletePackageAsync(PackageId, PackageVersion, cancellationToken);
 
             // Assert
             Assert.Equal(packageExists, result);
@@ -62,7 +64,7 @@ namespace BaGet.Core.Tests.Services
                 p => p.HardDeletePackageAsync(It.IsAny<string>(), It.IsAny<NuGetVersion>()),
                 Times.Never);
             _storage.Verify(
-                s => s.DeleteAsync(It.IsAny<string>(), It.IsAny<NuGetVersion>()),
+                s => s.DeleteAsync(It.IsAny<string>(), It.IsAny<NuGetVersion>(), cancellationToken),
                 Times.Never);
         }
 
@@ -77,6 +79,7 @@ namespace BaGet.Core.Tests.Services
             var step = 0;
             var databaseStep = -1;
             var storageStep = -1;
+            var cancellationToken = CancellationToken.None;
 
             _packages
                 .Setup(p => p.HardDeletePackageAsync(PackageId, PackageVersion))
@@ -84,12 +87,12 @@ namespace BaGet.Core.Tests.Services
                 .ReturnsAsync(packageExists);
 
             _storage
-                .Setup(s => s.DeleteAsync(PackageId, PackageVersion))
+                .Setup(s => s.DeleteAsync(PackageId, PackageVersion, cancellationToken))
                 .Callback(() => storageStep = step++)
                 .Returns(Task.CompletedTask);
 
             // Act
-            var result = await _target.TryDeletePackageAsync(PackageId, PackageVersion);
+            var result = await _target.TryDeletePackageAsync(PackageId, PackageVersion, cancellationToken);
 
             // Assert - The database step MUST happen before the storage step.
             Assert.Equal(packageExists, result);
@@ -102,7 +105,7 @@ namespace BaGet.Core.Tests.Services
                 p => p.HardDeletePackageAsync(PackageId, PackageVersion),
                 Times.Once);
             _storage.Verify(
-                s => s.DeleteAsync(PackageId, PackageVersion),
+                s => s.DeleteAsync(PackageId, PackageVersion, cancellationToken),
                 Times.Once);
 
             _packages.Verify(
