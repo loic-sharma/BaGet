@@ -86,7 +86,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
   }
 
   public componentDidMount() {
-    const url = `/v3/registration/${this.props.id}/index.json`;
+    const url = `v3/registration/${this.props.id}/index.json`;
 
     fetch(url).then(response => {
       return response.json();
@@ -137,7 +137,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
         });
 
         if (latestItem.catalogEntry.hasReadme) {
-          const readmeUrl = `/v3/package/${this.props.id}/${latestVersion}/readme`;
+          const readmeUrl = `v3/package/${this.props.id}/${latestVersion}/readme`;
 
           fetch(readmeUrl).then(response => {
             return response.text();

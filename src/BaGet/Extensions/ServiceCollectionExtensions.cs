@@ -90,11 +90,12 @@ namespace BaGet.Extensions
 
             services.AddDbContext<SqlServerContext>((provider, options) =>
             {
+
                 var databaseOptions = provider.GetRequiredService<IOptions<BaGetOptions>>()
                     .Value
                     .Database;
 
-                options.UseSqlServer(databaseOptions.ConnectionString);
+                options.UseSqlServer(databaseOptions.ConnectionString, t => t.UseRowNumberForPaging());
             });
 
             return services;

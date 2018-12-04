@@ -72,8 +72,8 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
 
   private _loadItems(query: string): void {
     const url = (query && query.length !== 0)
-      ? `/v3/search?q=${encodeURIComponent(query)}`
-      : `/v3/search`;
+      ? `v3/search?q=${encodeURIComponent(query)}`
+      : `v3/search`;
 
     fetch(url).then(response => {
       return response.json();
