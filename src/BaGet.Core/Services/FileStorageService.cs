@@ -1,9 +1,8 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
+using BaGet.Core.Extensions;
 
 namespace BaGet.Core.Services
 {
@@ -67,17 +66,12 @@ namespace BaGet.Core.Services
             }
             catch (IOException) when (File.Exists(path))
             {
-                bool match;
-                using (var sha256 = SHA256.Create())
                 using (var targetStream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
-                    var contentHash = sha256.ComputeHash(content);
-                    var targetHash = sha256.ComputeHash(targetStream);
-
-                    match = contentHash.SequenceEqual(targetHash);
+                    return content.Matches(targetStream)
+                        ? PutResult.AlreadyExists
+                        : PutResult.Conflict;
                 }
-
-                return match ? PutResult.AlreadyExists : PutResult.Conflict;
             }
         }
 

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using BaGet.Core.Extensions;
 using BaGet.Core.Services;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
@@ -20,26 +22,9 @@ namespace BaGet.Azure.Configuration
 
         public async Task<Stream> GetAsync(string path, CancellationToken cancellationToken)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var stream = new MemoryStream();
-            var blob = _container.GetBlockBlobReference(path);
-
-            try
-            {
-                await blob.DownloadToStreamAsync(stream);
-            }
-            catch (StorageException)
-            {
-                stream.Dispose();
-
-                // TODO
-                throw;
-            }
-
-            stream.Position = 0;
-
-            return stream;
+            return await _container
+                .GetBlockBlobReference(path)
+                .OpenReadAsync(cancellationToken);
         }
 
         public Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken)
@@ -65,20 +50,42 @@ namespace BaGet.Azure.Configuration
             CancellationToken cancellationToken)
         {
             var blob = _container.GetBlockBlobReference(path);
+            var condition = AccessCondition.GenerateIfNotExistsCondition();
 
             blob.Properties.ContentType = contentType;
 
-            // TODO: Uploads should be idempotent. This should fail if and only if the blob
-            // already exists but has different content.
-            // TODO: Pass the cancellation token down.
-            await blob.UploadFromStreamAsync(content);
-            return PutResult.Success;
+            try
+            {
+                await blob.UploadFromStreamAsync(
+                    content,
+                    condition,
+                    options: null,
+                    operationContext: null,
+                    cancellationToken: cancellationToken);
+
+                return PutResult.Success;
+            }
+            catch (StorageException e) when(IsAlreadyExistsException(e))
+            {
+                using (var targetStream = await blob.OpenReadAsync(cancellationToken))
+                {
+                    return content.Matches(targetStream)
+                        ? PutResult.AlreadyExists
+                        : PutResult.Conflict;
+                }
+            }
         }
 
         public async Task DeleteAsync(string path, CancellationToken cancellationToken)
         {
-            // TODO: Pass cancellation token down.
-            await _container.GetBlockBlobReference(path).DeleteIfExistsAsync();
+            await _container
+                .GetBlockBlobReference(path)
+                .DeleteIfExistsAsync(cancellationToken);
+        }
+
+        private bool IsAlreadyExistsException(StorageException e)
+        {
+            return e?.RequestInformation?.HttpStatusCode == (int?)HttpStatusCode.Conflict;
         }
     }
 }
