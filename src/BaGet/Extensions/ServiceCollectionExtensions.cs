@@ -123,32 +123,30 @@ namespace BaGet.Extensions
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.Configure<FileSystemStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
+            services.AddTransient<IPackageStorageService, PackageStorageService>();
 
-            services.AddTransient<IPackageStorageService>(provider =>
+            var storageOptions = configuration.Get<BaGetOptions>().Storage;
+            switch (storageOptions.Type)
             {
-                var storageOptions = provider
-                    .GetRequiredService<IOptions<BaGetOptions>>()
-                    .Value
-                    .Storage;
+                case StorageType.FileSystem:
+                    services.AddFileStorageService();
+                    break;
 
-                storageOptions.EnsureValid();
+                case StorageType.AzureBlobStorage:
+                    services.AddBlobStorageService();
+                    break;
 
-                switch (storageOptions.Type)
-                {
-                    case StorageType.FileSystem:
-                        return provider.GetRequiredService<FilePackageStorageService>();
+                default:
+                    throw new InvalidOperationException(
+                        $"Unsupported storage service: {storageOptions.Type}");
+            }
 
-                    case StorageType.AzureBlobStorage:
-                        return provider.GetRequiredService<BlobPackageStorageService>();
+            return services;
+        }
 
-                    default:
-                        throw new InvalidOperationException(
-                            $"Unsupported storage service: {storageOptions.Type}");
-                }
-            });
-
-            services.AddTransient(provider =>
+        public static IServiceCollection AddFileStorageService(this IServiceCollection services)
+        {
+            services.AddTransient<IStorageService>(provider =>
             {
                 var options = provider
                     .GetRequiredService<IOptions<FileSystemStorageOptions>>()
@@ -156,10 +154,8 @@ namespace BaGet.Extensions
 
                 options.EnsureValid();
 
-                return new FilePackageStorageService(options.Path);
+                return new FileStorageService(options.Path);
             });
-
-            services.AddBlobPackageStorageService();
 
             return services;
         }

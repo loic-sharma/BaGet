@@ -61,7 +61,7 @@ namespace BaGet.Controllers
                 return NotFound();
             }
 
-            var packageStream = await _storage.GetPackageStreamAsync(id, nugetVersion);
+            var packageStream = await _storage.GetPackageStreamAsync(id, nugetVersion, cancellationToken);
 
             return File(packageStream, "application/octet-stream");
         }
@@ -81,7 +81,7 @@ namespace BaGet.Controllers
                 return NotFound();
             }
 
-            var nuspecStream = await _storage.GetNuspecStreamAsync(id, nugetVersion);
+            var nuspecStream = await _storage.GetNuspecStreamAsync(id, nugetVersion, cancellationToken);
 
             return File(nuspecStream, "text/xml");
         }
@@ -103,7 +103,7 @@ namespace BaGet.Controllers
                 return NotFound();
             }
 
-            var readmeStream = await _storage.GetReadmeStreamAsync(id, nugetVersion);
+            var readmeStream = await _storage.GetReadmeStreamAsync(id, nugetVersion, cancellationToken);
 
             return File(readmeStream, "text/markdown");
         }

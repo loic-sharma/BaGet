@@ -34,24 +34,27 @@ namespace BaGet.Core.Services
         /// </summary>
         /// <param name="id">The package's id.</param>
         /// <param name="version">The package's version.</param>
+        /// <param name="cancellationToken"></param>
         /// <returns>The package's nupkg stream.</returns>
-        Task<Stream> GetPackageStreamAsync(string id, NuGetVersion version);
+        Task<Stream> GetPackageStreamAsync(string id, NuGetVersion version, CancellationToken cancellationToken);
 
         /// <summary>
         /// Retrieve a package's nuspec stream.
         /// </summary>
         /// <param name="id">The package's id.</param>
         /// <param name="version">The package's version.</param>
+        /// <param name="cancellationToken"></param>
         /// <returns>The package's nuspec stream.</returns>
-        Task<Stream> GetNuspecStreamAsync(string id, NuGetVersion version);
+        Task<Stream> GetNuspecStreamAsync(string id, NuGetVersion version, CancellationToken cancellationToken);
 
         /// <summary>
         /// Retrieve a package's readme stream.
         /// </summary>
         /// <param name="id">The package's id.</param>
         /// <param name="version">The package's version.</param>
+        /// <param name="cancellationToken"></param>
         /// <returns>The package's readme stream.</returns>
-        Task<Stream> GetReadmeStreamAsync(string id, NuGetVersion version);
+        Task<Stream> GetReadmeStreamAsync(string id, NuGetVersion version, CancellationToken cancellationToken);
 
         /// <summary>
         /// Remove a package's content from storage. This operation SHOULD succeed
@@ -59,7 +62,8 @@ namespace BaGet.Core.Services
         /// </summary>
         /// <param name="id">The package's id.</param>
         /// <param name="version">The package's version.</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task DeleteAsync(string id, NuGetVersion version);
+        Task DeleteAsync(string id, NuGetVersion version, CancellationToken cancellationToken);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Configuration;
 using Microsoft.Extensions.Logging;
@@ -26,7 +27,7 @@ namespace BaGet.Core.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<bool> TryDeletePackageAsync(string id, NuGetVersion version)
+        public async Task<bool> TryDeletePackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
             switch (_options.PackageDeletionBehavior)
             {
@@ -34,7 +35,7 @@ namespace BaGet.Core.Services
                     return await TryUnlistPackageAsync(id, version);
 
                 case PackageDeletionBehavior.HardDelete:
-                    return await TryHardDeletePackageAsync(id, version);
+                    return await TryHardDeletePackageAsync(id, version, cancellationToken);
 
                 default:
                     throw new InvalidOperationException($"Unknown deletion behavior '{_options.PackageDeletionBehavior}'");
@@ -57,7 +58,7 @@ namespace BaGet.Core.Services
             return true;
         }
 
-        private async Task<bool> TryHardDeletePackageAsync(string id, NuGetVersion version)
+        private async Task<bool> TryHardDeletePackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
             _logger.LogInformation(
                 "Hard deleting package {PackageId} {PackageVersion} from the database...",
@@ -79,7 +80,7 @@ namespace BaGet.Core.Services
                 id,
                 version);
 
-            await _storage.DeleteAsync(id, version);
+            await _storage.DeleteAsync(id, version, cancellationToken);
 
             _logger.LogInformation(
                 "Hard deleted package {PackageId} {PackageVersion} from storage",
