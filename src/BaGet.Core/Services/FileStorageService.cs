@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,16 +22,20 @@ namespace BaGet.Core.Services
             _storePath = storePath ?? throw new ArgumentNullException(nameof(storePath));
         }
 
-        public Task<Stream> GetAsync(string path, CancellationToken cancellationToken)
+        public Task<Stream> GetAsync(string path, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             path = GetFullPath(path);
             var content = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
 
             return Task.FromResult<Stream>(content);
         }
 
-        public Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken)
+        public Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var result = new Uri(GetFullPath(path));
 
             return Task.FromResult(result);
@@ -39,21 +45,46 @@ namespace BaGet.Core.Services
             string path,
             Stream content,
             string contentType,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken = default)
         {
-            // TODO: Uploads should be idempotent. This should fail if and only if the path
-            // already exists but has different content.
+            if (content == null) throw new ArgumentNullException(nameof(content));
+            if (string.IsNullOrEmpty(contentType)) throw new ArgumentException("Content type is required", nameof(contentType));
+
+            cancellationToken.ThrowIfCancellationRequested();
+
             path = GetFullPath(path);
 
-            using (var fileStream = File.Open(path, FileMode.CreateNew))
+            // Ensure that the path exists.
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+
+            try
             {
-                await content.CopyToAsync(fileStream, DefaultCopyBufferSize, cancellationToken);
-                return PutResult.Success;
+                using (var fileStream = File.Open(path, FileMode.CreateNew))
+                {
+                    await content.CopyToAsync(fileStream, DefaultCopyBufferSize, cancellationToken);
+                    return PutResult.Success;
+                }
+            }
+            catch (IOException) when (File.Exists(path))
+            {
+                bool match;
+                using (var sha256 = SHA256.Create())
+                using (var targetStream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    var contentHash = sha256.ComputeHash(content);
+                    var targetHash = sha256.ComputeHash(targetStream);
+
+                    match = contentHash.SequenceEqual(targetHash);
+                }
+
+                return match ? PutResult.AlreadyExists : PutResult.Conflict;
             }
         }
 
-        public Task DeleteAsync(string path, CancellationToken cancellationToken)
+        public Task DeleteAsync(string path, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             try
             {
                 File.Delete(GetFullPath(path));
@@ -68,6 +99,11 @@ namespace BaGet.Core.Services
         private string GetFullPath(string path)
         {
             // TODO: This should check that the result is in _storePath for security.
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentException("Path is required", nameof(path));
+            }
+
             return Path.Combine(_storePath, path);
         }
     }

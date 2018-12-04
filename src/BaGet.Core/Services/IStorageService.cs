@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace BaGet.Core.Services
 {
     /// <summary>
-    /// The result of a <see cref="IStorageService.PutAsync(string, Stream, string)"/> operation.
+    /// The result of a <see cref="IStorageService.PutAsync(string, Stream, string, CancellationToken)"/> operation.
     /// </summary>
     public enum PutResult
     {
@@ -34,14 +34,14 @@ namespace BaGet.Core.Services
         /// <param name="path">The content's path.</param>
         /// <param name="cancellationToken"></param>
         /// <returns>The path's content.</returns>
-        Task<Stream> GetAsync(string path, CancellationToken cancellationToken);
+        Task<Stream> GetAsync(string path, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get a URI that can be used to download the content.
         /// </summary>
         /// <param name="path">The content's path.</param>
         /// <returns>The content's URI. This may be a local file.</returns>
-        Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken);
+        Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Store content into storage.
@@ -51,7 +51,11 @@ namespace BaGet.Core.Services
         /// <param name="contentType">The type of content that is being stored.</param>
         /// <param name="cancellationToken"></param>
         /// <returns>The result of the put operation.</returns>
-        Task<PutResult> PutAsync(string path, Stream content, string contentType, CancellationToken cancellationToken);
+        Task<PutResult> PutAsync(
+            string path,
+            Stream content,
+            string contentType,
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Remove content from storage.
@@ -59,6 +63,6 @@ namespace BaGet.Core.Services
         /// <param name="path">The path to the content to delete.</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task DeleteAsync(string path, CancellationToken cancellationToken);
+        Task DeleteAsync(string path, CancellationToken cancellationToken = default);
     }
 }

@@ -8,8 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.Search" Version="5.0.1" />
+    <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="9.4.1" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.1.1" />
-    <PackageReference Include="WindowsAzure.Storage" Version="9.3.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -20,6 +20,8 @@ namespace BaGet.Azure.Configuration
 
         public async Task<Stream> GetAsync(string path, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var stream = new MemoryStream();
             var blob = _container.GetBlockBlobReference(path);
 
