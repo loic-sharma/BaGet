@@ -1,4 +1,6 @@
-﻿namespace BaGet.Core.Configuration
+﻿using System.IO;
+
+namespace BaGet.Core.Configuration
 {
     public class FileSystemStorageOptions : StorageOptions
     {
@@ -7,6 +9,6 @@
         /// as the main BaGet executable. This path will be created if it does not
         /// exist at startup. Packages will be stored in a subfolder named "packages".
         /// </summary>
-        public string Path { get; set; }
+        public string Path { get; set; } = Directory.GetCurrentDirectory();
     }
 }
