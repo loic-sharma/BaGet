@@ -3,7 +3,10 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using BaGet.Core.Configuration;
 using BaGet.Core.Services;
+using Microsoft.Extensions.Options;
+using Moq;
 using Xunit;
 
 namespace BaGet.Core.Tests.Services
@@ -148,12 +151,19 @@ namespace BaGet.Core.Tests.Services
         public class FactsBase : IDisposable
         {
             protected readonly string _storePath;
+            protected readonly Mock<IOptionsSnapshot<FileSystemStorageOptions>> _options;
             protected readonly FileStorageService _target;
 
             public FactsBase()
             {
                 _storePath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
-                _target = new FileStorageService(_storePath);
+                _options = new Mock<IOptionsSnapshot<FileSystemStorageOptions>>();
+
+                _options
+                    .Setup(o => o.Value)
+                    .Returns(() => new FileSystemStorageOptions { Path = _storePath });
+
+                _target = new FileStorageService(_options.Object);
             }
 
             public void Dispose()

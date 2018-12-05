@@ -2,6 +2,8 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using BaGet.Core.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace BaGet.Core.Services
 {
@@ -10,15 +12,17 @@ namespace BaGet.Core.Services
         private readonly string _apiKeyHash;
         private readonly SHA256 _sha256;
 
-        public ApiKeyAuthenticationService(string apiKeyHash)
+        public ApiKeyAuthenticationService(IOptionsSnapshot<BaGetOptions> options)
         {
-            if (string.IsNullOrEmpty(apiKeyHash))
+            if (options == null) throw new ArgumentNullException(nameof(options));
+
+            if (string.IsNullOrEmpty(options.Value.ApiKeyHash))
             {
-                apiKeyHash = null;
+                _apiKeyHash = null;
             }
             else
             {
-                _apiKeyHash = apiKeyHash.ToLowerInvariant();
+                _apiKeyHash = options.Value.ApiKeyHash.ToLowerInvariant();
             }
 
             _sha256 = SHA256.Create();

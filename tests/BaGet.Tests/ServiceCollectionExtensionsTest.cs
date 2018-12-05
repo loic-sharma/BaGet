@@ -18,13 +18,12 @@ namespace BaGet.Tests
         [Fact]
         public void AskServiceProviderForNotConfiguredDatabaseOptions()
         {
-            ServiceProvider provider = new ServiceCollection()
-                .AddBaGetContext() //Method Under Test
+            var provider = new ServiceCollection()
+                .ConfigureBaGet(new ConfigurationBuilder().Build()) // Method Under Test
                 .BuildServiceProvider();
 
             var expected = Assert.Throws<InvalidOperationException>(
-                () => provider.GetRequiredService<IContext>().Database
-            );
+                () => provider.GetRequiredService<IContext>().Database);
 
             Assert.Contains(nameof(BaGetOptions.Database), expected.Message);
         }
@@ -32,16 +31,17 @@ namespace BaGet.Tests
         [Fact]
         public void AskServiceProviderForWellConfiguredDatabaseOptions()
         {
-            //Create a IConfiguration with a minimal "Database" object.
-            Dictionary<string, string> initialData = new Dictionary<string, string>();
+            // Create a IConfiguration with a minimal "Database" object.
+            var initialData = new Dictionary<string, string>();
             initialData.Add(DatabaseTypeKey, DatabaseType.Sqlite.ToString());
             initialData.Add(ConnectionStringKey, "blabla");
 
-            IConfiguration configuration = new ConfigurationBuilder().AddInMemoryCollection(initialData).Build();
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(initialData)
+                .Build();
 
-            ServiceProvider provider = new ServiceCollection()
-                .Configure<BaGetOptions>(configuration)
-                .AddBaGetContext() //Method Under Test
+            var provider = new ServiceCollection()
+                .ConfigureBaGet(configuration) // Method Under Test
                 .BuildServiceProvider();
 
             Assert.NotNull(provider.GetRequiredService<IContext>());
@@ -50,16 +50,17 @@ namespace BaGet.Tests
         [Fact]
         public void AskServiceProviderForWellConfiguredSqliteContext()
         {
-            //Create a IConfiguration with a minimal "Database" object.
-            Dictionary<string, string> initialData = new Dictionary<string, string>();
+            // Create a IConfiguration with a minimal "Database" object.
+            var initialData = new Dictionary<string, string>();
             initialData.Add(DatabaseTypeKey, DatabaseType.Sqlite.ToString());
             initialData.Add(ConnectionStringKey, "blabla");
 
-            IConfiguration configuration = new ConfigurationBuilder().AddInMemoryCollection(initialData).Build();
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(initialData)
+                .Build();
 
-            ServiceProvider provider = new ServiceCollection()
-                .Configure<BaGetOptions>(configuration)
-                .AddBaGetContext() //Method Under Test
+            var provider = new ServiceCollection()
+                .ConfigureBaGet(configuration) // Method Under Test
                 .BuildServiceProvider();
 
             Assert.NotNull(provider.GetRequiredService<SqliteContext>());
@@ -71,20 +72,20 @@ namespace BaGet.Tests
         [InlineData(" ")]
         public void AskServiceProviderForInvalidDatabaseType(string databaseType)
         {
-            //Create a IConfiguration with a minimal "Database" object.
-            Dictionary<string, string> initialData = new Dictionary<string, string>();
+            // Create a IConfiguration with a minimal "Database" object.
+            var initialData = new Dictionary<string, string>();
             initialData.Add(DatabaseTypeKey, databaseType);
 
-            IConfiguration configuration = new ConfigurationBuilder().AddInMemoryCollection(initialData).Build();
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(initialData)
+                .Build();
 
-            ServiceProvider provider = new ServiceCollection()
-                .Configure<BaGetOptions>(configuration)
-                .AddBaGetContext() //Method Under Test
+            var provider = new ServiceCollection()
+                .ConfigureBaGet(configuration) // Method Under Test
                 .BuildServiceProvider();
 
             var expected = Assert.Throws<InvalidOperationException>(
-                           () => provider.GetRequiredService<IContext>().Database
-                       );
+                () => provider.GetRequiredService<IContext>().Database);
         }
     }
 }

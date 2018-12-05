@@ -1,4 +1,6 @@
-﻿namespace BaGet.Core.Configuration
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BaGet.Core.Configuration
 {
     public class BaGetOptions
     {
@@ -24,10 +26,16 @@
         /// </summary>
         public PackageDeletionBehavior PackageDeletionBehavior { get; set; } = PackageDeletionBehavior.Unlist;
 
+        [Required]
         public DatabaseOptions Database { get; set; }
+
+        [Required]
         public StorageOptions Storage { get; set; }
+
+        [Required]
         public SearchOptions Search { get; set; }
 
+        [Required]
         public MirrorOptions Mirror { get; set; }
     }
 }

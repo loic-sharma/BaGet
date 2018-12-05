@@ -1,9 +1,7 @@
 ﻿using BaGet.Azure.Configuration;
 using BaGet.Azure.Search;
-using BaGet.Core.Configuration;
 using BaGet.Core.Services;
 using Microsoft.Azure.Search;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
@@ -14,16 +12,6 @@ namespace BaGet.Azure.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection ConfigureAzure(
-            this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            services.Configure<BlobStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
-            services.Configure<AzureSearchOptions>(configuration.GetSection(nameof(BaGetOptions.Search)));
-
-            return services;
-        }
-
         public static IServiceCollection AddBlobStorageService(this IServiceCollection services)
         {
             services.AddSingleton(provider =>
@@ -47,7 +35,7 @@ namespace BaGet.Azure.Extensions
                 return client.GetContainerReference(options.Container);
             });
 
-            services.AddTransient<IStorageService, BlobStorageService>();
+            services.AddTransient<BlobStorageService>();
 
             return services;
         }

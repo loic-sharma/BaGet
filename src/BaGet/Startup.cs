@@ -42,7 +42,8 @@ namespace BaGet
             }
 
             // Run migrations if necessary.
-            if (Configuration.Get<BaGetOptions>().RunMigrationsAtStartup)
+            var options = Configuration.Get<BaGetOptions>();
+            if (options.RunMigrationsAtStartup)
             {
                 using (var scope = app.ApplicationServices.CreateScope())
                 {
@@ -53,7 +54,7 @@ namespace BaGet
                 }
             }
 
-            app.UsePathBase(Configuration.Get<BaGetOptions>().PathBase);
+            app.UsePathBase(options.PathBase);
             app.UseForwardedHeaders();
             app.UseSpaStaticFiles();
 
