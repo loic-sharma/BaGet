@@ -2,7 +2,9 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using BaGet.Core.Configuration;
 using BaGet.Core.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace BaGet.Core.Services
 {
@@ -16,9 +18,11 @@ namespace BaGet.Core.Services
 
         private readonly string _storePath;
 
-        public FileStorageService(string storePath)
+        public FileStorageService(IOptionsSnapshot<FileSystemStorageOptions> options)
         {
-            _storePath = storePath ?? throw new ArgumentNullException(nameof(storePath));
+            if (options == null) throw new ArgumentNullException(nameof(options));
+
+            _storePath = options.Value.Path;
         }
 
         public Task<Stream> GetAsync(string path, CancellationToken cancellationToken = default)
