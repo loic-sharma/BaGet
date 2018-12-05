@@ -33,7 +33,6 @@ namespace BaGet.Entities
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-
             builder.Entity<Package>(BuildPackageEntity);
             builder.Entity<PackageDependency>(BuildPackageDependencyEntity);
         }

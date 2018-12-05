@@ -90,7 +90,6 @@ namespace BaGet.Extensions
 
             services.AddDbContext<SqlServerContext>((provider, options) =>
             {
-
                 var databaseOptions = provider.GetRequiredService<IOptions<BaGetOptions>>()
                     .Value
                     .Database;
