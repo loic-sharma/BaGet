@@ -94,7 +94,7 @@ namespace BaGet.Extensions
             {
                 var databaseOptions = provider.GetRequiredService<IOptionsSnapshot<DatabaseOptions>>();
 
-                options.UseSqlServer(databaseOptions.ConnectionString, t => t.UseRowNumberForPaging());
+                options.UseSqlServer(databaseOptions.Value.ConnectionString, t => t.UseRowNumberForPaging());
             });
 
             return services;
