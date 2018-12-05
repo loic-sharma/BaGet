@@ -289,7 +289,7 @@ namespace BaGet.Extensions
                         : $"Invalid '{name}' options";
 
                     throw new InvalidOperationException(
-                        $"{message}: {string.Join(", ", validationResults)}");
+                        $"{message}: {string.Join('\n', validationResults)}");
                 }
             });
 
