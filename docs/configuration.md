@@ -5,12 +5,14 @@ You can modify BaGet's configurations by editing the [`appsettings.json`](https:
 ## Requiring an API key
 
 You can require that users provide a password, called an API key, to publish packages.
-To do so, insert the SHA-256 hash of your desired API key in the `ApiKeyHash` field:
+To do so, you can insert the desired API key in the `ApiKey` field or if you want to
+obfuscate the key, you can use a SHA-256 hash in the `ApiKeyHash` field:
 
 ```json
 {
+    "ApiKey": "NUGET-SERVER-API-KEY",
+// OR
     "ApiKeyHash": "658489D79E218D2474D049E8729198D86DB0A4AF43981686A31C7DCB02DC0900",
-
     ...
 }
 ```

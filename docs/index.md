@@ -43,6 +43,7 @@ docker build . -t baget
 
 ```
 # The default API key is "NUGET-SERVER-API-KEY"
+# This can also be configured as: ApiKey=NUGET-SERVER-API-KEY
 ApiKeyHash=658489D79E218D2474D049E8729198D86DB0A4AF43981686A31C7DCB02DC0900
 Storage__Type=FileSystem
 Storage__Path=/var/baget/packages
