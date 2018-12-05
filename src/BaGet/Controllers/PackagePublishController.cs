@@ -1,9 +1,8 @@
 ﻿using System;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.Extensions;
 using BaGet.Core.Services;
+using BaGet.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,17 +12,15 @@ namespace BaGet.Controllers
 {
     public class PackagePublishController : Controller
     {
-        public const string ApiKeyHeader = "X-NuGet-ApiKey";
-
         private readonly IAuthenticationService _authentication;
-        private readonly IIndexingService _indexer;
+        private readonly IPackageIndexingService _indexer;
         private readonly IPackageService _packages;
         private readonly IPackageDeletionService _deleteService;
         private readonly ILogger<PackagePublishController> _logger;
 
         public PackagePublishController(
             IAuthenticationService authentication,
-            IIndexingService indexer,
+            IPackageIndexingService indexer,
             IPackageService packages,
             IPackageDeletionService deletionService,
             ILogger<PackagePublishController> logger)
@@ -38,7 +35,7 @@ namespace BaGet.Controllers
         // See: https://docs.microsoft.com/en-us/nuget/api/package-publish-resource#push-a-package
         public async Task Upload(CancellationToken cancellationToken)
         {
-            if (!await _authentication.AuthenticateAsync(ApiKey))
+            if (!await _authentication.AuthenticateAsync(Request.GetApiKey()))
             {
                 HttpContext.Response.StatusCode = 401;
                 return;
@@ -46,7 +43,7 @@ namespace BaGet.Controllers
 
             try
             {
-                using (var uploadStream = await GetPackageUploadStreamOrNullAsync(cancellationToken))
+                using (var uploadStream = await Request.GetUploadStreamOrNullAsync(cancellationToken))
                 {
                     if (uploadStream == null)
                     {
@@ -58,15 +55,15 @@ namespace BaGet.Controllers
 
                     switch (result)
                     {
-                        case IndexingResult.InvalidPackage:
+                        case PackageIndexingResult.InvalidPackage:
                             HttpContext.Response.StatusCode = 400;
                             break;
 
-                        case IndexingResult.PackageAlreadyExists:
+                        case PackageIndexingResult.PackageAlreadyExists:
                             HttpContext.Response.StatusCode = 409;
                             break;
 
-                        case IndexingResult.Success:
+                        case PackageIndexingResult.Success:
                             HttpContext.Response.StatusCode = 201;
                             break;
                     }
@@ -80,32 +77,6 @@ namespace BaGet.Controllers
             }
         }
 
-        private async Task<Stream> GetPackageUploadStreamOrNullAsync(CancellationToken cancellationToken)
-        {
-            // Try to get the nupkg from the multipart/form-data. If that's empty,
-            // fallback to the request's body.
-            Stream rawUploadStream = null;
-            try
-            {
-                if (Request.HasFormContentType && Request.Form.Files.Count > 0)
-                {
-                    rawUploadStream = Request.Form.Files[0].OpenReadStream();
-                }
-                else
-                {
-                    rawUploadStream = Request.Body;
-                }
-
-                // Convert the upload stream into a temporary file stream to
-                // minimize memory usage.
-                return await rawUploadStream?.AsTemporaryFileStreamAsync(cancellationToken);
-            }
-            finally
-            {
-                rawUploadStream?.Dispose();
-            }
-        }
-
         public async Task<IActionResult> Delete(string id, string version, CancellationToken cancellationToken)
         {
             if (!NuGetVersion.TryParse(version, out var nugetVersion))
@@ -113,7 +84,7 @@ namespace BaGet.Controllers
                 return NotFound();
             }
 
-            if (!await _authentication.AuthenticateAsync(ApiKey))
+            if (!await _authentication.AuthenticateAsync(Request.GetApiKey()))
             {
                 return Unauthorized();
             }
@@ -135,7 +106,7 @@ namespace BaGet.Controllers
                 return NotFound();
             }
 
-            if (!await _authentication.AuthenticateAsync(ApiKey))
+            if (!await _authentication.AuthenticateAsync(Request.GetApiKey()))
             {
                 return Unauthorized();
             }
@@ -149,7 +120,5 @@ namespace BaGet.Controllers
                 return NotFound();
             }
         }
-
-        private string ApiKey => Request.Headers[ApiKeyHeader];
     }
 }

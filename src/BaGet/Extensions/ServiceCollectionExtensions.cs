@@ -50,8 +50,9 @@ namespace BaGet.Extensions
             }
 
             services.AddTransient<IPackageService, PackageService>();
-            services.AddTransient<IIndexingService, IndexingService>();
+            services.AddTransient<IPackageIndexingService, PackageIndexingService>();
             services.AddTransient<IPackageDeletionService, PackageDeletionService>();
+            services.AddTransient<ISymbolIndexingService, SymbolIndexingService>();
             services.AddMirrorServices();
 
             services.ConfigureStorageProviders();
@@ -132,6 +133,7 @@ namespace BaGet.Extensions
         {
             services.AddTransient<FileStorageService>();
             services.AddTransient<IPackageStorageService, PackageStorageService>();
+            services.AddTransient<ISymbolStorageService, SymbolStorageService>();
 
             services.AddBlobStorageService();
 
