@@ -283,9 +283,9 @@ namespace BaGet.Extensions
                 if (!Validator.TryValidateObject(options, context, validationResults, validateAllProperties: true))
                 {
                     var name = options.GetType().Name;
-                    if (name.EndsWith("options"))
+                    if (name.ToLowerInvariant().EndsWith("options"))
                     {
-                        name = name.Substring(0, name.LastIndexOf("options"));
+                        name = name.Substring(0, name.ToLowerInvariant().LastIndexOf("options"));
                     }
 
                     throw new InvalidOperationException(

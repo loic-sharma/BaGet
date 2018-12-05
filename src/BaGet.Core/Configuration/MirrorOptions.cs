@@ -28,7 +28,7 @@ namespace BaGet.Core.Configuration
             if (Enabled && PackageSource == null)
             {
                 yield return new ValidationResult(
-                    "A package source must be provided if mirroring is enabled",
+                    $"The {nameof(PackageSource)} configuration is required if mirroring is enabled",
                     new[] { nameof(PackageSource) });
             }
         }
