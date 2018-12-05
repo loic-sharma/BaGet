@@ -67,7 +67,7 @@ namespace BaGet.Extensions
 
             services.AddScoped<IContext>(provider =>
             {
-                var databaseOptions = provider.GetRequiredService<IOptions<DatabaseOptions>>();
+                var databaseOptions = provider.GetRequiredService<IOptionsSnapshot<DatabaseOptions>>();
 
                 switch (databaseOptions.Value.Type)
                 {
@@ -85,14 +85,14 @@ namespace BaGet.Extensions
 
             services.AddDbContext<SqliteContext>((provider, options) =>
             {
-                var databaseOptions = provider.GetRequiredService<IOptions<DatabaseOptions>>();
+                var databaseOptions = provider.GetRequiredService<IOptionsSnapshot<DatabaseOptions>>();
 
                 options.UseSqlite(databaseOptions.Value.ConnectionString);
             });
 
             services.AddDbContext<SqlServerContext>((provider, options) =>
             {
-                var databaseOptions = provider.GetRequiredService<IOptions<DatabaseOptions>>();
+                var databaseOptions = provider.GetRequiredService<IOptionsSnapshot<DatabaseOptions>>();
 
                 options.UseSqlServer(databaseOptions.Value.ConnectionString);
             });
@@ -130,14 +130,14 @@ namespace BaGet.Extensions
 
         public static IServiceCollection ConfigureStorageProviders(this IServiceCollection services)
         {
-            services.AddFileStorageService();
-            services.AddBlobStorageService();
-
+            services.AddTransient<FileStorageService>();
             services.AddTransient<IPackageStorageService, PackageStorageService>();
+
+            services.AddBlobStorageService();
 
             services.AddTransient<IStorageService>(provider =>
             {
-                var options = provider.GetRequiredService<IOptions<BaGetOptions>>();
+                var options = provider.GetRequiredService<IOptionsSnapshot<BaGetOptions>>();
 
                 switch (options.Value.Storage.Type)
                 {
@@ -160,16 +160,6 @@ namespace BaGet.Extensions
         {
             services.AddTransient<FileStorageService>();
 
-            // Ensure the file storage directory exists
-            services.Configure<FileSystemStorageOptions>(storageOptions =>
-            {
-                storageOptions.Path = string.IsNullOrEmpty(storageOptions.Path)
-                    ? Directory.GetCurrentDirectory()
-                    : storageOptions.Path;
-
-                Directory.CreateDirectory(storageOptions.Path);
-            });
-
             return services;
         }
 
@@ -177,7 +167,7 @@ namespace BaGet.Extensions
         {
             services.AddTransient<ISearchService>(provider =>
             {
-                var options = provider.GetRequiredService<IOptions<SearchOptions>>();
+                var options = provider.GetRequiredService<IOptionsSnapshot<SearchOptions>>();
 
                 switch (options.Value.Type)
                 {
@@ -210,7 +200,7 @@ namespace BaGet.Extensions
 
             services.AddTransient<IMirrorService>(provider =>
             {
-                var options = provider.GetRequiredService<IOptions<MirrorOptions>>();
+                var options = provider.GetRequiredService<IOptionsSnapshot<MirrorOptions>>();
 
                 if (!options.Value.Enabled)
                 {
