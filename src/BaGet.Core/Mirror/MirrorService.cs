@@ -18,14 +18,14 @@ namespace BaGet.Core.Mirror
         private readonly IPackageService _localPackages;
         private readonly IPackageMetadataService _upstreamFeed;
         private readonly IPackageDownloader _downloader;
-        private readonly IIndexingService _indexer;
+        private readonly IPackageIndexingService _indexer;
         private readonly ILogger<MirrorService> _logger;
 
         public MirrorService(
             IPackageService localPackages,
             IPackageMetadataService upstreamFeed,
             IPackageDownloader downloader,
-            IIndexingService indexer,
+            IPackageIndexingService indexer,
             ILogger<MirrorService> logger)
         {
             _localPackages = localPackages ?? throw new ArgumentNullException(nameof(localPackages));

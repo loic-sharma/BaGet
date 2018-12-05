@@ -9,11 +9,25 @@
 
 ## Pushing Packages
 
-You can push a package with this command:
+You can push a package using this command:
 
 ```
 dotnet nuget push -s http://localhost:5000/v3/index.json newtonsoft.json.11.0.2.nupkg
 ```
+
+## Using BaGet as a Symbol Server
+
+You can use BaGet as a Symbol Server by uploading
+[symbol packages](https://docs.microsoft.com/en-us/nuget/create-packages/symbol-packages-snupkg).
+After you've pushed a package to BaGet, you can push its corresponding
+symbol package using this command:
+
+```
+dotnet nuget push -s http://localhost:5000/v3/index.json symbol.package.1.0.0.snupkg
+```
+
+You will need to add the symbol location `http://localhost:5000/api/download/symbols` to load symbols from BaGet.
+[Use this guide](https://docs.microsoft.com/en-us/visualstudio/debugger/specify-symbol-dot-pdb-and-source-files-in-the-visual-studio-debugger?view=vs-2017#configure-symbol-locations-and-loading-options) for Visual Studio.
 
 ## Running BaGet on Docker
 

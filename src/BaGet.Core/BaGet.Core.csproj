@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
 
@@ -18,5 +17,4 @@
   <ItemGroup>
     <PackageReference Update="Nerdbank.GitVersioning" Version="2.2.33" />
   </ItemGroup>
-
 </Project>
