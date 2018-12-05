@@ -33,13 +33,13 @@ namespace BaGet.Extensions
             bool httpServices = false)
         {
             services.ConfigureAndValidate<BaGetOptions>(configuration);
-            services.ConfigureAndValidate<SearchOptions>(configuration.GetSection(nameof(BaGetOptions.Search)));
-            services.ConfigureAndValidate<MirrorOptions>(configuration.GetSection(nameof(BaGetOptions.Mirror)));
-            services.ConfigureAndValidate<StorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
-            services.ConfigureAndValidate<DatabaseOptions>(configuration.GetSection(nameof(BaGetOptions.Database)));
-            services.ConfigureAndValidate<FileSystemStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
-            services.ConfigureAndValidate<BlobStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
-            services.ConfigureAndValidate<AzureSearchOptions>(configuration.GetSection(nameof(BaGetOptions.Search)));
+            services.ConfigureAndValidateSection<SearchOptions>(configuration, nameof(BaGetOptions.Search));
+            services.ConfigureAndValidateSection<MirrorOptions>(configuration, nameof(BaGetOptions.Mirror));
+            services.ConfigureAndValidateSection<StorageOptions>(configuration, nameof(BaGetOptions.Storage));
+            services.ConfigureAndValidateSection<DatabaseOptions>(configuration, nameof(BaGetOptions.Database));
+            services.ConfigureAndValidateSection<FileSystemStorageOptions>(configuration, nameof(BaGetOptions.Storage));
+            services.ConfigureAndValidateSection<BlobStorageOptions>(configuration, nameof(BaGetOptions.Storage));
+            services.ConfigureAndValidateSection<AzureSearchOptions>(configuration, nameof(BaGetOptions.Search));
 
             services.AddBaGetContext();
             services.ConfigureAzure(configuration);
@@ -260,9 +260,21 @@ namespace BaGet.Extensions
             return services;
         }
 
+        public static IServiceCollection ConfigureAndValidateSection<TOptions>(
+            this IServiceCollection services,
+            IConfiguration config,
+            string sectionName)
+          where TOptions : class
+        {
+            services.ConfigureAndValidate<TOptions>(config.GetSection(sectionName), sectionName);
+
+            return services;
+        }
+
         public static IServiceCollection ConfigureAndValidate<TOptions>(
             this IServiceCollection services,
-            IConfiguration config)
+            IConfiguration config,
+            string name = null)
           where TOptions : class
         {
             services.Configure<TOptions>(config);
@@ -272,14 +284,12 @@ namespace BaGet.Extensions
                 var validationResults = new List<ValidationResult>();
                 if (!Validator.TryValidateObject(options, context, validationResults, validateAllProperties: true))
                 {
-                    var name = options.GetType().Name;
-                    if (name.ToLowerInvariant().EndsWith("options"))
-                    {
-                        name = name.Substring(0, name.ToLowerInvariant().LastIndexOf("options"));
-                    }
+                    var message = (name == null)
+                        ? $"Invalid options"
+                        : $"Invalid '{name}' options";
 
                     throw new InvalidOperationException(
-                        $"Invalid '{name}' options: {string.Join(", ", validationResults)}");
+                        $"{message}: {string.Join(", ", validationResults)}");
                 }
             });
 
