@@ -136,7 +136,6 @@ namespace BaGet.Extensions
             services.AddTransient<ISymbolStorageService, SymbolStorageService>();
 
             services.AddBlobStorageService();
-            services.AddFileStorageService();
 
             services.AddTransient<IStorageService>(provider =>
             {
@@ -155,13 +154,6 @@ namespace BaGet.Extensions
                             $"Unsupported storage service: {options.Value.Storage.Type}");
                 }
             });
-
-            return services;
-        }
-
-        public static IServiceCollection AddFileStorageService(this IServiceCollection services)
-        {
-            services.AddTransient<FileStorageService>();
 
             return services;
         }
