@@ -1,3 +1,4 @@
+import { initializeIcons } from '@uifabric/icons';
 import 'bootstrap/dist/css/bootstrap.css';
 
 import * as React from 'react';
@@ -13,4 +14,5 @@ ReactDOM.render(
   document.getElementById('root') as HTMLElement
 );
 
+initializeIcons();
 // registerServiceWorker();
