@@ -1,4 +1,5 @@
 import { HtmlRenderer, Parser } from 'commonmark';
+import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as React from 'react';
 import timeago from 'timeago.js';
 import LicenseInfo from './LicenseInfo';
@@ -183,20 +184,37 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
             <div>
               <h1>Info</h1>
 
-              <div>Last updated {timeago().format(this.state.package.lastUpdate)}</div>
-              <div><a href={this.state.package.projectUrl}>{this.state.package.projectUrl}</a></div>
-
-              <SourceRepository url={this.state.package.repositoryUrl} type={this.state.package.repositoryType} />
-              <LicenseInfo url={this.state.package.licenseUrl} />
-
-              <div><a href={this.state.package.downloadUrl}>Download Package</a></div>
+              <ul className="list-unstyled ms-Icon-ul">
+                <li>
+                  <Icon iconName="History" className="ms-Icon" />
+                  Last updated {timeago().format(this.state.package.lastUpdate)}
+                </li>
+                <li>
+                  <Icon iconName="Globe" className="ms-Icon" />
+                  <a href={this.state.package.projectUrl}>{this.state.package.projectUrl}</a>
+                </li>
+                <SourceRepository url={this.state.package.repositoryUrl} type={this.state.package.repositoryType} />
+                <LicenseInfo url={this.state.package.licenseUrl} />
+                <li>
+                  <Icon iconName="CloudDownload" className="ms-Icon" />
+                  <a href={this.state.package.downloadUrl}>Download Package</a>
+                </li>
+              </ul>
             </div>
 
             <div>
               <h1>Statistics</h1>
 
-              <div>{this.state.package.totalDownloads.toLocaleString()} total downloads</div>
-              <div>{this.state.package.latestDownloads.toLocaleString()} downloads of latest version</div>
+              <ul className="list-unstyled ms-Icon-ul">
+                <li>
+                  <Icon iconName="Download" className="ms-Icon" />
+                  {this.state.package.totalDownloads.toLocaleString()} total downloads
+                </li>
+                <li>
+                  <Icon iconName="GiftBox" className="ms-Icon" />
+                  {this.state.package.latestDownloads.toLocaleString()} downloads of latest version
+                </li>
+              </ul>
             </div>
 
             <div>
