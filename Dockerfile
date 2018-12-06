@@ -4,7 +4,6 @@ EXPOSE 80
 
 FROM microsoft/dotnet:2.1-sdk AS build
 WORKDIR /src
-ENV IS_DOCKER true
 COPY /src .
 RUN dotnet restore BaGet
 RUN dotnet build BaGet -c Release -o /app
