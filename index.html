@@ -283,6 +283,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#using-baget-as-a-symbol-server" title="Using BaGet as a Symbol Server" class="md-nav__link">
+    Using BaGet as a Symbol Server
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#running-baget-on-docker" title="Running BaGet on Docker" class="md-nav__link">
     Running BaGet on Docker
   </a>
@@ -575,6 +582,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#using-baget-as-a-symbol-server" title="Using BaGet as a Symbol Server" class="md-nav__link">
+    Using BaGet as a Symbol Server
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#running-baget-on-docker" title="Running BaGet on Docker" class="md-nav__link">
     Running BaGet on Docker
   </a>
@@ -609,11 +623,22 @@
 <li>Browse <code>http://localhost:5000/</code> in your browser</li>
 </ol>
 <h2 id="pushing-packages">Pushing Packages<a class="headerlink" href="#pushing-packages" title="Permanent link">&para;</a></h2>
-<p>You can push a package with this command:</p>
+<p>You can push a package using this command:</p>
 <div class="codehilite"><pre><span></span>dotnet nuget push -s http://localhost:5000/v3/index.json newtonsoft.json.11.0.2.nupkg
 </pre></div>
 
 
+<h2 id="using-baget-as-a-symbol-server">Using BaGet as a Symbol Server<a class="headerlink" href="#using-baget-as-a-symbol-server" title="Permanent link">&para;</a></h2>
+<p>You can use BaGet as a Symbol Server by uploading
+<a href="https://docs.microsoft.com/en-us/nuget/create-packages/symbol-packages-snupkg">symbol packages</a>.
+After you've pushed a package to BaGet, you can push its corresponding
+symbol package using this command:</p>
+<div class="codehilite"><pre><span></span>dotnet nuget push -s http://localhost:5000/v3/index.json symbol.package.1.0.0.snupkg
+</pre></div>
+
+
+<p>You will need to add the symbol location <code>http://localhost:5000/api/download/symbols</code> to load symbols from BaGet.
+<a href="https://docs.microsoft.com/en-us/visualstudio/debugger/specify-symbol-dot-pdb-and-source-files-in-the-visual-studio-debugger?view=vs-2017#configure-symbol-locations-and-loading-options">Use this guide</a> for Visual Studio.</p>
 <h2 id="running-baget-on-docker">Running BaGet on Docker<a class="headerlink" href="#running-baget-on-docker" title="Permanent link">&para;</a></h2>
 <p>If you'd like, you can run BaGet on Docker:</p>
 <ol>
