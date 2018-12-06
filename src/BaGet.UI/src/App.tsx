@@ -1,4 +1,5 @@
 import * as React from 'react';
+import './App.css';
 import DisplayPackage from './DisplayPackage';
 import SearchResults from './SearchResults';
 
@@ -41,24 +42,38 @@ class App extends React.Component<{}, IAppState> {
 
   private _renderSearch() {
     return (
-      <nav>
+      <nav className="navbar navbar-inverse" role="navigation">
         <div className="container">
           <div className="row">
             <div className="col-sm-12">
-              <div id="logo">
-                <h1><a href="/">BaGet</a></h1>
+              <div id="navbar-header">
+                <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+                  <span className="icon-bar" />
+                  <span className="icon-bar" />
+                  <span className="icon-bar" />
+                </button>
+
               </div>
+            </div>
+            <div id="navbar" className="navbar-collapse collapse">
+              <ul className="nav navbar-nav" role="tablist">
+                <li className="active" role="presentation"><a role="tab" href="/"><span>Packages</span></a></li>
+                <li role="presentation"><a role="tab" href="/"><span>Upload</span></a></li>
+                <li role="presentation"><a role="tab" href="/"><span>Documentation</span></a></li>
+              </ul>
             </div>
           </div>
         </div>
         <div className="container search-container">
           <div className="row">
-            <input
-              type="text"
-              className="form-control"
-              autoComplete="off"
-              placeholder="Search packages"
+            <form className="col-sm-12">
+              <input
+                type="text"
+                className="form-control"
+                autoComplete="off"
+                placeholder="Search packages..."
               onChange={this.handleChange} />
+            </form>
           </div>
         </div>
       </nav>

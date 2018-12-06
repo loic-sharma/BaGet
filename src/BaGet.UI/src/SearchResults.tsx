@@ -1,3 +1,4 @@
+import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as React from 'react';
 import './SearchResults.css';
 
@@ -52,14 +53,29 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
             </div>
             <div className="col-sm-11">
               <div>
-                <h2><a href="#" onClick={this.onSelect}>{value.id}</a></h2>
+                <a className="package-title" href="#" onClick={this.onSelect}>{value.id}</a>
                 <span>by: {value.authors}</span>
               </div>
-              <div className="info">
-                <span>{value.totalDownloads.toLocaleString()} total downloads</span>
-                <span>Latest version: {value.version}</span>
-                <span>{value.tags.join(' ')}</span>
-              </div>
+              <ul className="info">
+                <li>
+                  <span>
+                    <Icon iconName="Download" className="ms-Icon" />
+                    {value.totalDownloads.toLocaleString()} total downloads
+                  </span>
+                </li>
+                <li>
+                  <span>
+                    <Icon iconName="Flag" className="ms-Icon" />
+                    Latest version: {value.version}
+                  </span>
+                </li>
+                <li>
+                  <span>
+                    <Icon iconName="Tag" className="ms-Icon" />
+                    {value.tags.join(' ')}
+                  </span>
+                </li>
+              </ul>
               <div>
                 {value.description}
               </div>
