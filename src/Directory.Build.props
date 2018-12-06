@@ -7,6 +7,7 @@
     <RepositoryUrl>https://github.com/loic-sharma/BaGet</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IS_DOCKER>true</IS_DOCKER>
 
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
