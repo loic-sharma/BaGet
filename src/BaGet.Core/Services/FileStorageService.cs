@@ -22,7 +22,10 @@ namespace BaGet.Core.Services
         {
             if (options == null) throw new ArgumentNullException(nameof(options));
 
-            _storePath = options.Value.Path;
+            // Resolve relative path components ('.'/'..') and ensure there is a trailing slash.
+            _storePath = Path.GetFullPath(options.Value.Path);
+            if (!_storePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
+                _storePath += Path.DirectorySeparatorChar;
         }
 
         public Task<Stream> GetAsync(string path, CancellationToken cancellationToken = default)
@@ -96,13 +99,19 @@ namespace BaGet.Core.Services
 
         private string GetFullPath(string path)
         {
-            // TODO: This should check that the result is in _storePath for security.
             if (string.IsNullOrEmpty(path))
             {
                 throw new ArgumentException("Path is required", nameof(path));
             }
 
-            return Path.Combine(_storePath, path);
+            // Verify path is under the _storePath.
+            string fullPath = Path.GetFullPath(Path.Combine(_storePath, path));
+            if (!fullPath.StartsWith(_storePath))
+            {
+                throw new ArgumentException("Path resolves outside store path");
+            }
+
+            return fullPath;
         }
     }
 }
