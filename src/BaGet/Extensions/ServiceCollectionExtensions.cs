@@ -136,6 +136,7 @@ namespace BaGet.Extensions
             services.AddTransient<ISymbolStorageService, SymbolStorageService>();
 
             services.AddBlobStorageService();
+            services.AddFileStorageService();
 
             services.AddTransient<IStorageService>(provider =>
             {
