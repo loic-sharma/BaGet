@@ -1,0 +1,60 @@
+.navbar-inverse {
+  background-color: #004880;
+  border-color: #002b4d;
+}
+
+.navbar {
+  border-radius: 0;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+  font-weight: 100;
+  color: #e3ebf1;
+}
+
+.navbar-nav > li > a {
+  line-height: 22px;
+}
+
+.navbar-inverse .navbar-nav > .active > a {
+  font-weight: 600;
+}
+
+.navbar-inverse .navbar-nav > .active > a {
+  color: #e3ebf1;
+}
+
+.navbar-inverse .navbar-nav > .active > a,
+.navbar-inverse .navbar-nav > .active > a:hover,
+.navbar-inverse .navbar-nav > .active > a:focus {
+  background-color: transparent;
+}
+
+.navbar-inverse .navbar-nav > .active > a:hover {
+  color: #fff;
+}
+
+.navbar-inverse .navbar-nav > .active > a span {
+  padding: 5px 0;
+  border-bottom: 1px solid #fff;
+}
+
+.nav > li {
+  position: relative;
+  display: block;
+}
+
+.nav > li > a {
+  position: relative;
+  display: block;
+  padding: 10px 15px;
+}
+
+.search-container {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.search-container .form-control {
+  border-radius: 0;
+}
