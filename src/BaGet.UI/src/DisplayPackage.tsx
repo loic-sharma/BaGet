@@ -26,6 +26,7 @@ interface IPackage {
   authors: string;
   tags: string[];
   versions: IPackageVersion[];
+  dependencyGroups: IDependencyGroup[];
 }
 
 interface IPackageVersion {
@@ -69,6 +70,17 @@ interface ICatalogEntry {
   repositoryType: string;
   authors: string;
   tags: string[];
+  dependencyGroups: IDependencyGroup[];
+}
+
+interface IDependencyGroup {
+    targetFramework: string;
+    dependencies: IDependency[];
+}
+
+interface IDependency {
+    id: string;
+    range: string;
 }
 
 class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPackageState> {
@@ -97,6 +109,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
       let latestItem: IRegistrationPageItem | undefined;
 
       const versions: IPackageVersion[] = [];
+      const dependencyGroups: IDependencyGroup[] = [];
 
       for (const entry of results.items[0].items) {
         versions.push({
@@ -104,6 +117,8 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
           downloads: entry.catalogEntry.downloads,
           version: entry.catalogEntry.version,
         });
+
+        dependencyGroups.push(...entry.catalogEntry.dependencyGroups);
 
         if (entry.catalogEntry.version === latestVersion) {
           latestItem = entry;
@@ -119,6 +134,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
         this.setState({
           package: {
             authors: latestItem.catalogEntry.authors,
+            dependencyGroups,
             downloadUrl: latestItem.packageContent,
             iconUrl: latestItem.catalogEntry.iconUrl,
             id: latestItem.catalogEntry.id,
@@ -132,7 +148,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
             repositoryUrl: latestItem.catalogEntry.repositoryUrl,
             tags: latestItem.catalogEntry.tags,
             totalDownloads: results.totalDownloads,
-            versions,
+            versions
           }
         });
 
@@ -177,7 +193,24 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
             </div>
 
             {/* TODO: Fix this */}
-            <div dangerouslySetInnerHTML={ {__html: this.state.package.readme} } />
+            <div dangerouslySetInnerHTML={{ __html: this.state.package.readme }} />
+
+            <div>
+                <h3>Dependencies</h3>
+
+                {this.state.package.dependencyGroups.map(depGroup => (
+                    <div>
+                        <h4>{depGroup.targetFramework}</h4>
+                        <ul>
+                            {depGroup.dependencies.map(dep => (
+                                <li>
+                                    {dep.id} {dep.range}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                ))}
+            </div>
           </article>
           <aside className="col-sm-3 package-details-info">
             <div>
