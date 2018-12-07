@@ -257,7 +257,7 @@ namespace BaGet.Extensions
 
         public static IServiceCollection ConfigureAuthenticationProviders(this IServiceCollection services)
         {
-            services.AddSingleton<IAuthenticationService, ApiKeyAuthenticationService>();
+            services.AddScoped<IAuthenticationService, ApiKeyAuthenticationService>();
 
             return services;
         }
