@@ -2,7 +2,7 @@
 
 [![Build Status](https://sharml.visualstudio.com/BaGet/_apis/build/status/loic-sharma.BaGet)](https://sharml.visualstudio.com/BaGet/_build/latest?definitionId=2)
 
-A lightweight [NuGet service](https://docs.microsoft.com/en-us/nuget/api/overview) implementation.
+A lightweight [NuGet](https://docs.microsoft.com/en-us/nuget/what-is-nuget) and [Symbol](https://docs.microsoft.com/en-us/windows/desktop/debug/symbol-servers-and-symbol-stores) server.
 
 ## Getting Started
 
