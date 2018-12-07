@@ -239,11 +239,16 @@ namespace BaGet.Core.Tests.Services
             {
                 get
                 {
+                    string fullPath = Path.GetFullPath(_storePath);
                     yield return "../file";
                     yield return ".";
                     yield return $"../{Path.GetFileName(_storePath)}";
                     yield return $"../{Path.GetFileName(_storePath)}suffix";
                     yield return $"../{Path.GetFileName(_storePath)}suffix/file";
+                    yield return fullPath;
+                    yield return fullPath + Path.DirectorySeparatorChar;
+                    yield return fullPath + Path.DirectorySeparatorChar + "..";
+                    yield return fullPath + Path.DirectorySeparatorChar + ".." + Path.DirectorySeparatorChar + "file";
                     yield return Path.GetPathRoot(_storePath);
                     yield return Path.Combine(Path.GetPathRoot(_storePath), "file");
                 }
