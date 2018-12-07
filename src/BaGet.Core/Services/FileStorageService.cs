@@ -108,7 +108,7 @@ namespace BaGet.Core.Services
             string fullPath = Path.GetFullPath(Path.Combine(_storePath, path));
             if (!fullPath.StartsWith(_storePath))
             {
-                throw new ArgumentException("Path resolves outside store path");
+                throw new ArgumentException("Path resolves outside store path", nameof(path));
             }
 
             return fullPath;
