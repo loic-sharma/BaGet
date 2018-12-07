@@ -41,3 +41,10 @@ h2, h3 {
   position: absolute;
   left: -24px;
 }
+
+pre {
+    white-space: pre-line;
+    border: none;
+    margin: 0;
+    padding: 0;
+}

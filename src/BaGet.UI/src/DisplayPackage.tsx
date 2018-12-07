@@ -1,11 +1,11 @@
 import { HtmlRenderer, Parser } from 'commonmark';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as React from 'react';
+import { Tab, Tabs } from 'react-bootstrap';
 import timeago from 'timeago.js';
+import './DisplayPackage.css';
 import LicenseInfo from './LicenseInfo';
 import SourceRepository from './SourceRepository';
-
-import './DisplayPackage.css';
 
 interface IDisplayPackageProps {
   id: string;
@@ -75,13 +75,13 @@ interface ICatalogEntry {
 }
 
 interface IDependencyGroup {
-    targetFramework: string;
-    dependencies: IDependency[];
+  targetFramework: string;
+  dependencies: IDependency[];
 }
 
 interface IDependency {
-    id: string;
-    range: string;
+  id: string;
+  range: string;
 }
 
 class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPackageState> {
@@ -95,7 +95,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
     this.parser = new Parser();
     this.htmlRenderer = new HtmlRenderer();
 
-    this.state = {package: undefined};
+    this.state = { package: undefined };
   }
 
   public componentDidMount() {
@@ -129,7 +129,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
       if (latestItem) {
         let readme = "";
         if (!latestItem.catalogEntry.hasReadme) {
-          readme = latestItem.catalogEntry.description; 
+          readme = latestItem.catalogEntry.description;
         }
 
         this.setState({
@@ -160,7 +160,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
             return response.text();
           }).then(result => {
             this.setState(prevState => {
-              const state = {...prevState};
+              const state = { ...prevState };
               const markdown = this.parser.parse(result);
 
               state.package!.readme = this.htmlRenderer.render(markdown);
@@ -175,9 +175,9 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
 
   public render() {
     if (!this.state.package) {
-        return (
-          <div>...</div>
-        );
+      return (
+        <div>...</div>
+      );
     } else {
       return (
         <div className="row display-package">
@@ -193,97 +193,55 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
 
             </div>
 
-            <div className="install-tabs">
-              <ul className="nav nav-tabs" role="tablist">
-
-                <li role="presentation" className="active">
-                  <a href="#dotnet-cli" aria-expanded="true" aria-selected="true" aria-controls="dotnet-cli" role="tab" data-toggle="tab" title="Switch to tab panel which contains package installation command for .NET CLI">
-                    .NET CLI
-                  </a>
-                </li>
-
-                <li role="presentation">
-                  <a href="#package-manager" aria-expanded="false" aria-selected="false" aria-controls="dotnet-cli" role="tab" data-toggle="tab" title="Switch to tab panel which contains package installation command for Package Manager">
-                    Package Manager
-                  </a>
-                </li>
-
-                <li role="presentation">
-                  <a href="#paket" aria-expanded="false" aria-selected="false" aria-controls="dotnet-cli" role="tab" data-toggle="tab" title="Switch to tab panel which contains package installation command for Paket">
-                    Paket CLI
-                  </a>
-                </li>
-
-              </ul>
-            </div>
-
-            <div className="tab-content">
-
-              <div role="tabpanel" className="tab-pane active" id="dotnet-cli">
+            <Tabs id="package-commands" animation={false}>
+              <Tab eventKey="dotnet-cli" title=".NET CLI" /*t1itle="Switch to tab panel which contains package installation command for .NET CLI"*/>
                 <div>
                   <div className="install-script" id="dotnet-cli-text">
                     <span>
                       dotnet add package Newtonsoft.Json --version 12.0.1
                     </span>
                   </div>
-                  <div className="copy-button">
-                    <button id="dotnet-cli-button" className="btn btn-default btn-warning" type="button" data-toggle="popover" data-placement="bottom" data-content="Copied." aria-label="Copy the .NET CLI command" data-original-title="" title="">
-                      <Icon iconName="Copy" className="ms-Icon" />
-                    </button>
-                  </div>
                 </div>
-              </div>
-
-              <div role="tabpanel" className="tab-pane" id="package-manager">
+              </Tab>
+              <Tab eventKey="package-manager" title="Package Manager" /*t1itle="Switch to tab panel which contains package installation command for Package Manager"*/>
                 <div>
                   <div className="install-script" id="package-manager-text">
                     <span>
-                        Install-Package Newtonsoft.Json -Version 12.0.1
+                      Install-Package Newtonsoft.Json -Version 12.0.1
                     </span>
                   </div>
-                  <div className="copy-button">
-                    <button id="package-manager-button" className="btn btn-default btn-warning" type="button" data-toggle="popover" data-placement="bottom" data-content="Copied." aria-label="Copy the Package Manager command" data-original-title="" title="">
-                      <Icon iconName="Copy" className="ms-Icon" />
-                    </button>
-                  </div>
                 </div>
-              </div>
-
-              <div role="tabpanel" className="tab-pane " id="paket-cli">
+              </Tab>
+              <Tab eventKey="paket" title="Paket CLI" /*t1itle="Switch to tab panel which contains package installation command for Paket"*/>
                 <div>
                   <div className="install-script" id="paket-cli-text">
                     <span>
                       paket add Newtonsoft.Json --version 12.0.1
                     </span>
                   </div>
-                  <div className="copy-button">
-                    <button id="paket-cli-button" className="btn btn-default btn-warning" type="button" data-toggle="popover" data-placement="bottom" data-content="Copied." aria-label="Copy the Paket CLI command" data-original-title="" title="">
-                      <Icon iconName="Copy" className="ms-Icon" />
-                    </button>
-                  </div>
                 </div>
-              </div>
-
+              </Tab>
+            </Tabs>
+            <div className={this.state.package.readme ? "" : "hidden"}>
+              <h4>Readme:</h4>
+              <pre>{this.state.package.readme}</pre>
             </div>
 
-            {/* TODO: Fix this */}
-            <div dangerouslySetInnerHTML={{ __html: this.state.package.readme }} />
+            <div className={this.state.package.dependencyGroups.length ? "" : "hidden"}>
+              <h4>Dependencies:</h4>
 
-            <div>
-                <h3>Dependencies</h3>
-
-                {this.state.package.dependencyGroups.map(depGroup => (
-                    <div>
-                        <h4>{depGroup.targetFramework}</h4>
-                        <ul>
-                            {depGroup.dependencies.map(dep => (
-                                <li>
-                                    {dep.id} {dep.range}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                ))}
+              {this.state.package.dependencyGroups.map((depGroup, i) => (
+                <div key={`dg${i}`}>
+                  <h4>{depGroup.targetFramework}</h4>
+                  <ul>
+                    {depGroup.dependencies.map((dep, j) => (
+                      <li key={`dep${j}`}>
+                        {dep.id} {dep.range}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
           </article>
           <aside className="col-sm-3 package-details-info">
@@ -332,6 +290,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
                   <span>{this.dateToString(value.date)}</span>
                 </div>
               ))}
+              
             </div>
 
             <div>
@@ -340,13 +299,13 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
               <p>{(!this.state.package.authors) ? 'Unknown' : this.state.package.authors}</p>
             </div>
           </aside>
-        </div>
+        </div >
       );
     }
   }
 
   private dateToString(date: Date): string {
-    return `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`;
+    return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
   }
 }
 
