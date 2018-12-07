@@ -1,4 +1,5 @@
 import * as React from 'react';
+import './SourceRepository.css';
 
 interface ISourceRepositoryProps {
   url: string;
@@ -20,9 +21,10 @@ class SourceRepository extends React.Component<ISourceRepositoryProps> {
 
     // TODO: Add an icon URL base off the repository type.
     return (
-        <div>
-            <a href={this.props.url}>Source Code</a>
-        </div>
+        <li>
+          <img className="icon" aria-hidden="true" alt="GitHub logo" src="https://www.nuget.org/Content/gallery/img/github-32x32.png" />
+          <a href={this.props.url}>Source Code</a>
+        </li>
     );
   }
 }

@@ -1,4 +1,5 @@
 import { HtmlRenderer, Parser } from 'commonmark';
+import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as React from 'react';
 import timeago from 'timeago.js';
 import LicenseInfo from './LicenseInfo';
@@ -168,12 +169,85 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
             <img src={this.state.package.iconUrl} className="img-responsive" />
           </aside>
           <article className="col-sm-8 package-details-main">
-            <div>
-              <h1>{this.state.package.id}</h1>
-              <span>{this.state.package.latestVersion}</span>
+            <div className="package-title">
+              <h1>
+                {this.state.package.id}
+                <small className="text-nowrap">{this.state.package.latestVersion}</small>
+              </h1>
+
             </div>
-            <div className="install-script">
-              dotnet add package {this.state.package.id} --version {this.state.package.latestVersion}
+
+            <div className="install-tabs">
+              <ul className="nav nav-tabs" role="tablist">
+
+                <li role="presentation" className="active">
+                  <a href="#dotnet-cli" aria-expanded="true" aria-selected="true" aria-controls="dotnet-cli" role="tab" data-toggle="tab" title="Switch to tab panel which contains package installation command for .NET CLI">
+                    .NET CLI
+                  </a>
+                </li>
+
+                <li role="presentation">
+                  <a href="#package-manager" aria-expanded="false" aria-selected="false" aria-controls="dotnet-cli" role="tab" data-toggle="tab" title="Switch to tab panel which contains package installation command for Package Manager">
+                    Package Manager
+                  </a>
+                </li>
+
+                <li role="presentation">
+                  <a href="#paket" aria-expanded="false" aria-selected="false" aria-controls="dotnet-cli" role="tab" data-toggle="tab" title="Switch to tab panel which contains package installation command for Paket">
+                    Paket CLI
+                  </a>
+                </li>
+
+              </ul>
+            </div>
+
+            <div className="tab-content">
+
+              <div role="tabpanel" className="tab-pane active" id="dotnet-cli">
+                <div>
+                  <div className="install-script" id="dotnet-cli-text">
+                    <span>
+                      dotnet add package Newtonsoft.Json --version 12.0.1
+                    </span>
+                  </div>
+                  <div className="copy-button">
+                    <button id="dotnet-cli-button" className="btn btn-default btn-warning" type="button" data-toggle="popover" data-placement="bottom" data-content="Copied." aria-label="Copy the .NET CLI command" data-original-title="" title="">
+                      <Icon iconName="Copy" className="ms-Icon" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div role="tabpanel" className="tab-pane" id="package-manager">
+                <div>
+                  <div className="install-script" id="package-manager-text">
+                    <span>
+                        Install-Package Newtonsoft.Json -Version 12.0.1
+                    </span>
+                  </div>
+                  <div className="copy-button">
+                    <button id="package-manager-button" className="btn btn-default btn-warning" type="button" data-toggle="popover" data-placement="bottom" data-content="Copied." aria-label="Copy the Package Manager command" data-original-title="" title="">
+                      <Icon iconName="Copy" className="ms-Icon" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div role="tabpanel" className="tab-pane " id="paket-cli">
+                <div>
+                  <div className="install-script" id="paket-cli-text">
+                    <span>
+                      paket add Newtonsoft.Json --version 12.0.1
+                    </span>
+                  </div>
+                  <div className="copy-button">
+                    <button id="paket-cli-button" className="btn btn-default btn-warning" type="button" data-toggle="popover" data-placement="bottom" data-content="Copied." aria-label="Copy the Paket CLI command" data-original-title="" title="">
+                      <Icon iconName="Copy" className="ms-Icon" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
             </div>
 
             {/* TODO: Fix this */}
@@ -181,26 +255,43 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
           </article>
           <aside className="col-sm-3 package-details-info">
             <div>
-              <h1>Info</h1>
+              <h2>Info</h2>
 
-              <div>Last updated {timeago().format(this.state.package.lastUpdate)}</div>
-              <div><a href={this.state.package.projectUrl}>{this.state.package.projectUrl}</a></div>
-
-              <SourceRepository url={this.state.package.repositoryUrl} type={this.state.package.repositoryType} />
-              <LicenseInfo url={this.state.package.licenseUrl} />
-
-              <div><a href={this.state.package.downloadUrl}>Download Package</a></div>
+              <ul className="list-unstyled ms-Icon-ul">
+                <li>
+                  <Icon iconName="History" className="ms-Icon" />
+                  Last updated {timeago().format(this.state.package.lastUpdate)}
+                </li>
+                <li>
+                  <Icon iconName="Globe" className="ms-Icon" />
+                  <a href={this.state.package.projectUrl}>{this.state.package.projectUrl}</a>
+                </li>
+                <SourceRepository url={this.state.package.repositoryUrl} type={this.state.package.repositoryType} />
+                <LicenseInfo url={this.state.package.licenseUrl} />
+                <li>
+                  <Icon iconName="CloudDownload" className="ms-Icon" />
+                  <a href={this.state.package.downloadUrl}>Download Package</a>
+                </li>
+              </ul>
             </div>
 
             <div>
-              <h1>Statistics</h1>
+              <h2>Statistics</h2>
 
-              <div>{this.state.package.totalDownloads.toLocaleString()} total downloads</div>
-              <div>{this.state.package.latestDownloads.toLocaleString()} downloads of latest version</div>
+              <ul className="list-unstyled ms-Icon-ul">
+                <li>
+                  <Icon iconName="Download" className="ms-Icon" />
+                  {this.state.package.totalDownloads.toLocaleString()} total downloads
+                </li>
+                <li>
+                  <Icon iconName="GiftBox" className="ms-Icon" />
+                  {this.state.package.latestDownloads.toLocaleString()} downloads of latest version
+                </li>
+              </ul>
             </div>
 
             <div>
-              <h1>Versions</h1>
+              <h2>Versions</h2>
 
               {this.state.package.versions.map(value => (
                 <div key={value.version}>
