@@ -169,12 +169,85 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
             <img src={this.state.package.iconUrl} className="img-responsive" />
           </aside>
           <article className="col-sm-8 package-details-main">
-            <div>
-              <h1>{this.state.package.id}</h1>
-              <span>{this.state.package.latestVersion}</span>
+            <div className="package-title">
+              <h1>
+                {this.state.package.id}
+                <small className="text-nowrap">{this.state.package.latestVersion}</small>
+              </h1>
+
             </div>
-            <div className="install-script">
-              dotnet add package {this.state.package.id} --version {this.state.package.latestVersion}
+
+            <div className="install-tabs">
+              <ul className="nav nav-tabs" role="tablist">
+
+                <li role="presentation" className="active">
+                  <a href="#dotnet-cli" aria-expanded="true" aria-selected="true" aria-controls="dotnet-cli" role="tab" data-toggle="tab" title="Switch to tab panel which contains package installation command for .NET CLI">
+                    .NET CLI
+                  </a>
+                </li>
+
+                <li role="presentation">
+                  <a href="#package-manager" aria-expanded="false" aria-selected="false" aria-controls="dotnet-cli" role="tab" data-toggle="tab" title="Switch to tab panel which contains package installation command for Package Manager">
+                    Package Manager
+                  </a>
+                </li>
+
+                <li role="presentation">
+                  <a href="#paket" aria-expanded="false" aria-selected="false" aria-controls="dotnet-cli" role="tab" data-toggle="tab" title="Switch to tab panel which contains package installation command for Paket">
+                    Paket CLI
+                  </a>
+                </li>
+
+              </ul>
+            </div>
+
+            <div className="tab-content">
+
+              <div role="tabpanel" className="tab-pane active" id="dotnet-cli">
+                <div>
+                  <div className="install-script" id="dotnet-cli-text">
+                    <span>
+                      dotnet add package Newtonsoft.Json --version 12.0.1
+                    </span>
+                  </div>
+                  <div className="copy-button">
+                    <button id="dotnet-cli-button" className="btn btn-default btn-warning" type="button" data-toggle="popover" data-placement="bottom" data-content="Copied." aria-label="Copy the .NET CLI command" data-original-title="" title="">
+                      <Icon iconName="Copy" className="ms-Icon" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div role="tabpanel" className="tab-pane" id="package-manager">
+                <div>
+                  <div className="install-script" id="package-manager-text">
+                    <span>
+                        Install-Package Newtonsoft.Json -Version 12.0.1
+                    </span>
+                  </div>
+                  <div className="copy-button">
+                    <button id="package-manager-button" className="btn btn-default btn-warning" type="button" data-toggle="popover" data-placement="bottom" data-content="Copied." aria-label="Copy the Package Manager command" data-original-title="" title="">
+                      <Icon iconName="Copy" className="ms-Icon" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div role="tabpanel" className="tab-pane " id="paket-cli">
+                <div>
+                  <div className="install-script" id="paket-cli-text">
+                    <span>
+                      paket add Newtonsoft.Json --version 12.0.1
+                    </span>
+                  </div>
+                  <div className="copy-button">
+                    <button id="paket-cli-button" className="btn btn-default btn-warning" type="button" data-toggle="popover" data-placement="bottom" data-content="Copied." aria-label="Copy the Paket CLI command" data-original-title="" title="">
+                      <Icon iconName="Copy" className="ms-Icon" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
             </div>
 
             {/* TODO: Fix this */}
@@ -182,7 +255,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
           </article>
           <aside className="col-sm-3 package-details-info">
             <div>
-              <h1>Info</h1>
+              <h2>Info</h2>
 
               <ul className="list-unstyled ms-Icon-ul">
                 <li>
@@ -203,7 +276,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
             </div>
 
             <div>
-              <h1>Statistics</h1>
+              <h2>Statistics</h2>
 
               <ul className="list-unstyled ms-Icon-ul">
                 <li>
@@ -218,7 +291,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
             </div>
 
             <div>
-              <h1>Versions</h1>
+              <h2>Versions</h2>
 
               {this.state.package.versions.map(value => (
                 <div key={value.version}>

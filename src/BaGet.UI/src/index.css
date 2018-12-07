@@ -4,8 +4,40 @@ body {
   font-family: 'Segoe UI', "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: inherit;
+  font-weight: 100;
+  line-height: 1.1;
+  color: inherit;
+}
+
+h1, h2, h3, p {
+  margin-bottom: 24px;
+}
+
+h1 {
+  margin-top: 33px;
+}
+
+h2, h3 {
+  margin-top: 40px;
+}
+
 .img-responsive {
   display: block;
   max-width: 100%;
   height: auto;
+}
+
+.ms-Icon-ul {
+  margin-left: 24px;
+}
+
+.ms-Icon-ul li {
+  position: relative;
+}
+
+.ms-Icon-ul li i.ms-Icon {
+  position: absolute;
+  left: -24px;
 }

@@ -1,9 +1,10 @@
-.display-package {
-  padding-top: 30px;
+.display-package .package-icon {
+  margin-top: 33px;
 }
 
-.display-package .package-icon {
-  margin-top: 20px;
+.display-package h1 small {
+  margin-left: 10px;
+  font-size: 45%;
 }
 
 .install-script:before {
@@ -18,4 +19,8 @@
   border-color: #002440;
   border-style: solid;
   border-width: 1px;
+}
+
+.package-details-info .ms-Icon-ul li {
+  margin-bottom: 15px;
 }

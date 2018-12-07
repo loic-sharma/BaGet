@@ -53,7 +53,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
             </div>
             <div className="col-sm-11">
               <div>
-                <h2><a href="#" onClick={this.onSelect}>{value.id}</a></h2>
+                <a className="package-title" href="#" onClick={this.onSelect}>{value.id}</a>
                 <span>by: {value.authors}</span>
               </div>
               <ul className="info">
