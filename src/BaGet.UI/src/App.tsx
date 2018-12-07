@@ -66,12 +66,14 @@ class App extends React.Component<{}, IAppState> {
         </div>
         <div className="container search-container">
           <div className="row">
-            <input
-              type="text"
-              className="form-control"
-              autoComplete="off"
-              placeholder="Search packages..."
+            <form className="col-sm-12">
+              <input
+                type="text"
+                className="form-control"
+                autoComplete="off"
+                placeholder="Search packages..."
               onChange={this.handleChange} />
+            </form>
           </div>
         </div>
       </nav>

@@ -3,6 +3,11 @@
   border-color: #002b4d;
 }
 
+/* TODO: Remove this once a logo is added in */
+#navbar {
+  padding-left: 0px;
+}
+
 .navbar {
   border-radius: 0;
 }
