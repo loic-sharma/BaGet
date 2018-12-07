@@ -609,19 +609,14 @@
 <p>You can modify BaGet's configurations by editing the <a href="https://github.com/loic-sharma/BaGet/blob/master/src/BaGet/appsettings.json"><code>appsettings.json</code></a> file.</p>
 <h2 id="requiring-an-api-key">Requiring an API key<a class="headerlink" href="#requiring-an-api-key" title="Permanent link">&para;</a></h2>
 <p>You can require that users provide a password, called an API key, to publish packages.
-To do so, insert the SHA-256 hash of your desired API key in the <code>ApiKeyHash</code> field:</p>
+To do so, you can insert the desired API key in the <code>ApiKey</code> field.</p>
 <div class="codehilite"><pre><span></span><span class="p">{</span>
-    <span class="nt">&quot;ApiKeyHash&quot;</span><span class="p">:</span> <span class="s2">&quot;658489D79E218D2474D049E8729198D86DB0A4AF43981686A31C7DCB02DC0900&quot;</span><span class="p">,</span>
-
+    <span class="nt">&quot;ApiKey&quot;</span><span class="p">:</span> <span class="s2">&quot;NUGET-SERVER-API-KEY&quot;</span><span class="p">,</span>
     <span class="err">...</span>
 <span class="p">}</span>
 </pre></div>
 
 
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p><code>658489D79E218D2474D049E8729198D86DB0A4AF43981686A31C7DCB02DC0900</code> is the SHA-256 hash of <code>NUGET-SERVER-API-KEY</code>.</p>
-</div>
 <p>Users will now have to provide the API key to push packages:</p>
 <div class="codehilite"><pre><span></span>dotnet nuget push -s http://localhost:5000/v3/index.json -k NUGET-SERVER-API-KEY newtonsoft.json.11.0.2.nupkg
 </pre></div>
