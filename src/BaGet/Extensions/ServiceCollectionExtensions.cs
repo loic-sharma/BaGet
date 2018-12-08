@@ -158,13 +158,6 @@ namespace BaGet.Extensions
             return services;
         }
 
-        public static IServiceCollection AddFileStorageService(this IServiceCollection services)
-        {
-            services.AddTransient<FileStorageService>();
-
-            return services;
-        }
-
         public static IServiceCollection ConfigureSearchProviders(this IServiceCollection services)
         {
             services.AddTransient<ISearchService>(provider =>
