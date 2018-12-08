@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Versioning;
 
 namespace BaGet.Core.Services
 {
@@ -20,7 +21,9 @@ namespace BaGet.Core.Services
 
         public async Task<IReadOnlyList<SearchResult>> SearchAsync(string query, int skip = 0, int take = 20)
         {
-            IQueryable<Package> search = _context.Packages;
+            // do we need a filter for listed?
+            IQueryable<Package> packages = _context.Packages;
+            IQueryable<Package> search = packages;
 
             if (!string.IsNullOrEmpty(query))
             {
@@ -28,44 +31,69 @@ namespace BaGet.Core.Services
                 search = search.Where(p => p.Id.ToLower().Contains(query));
             }
 
-            var packages = await _context.Packages
-                .Where(p =>
-                    search.Select(p2 => p2.Id)
-                        .OrderBy(id => id)
-                        .Distinct()
-                        .Skip(skip)
-                        .Take(take)
-                        .Contains(p.Id))
-                .GroupBy(p => p.Id)
+            var packageVersions = await search
+                .GroupBy(s => s.Id)
+                .Select(s => new
+                {
+                    Id = s.Key,
+                    Versions = s.Select(q => new { q.VersionString, q.Downloads }).ToList(),
+                })
+                .OrderBy(s => s.Id)
+                .Skip(skip)
+                .Take(take)
                 .ToListAsync();
 
-            var result = new List<SearchResult>();
-
-            foreach (var package in packages)
-            {
-                var versions = package.OrderByDescending(p => p.Version).ToList();
-                var latest = versions.First();
-
-                var versionResults = versions.Select(p => new SearchResultVersion(p.Version, p.Downloads));
-
-                result.Add(new SearchResult
+            var packageMaxVersions = packageVersions
+                .Select(s => new
                 {
-                    Id = latest.Id,
-                    Version = latest.Version,
-                    Description = latest.Description,
-                    Authors = latest.Authors,
-                    IconUrl = latest.IconUrlString,
-                    LicenseUrl = latest.LicenseUrlString,
-                    ProjectUrl = latest.ProjectUrlString,
-                    Summary = latest.Summary,
-                    Tags = latest.Tags,
-                    Title = latest.Title,
-                    TotalDownloads = versions.Sum(p => p.Downloads),
-                    Versions = versionResults.ToList().AsReadOnly(),
-                });
-            }
+                    s.Id,
+                    Version = s.Versions.Select(t => NuGetVersion.Parse(t.VersionString)).Max()
+                })
+                .ToArray();
 
-            return result.AsReadOnly();
+            var ids = packageMaxVersions.Select(s => s.Id)
+                .ToArray();
+
+            var maxVersions = packageMaxVersions
+                .Select(s => s.Version.ToString())
+                .ToArray();
+
+            var packagesInfo = packages.Where(s => ids.Contains(s.Id) && maxVersions.Contains(s.VersionString))
+                .Select(s => new
+                {
+                    s.Id,
+                    s.Version,
+                    s.Description,
+                    s.Authors,
+                    s.IconUrlString,
+                    s.LicenseUrlString,
+                    s.ProjectUrlString,
+                    s.Summary,
+                    s.Tags,
+                    s.Title
+                })
+                .ToList();
+
+            // actually one to one
+            IReadOnlyList<SearchResult> result = packagesInfo.Join(packageVersions, s => s.Id, s => s.Id, (i, v) => new SearchResult
+            {
+                Authors = i.Authors,
+                Description = i.Description,
+                Id = i.Id,
+                IconUrl = i.IconUrlString,
+                LicenseUrl = i.LicenseUrlString,
+                ProjectUrl = i.ProjectUrlString,
+                Summary = i.Summary,
+                Tags = i.Tags,
+                Title = i.Title,
+                TotalDownloads = v.Versions.Sum(w => w.Downloads),
+                Version = i.Version,
+                Versions = v.Versions.Select(q => new SearchResultVersion(NuGetVersion.Parse(q.VersionString), q.Downloads)).ToList()
+            })
+            .ToList()
+            .AsReadOnly();
+
+            return result;
         }
 
         public async Task<IReadOnlyList<string>> AutocompleteAsync(string query, int skip = 0, int take = 20)
