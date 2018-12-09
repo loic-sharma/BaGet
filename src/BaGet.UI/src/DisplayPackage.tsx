@@ -74,13 +74,13 @@ interface ICatalogEntry {
 }
 
 interface IDependencyGroup {
-    targetFramework: string;
-    dependencies: IDependency[];
+  targetFramework: string;
+  dependencies: IDependency[];
 }
 
 interface IDependency {
-    id: string;
-    range: string;
+  id: string;
+  range: string;
 }
 
 class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPackageState> {
@@ -118,14 +118,14 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
           version: entry.catalogEntry.version,
         });
 
-        dependencyGroups.push(...entry.catalogEntry.dependencyGroups);
-
         if (entry.catalogEntry.version === latestVersion) {
           latestItem = entry;
         }
       }
 
       if (latestItem) {
+        dependencyGroups.push(...latestItem.catalogEntry.dependencyGroups);
+
         let readme = "";
         if (!latestItem.catalogEntry.hasReadme) {
           readme = latestItem.catalogEntry.description; 
