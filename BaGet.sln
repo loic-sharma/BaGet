@@ -19,9 +19,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{26A0B557-53F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C237857D-AD8E-4C52-974F-6A8155BB0C18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaGet.Protocol", "src\BaGet.Protocol\BaGet.Protocol.csproj", "{A2D23427-9278-4D52-B31F-759212252832}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Protocol", "src\BaGet.Protocol\BaGet.Protocol.csproj", "{A2D23427-9278-4D52-B31F-759212252832}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaGet.Protocol.Tests", "tests\BaGet.Protocol.Tests\BaGet.Protocol.Tests.csproj", "{AC764A9A-9EAF-422B-9223-D3290C3CFD79}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Protocol.Tests", "tests\BaGet.Protocol.Tests\BaGet.Protocol.Tests.csproj", "{AC764A9A-9EAF-422B-9223-D3290C3CFD79}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0B44364D-952B-497A-82E0-C9AAE94E0369}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

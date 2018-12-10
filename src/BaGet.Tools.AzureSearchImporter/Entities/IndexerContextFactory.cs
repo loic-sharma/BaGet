@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
 namespace BaGet.Tools.AzureSearchImporter.Entities
 {
-    class IndexerContextFactory : IDesignTimeDbContextFactory<IndexerContext>
+    public class IndexerContextFactory : IDesignTimeDbContextFactory<IndexerContext>
     {
         public const string ConnectionString = "Data Source=indexer.db";
 
