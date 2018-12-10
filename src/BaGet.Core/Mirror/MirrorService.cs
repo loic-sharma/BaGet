@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -219,7 +219,7 @@ namespace BaGet.Core.Mirror
                         id,
                         version);
 
-                    var result = await _indexer.IndexAsync(stream, cancellationToken);
+                    var result = await _indexer.IndexAsync(stream, cancellationToken: cancellationToken);
 
                     _logger.LogInformation(
                         "Finished indexing package {PackageId} {PackageVersion} with result {Result}",

@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading;
@@ -81,6 +82,11 @@ namespace BaGet.Azure.Configuration
             await _container
                 .GetBlockBlobReference(path)
                 .DeleteIfExistsAsync(cancellationToken);
+        }
+
+        public Task<IEnumerable<string>> GetPackagePathsAsync(CancellationToken cancellationToken = default)
+        {
+            throw new InvalidOperationException("Not supported for BlobStorageService");
         }
 
         private bool IsAlreadyExistsException(StorageException e)

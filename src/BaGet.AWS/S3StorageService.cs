@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -93,6 +94,11 @@ namespace BaGet.AWS
         public async Task DeleteAsync(string path, CancellationToken cancellationToken = default)
         {
             await _client.DeleteObjectAsync(_bucket, PrepareKey(path), cancellationToken);
+        }
+
+        public Task<IEnumerable<string>> GetPackagePathsAsync(CancellationToken cancellationToken = default)
+        {
+            throw new InvalidOperationException("Not supported for S3StorageService");
         }
     }
 }

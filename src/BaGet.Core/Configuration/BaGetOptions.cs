@@ -22,6 +22,12 @@ namespace BaGet.Core.Configuration
         public bool RunMigrationsAtStartup { get; set; } = true;
 
         /// <summary>
+        /// If enabled, the packages folder will be enumerated and every package
+        /// is ensured to exist in the database.
+        /// </summary>
+        public bool StartupEnsurePackagesExistsInDatabase { get; set; }
+
+        /// <summary>
         /// How BaGet should interpret package deletion requests.
         /// </summary>
         public PackageDeletionBehavior PackageDeletionBehavior { get; set; } = PackageDeletionBehavior.Unlist;

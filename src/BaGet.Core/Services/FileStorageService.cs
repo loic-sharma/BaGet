@@ -1,5 +1,7 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Configuration;
@@ -95,6 +97,17 @@ namespace BaGet.Core.Services
             }
 
             return Task.CompletedTask;
+        }
+
+        public Task<IEnumerable<string>> GetPackagePathsAsync(CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var root = Path.Combine(_storePath, PackageStorageService.PackagesPathPrefix);
+            var files = Directory.GetFiles(root, "*.nupkg", SearchOption.AllDirectories);
+            var filesRelative = files.Select(x => new Uri(_storePath).MakeRelativeUri(new Uri(x)).ToString());
+
+            return Task.FromResult(filesRelative);
         }
 
         private string GetFullPath(string path)
