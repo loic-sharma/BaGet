@@ -39,6 +39,7 @@ namespace BaGet.Extensions
             services.ConfigureAndValidateSection<DatabaseOptions>(configuration, nameof(BaGetOptions.Database));
             services.ConfigureAndValidateSection<FileSystemStorageOptions>(configuration, nameof(BaGetOptions.Storage));
             services.ConfigureAndValidateSection<BlobStorageOptions>(configuration, nameof(BaGetOptions.Storage));
+            services.ConfigureAndValidateSection<GoogleBucketStorageOptions>(configuration, nameof(BaGetOptions.Storage));
             services.ConfigureAndValidateSection<AzureSearchOptions>(configuration, nameof(BaGetOptions.Search));
 
             services.AddBaGetContext();
@@ -135,6 +136,7 @@ namespace BaGet.Extensions
         public static IServiceCollection ConfigureStorageProviders(this IServiceCollection services)
         {
             services.AddTransient<FileStorageService>();
+            services.AddTransient<GoogleBucketStorageService>();
             services.AddTransient<IPackageStorageService, PackageStorageService>();
             services.AddTransient<ISymbolStorageService, SymbolStorageService>();
 
@@ -151,6 +153,9 @@ namespace BaGet.Extensions
 
                     case StorageType.AzureBlobStorage:
                         return provider.GetRequiredService<BlobStorageService>();
+
+                    case StorageType.GoogleBucket:
+                        return provider.GetRequiredService<GoogleBucketStorageService>();
 
                     default:
                         throw new InvalidOperationException(
