@@ -195,24 +195,25 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
             {/* TODO: Fix this */}
             <div dangerouslySetInnerHTML={{ __html: this.state.package.readme }} />
 
-            {this.state.package.dependencyGroups.length > 0 && 
             <div>
               <h3>Dependencies</h3>
 
-              {this.state.package.dependencyGroups.map(depGroup => (
-                  <div>
-                      <h4>{depGroup.targetFramework}</h4>
-                      <ul>
-                          {depGroup.dependencies.map(dep => (
-                              <li>
-                                  {dep.id} {dep.range}
-                              </li>
-                          ))}
-                      </ul>
-                  </div>
-              ))}
-            </div>
-            }
+              {this.state.package.dependencyGroups.length > 0 ? ( 
+                {this.state.package.dependencyGroups.map(depGroup => (
+                    <div>
+                        <h4>{depGroup.targetFramework}</h4>
+                        <ul>
+                            {depGroup.dependencies.map(dep => (
+                                <li>
+                                    {dep.id} {dep.range}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                ))}) : (
+			    This package has no dependencies.
+			  )}
+			</div>
           </article>
           <aside className="col-sm-3 package-details-info">
             <div>
