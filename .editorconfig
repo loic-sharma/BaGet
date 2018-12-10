@@ -1,7 +1,3 @@
-; EditorConfig to support per-solution formatting.
-; Use the EditorConfig VS add-in to make this work.
-; http://editorconfig.org/
-
 ; This is the default for the codeline.
 root = true
 
