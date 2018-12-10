@@ -104,9 +104,11 @@ namespace BaGet.Core.Services
                 throw new ArgumentException("Path is required", nameof(path));
             }
 
-            // Verify path is under the _storePath.
             string fullPath = Path.GetFullPath(Path.Combine(_storePath, path));
-            if (!fullPath.StartsWith(_storePath))
+
+            // Verify path is under the _storePath.
+            if (!fullPath.StartsWith(_storePath, StringComparison.Ordinal) ||
+                fullPath.Length == _storePath.Length)
             {
                 throw new ArgumentException("Path resolves outside store path", nameof(path));
             }
