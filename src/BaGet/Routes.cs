@@ -1,4 +1,4 @@
-﻿namespace BaGet
+namespace BaGet
 {
     public class Routes
     {
@@ -16,6 +16,5 @@
         public const string PackageDownloadManifestRouteName = "package-download-manifest";
         public const string PackageDownloadReadmeRouteName = "package-download-readme";
         public const string SymbolDownloadRouteName = "symbol-download";
-
     }
 }

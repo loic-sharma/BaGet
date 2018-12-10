@@ -1,6 +1,5 @@
-﻿using BaGet.Azure.Configuration;
+using BaGet.Azure.Configuration;
 using BaGet.Azure.Search;
-using BaGet.Core.Services;
 using Microsoft.Azure.Search;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

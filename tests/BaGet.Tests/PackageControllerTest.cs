@@ -1,17 +1,15 @@
 using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Logging;
 using Xunit;
 using Xunit.Abstractions;
 namespace BaGet.Tests
 {
 
-    public class PackageControllerTest 
+    public class PackageControllerTest
     {
         protected readonly ITestOutputHelper Helper;
-
-        readonly string IndexUrlFormatString = "v3/package/{0}/index.json";
+        private readonly string IndexUrlFormatString = "v3/package/{0}/index.json";
 
         public PackageControllerTest(ITestOutputHelper helper)
         {
@@ -23,10 +21,10 @@ namespace BaGet.Tests
         [InlineData("id02")]
         public async Task AskEmptyServerForNotExistingPackageID(string packageID)
         {
-            using (TestServer server = TestServerBuilder.Create().TraceToTestOutputHelper(Helper,LogLevel.Error).Build())
+            using (var server = TestServerBuilder.Create().TraceToTestOutputHelper(Helper, LogLevel.Error).Build())
             {
                 //Ask Empty Storage for a not existings ID
-                var response = await  server.CreateClient().GetAsync(string.Format(IndexUrlFormatString, packageID));
+                var response = await server.CreateClient().GetAsync(string.Format(IndexUrlFormatString, packageID));
                 Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
             }
         }
