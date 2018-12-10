@@ -5,11 +5,11 @@ namespace BaGet.AWS.Configuration
 {
     public class S3StorageOptions
     {
-        [RequiredIf(nameof(KeySecret), null, IsInverted = true)]
-        public string KeyId { get; set; }
+        [RequiredIf(nameof(SecretKey), null, IsInverted = true)]
+        public string AccessKey { get; set; }
 
-        [RequiredIf(nameof(KeyId), null, IsInverted = true)]
-        public string KeySecret { get; set; }
+        [RequiredIf(nameof(AccessKey), null, IsInverted = true)]
+        public string SecretKey { get; set; }
 
         [Required]
         public string Region { get; set; }

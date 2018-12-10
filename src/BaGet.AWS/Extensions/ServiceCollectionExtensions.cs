@@ -2,7 +2,6 @@
 using Amazon.Runtime;
 using Amazon.S3;
 using BaGet.AWS.Configuration;
-using BaGet.Core.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -21,8 +20,8 @@ namespace BaGet.AWS.Extensions
                     RegionEndpoint = RegionEndpoint.GetBySystemName(options.Region)
                 };
 
-                if (!string.IsNullOrEmpty(options.KeyId))
-                    return new AmazonS3Client(new BasicAWSCredentials(options.KeyId, options.KeySecret), config);
+                if (!string.IsNullOrEmpty(options.AccessKey))
+                    return new AmazonS3Client(new BasicAWSCredentials(options.AccessKey, options.SecretKey), config);
 
                 return new AmazonS3Client(config);
             });
