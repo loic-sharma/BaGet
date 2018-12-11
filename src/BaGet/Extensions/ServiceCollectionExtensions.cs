@@ -4,6 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
+using BaGet.AWS;
+using BaGet.AWS.Configuration;
+using BaGet.AWS.Extensions;
 using BaGet.Azure.Configuration;
 using BaGet.Azure.Extensions;
 using BaGet.Azure.Search;
@@ -43,6 +46,7 @@ namespace BaGet.Extensions
 
             services.AddBaGetContext();
             services.ConfigureAzure(configuration);
+            services.ConfigureAws(configuration);
 
             if (httpServices)
             {
@@ -105,8 +109,17 @@ namespace BaGet.Extensions
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.ConfigureAndValidate<BlobStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
-            services.ConfigureAndValidate<AzureSearchOptions>(configuration.GetSection(nameof(BaGetOptions.Search)));
+            services.ConfigureAndValidateSection<BlobStorageOptions>(configuration, nameof(BaGetOptions.Storage));
+            services.ConfigureAndValidateSection<AzureSearchOptions>(configuration, nameof(BaGetOptions.Search));
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureAws(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            services.ConfigureAndValidateSection<S3StorageOptions>(configuration, nameof(BaGetOptions.Storage));
 
             return services;
         }
@@ -139,6 +152,7 @@ namespace BaGet.Extensions
             services.AddTransient<ISymbolStorageService, SymbolStorageService>();
 
             services.AddBlobStorageService();
+            services.AddS3StorageService();
 
             services.AddTransient<IStorageService>(provider =>
             {
@@ -151,6 +165,9 @@ namespace BaGet.Extensions
 
                     case StorageType.AzureBlobStorage:
                         return provider.GetRequiredService<BlobStorageService>();
+
+                    case StorageType.AwsS3:
+                        return provider.GetRequiredService<S3StorageService>();
 
                     default:
                         throw new InvalidOperationException(
