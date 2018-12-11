@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using BaGet.Core.Configuration;
@@ -78,10 +78,10 @@ namespace BaGet.Tests
         private TestServerBuilder UseEmptyTempFolder()
         {
             Configuration.Add(DatabaseTypeKey, DatabaseType.Sqlite.ToString());
-            string uniqueTempFolder = Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString("N"));
+            var uniqueTempFolder = Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(uniqueTempFolder);
-            string resolvedSqliteFile = Path.Combine(uniqueTempFolder, "BaGet.db");
-            string storageFolderPath = Path.Combine(uniqueTempFolder, DefaultPackagesFolderName);
+            var resolvedSqliteFile = Path.Combine(uniqueTempFolder, "BaGet.db");
+            var storageFolderPath = Path.Combine(uniqueTempFolder, DefaultPackagesFolderName);
             Configuration.Add(ConnectionStringKey, string.Format("Data Source={0}", resolvedSqliteFile));
             Configuration.Add(StorageTypeKey, StorageType.FileSystem.ToString());
             Configuration.Add(FileSystemStoragePathKey, storageFolderPath);
@@ -92,8 +92,8 @@ namespace BaGet.Tests
 
         public TestServer Build()
         {
-            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder().AddInMemoryCollection(Configuration);
-            IWebHostBuilder hostBuilder = new WebHostBuilder()
+            var configurationBuilder = new ConfigurationBuilder().AddInMemoryCollection(Configuration);
+            var hostBuilder = new WebHostBuilder()
                 .UseConfiguration(configurationBuilder.Build())
                 .UseStartup<Startup>();
 
@@ -106,7 +106,7 @@ namespace BaGet.Tests
                 });
             }
 
-            TestServer server = new TestServer(hostBuilder);
+            var server = new TestServer(hostBuilder);
 
             //Ensure that the Database is created, we use the same feature like inside the Startup in case of Env.IsDevelopment (EF-Migrations)
             var scopeFactory = server.Host.Services.GetRequiredService<IServiceScopeFactory>();
