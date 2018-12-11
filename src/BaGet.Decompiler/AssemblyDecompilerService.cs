@@ -7,39 +7,37 @@ using BaGet.Decompiler.Objects;
 using BaGet.Decompiler.SourceCode;
 using ICSharpCode.Decompiler;
 using ICSharpCode.Decompiler.CSharp;
-using ICSharpCode.Decompiler.CSharp.Syntax;
-using Mono.Cecil;
+using ICSharpCode.Decompiler.CSharp.OutputVisitor;
+using ICSharpCode.Decompiler.Output;
+using ICSharpCode.Decompiler.TypeSystem;
 
 namespace BaGet.Decompiler
 {
     public class AssemblyDecompilerService
     {
-        private readonly DecompilerSettings _decompilerMembersSettings;
         private readonly Filter _filter;
+        private readonly CSharpAmbience _ambience;
 
-        private readonly List<ISourceCodeProvider> _sourceCodeProviders;
+        private readonly List<ISourceCodeProvider> _globalSourceCodeProviders;
 
         public AssemblyDecompilerService()
         {
-            _decompilerMembersSettings = new DecompilerSettings
+            _ambience = new CSharpAmbience
             {
-                //DecompileMemberBodies = false,    TODO: https://github.com/icsharpcode/ILSpy/issues/1332
-                UsingDeclarations = false,
-                ShowXmlDocumentation = false
+                ConversionFlags = ConversionFlags.StandardConversionFlags
             };
 
             _filter = new Filter();
 
-            _sourceCodeProviders = new List<ISourceCodeProvider>
-            {
-                new SourceCodeDecompiler()
-            };
+            _globalSourceCodeProviders = new List<ISourceCodeProvider>();
         }
 
         public AnalysisAssembly AnalyzeAssembly(Stream assembly, Stream pdb = null, Stream documentationXml = null)
         {
             string tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(tempDir);
+
+            List<ISourceCodeProvider> localSourceCodeProviders = new List<ISourceCodeProvider>();
 
             AnalysisAssembly res;
             try
@@ -58,23 +56,23 @@ namespace BaGet.Decompiler
 
                 // TODO: Load PDB from memory
                 // TODO: Load module from memory
+                var decompiler = new CSharpDecompiler(assemblyFile, new DecompilerSettings(LanguageVersion.Latest));
+                res = DecompileAssembly(decompiler.TypeSystem.MainModule);
 
-                using (ModuleDefinition module = UniversalAssemblyResolver.LoadMainModule(assemblyFile, false, true))
+                // Read documentation
+                // TODO Read documentation
+
+                // Fetch sources
+                localSourceCodeProviders.Add(new SourceCodeDecompiler(decompiler));
+
+                foreach (ISourceCodeProvider provider in _globalSourceCodeProviders.Concat(localSourceCodeProviders))
                 {
-                    res = DecompileAssembly(module);
-
-                    // Read documentation
-                    // TODO Read documentation
-
-                    // Fetch sources
-                    foreach (ISourceCodeProvider provider in _sourceCodeProviders)
-                    {
-                        provider.TryFillSources(module, res, assemblyFile, assemblyPdb);
-                    }
+                    provider.TryFillSources(decompiler.TypeSystem.MainModule, res, assemblyFile, assemblyPdb);
                 }
             }
             finally
             {
+                // TODO: Properly close CSharpDecompiler
                 try
                 {
                     Directory.Delete(tempDir, true);
@@ -87,79 +85,53 @@ namespace BaGet.Decompiler
             return res;
         }
 
-        private AnalysisAssembly DecompileAssembly(ModuleDefinition module)
+        private AnalysisAssembly DecompileAssembly(MetadataModule module)
         {
             AnalysisAssembly res = new AnalysisAssembly();
 
-            CSharpDecompiler decompilerMembers = new CSharpDecompiler(module, _decompilerMembersSettings);
-
             // Process all types
-            foreach (TypeDefinition type in module.Types.Where(_filter.Include).Take(300))
+            foreach (var type in module.TypeDefinitions.Where(_filter.Include))
             {
-                string typeName = type.FullName;
-
-                SyntaxTree ast = decompilerMembers.Decompile(type);
-                string declaration = DeclarationRenderer.RenderTypeDeclaration(ast);
-
                 AnalysisType analysisType = new AnalysisType
                 {
-                    FullName = typeName,
-                    Display = declaration
+                    FullName = type.FullTypeName.ToString(),
+                    Display = _ambience.ConvertSymbol(type)
                 };
 
                 res.Types.Add(analysisType);
 
                 // Methods, Constructors
-                foreach (MethodDefinition method in type.Methods)
+                foreach (var method in type.Methods)
                 {
                     if (!_filter.Include(method))
                         continue;
-
-                    SyntaxTree methodAst = decompilerMembers.Decompile(method);
-
-                    AstNode methodType = methodAst.DescendantNodes().First(s => s.NodeType == NodeType.TypeReference);
-                    string methodDeclaration = methodAst.ToString().Trim();
 
                     AnalysisMember analysisMethod = new AnalysisMember
                     {
                         MemberType = method.IsConstructor ? AnalysisMemberType.Constructor : AnalysisMemberType.Method,
                         Name = method.Name,
-                        Type = methodType.ToString(),
-                        Display = methodDeclaration
+                        Type = _ambience.ConvertType(method.ReturnType),
+                        Display = _ambience.ConvertSymbol(method)
                     };
 
                     analysisType.Members.Add(analysisMethod);
                 }
 
                 // Properties, Fields, Events
-                foreach (IMemberDefinition member in type.Properties.Where(_filter.Include).OfType<IMemberDefinition>()
+                foreach (var member in type.Properties.Where(_filter.Include).OfType<IMember>()
                     .Concat(type.Fields.Where(_filter.Include))
                     .Concat(type.Events.Where(_filter.Include)))
                 {
-                    SyntaxTree memberAst = decompilerMembers.Decompile(member);
-
-                    string memberType = memberAst.DescendantNodes()
-                        .FirstOrDefault(s => s.NodeType == NodeType.TypeReference)?.ToString();
-                    string memberDeclaration = memberAst.ToString().Trim();
-
-                    if (memberType == null)
-                    {
-                        if (type.IsEnum)
-                            memberType = typeName;
-                        else
-                            throw new Exception();
-                    }
-
                     AnalysisMemberType analysisMemberType;
                     switch (member)
                     {
-                        case PropertyDefinition _:
+                        case IProperty _:
                             analysisMemberType = AnalysisMemberType.Property;
                             break;
-                        case EventDefinition _:
+                        case IEvent _:
                             analysisMemberType = AnalysisMemberType.Event;
                             break;
-                        case FieldDefinition _:
+                        case IField _:
                             analysisMemberType = AnalysisMemberType.Field;
                             break;
                         default:
@@ -170,8 +142,8 @@ namespace BaGet.Decompiler
                     {
                         MemberType = analysisMemberType,
                         Name = member.Name,
-                        Type = memberType,
-                        Display = memberDeclaration
+                        Type = _ambience.ConvertType(member.ReturnType),
+                        Display = _ambience.ConvertSymbol(member)
                     };
 
                     analysisType.Members.Add(analysisProperty);

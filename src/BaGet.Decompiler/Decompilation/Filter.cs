@@ -1,59 +1,52 @@
-﻿using BaGet.Decompiler.Extensions;
-using Mono.Cecil;
+﻿using ICSharpCode.Decompiler.TypeSystem;
 
 namespace BaGet.Decompiler.Decompilation
 {
     internal class Filter
     {
-        public bool Include(MethodDefinition method)
+        public bool Include(IMethod method)
         {
-            if (method.IsSpecialName)
-                return false;
-
             // Skip finalizers
-            if (method.IsFinalizer())
+            if (method.IsDestructor)
                 return false;
 
             // Publics
-            if (method.IsPublic)
+            if (method.Accessibility == Accessibility.Public)
                 return true;
 
             // Protected, in non-sealed types
-            if (method.IsFamily && !method.DeclaringType.IsSealed)
+            if (method.Accessibility == Accessibility.Protected && !method.DeclaringType.GetDefinition().IsSealed)
                 return true;
 
             return false;
         }
 
-        public bool Include(PropertyDefinition property)
+        public bool Include(IProperty property)
         {
-            if (property.IsSpecialName)
-                return false;
-
             // Publics
-            if (property.IsPublic())
+            if (property.Accessibility == Accessibility.Public)
                 return true;
 
             // Protected, in non-sealed types
-            if (property.IsFamily() && !property.DeclaringType.IsSealed)
+            if (property.Accessibility == Accessibility.Protected && !property.DeclaringType.GetDefinition().IsSealed)
                 return true;
 
-            return !property.IsSpecialName;
+            return false;
         }
 
-        public bool Include(TypeDefinition type)
+        public bool Include(ITypeDefinition type)
         {
-            return (type.IsPublic || type.IsNestedFamily) && !type.IsSpecialName;
+            return type.Accessibility == Accessibility.Public || type.Accessibility == Accessibility.Protected;
         }
 
-        public bool Include(FieldDefinition field)
+        public bool Include(IField field)
         {
-            return (field.IsPublic || field.IsFamily) && !field.IsSpecialName;
+            return field.Accessibility == Accessibility.Public || field.Accessibility == Accessibility.Protected;
         }
 
-        public bool Include(EventDefinition @event)
+        public bool Include(IEvent @event)
         {
-            return (@event.IsPublic() || @event.IsFamily()) && !@event.IsSpecialName;
+            return @event.Accessibility == Accessibility.Public || @event.Accessibility == Accessibility.Protected;
         }
     }
 }
