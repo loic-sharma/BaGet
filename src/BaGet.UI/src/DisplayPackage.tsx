@@ -198,22 +198,23 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
             <div>
               <h3>Dependencies</h3>
 
-              {this.state.package.dependencyGroups.length > 0 ? ( 
-                {this.state.package.dependencyGroups.map(depGroup => (
-                    <div>
-                        <h4>{depGroup.targetFramework}</h4>
-                        <ul>
-                            {depGroup.dependencies.map(dep => (
-                                <li>
-                                    {dep.id} {dep.range}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                ))}) : (
-			    This package has no dependencies.
-			  )}
-			</div>
+              {this.state.package.dependencyGroups.length > 0 ? (
+                <div>{this.state.package.dependencyGroups.map(depGroup => (
+                  <div>
+                    <h4>{depGroup.targetFramework}</h4>
+                    <ul>
+                      {depGroup.dependencies.map(dep => (
+                        <li>
+                          {dep.id} {dep.range}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}</div>
+                ) : (
+                <div>This package has no dependencies.</div>
+              )}
+          </div>
           </article>
           <aside className="col-sm-3 package-details-info">
             <div>
