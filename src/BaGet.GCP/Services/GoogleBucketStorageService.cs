@@ -50,7 +50,7 @@ namespace BaGet.GCP.Services
                 if (e.HttpStatusCode != HttpStatusCode.NotFound)
                     throw;
 
-                await storage.UploadObjectAsync(_bucketName, path, null, content, cancellationToken: cancellationToken);
+                await storage.UploadObjectAsync(_bucketName, path, contentType, content, cancellationToken: cancellationToken);
                 return PutResult.Success;
             }
         }
