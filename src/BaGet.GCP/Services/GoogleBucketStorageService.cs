@@ -1,9 +1,11 @@
 using System;
 using System.IO;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Services;
 using BaGet.GCP.Configuration;
+using Google;
 using Google.Cloud.Storage.V1;
 using Microsoft.Extensions.Options;
 
@@ -38,11 +40,19 @@ namespace BaGet.GCP.Services
         public async Task<PutResult> PutAsync(string path, Stream content, string contentType, CancellationToken cancellationToken = default)
         {
             var storage = await StorageClient.CreateAsync();
-            var obj = await storage.GetObjectAsync(_bucketName, path, cancellationToken: cancellationToken);
-            if (obj != null)
+            try
+            {
+                await storage.GetObjectAsync(_bucketName, path, cancellationToken: cancellationToken);
                 return PutResult.AlreadyExists;
-            await storage.UploadObjectAsync(_bucketName, path, null, content, cancellationToken: cancellationToken);
-            return PutResult.Success;
+            }
+            catch (GoogleApiException e)
+            {
+                if (e.HttpStatusCode != HttpStatusCode.NotFound)
+                    throw;
+
+                await storage.UploadObjectAsync(_bucketName, path, null, content, cancellationToken: cancellationToken);
+                return PutResult.Success;
+            }
         }
 
         public async Task DeleteAsync(string path, CancellationToken cancellationToken = default)
