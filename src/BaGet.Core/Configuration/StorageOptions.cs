@@ -9,6 +9,7 @@ namespace BaGet.Core.Configuration
     {
         FileSystem = 0,
         AzureBlobStorage = 1,
-        GoogleBucket = 2
+        AwsS3 = 2,
+        GoogleBucket = 3
     }
 }
