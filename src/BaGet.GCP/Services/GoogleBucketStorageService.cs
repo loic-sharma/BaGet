@@ -2,11 +2,12 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.Configuration;
+using BaGet.Core.Services;
+using BaGet.GCP.Configuration;
 using Google.Cloud.Storage.V1;
 using Microsoft.Extensions.Options;
 
-namespace BaGet.Core.Services
+namespace BaGet.GCP.Services
 {
     public class GoogleBucketStorageService : IStorageService
     {

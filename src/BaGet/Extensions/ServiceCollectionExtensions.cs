@@ -16,6 +16,9 @@ using BaGet.Core.Entities;
 using BaGet.Core.Mirror;
 using BaGet.Core.Services;
 using BaGet.Entities;
+using BaGet.GCP.Configuration;
+using BaGet.GCP.Extensions;
+using BaGet.GCP.Services;
 using BaGet.Protocol;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
@@ -42,12 +45,12 @@ namespace BaGet.Extensions
             services.ConfigureAndValidateSection<DatabaseOptions>(configuration, nameof(BaGetOptions.Database));
             services.ConfigureAndValidateSection<FileSystemStorageOptions>(configuration, nameof(BaGetOptions.Storage));
             services.ConfigureAndValidateSection<BlobStorageOptions>(configuration, nameof(BaGetOptions.Storage));
-            services.ConfigureAndValidateSection<GoogleBucketStorageOptions>(configuration, nameof(BaGetOptions.Storage));
             services.ConfigureAndValidateSection<AzureSearchOptions>(configuration, nameof(BaGetOptions.Search));
 
             services.AddBaGetContext();
             services.ConfigureAzure(configuration);
             services.ConfigureAws(configuration);
+            services.ConfigureGcp(configuration);
 
             if (httpServices)
             {
@@ -125,6 +128,15 @@ namespace BaGet.Extensions
             return services;
         }
 
+        public static IServiceCollection ConfigureGcp(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            services.ConfigureAndValidateSection<GoogleBucketStorageOptions>(configuration, nameof(BaGetOptions.Storage));
+
+            return services;
+        }
+
         public static IServiceCollection ConfigureHttpServices(this IServiceCollection services)
         {
             services
@@ -149,12 +161,12 @@ namespace BaGet.Extensions
         public static IServiceCollection ConfigureStorageProviders(this IServiceCollection services)
         {
             services.AddTransient<FileStorageService>();
-            services.AddTransient<GoogleBucketStorageService>();
             services.AddTransient<IPackageStorageService, PackageStorageService>();
             services.AddTransient<ISymbolStorageService, SymbolStorageService>();
 
             services.AddBlobStorageService();
             services.AddS3StorageService();
+            services.AddGoogleBucketStorageService();
 
             services.AddTransient<IStorageService>(provider =>
             {

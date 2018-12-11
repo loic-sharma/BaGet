@@ -1,8 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+using BaGet.Core.Configuration;
 
-namespace BaGet.Core.Configuration
+namespace BaGet.GCP.Configuration
 {
     public class GoogleBucketStorageOptions : StorageOptions
     {
