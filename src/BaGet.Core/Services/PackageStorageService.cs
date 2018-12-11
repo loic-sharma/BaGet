@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,7 +40,7 @@ namespace BaGet.Core.Services
             nuspecStream = nuspecStream ?? throw new ArgumentNullException(nameof(nuspecStream));
 
             var lowercasedId = package.Id.ToLowerInvariant();
-            var lowercasedNormalizedVersion = package.VersionString.ToLowerInvariant();
+            var lowercasedNormalizedVersion = package.Version.ToLowerInvariant();
 
             var packagePath = PackagePath(lowercasedId, lowercasedNormalizedVersion);
             var nuspecPath = NuspecPath(lowercasedId, lowercasedNormalizedVersion);

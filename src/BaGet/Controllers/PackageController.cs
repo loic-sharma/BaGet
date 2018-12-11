@@ -40,7 +40,7 @@ namespace BaGet.Controllers
                     return NotFound();
                 }
 
-                versions = packages.Select(p => p.Version).ToList();
+                versions = packages.Select(p => NuGetVersion.Parse(p.Version)).ToList();
             }
 
             return Json(new PackageVersions(versions));

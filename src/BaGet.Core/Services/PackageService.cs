@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -34,17 +34,7 @@ namespace BaGet.Core.Services
             }
         }
 
-        public Task<bool> ExistsAsync(string id, NuGetVersion version = null)
-        {
-            var query = _context.Packages.Where(p => p.Id == id);
-
-            if (version != null)
-            {
-                query = query.Where(p => p.VersionString == version.ToNormalizedString());
-            }
-
-            return query.AnyAsync();
-        }
+        public Task<bool> ExistsAsync(string id, string version = null) => ExistsAsync(id, NuGetVersion.Parse(version));
 
         public async Task<IReadOnlyList<Package>> FindAsync(string id, bool includeUnlisted = false)
         {
@@ -63,7 +53,7 @@ namespace BaGet.Core.Services
             var query = _context.Packages
                 .Include(a => a.Dependencies)
                 .Where(p => p.Id == id)
-                .Where(p => p.VersionString == version.ToNormalizedString());
+                .Where(p => p.Version == version.ToNormalizedString());
 
             if (!includeUnlisted)
             {
@@ -90,9 +80,10 @@ namespace BaGet.Core.Services
 
         public async Task<bool> HardDeletePackageAsync(string id, NuGetVersion version)
         {
+            var normalizedVersion = version.ToNormalizedString();
             var package = await _context.Packages
                 .Where(p => p.Id == id)
-                .Where(p => p.VersionString == version.ToNormalizedString())
+                .Where(p => p.Version == normalizedVersion)
                 .Include(p => p.Dependencies)
                 .FirstOrDefaultAsync();
 
@@ -109,9 +100,10 @@ namespace BaGet.Core.Services
 
         private async Task<bool> TryUpdatePackageAsync(string id, NuGetVersion version, Action<Package> action)
         {
+            var normalizedVersion = version.ToNormalizedString();
             var package = await _context.Packages
                 .Where(p => p.Id == id)
-                .Where(p => p.VersionString == version.ToNormalizedString())
+                .Where(p => p.Version == normalizedVersion)
                 .FirstOrDefaultAsync();
 
             if (package != null)
@@ -123,6 +115,19 @@ namespace BaGet.Core.Services
             }
 
             return false;
+        }
+
+        public Task<bool> ExistsAsync(string id, NuGetVersion version = null)
+        {
+            var query = _context.Packages.Where(p => p.Id == id);
+
+            if (version != null)
+            {
+                var normailzedVersion = version.ToNormalizedString();
+                query = query.Where(p => p.Version == normailzedVersion);
+            }
+
+            return query.AnyAsync();
         }
     }
 }

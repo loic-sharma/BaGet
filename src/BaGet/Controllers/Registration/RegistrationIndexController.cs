@@ -9,6 +9,7 @@ using BaGet.Core.Services;
 using BaGet.Extensions;
 using BaGet.Protocol;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Versioning;
 
 namespace BaGet.Controllers.Registration
 {
@@ -45,7 +46,7 @@ namespace BaGet.Controllers.Registration
                 return NotFound();
             }
 
-            var versions = packages.Select(p => p.Version).ToList();
+            var versions = packages.Select(p => NuGetVersion.Parse(p.Version)).ToList();
 
             // TODO: Paging of registration items.
             // "Un-paged" example: https://api.nuget.org/v3/registration3/newtonsoft.json/index.json
@@ -66,23 +67,23 @@ namespace BaGet.Controllers.Registration
 
         private RegistrationIndexPageItem ToRegistrationIndexPageItem(Package package) =>
             new RegistrationIndexPageItem(
-                leafUrl: Url.PackageRegistration(package.Id, package.Version),
+                leafUrl: Url.PackageRegistration(package.Id, NuGetVersion.Parse(package.Version)),
                 packageMetadata: new PackageMetadata(
                     catalogUri: $"https://api.nuget.org/v3/catalog0/data/2015.02.01.06.24.15/{package.Id}.{package.Version}.json",
                     packageId: package.Id,
-                    version: package.Version,
+                    version: NuGetVersion.Parse(package.Version),
                     authors: string.Join(", ", package.Authors),
                     description: package.Description,
                     downloads: package.Downloads,
                     hasReadme: package.HasReadme,
-                    iconUrl: package.IconUrlString,
+                    iconUrl: package.IconUrl,
                     language: package.Language,
-                    licenseUrl: package.LicenseUrlString,
+                    licenseUrl: package.LicenseUrl,
                     listed: package.Listed,
                     minClientVersion: package.MinClientVersion,
-                    packageContent: Url.PackageDownload(package.Id, package.Version),
-                    projectUrl: package.ProjectUrlString,
-                    repositoryUrl: package.RepositoryUrlString,
+                    packageContent: Url.PackageDownload(package.Id, NuGetVersion.Parse(package.Version)),
+                    projectUrl: package.ProjectUrl,
+                    repositoryUrl: package.RepositoryUrl,
                     repositoryType: package.RepositoryType,
                     published: package.Published,
                     requireLicenseAcceptance: package.RequireLicenseAcceptance,
@@ -90,7 +91,7 @@ namespace BaGet.Controllers.Registration
                     tags: package.Tags,
                     title: package.Title,
                     dependencyGroups: ToDependencyGroups(package)),
-                packageContent: Url.PackageDownload(package.Id, package.Version));
+                packageContent: Url.PackageDownload(package.Id, NuGetVersion.Parse(package.Version)));
 
         private IReadOnlyList<DependencyGroupItem> ToDependencyGroups(Package package)
         {

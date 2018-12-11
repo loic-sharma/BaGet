@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using NuGet.Versioning;
 
@@ -10,7 +10,6 @@ namespace BaGet.Core.Entities
         public int Key { get; set; }
 
         public string Id { get; set; }
-        public NuGetVersion Version { get; set; }
 
         public string[] Authors { get; set; }
         public string Description { get; set; }
@@ -24,11 +23,11 @@ namespace BaGet.Core.Entities
         public string Summary { get; set; }
         public string Title { get; set; }
 
-        public Uri IconUrl { get; set; }
-        public Uri LicenseUrl { get; set; }
-        public Uri ProjectUrl { get; set; }
+        public string IconUrl { get; set; }
+        public string LicenseUrl { get; set; }
+        public string ProjectUrl { get; set; }
 
-        public Uri RepositoryUrl { get; set; }
+        public string RepositoryUrl { get; set; }
         public string RepositoryType { get; set; }
 
         public string[] Tags { get; set; }
@@ -40,7 +39,8 @@ namespace BaGet.Core.Entities
 
         public List<PackageDependency> Dependencies { get; set; }
 
-        public string VersionString
+        public string Version { get; set; }
+        /*
         {
             get => Version?.ToNormalizedString().ToLowerInvariant() ?? string.Empty;
             set
@@ -49,11 +49,6 @@ namespace BaGet.Core.Entities
 
                 Version = version;
             }
-        }
-
-        public string IconUrlString => IconUrl?.AbsoluteUri ?? string.Empty;
-        public string LicenseUrlString => LicenseUrl?.AbsoluteUri ?? string.Empty;
-        public string ProjectUrlString => ProjectUrl?.AbsoluteUri ?? string.Empty;
-        public string RepositoryUrlString => RepositoryUrl?.AbsoluteUri ?? string.Empty;
+        }*/
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -41,14 +41,14 @@ namespace BaGet.Entities
         {
             package.HasKey(p => p.Key);
             package.HasIndex(p => p.Id);
-            package.HasIndex(p => new { p.Id, p.VersionString })
+            package.HasIndex(p => new { p.Id, p.Version })
                 .IsUnique();
 
             package.Property(p => p.Id)
                 .HasMaxLength(MaxPackageIdLength)
                 .IsRequired();
 
-            package.Property(p => p.VersionString)
+            package.Property(p => p.Version)
                 .HasColumnName("Version")
                 .HasMaxLength(MaxPackageVersionLength)
                 .IsRequired();
@@ -85,10 +85,10 @@ namespace BaGet.Entities
             package.Property(p => p.RepositoryType).HasMaxLength(MaxRepositoryTypeLength);
 
             package.Ignore(p => p.Version);
-            package.Ignore(p => p.IconUrlString);
-            package.Ignore(p => p.LicenseUrlString);
-            package.Ignore(p => p.ProjectUrlString);
-            package.Ignore(p => p.RepositoryUrlString);
+            package.Ignore(p => p.IconUrl);
+            package.Ignore(p => p.LicenseUrl);
+            package.Ignore(p => p.ProjectUrl);
+            package.Ignore(p => p.RepositoryUrl);
 
             package.Property(p => p.RowVersion).IsRowVersion();
         }

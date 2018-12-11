@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -81,19 +81,19 @@ namespace BaGet.Azure.Search
 
             result.Key = EncodeKey(packageId.ToLowerInvariant());
             result.Id = latest.Id;
-            result.Version = latest.VersionString;
+            result.Version = latest.Version;
             result.Description = latest.Description;
             result.Authors = latest.Authors;
-            result.IconUrl = latest.IconUrlString;
-            result.LicenseUrl = latest.LicenseUrlString;
-            result.ProjectUrl = latest.ProjectUrlString;
+            result.IconUrl = latest.IconUrl;
+            result.LicenseUrl = latest.LicenseUrl;
+            result.ProjectUrl = latest.ProjectUrl;
             result.Published = latest.Published;
             result.Summary = latest.Summary;
             result.Tags = latest.Tags;
             result.Title = latest.Title;
             result.TotalDownloads = versions.Sum(p => p.Downloads);
             result.DownloadsMagnitude = result.TotalDownloads.ToString().Length;
-            result.Versions = versions.Select(p => p.VersionString).ToArray();
+            result.Versions = versions.Select(p => p.Version).ToArray();
             result.VersionDownloads = versions.Select(p => p.Downloads.ToString()).ToArray();
 
             return result;

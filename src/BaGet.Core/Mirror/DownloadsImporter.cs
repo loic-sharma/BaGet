@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,7 +39,7 @@ namespace BaGet.Core.Mirror
                 foreach (var package in await GetBatch(batch))
                 {
                     var packageId = package.Id.ToLowerInvariant();
-                    var packageVersion = package.VersionString.ToLowerInvariant();
+                    var packageVersion = package.Version;
 
                     if (!packageDownloads.ContainsKey(packageId) ||
                         !packageDownloads[packageId].ContainsKey(packageVersion))

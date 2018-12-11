@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
 using NuGet.Versioning;
@@ -59,6 +59,7 @@ namespace BaGet.Core.Services
         /// <param name="version">The package version to search.</param>
         /// <returns>Whether the package exists in the database.</returns>
         Task<bool> ExistsAsync(string id, NuGetVersion version = null);
+        Task<bool> ExistsAsync(string id, string version = null);
 
         /// <summary>
         /// Unlist a package, making it undiscoverable.

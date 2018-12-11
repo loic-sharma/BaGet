@@ -74,7 +74,7 @@ namespace BaGet.Core.Services
             _logger.LogInformation(
                 "Validated package {PackageId} {PackageVersion}, persisting content to storage...",
                 package.Id,
-                package.VersionString);
+                package.Version);
 
             try
             {
@@ -96,7 +96,7 @@ namespace BaGet.Core.Services
                     e,
                     "Failed to persist package {PackageId} {PackageVersion} content to storage",
                     package.Id,
-                    package.VersionString);
+                    package.Version);
 
                 throw;
             }
@@ -104,7 +104,7 @@ namespace BaGet.Core.Services
             _logger.LogInformation(
                 "Persisted package {Id} {Version} content to storage, saving metadata to database...",
                 package.Id,
-                package.VersionString);
+                package.Version);
 
             var result = await _packages.AddAsync(package);
             if (result == PackageAddResult.PackageAlreadyExists)
@@ -112,7 +112,7 @@ namespace BaGet.Core.Services
                 _logger.LogWarning(
                     "Package {Id} {Version} metadata already exists in database",
                     package.Id,
-                    package.VersionString);
+                    package.Version);
 
                 return PackageIndexingResult.PackageAlreadyExists;
             }
@@ -127,14 +127,14 @@ namespace BaGet.Core.Services
             _logger.LogInformation(
                 "Successfully persisted package {Id} {Version} metadata to database. Indexing in search...",
                 package.Id,
-                package.VersionString);
+                package.Version);
 
             await _search.IndexAsync(package);
 
             _logger.LogInformation(
                 "Successfully indexed package {Id} {Version} in search",
                 package.Id,
-                package.VersionString);
+                package.Version);
 
             return PackageIndexingResult.Success;
         }
@@ -148,7 +148,7 @@ namespace BaGet.Core.Services
             return new Package
             {
                 Id = nuspec.GetId(),
-                Version = nuspec.GetVersion(),
+                Version = nuspec.GetVersion().ToNormalizedString(),
                 Authors = ParseAuthors(nuspec.GetAuthors()),
                 Description = nuspec.GetDescription(),
                 HasReadme = packageReader.HasReadme(),
@@ -159,10 +159,10 @@ namespace BaGet.Core.Services
                 RequireLicenseAcceptance = nuspec.GetRequireLicenseAcceptance(),
                 Summary = nuspec.GetSummary(),
                 Title = nuspec.GetTitle(),
-                IconUrl = ParseUri(nuspec.GetIconUrl()),
-                LicenseUrl = ParseUri(nuspec.GetLicenseUrl()),
-                ProjectUrl = ParseUri(nuspec.GetProjectUrl()),
-                RepositoryUrl = repositoryUri,
+                IconUrl = nuspec.GetIconUrl(),
+                LicenseUrl = nuspec.GetLicenseUrl(),
+                ProjectUrl = nuspec.GetProjectUrl(),
+                RepositoryUrl = repositoryUri.ToString(),
                 RepositoryType = repositoryType,
                 Dependencies = GetDependencies(nuspec),
                 Tags = ParseTags(nuspec.GetTags())

@@ -36,7 +36,7 @@ namespace BaGet.Core.Services
                 .Select(s => new
                 {
                     Id = s.Key,
-                    Versions = s.Select(q => new { q.VersionString, q.Downloads }).ToList(),
+                    Versions = s.Select(q => new { q.Version, q.Downloads }).ToList(),
                 })
                 .OrderBy(s => s.Id)
                 .Skip(skip)
@@ -47,7 +47,7 @@ namespace BaGet.Core.Services
                 .Select(s => new
                 {
                     s.Id,
-                    Version = s.Versions.Select(t => NuGetVersion.Parse(t.VersionString)).Max()
+                    Version = s.Versions.Select(t => NuGetVersion.Parse(t.Version)).Max()
                 })
                 .ToArray();
 
@@ -58,16 +58,16 @@ namespace BaGet.Core.Services
                 .Select(s => s.Version.ToString())
                 .ToArray();
 
-            var packagesInfo = packages.Where(s => ids.Contains(s.Id) && maxVersions.Contains(s.VersionString))
+            var packagesInfo = packages.Where(s => ids.Contains(s.Id) && maxVersions.Contains(s.Version))
                 .Select(s => new
                 {
                     s.Id,
                     s.Version,
                     s.Description,
                     s.Authors,
-                    s.IconUrlString,
-                    s.LicenseUrlString,
-                    s.ProjectUrlString,
+                    s.IconUrl,
+                    s.LicenseUrl,
+                    s.ProjectUrl,
                     s.Summary,
                     s.Tags,
                     s.Title
@@ -80,15 +80,15 @@ namespace BaGet.Core.Services
                 Authors = i.Authors,
                 Description = i.Description,
                 Id = i.Id,
-                IconUrl = i.IconUrlString,
-                LicenseUrl = i.LicenseUrlString,
-                ProjectUrl = i.ProjectUrlString,
+                IconUrl = i.IconUrl,
+                LicenseUrl = i.LicenseUrl,
+                ProjectUrl = i.ProjectUrl,
                 Summary = i.Summary,
                 Tags = i.Tags,
                 Title = i.Title,
                 TotalDownloads = v.Versions.Sum(w => w.Downloads),
-                Version = i.Version,
-                Versions = v.Versions.Select(q => new SearchResultVersion(NuGetVersion.Parse(q.VersionString), q.Downloads)).ToList()
+                Version = NuGetVersion.Parse(i.Version),
+                Versions = v.Versions.Select(q => new SearchResultVersion(NuGetVersion.Parse(q.Version), q.Downloads)).ToList()
             })
             .ToList()
             .AsReadOnly();

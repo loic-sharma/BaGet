@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -48,7 +48,7 @@ namespace BaGet.Core.Mirror
 
             // Merge the local package versions into the upstream package versions.
             var localPackages = await _localPackages.FindAsync(id, includeUnlisted);
-            var localVersions = localPackages.Select(p => p.Version);
+            var localVersions = localPackages.Select(p => NuGetVersion.Parse(p.Version));
 
             return versions.Concat(localVersions).Distinct().ToList();
         }
@@ -71,8 +71,8 @@ namespace BaGet.Core.Mirror
             }
 
             // Otherwise, merge the local packages into the upstream packages.
-            var result = upstreamPackages.ToDictionary(p => new PackageIdentity(p.Id, p.Version));
-            var local = localPackages.ToDictionary(p => new PackageIdentity(p.Id, p.Version));
+            var result = upstreamPackages.ToDictionary(p => new PackageIdentity(p.Id, NuGetVersion.Parse(p.Version)));
+            var local = localPackages.ToDictionary(p => new PackageIdentity(p.Id, NuGetVersion.Parse(p.Version)));
 
             foreach (var localPackage in local)
             {
@@ -107,7 +107,7 @@ namespace BaGet.Core.Mirror
             return new Package
             {
                 Id = metadata.PackageId,
-                Version = metadata.Version,
+                Version = metadata.Version.ToNormalizedString(),
                 Authors = ParseAuthors(metadata.Authors),
                 Description = metadata.Description,
                 Downloads = metadata.Downloads,
@@ -119,10 +119,10 @@ namespace BaGet.Core.Mirror
                 RequireLicenseAcceptance = metadata.RequireLicenseAcceptance,
                 Summary = metadata.Summary,
                 Title = metadata.Title,
-                IconUrl = ParseUri(metadata.IconUrl),
-                LicenseUrl = ParseUri(metadata.LicenseUrl),
-                ProjectUrl = ParseUri(metadata.ProjectUrl),
-                RepositoryUrl = ParseUri(metadata.RepositoryUrl),
+                IconUrl = metadata.IconUrl,
+                LicenseUrl = metadata.LicenseUrl,
+                ProjectUrl = metadata.ProjectUrl,
+                RepositoryUrl = metadata.RepositoryUrl,
                 RepositoryType = metadata.RepositoryType,
                 Tags = metadata.Tags.ToArray(),
 
