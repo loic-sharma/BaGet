@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using BaGet.AWS.Extensions;
 using BaGet.Azure.Extensions;
@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BaGet.Tools.AzureSearchImporter
 {
-    class Program
+    public class Program
     {
         public static void Main(string[] args)
             => MainAsync(args)
@@ -23,7 +23,7 @@ namespace BaGet.Tools.AzureSearchImporter
         private async static Task MainAsync(string[] args)
         {
             // Parse the skip from arguments.
-            int skip = 0;
+            var skip = 0;
 
             if (args.Length > 0)
             {
