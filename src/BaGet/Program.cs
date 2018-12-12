@@ -56,14 +56,9 @@ namespace BaGet
                 })
                 .ConfigureAppConfiguration((builderContext, config) =>
                 {
-                    var root = Environment.GetEnvironmentVariable("APPSETTINGS_ROOT");
+                    var root = Environment.GetEnvironmentVariable("BAGET_CONFIG_ROOT");
                     if (!string.IsNullOrEmpty(root))
-                    {
-                        var env = builderContext.HostingEnvironment;
-                        config.Sources.Clear();
-                        config.AddJsonFile($"{root}/appsettings.json", optional: false, reloadOnChange: true)
-                            .AddJsonFile($"{root}/appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
-                    }
+                        config.SetBasePath(root);
                 });
 
         public static IHostBuilder CreateHostBuilder(string[] args)
