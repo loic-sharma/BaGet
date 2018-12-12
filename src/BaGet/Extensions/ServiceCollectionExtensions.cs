@@ -82,6 +82,9 @@ namespace BaGet.Extensions
                     case DatabaseType.SqlServer:
                         return provider.GetRequiredService<SqlServerContext>();
 
+                    case DatabaseType.MySqlServer:
+                        return provider.GetRequiredService<MySqlContext>();
+
                     default:
                         throw new InvalidOperationException(
                             $"Unsupported database provider: {databaseOptions.Value.Type}");
@@ -100,6 +103,13 @@ namespace BaGet.Extensions
                 var databaseOptions = provider.GetRequiredService<IOptionsSnapshot<DatabaseOptions>>();
 
                 options.UseSqlServer(databaseOptions.Value.ConnectionString);
+            });
+
+            services.AddDbContext<MySqlContext>((provider, options) =>
+            {
+                var databaseOptions = provider.GetRequiredService<IOptionsSnapshot<DatabaseOptions>>();
+
+                options.UseMySql(databaseOptions.Value.ConnectionString);
             });
 
             return services;
@@ -187,7 +197,11 @@ namespace BaGet.Extensions
                 switch (options.Value.Type)
                 {
                     case SearchType.Database:
-                        return provider.GetRequiredService<DatabaseSearchService>();
+                        var databaseOptions = provider.GetRequiredService<IOptionsSnapshot<DatabaseOptions>>();
+                        if (databaseOptions.Value.Type == DatabaseType.MySqlServer)
+                            return provider.GetRequiredService<DatabaseSearchServiceNoPaging>(); // workaround for ef mysql not supporting the LIMIT keyword yet
+                        else
+                            return provider.GetRequiredService<DatabaseSearchService>();
 
                     case SearchType.Azure:
                         return provider.GetRequiredService<AzureSearchService>();
@@ -199,6 +213,7 @@ namespace BaGet.Extensions
             });
 
             services.AddTransient<DatabaseSearchService>();
+            services.AddTransient<DatabaseSearchServiceNoPaging>();
             services.AddAzureSearch();
 
             return services;
