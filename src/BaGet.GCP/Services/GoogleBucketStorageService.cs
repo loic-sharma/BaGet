@@ -25,11 +25,13 @@ namespace BaGet.GCP.Services
 
         public async Task<Stream> GetAsync(string path, CancellationToken cancellationToken = default)
         {
-            var storage = await StorageClient.CreateAsync();
-            var stream = new MemoryStream();
-            await storage.DownloadObjectAsync(_bucketName, path, stream, cancellationToken: cancellationToken);
-            stream.Seek(0, SeekOrigin.Begin);
-            return stream;
+            using (var storage = await StorageClient.CreateAsync())
+            {
+                var stream = new MemoryStream();
+                await storage.DownloadObjectAsync(_bucketName, path, stream, cancellationToken: cancellationToken);
+                stream.Seek(0, SeekOrigin.Begin);
+                return stream;
+            }
         }
 
         public Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
@@ -39,27 +41,31 @@ namespace BaGet.GCP.Services
 
         public async Task<PutResult> PutAsync(string path, Stream content, string contentType, CancellationToken cancellationToken = default)
         {
-            var storage = await StorageClient.CreateAsync();
-            try
+            using (var storage = await StorageClient.CreateAsync())
             {
-                await storage.GetObjectAsync(_bucketName, path, cancellationToken: cancellationToken);
-                return PutResult.AlreadyExists;
-            }
-            catch (GoogleApiException e)
-            {
-                if (e.HttpStatusCode != HttpStatusCode.NotFound)
-                    throw;
+                try
+                {
+                    await storage.GetObjectAsync(_bucketName, path, cancellationToken: cancellationToken);
+                    return PutResult.AlreadyExists;
+                }
+                catch (GoogleApiException e)
+                {
+                    if (e.HttpStatusCode != HttpStatusCode.NotFound)
+                        throw;
 
-                await storage.UploadObjectAsync(_bucketName, path, contentType, content, cancellationToken: cancellationToken);
-                return PutResult.Success;
+                    await storage.UploadObjectAsync(_bucketName, path, contentType, content, cancellationToken: cancellationToken);
+                    return PutResult.Success;
+                }
             }
         }
 
         public async Task DeleteAsync(string path, CancellationToken cancellationToken = default)
         {
-            var storage = await StorageClient.CreateAsync();
-            var obj = await storage.GetObjectAsync(_bucketName, path, cancellationToken: cancellationToken);
-            await storage.DeleteObjectAsync(obj, cancellationToken: cancellationToken);
+            using (var storage = await StorageClient.CreateAsync())
+            {
+                var obj = await storage.GetObjectAsync(_bucketName, path, cancellationToken: cancellationToken);
+                await storage.DeleteObjectAsync(obj, cancellationToken: cancellationToken);
+            }
         }
     }
 }
