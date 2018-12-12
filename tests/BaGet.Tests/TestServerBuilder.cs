@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using BaGet.Core;
 using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
 using Microsoft.AspNetCore.Hosting;
@@ -30,7 +31,7 @@ namespace BaGet.Tests
         private readonly string MirrorEnabledKey = $"{nameof(BaGetOptions.Mirror)}:{nameof(MirrorOptions.Enabled)}";
 
         private ITestOutputHelper _helper;
-        private LogLevel _minimumLevel = LogLevel.None;
+        private LogLevel _minimumLevel = LogLevel.Trace;
 
         /// <summary>
         /// private/hidden Constructor.
@@ -108,15 +109,6 @@ namespace BaGet.Tests
 
             var server = new TestServer(hostBuilder);
 
-            //Ensure that the Database is created, we use the same feature like inside the Startup in case of Env.IsDevelopment (EF-Migrations)
-            var scopeFactory = server.Host.Services.GetRequiredService<IServiceScopeFactory>();
-            using (var scope = scopeFactory.CreateScope())
-            {
-                scope.ServiceProvider
-                    .GetRequiredService<IContext>()
-                    .Database
-                    .Migrate();
-            }
             return server;
         }
     }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,10 +6,9 @@ using System.Reflection.Metadata;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Extensions;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using NuGet.Packaging;
-using NuGet.Packaging.Core;
+
 
 namespace BaGet.Core.Services
 {

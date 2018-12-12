@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using BaGet.Configurations;
 using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
@@ -42,7 +42,9 @@ namespace BaGet
             }
 
             // Run migrations if necessary.
+            
             var options = Configuration.Get<BaGetOptions>();
+            /* todo: migrations at startup
             if (options.RunMigrationsAtStartup)
             {
                 using (var scope = app.ApplicationServices.CreateScope())
@@ -53,7 +55,7 @@ namespace BaGet
                         .Migrate();
                 }
             }
-
+            */
             app.UsePathBase(options.PathBase);
             app.UseForwardedHeaders();
             app.UseSpaStaticFiles();

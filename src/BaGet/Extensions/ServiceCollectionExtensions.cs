@@ -11,17 +11,17 @@ using BaGet.Azure.Configuration;
 using BaGet.Azure.Extensions;
 using BaGet.Azure.Search;
 using BaGet.Configurations;
+using BaGet.Core;
 using BaGet.Core.Configuration;
-using BaGet.Core.Entities;
 using BaGet.Core.Mirror;
 using BaGet.Core.Services;
-using BaGet.Entities;
+using BaGet.Db;
+using BaGet.Db.Services;
 using BaGet.Protocol;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -68,39 +68,16 @@ namespace BaGet.Extensions
 
         public static IServiceCollection AddBaGetContext(this IServiceCollection services)
         {
-            if (services == null) throw new ArgumentNullException(nameof(services));
+            if (services == null)
+                throw new ArgumentNullException(nameof(services));
 
-            services.AddScoped<IContext>(provider =>
+            services.AddSingleton(p =>
             {
-                var databaseOptions = provider.GetRequiredService<IOptionsSnapshot<DatabaseOptions>>();
-
-                switch (databaseOptions.Value.Type)
-                {
-                    case DatabaseType.Sqlite:
-                        return provider.GetRequiredService<SqliteContext>();
-
-                    case DatabaseType.SqlServer:
-                        return provider.GetRequiredService<SqlServerContext>();
-
-                    default:
-                        throw new InvalidOperationException(
-                            $"Unsupported database provider: {databaseOptions.Value.Type}");
-                }
+                var opts = p.GetRequiredService<IOptions<DatabaseOptions>>();
+                return new ContextFactory(opts.Value);
             });
 
-            services.AddDbContext<SqliteContext>((provider, options) =>
-            {
-                var databaseOptions = provider.GetRequiredService<IOptionsSnapshot<DatabaseOptions>>();
-
-                options.UseSqlite(databaseOptions.Value.ConnectionString);
-            });
-
-            services.AddDbContext<SqlServerContext>((provider, options) =>
-            {
-                var databaseOptions = provider.GetRequiredService<IOptionsSnapshot<DatabaseOptions>>();
-
-                options.UseSqlServer(databaseOptions.Value.ConnectionString, t => t.UseRowNumberForPaging());
-            });
+            services.AddScoped<IContext, Context>();
 
             return services;
         }

@@ -71,8 +71,8 @@ namespace BaGet.Core.Mirror
             }
 
             // Otherwise, merge the local packages into the upstream packages.
-            var result = upstreamPackages.ToDictionary(p => new PackageIdentity(p.Id, NuGetVersion.Parse(p.Version)));
-            var local = localPackages.ToDictionary(p => new PackageIdentity(p.Id, NuGetVersion.Parse(p.Version)));
+            var result = upstreamPackages.ToDictionary(p => new PackageIdentity(p.PackageId, NuGetVersion.Parse(p.Version)));
+            var local = localPackages.ToDictionary(p => new PackageIdentity(p.PackageId, NuGetVersion.Parse(p.Version)));
 
             foreach (var localPackage in local)
             {
@@ -106,7 +106,7 @@ namespace BaGet.Core.Mirror
         {
             return new Package
             {
-                Id = metadata.PackageId,
+                PackageId = metadata.PackageId,
                 Version = metadata.Version.ToNormalizedString(),
                 Authors = ParseAuthors(metadata.Authors),
                 Description = metadata.Description,
@@ -124,7 +124,7 @@ namespace BaGet.Core.Mirror
                 ProjectUrl = metadata.ProjectUrl,
                 RepositoryUrl = metadata.RepositoryUrl,
                 RepositoryType = metadata.RepositoryType,
-                Tags = metadata.Tags.ToArray(),
+                Tags = metadata.Tags.Select(s => new PackageTag(s)).ToArray(),
 
                 Dependencies = FindDependencies(metadata)
             };
@@ -174,7 +174,7 @@ namespace BaGet.Core.Mirror
                 {
                     new PackageDependency
                     {
-                        Id = null,
+                        PackageId = null,
                         VersionRange = null,
                         TargetFramework = group.TargetFramework
                     }
@@ -183,7 +183,7 @@ namespace BaGet.Core.Mirror
 
             return group.Dependencies.Select(d => new PackageDependency
             {
-                Id = d.Id,
+                PackageId = d.Id,
                 VersionRange = d.Range,
                 TargetFramework = group.TargetFramework
             });

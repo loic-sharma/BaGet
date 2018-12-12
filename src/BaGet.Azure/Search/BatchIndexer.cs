@@ -80,7 +80,7 @@ namespace BaGet.Azure.Search
             var versions = packages.OrderBy(p => p.Version).ToList();
 
             result.Key = EncodeKey(packageId.ToLowerInvariant());
-            result.Id = latest.Id;
+            result.Id = latest.PackageId;
             result.Version = latest.Version;
             result.Description = latest.Description;
             result.Authors = latest.Authors;
@@ -89,7 +89,7 @@ namespace BaGet.Azure.Search
             result.ProjectUrl = latest.ProjectUrl;
             result.Published = latest.Published;
             result.Summary = latest.Summary;
-            result.Tags = latest.Tags;
+            result.Tags = latest.Tags.Select(s=>s.Tag).ToArray();
             result.Title = latest.Title;
             result.TotalDownloads = versions.Sum(p => p.Downloads);
             result.DownloadsMagnitude = result.TotalDownloads.ToString().Length;

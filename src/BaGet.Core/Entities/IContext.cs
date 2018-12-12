@@ -1,22 +1,19 @@
-﻿using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
+using BaGet.Core.Entities;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace BaGet.Core.Entities
+namespace BaGet.Core
 {
-    public interface IContext
+    public interface IContext : IDisposable
     {
-        DatabaseFacade Database { get; }
+        [Obsolete("query")]
+        IQueryable<Package> Packages { get; }
+        IQueryable<T> Query<T>();
 
-        DbSet<Package> Packages { get; set; }
-
-        /// <summary>
-        /// Check whether a <see cref="DbUpdateException"/> is due to a SQL unique constraint violation.
-        /// </summary>
-        /// <param name="exception">The exception to inspect.</param>
-        /// <returns>Whether the exception was caused to SQL unique constraint violation.</returns>
-        bool IsUniqueConstraintViolationException(DbUpdateException exception);
-
-        Task<int> SaveChangesAsync();
+        Task InsertAsync(object entity, CancellationToken cancellationToken = default);
+        Task RemoveAsync(object entity, CancellationToken cancellationToken = default);
+        Task SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

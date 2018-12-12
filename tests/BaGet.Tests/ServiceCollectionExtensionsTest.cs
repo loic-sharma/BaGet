@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using BaGet.Core;
 using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
 using BaGet.Entities;
@@ -23,18 +24,18 @@ namespace BaGet.Tests
                 .BuildServiceProvider();
 
             var expected = Assert.Throws<InvalidOperationException>(
-                () => provider.GetRequiredService<IContext>().Database);
+                () => provider.GetRequiredService<IContext>().Query<Package>());
 
             Assert.Contains(nameof(BaGetOptions.Database), expected.Message);
         }
 
         [Fact]
-        public void AskServiceProviderForWellConfiguredDatabaseOptions()
+        public void AskServiceProviderForWellConfiguredContext()
         {
             // Create a IConfiguration with a minimal "Database" object.
             var initialData = new Dictionary<string, string>();
             initialData.Add(DatabaseTypeKey, DatabaseType.Sqlite.ToString());
-            initialData.Add(ConnectionStringKey, "blabla");
+            initialData.Add(ConnectionStringKey, "Data Source=baget.db");
 
             var configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(initialData)
@@ -45,25 +46,6 @@ namespace BaGet.Tests
                 .BuildServiceProvider();
 
             Assert.NotNull(provider.GetRequiredService<IContext>());
-        }
-
-        [Fact]
-        public void AskServiceProviderForWellConfiguredSqliteContext()
-        {
-            // Create a IConfiguration with a minimal "Database" object.
-            var initialData = new Dictionary<string, string>();
-            initialData.Add(DatabaseTypeKey, DatabaseType.Sqlite.ToString());
-            initialData.Add(ConnectionStringKey, "blabla");
-
-            var configuration = new ConfigurationBuilder()
-                .AddInMemoryCollection(initialData)
-                .Build();
-
-            var provider = new ServiceCollection()
-                .ConfigureBaGet(configuration) // Method Under Test
-                .BuildServiceProvider();
-
-            Assert.NotNull(provider.GetRequiredService<SqliteContext>());
         }
 
         [Theory]
@@ -85,7 +67,7 @@ namespace BaGet.Tests
                 .BuildServiceProvider();
 
             var expected = Assert.Throws<InvalidOperationException>(
-                () => provider.GetRequiredService<IContext>().Database);
+                () => provider.GetRequiredService<IContext>().Query<Package>());
         }
     }
 }

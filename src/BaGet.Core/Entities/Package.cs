@@ -1,54 +1,41 @@
 using System;
 using System.Collections.Generic;
-using NuGet.Versioning;
 
 namespace BaGet.Core.Entities
 {
     // See NuGetGallery's: https://github.com/NuGet/NuGetGallery/blob/master/src/NuGetGallery.Core/Entities/Package.cs
-    public class Package
+    public class Package : EntityBase
     {
-        public int Key { get; set; }
+        public virtual string PackageId { get; set; }
 
-        public string Id { get; set; }
+        public virtual string[] Authors { get; set; }
+        public virtual string Description { get; set; }
+        public virtual long Downloads { get; set; }
+        public virtual bool HasReadme { get; set; }
+        public virtual string Language { get; set; }
+        public virtual bool Listed { get; set; }
+        public virtual string MinClientVersion { get; set; }
+        public virtual DateTime Published { get; set; }
+        public virtual bool RequireLicenseAcceptance { get; set; }
+        public virtual string Summary { get; set; }
+        public virtual string Title { get; set; }
 
-        public string[] Authors { get; set; }
-        public string Description { get; set; }
-        public long Downloads { get; set; }
-        public bool HasReadme { get; set; }
-        public string Language { get; set; }
-        public bool Listed { get; set; }
-        public string MinClientVersion { get; set; }
-        public DateTime Published { get; set; }
-        public bool RequireLicenseAcceptance { get; set; }
-        public string Summary { get; set; }
-        public string Title { get; set; }
+        public virtual string IconUrl { get; set; }
+        public virtual string LicenseUrl { get; set; }
+        public virtual string ProjectUrl { get; set; }
 
-        public string IconUrl { get; set; }
-        public string LicenseUrl { get; set; }
-        public string ProjectUrl { get; set; }
+        public virtual string RepositoryUrl { get; set; }
+        public virtual string RepositoryType { get; set; }
 
-        public string RepositoryUrl { get; set; }
-        public string RepositoryType { get; set; }
+        public virtual IList<PackageTag> Tags { get; set; }
+        public virtual IList<PackageDependency> Dependencies { get; set; }
 
-        public string[] Tags { get; set; }
+        public virtual string Version { get; set; }
 
-        /// <summary>
-        /// Used for optimistic concurrency.
-        /// </summary>
-        public byte[] RowVersion { get; set; }
-
-        public List<PackageDependency> Dependencies { get; set; }
-
-        public string Version { get; set; }
-        /*
+        public Package()
         {
-            get => Version?.ToNormalizedString().ToLowerInvariant() ?? string.Empty;
-            set
-            {
-                NuGetVersion.TryParse(value, out var version);
-
-                Version = version;
-            }
-        }*/
+            Dependencies = new List<PackageDependency>();
+            Tags = new List<PackageTag>();
+        }
     }
 }

@@ -193,7 +193,7 @@ namespace BaGet.Core.Tests.Services
 
                 // Act
                 await Assert.ThrowsAsync<DirectoryNotFoundException>(() =>
-                    _target.GetPackageStreamAsync(_package.Id, NuGetVersion.Parse(_package.Version), cancellationToken));
+                    _target.GetPackageStreamAsync(_package.PackageId, NuGetVersion.Parse(_package.Version), cancellationToken));
             }
 
             [Fact]
@@ -208,7 +208,7 @@ namespace BaGet.Core.Tests.Services
                         .ReturnsAsync(packageStream);
 
                     // Act
-                    var result = await _target.GetPackageStreamAsync(_package.Id, NuGetVersion.Parse(_package.Version), cancellationToken);
+                    var result = await _target.GetPackageStreamAsync(_package.PackageId, NuGetVersion.Parse(_package.Version), cancellationToken);
 
                     // Assert
                     Assert.Equal("My package", await ToStringAsync(result));
@@ -231,7 +231,7 @@ namespace BaGet.Core.Tests.Services
 
                 // Act
                 await Assert.ThrowsAsync<DirectoryNotFoundException>(() =>
-                    _target.GetNuspecStreamAsync(_package.Id, NuGetVersion.Parse(_package.Version), cancellationToken));
+                    _target.GetNuspecStreamAsync(_package.PackageId, NuGetVersion.Parse(_package.Version), cancellationToken));
             }
 
             [Fact]
@@ -246,7 +246,7 @@ namespace BaGet.Core.Tests.Services
                         .ReturnsAsync(nuspecStream);
 
                     // Act
-                    var result = await _target.GetNuspecStreamAsync(_package.Id, NuGetVersion.Parse(_package.Version), cancellationToken);
+                    var result = await _target.GetNuspecStreamAsync(_package.PackageId, NuGetVersion.Parse(_package.Version), cancellationToken);
 
                     // Assert
                     Assert.Equal("My nuspec", await ToStringAsync(result));
@@ -269,7 +269,7 @@ namespace BaGet.Core.Tests.Services
 
                 // Act
                 await Assert.ThrowsAsync<DirectoryNotFoundException>(() =>
-                    _target.GetReadmeStreamAsync(_package.Id, NuGetVersion.Parse(_package.Version), cancellationToken));
+                    _target.GetReadmeStreamAsync(_package.PackageId, NuGetVersion.Parse(_package.Version), cancellationToken));
             }
 
             [Fact]
@@ -284,7 +284,7 @@ namespace BaGet.Core.Tests.Services
                         .ReturnsAsync(readmeStream);
 
                     // Act
-                    var result = await _target.GetReadmeStreamAsync(_package.Id, NuGetVersion.Parse(_package.Version), cancellationToken);
+                    var result = await _target.GetReadmeStreamAsync(_package.PackageId, NuGetVersion.Parse(_package.Version), cancellationToken);
 
                     // Assert
                     Assert.Equal("My readme", await ToStringAsync(result));
@@ -301,7 +301,7 @@ namespace BaGet.Core.Tests.Services
             {
                 // Act
                 var cancellationToken = CancellationToken.None;
-                await _target.DeleteAsync(_package.Id, NuGetVersion.Parse(_package.Version), cancellationToken);
+                await _target.DeleteAsync(_package.PackageId, NuGetVersion.Parse(_package.Version), cancellationToken);
 
                 _storage.Verify(s => s.DeleteAsync(PackagePath, cancellationToken), Times.Once);
                 _storage.Verify(s => s.DeleteAsync(NuspecPath, cancellationToken), Times.Once);
@@ -313,7 +313,7 @@ namespace BaGet.Core.Tests.Services
         {
             protected readonly Package _package = new Package
             {
-                Id = "My.Package",
+                PackageId = "My.Package",
                 Version = "1.2.3"
             };
 

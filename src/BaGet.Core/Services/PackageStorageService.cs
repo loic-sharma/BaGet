@@ -39,7 +39,7 @@ namespace BaGet.Core.Services
             packageStream = packageStream ?? throw new ArgumentNullException(nameof(packageStream));
             nuspecStream = nuspecStream ?? throw new ArgumentNullException(nameof(nuspecStream));
 
-            var lowercasedId = package.Id.ToLowerInvariant();
+            var lowercasedId = package.PackageId.ToLowerInvariant();
             var lowercasedNormalizedVersion = package.Version.ToLowerInvariant();
 
             var packagePath = PackagePath(lowercasedId, lowercasedNormalizedVersion);

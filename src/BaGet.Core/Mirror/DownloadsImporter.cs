@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
-using Microsoft.EntityFrameworkCore;
+using BaGet.Linq;
 using Microsoft.Extensions.Logging;
 
 namespace BaGet.Core.Mirror
@@ -38,7 +38,7 @@ namespace BaGet.Core.Mirror
 
                 foreach (var package in await GetBatch(batch))
                 {
-                    var packageId = package.Id.ToLowerInvariant();
+                    var packageId = package.PackageId.ToLowerInvariant();
                     var packageVersion = package.Version;
 
                     if (!packageDownloads.ContainsKey(packageId) ||
@@ -58,7 +58,7 @@ namespace BaGet.Core.Mirror
 
         private Task<List<Package>> GetBatch(int batch)
             => _context.Packages
-                .OrderBy(p => p.Key)
+                .OrderBy(p => p.Id)
                 .Skip(batch * BatchSize)
                 .Take(BatchSize)
                 .ToListAsync();

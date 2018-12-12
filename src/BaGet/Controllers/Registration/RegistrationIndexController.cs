@@ -57,7 +57,7 @@ namespace BaGet.Controllers.Registration
                 pages: new[]
                 {
                     new RegistrationIndexPage(
-                        Url.PackageRegistration(packages.First().Id),
+                        Url.PackageRegistration(packages.First().PackageId),
                         count: packages.Count(),
                         itemsOrNull: packages.Select(ToRegistrationIndexPageItem).ToList(),
                         lower: versions.Min(),
@@ -67,10 +67,10 @@ namespace BaGet.Controllers.Registration
 
         private RegistrationIndexPageItem ToRegistrationIndexPageItem(Package package) =>
             new RegistrationIndexPageItem(
-                leafUrl: Url.PackageRegistration(package.Id, NuGetVersion.Parse(package.Version)),
+                leafUrl: Url.PackageRegistration(package.PackageId, NuGetVersion.Parse(package.Version)),
                 packageMetadata: new PackageMetadata(
-                    catalogUri: $"https://api.nuget.org/v3/catalog0/data/2015.02.01.06.24.15/{package.Id}.{package.Version}.json",
-                    packageId: package.Id,
+                    catalogUri: $"https://api.nuget.org/v3/catalog0/data/2015.02.01.06.24.15/{package.PackageId}.{package.Version}.json",
+                    packageId: package.PackageId,
                     version: NuGetVersion.Parse(package.Version),
                     authors: string.Join(", ", package.Authors),
                     description: package.Description,
@@ -81,17 +81,17 @@ namespace BaGet.Controllers.Registration
                     licenseUrl: package.LicenseUrl,
                     listed: package.Listed,
                     minClientVersion: package.MinClientVersion,
-                    packageContent: Url.PackageDownload(package.Id, NuGetVersion.Parse(package.Version)),
+                    packageContent: Url.PackageDownload(package.PackageId, NuGetVersion.Parse(package.Version)),
                     projectUrl: package.ProjectUrl,
                     repositoryUrl: package.RepositoryUrl,
                     repositoryType: package.RepositoryType,
                     published: package.Published,
                     requireLicenseAcceptance: package.RequireLicenseAcceptance,
                     summary: package.Summary,
-                    tags: package.Tags,
+                    tags: package.Tags.Select(s=>s.Tag).ToArray(),
                     title: package.Title,
                     dependencyGroups: ToDependencyGroups(package)),
-                packageContent: Url.PackageDownload(package.Id, NuGetVersion.Parse(package.Version)));
+                packageContent: Url.PackageDownload(package.PackageId, NuGetVersion.Parse(package.Version)));
 
         private IReadOnlyList<DependencyGroupItem> ToDependencyGroups(Package package)
         {
@@ -103,11 +103,11 @@ namespace BaGet.Controllers.Registration
             {
                 // A package may have no dependencies for a target framework. This is represented
                 // by a single dependency item with a null "Id" and "VersionRange".
-                var groupId = $"https://api.nuget.org/v3/catalog0/data/2015.02.01.06.24.15/{package.Id}.{package.Version}.json#dependencygroup/{target}";
+                var groupId = $"https://api.nuget.org/v3/catalog0/data/2015.02.01.06.24.15/{package.PackageId}.{package.Version}.json#dependencygroup/{target}";
                 var dependencyItems = package.Dependencies
                     .Where(d => d.TargetFramework == target)
-                    .Where(d => d.Id != null && d.VersionRange != null)
-                    .Select(d => new DependencyItem($"{groupId}/{d.Id}", d.Id, d.VersionRange))
+                    .Where(d => d.PackageId != null && d.VersionRange != null)
+                    .Select(d => new DependencyItem($"{groupId}/{d.PackageId}", d.PackageId, d.VersionRange))
                     .ToList();
 
                 groups.Add(new DependencyGroupItem(groupId, target, dependencyItems));

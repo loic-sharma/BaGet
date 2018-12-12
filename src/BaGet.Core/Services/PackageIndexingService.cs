@@ -64,7 +64,7 @@ namespace BaGet.Core.Services
             }
 
             // The package is well-formed. Ensure this is a new package.
-            if (await _packages.ExistsAsync(package.Id, package.Version))
+            if (await _packages.ExistsAsync(package.PackageId, package.Version))
             {
                 return PackageIndexingResult.PackageAlreadyExists;
             }
@@ -73,7 +73,7 @@ namespace BaGet.Core.Services
             // TODO: Call PackageArchiveReader.ValidatePackageEntriesAsync
             _logger.LogInformation(
                 "Validated package {PackageId} {PackageVersion}, persisting content to storage...",
-                package.Id,
+                package.PackageId,
                 package.Version);
 
             try
@@ -95,7 +95,7 @@ namespace BaGet.Core.Services
                 _logger.LogError(
                     e,
                     "Failed to persist package {PackageId} {PackageVersion} content to storage",
-                    package.Id,
+                    package.PackageId,
                     package.Version);
 
                 throw;
@@ -103,7 +103,7 @@ namespace BaGet.Core.Services
 
             _logger.LogInformation(
                 "Persisted package {Id} {Version} content to storage, saving metadata to database...",
-                package.Id,
+                package.PackageId,
                 package.Version);
 
             var result = await _packages.AddAsync(package);
@@ -111,7 +111,7 @@ namespace BaGet.Core.Services
             {
                 _logger.LogWarning(
                     "Package {Id} {Version} metadata already exists in database",
-                    package.Id,
+                    package.PackageId,
                     package.Version);
 
                 return PackageIndexingResult.PackageAlreadyExists;
@@ -126,14 +126,14 @@ namespace BaGet.Core.Services
 
             _logger.LogInformation(
                 "Successfully persisted package {Id} {Version} metadata to database. Indexing in search...",
-                package.Id,
+                package.PackageId,
                 package.Version);
 
             await _search.IndexAsync(package);
 
             _logger.LogInformation(
                 "Successfully indexed package {Id} {Version} in search",
-                package.Id,
+                package.PackageId,
                 package.Version);
 
             return PackageIndexingResult.Success;
@@ -147,7 +147,7 @@ namespace BaGet.Core.Services
 
             return new Package
             {
-                Id = nuspec.GetId(),
+                PackageId = nuspec.GetId(),
                 Version = nuspec.GetVersion().ToNormalizedString(),
                 Authors = ParseAuthors(nuspec.GetAuthors()),
                 Description = nuspec.GetDescription(),
@@ -165,7 +165,7 @@ namespace BaGet.Core.Services
                 RepositoryUrl = repositoryUri.ToString(),
                 RepositoryType = repositoryType,
                 Dependencies = GetDependencies(nuspec),
-                Tags = ParseTags(nuspec.GetTags())
+                Tags = ParseTags(nuspec.GetTags()).Select(s=>new PackageTag(s)).ToArray()
             };
         }
 
@@ -225,7 +225,7 @@ namespace BaGet.Core.Services
                 {
                     dependencies.Add(new BaGetPackageDependency
                     {
-                        Id = null,
+                        PackageId = null,
                         VersionRange = null,
                         TargetFramework = targetFramework,
                     });
@@ -235,7 +235,7 @@ namespace BaGet.Core.Services
                 {
                     dependencies.Add(new BaGetPackageDependency
                     {
-                        Id = dependency.Id,
+                        PackageId = dependency.Id,
                         VersionRange = dependency.VersionRange?.ToString(),
                         TargetFramework = targetFramework,
                     });

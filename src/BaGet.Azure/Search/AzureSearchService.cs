@@ -22,7 +22,7 @@ namespace BaGet.Azure.Search
             _searchClient = searchClient ?? throw new ArgumentNullException(nameof(searchClient));
         }
 
-        public Task IndexAsync(Package package) => _indexer.IndexAsync(package.Id);
+        public Task IndexAsync(Package package) => _indexer.IndexAsync(package.PackageId);
 
         public async Task<IReadOnlyList<SearchResult>> SearchAsync(string query, int skip = 0, int take = 20)
         {

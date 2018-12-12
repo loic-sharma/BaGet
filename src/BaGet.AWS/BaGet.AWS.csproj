@@ -15,4 +15,8 @@
     <ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Update="Nerdbank.GitVersioning" Version="2.2.33" />
+  </ItemGroup>
+
 </Project>
