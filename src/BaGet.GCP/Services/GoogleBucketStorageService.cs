@@ -36,7 +36,7 @@ namespace BaGet.GCP.Services
 
         public Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
         {
-            return Task.FromResult(new Uri(path));
+            return Task.FromResult(new Uri($"http://storage.googleapis.com/{_bucketName}/{path.TrimStart('/')}"));
         }
 
         public async Task<PutResult> PutAsync(string path, Stream content, string contentType, CancellationToken cancellationToken = default)
