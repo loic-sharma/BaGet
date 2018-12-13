@@ -28,7 +28,7 @@ namespace BaGet.GCP.Services
             using (var storage = await StorageClient.CreateAsync())
             {
                 var stream = new MemoryStream();
-                await storage.DownloadObjectAsync(_bucketName, path, stream, cancellationToken: cancellationToken);
+                await storage.DownloadObjectAsync(_bucketName, CoercePath(path), stream, cancellationToken: cancellationToken);
                 stream.Seek(0, SeekOrigin.Begin);
                 return stream;
             }
@@ -36,7 +36,7 @@ namespace BaGet.GCP.Services
 
         public Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
         {
-            return Task.FromResult(new Uri($"http://storage.googleapis.com/{_bucketName}/{path.TrimStart('/')}"));
+            return Task.FromResult(new Uri($"http://storage.googleapis.com/{_bucketName}/{CoercePath(path).TrimStart('/')}"));
         }
 
         public async Task<PutResult> PutAsync(string path, Stream content, string contentType, CancellationToken cancellationToken = default)
@@ -45,7 +45,7 @@ namespace BaGet.GCP.Services
             {
                 try
                 {
-                    await storage.GetObjectAsync(_bucketName, path, cancellationToken: cancellationToken);
+                    await storage.GetObjectAsync(_bucketName, CoercePath(path), cancellationToken: cancellationToken);
                     return PutResult.AlreadyExists;
                 }
                 catch (GoogleApiException e)
@@ -53,7 +53,7 @@ namespace BaGet.GCP.Services
                     if (e.HttpStatusCode != HttpStatusCode.NotFound)
                         throw;
 
-                    await storage.UploadObjectAsync(_bucketName, path, contentType, content, cancellationToken: cancellationToken);
+                    await storage.UploadObjectAsync(_bucketName, CoercePath(path), contentType, content, cancellationToken: cancellationToken);
                     return PutResult.Success;
                 }
             }
@@ -63,9 +63,15 @@ namespace BaGet.GCP.Services
         {
             using (var storage = await StorageClient.CreateAsync())
             {
-                var obj = await storage.GetObjectAsync(_bucketName, path, cancellationToken: cancellationToken);
+                var obj = await storage.GetObjectAsync(_bucketName, CoercePath(path), cancellationToken: cancellationToken);
                 await storage.DeleteObjectAsync(obj, cancellationToken: cancellationToken);
             }
+        }
+
+        private static string CoercePath(string path)
+        {
+            // bucket folder structure is always forward slash regardless of what platform baget server is running on
+            return path.Replace('\\', '/');
         }
     }
 }
