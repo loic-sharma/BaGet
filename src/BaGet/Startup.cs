@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using BaGet.Configurations;
 using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
@@ -68,7 +68,8 @@ namespace BaGet
                     .MapSymbolRoutes()
                     .MapSearchRoutes()
                     .MapRegistrationRoutes()
-                    .MapPackageContentRoutes();
+                    .MapPackageContentRoutes()
+                    .MapApiV2Routes();
             });
 
             app.UseSpa(spa =>

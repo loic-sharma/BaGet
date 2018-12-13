@@ -16,9 +16,11 @@ using BaGet.Core.Entities;
 using BaGet.Core.Mirror;
 using BaGet.Core.Services;
 using BaGet.Entities;
+using BaGet.Legacy;
 using BaGet.Protocol;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -62,6 +64,8 @@ namespace BaGet.Extensions
             services.ConfigureStorageProviders();
             services.ConfigureSearchProviders();
             services.ConfigureAuthenticationProviders();
+
+            services.ConfigureApiV2();
 
             return services;
         }
@@ -306,6 +310,25 @@ namespace BaGet.Extensions
                     throw new InvalidOperationException(
                         $"{message}: {string.Join('\n', validationResults)}");
                 }
+            });
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureApiV2(this IServiceCollection services)
+        {
+            services.AddSingleton(provider => {
+                var odataModelBuilder = new NuGetWebApiODataModelBuilder();
+                odataModelBuilder.Build();
+                return odataModelBuilder.Model;
+            });
+
+            services.AddTransient<IODataPackageSerializer, ODataPackageSerializer>();
+            
+            services.Configure<FormOptions>(x =>
+            {
+                x.ValueLengthLimit = int.MaxValue;
+                x.MultipartBodyLengthLimit = int.MaxValue;
             });
 
             return services;
