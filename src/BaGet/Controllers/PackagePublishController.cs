@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Services;
@@ -77,6 +77,7 @@ namespace BaGet.Controllers
             }
         }
 
+        [HttpDelete]
         public async Task<IActionResult> Delete(string id, string version, CancellationToken cancellationToken)
         {
             if (!NuGetVersion.TryParse(version, out var nugetVersion))
@@ -99,6 +100,7 @@ namespace BaGet.Controllers
             }
         }
 
+        [HttpPost]
         public async Task<IActionResult> Relist(string id, string version)
         {
             if (!NuGetVersion.TryParse(version, out var nugetVersion))

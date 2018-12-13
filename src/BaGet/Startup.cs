@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
+using NLog.Web;
 
 namespace BaGet
 {
@@ -33,8 +36,10 @@ namespace BaGet
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddNLog();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -42,20 +47,9 @@ namespace BaGet
             }
 
             // Run migrations if necessary.
-            
+
             var options = Configuration.Get<BaGetOptions>();
-            /* todo: migrations at startup
-            if (options.RunMigrationsAtStartup)
-            {
-                using (var scope = app.ApplicationServices.CreateScope())
-                {
-                    scope.ServiceProvider
-                        .GetRequiredService<IContext>()
-                        .Database
-                        .Migrate();
-                }
-            }
-            */
+
             app.UsePathBase(options.PathBase);
             app.UseForwardedHeaders();
             app.UseSpaStaticFiles();

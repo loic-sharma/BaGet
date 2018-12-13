@@ -162,10 +162,10 @@ namespace BaGet.Core.Services
                 IconUrl = nuspec.GetIconUrl(),
                 LicenseUrl = nuspec.GetLicenseUrl(),
                 ProjectUrl = nuspec.GetProjectUrl(),
-                RepositoryUrl = repositoryUri.ToString(),
+                RepositoryUrl = repositoryUri?.ToString(),
                 RepositoryType = repositoryType,
                 Dependencies = GetDependencies(nuspec),
-                Tags = ParseTags(nuspec.GetTags()).Select(s=>new PackageTag(s)).ToArray()
+                Tags = ParseTags(nuspec.GetTags()).Select(s => new PackageTag(s)).ToArray()
             };
         }
 
