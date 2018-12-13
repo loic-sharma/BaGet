@@ -63,8 +63,16 @@ namespace BaGet.GCP.Services
         {
             using (var storage = await StorageClient.CreateAsync())
             {
-                var obj = await storage.GetObjectAsync(_bucketName, CoercePath(path), cancellationToken: cancellationToken);
-                await storage.DeleteObjectAsync(obj, cancellationToken: cancellationToken);
+                try
+                {
+                    var obj = await storage.GetObjectAsync(_bucketName, CoercePath(path), cancellationToken: cancellationToken);
+                    await storage.DeleteObjectAsync(obj, cancellationToken: cancellationToken);
+                }
+                catch (GoogleApiException e)
+                {
+                    if (e.HttpStatusCode != HttpStatusCode.NotFound)
+                        throw;
+                }
             }
         }
 
