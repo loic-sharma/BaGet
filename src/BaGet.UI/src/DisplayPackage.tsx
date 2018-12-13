@@ -290,7 +290,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
                   <span>{this.dateToString(value.date)}</span>
                 </div>
               ))}
-              
+
             </div>
 
             <div>
