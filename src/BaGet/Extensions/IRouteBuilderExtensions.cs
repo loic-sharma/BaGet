@@ -148,24 +148,6 @@ namespace BaGet.Extensions
                 template: "v2/Packages()",
                 defaults: new { controller = "PackagesV2", action = "QueryPackages" });
 
-            routes.MapRoute(
-                name: Routes.UploadPackageRouteName,
-                template: "v2/package",
-                defaults: new { controller = "PackagesV2", action = "PutPackage" },
-                constraints: new { httpMethod = new HttpMethodRouteConstraint("PUT") });
-
-            routes.MapRoute(
-                name: Routes.RelistRouteName,
-                template: "v2/package/{id}/{version}",
-                defaults: new { controller = "PackagesV2", action = "PostPackage" },
-                constraints: new { httpMethod = new HttpMethodRouteConstraint("POST") });
-
-            routes.MapRoute(
-                name: Routes.DeleteRouteName,
-                template: "v2/package/{id}/{version}",
-                defaults: new { controller = "PackagesV2", action = "DeletePackage" },
-                constraints: new { httpMethod = new HttpMethodRouteConstraint("DELETE") });
-
             return routes;
         }
     }

@@ -20,14 +20,9 @@ namespace BaGet.Controllers
 {
     public class PackagesV2Controller : Controller
     {
-        static readonly string apiKeyHeader = "X-NuGet-ApiKey";
         static readonly string atomXmlContentType = "application/atom+xml";
         static readonly string basePath = "/v2";
 
-        private readonly IAuthenticationService _authentication;
-        private readonly IPackageIndexingService _indexer;
-        private readonly IPackageService _packages;
-        private readonly IPackageDeletionService _deletion;
         private readonly IODataPackageSerializer _serializer;
         private readonly IPackageService _packageService;
         private readonly IPackageStorageService _storage;
@@ -35,20 +30,12 @@ namespace BaGet.Controllers
         private readonly ILogger<PackagesV2Controller> _log;
 
         public PackagesV2Controller(
-            IAuthenticationService authentication,
-            IPackageIndexingService indexer,
-            IPackageService packages,
-            IPackageDeletionService deletion,
             IODataPackageSerializer serializer,
             IPackageService packageService,
             IPackageStorageService storage,
             IEdmModel odataModel,
             ILogger<PackagesV2Controller> logger)
         {
-            _authentication = authentication;
-            _indexer = indexer;
-            _packages = packages;
-            _deletion = deletion;
             _serializer = serializer;
             _packageService = packageService;
             _storage = storage;
@@ -168,98 +155,6 @@ namespace BaGet.Controllers
             return BadRequest();
         }
 
-        [HttpPut]
-        public async Task PutPackage()
-        {
-            CancellationToken ct = CancellationToken.None;
-            Stream uploadStream;
-            if (Request.Form.Files.Count > 0)
-            {
-                // If we're using the newer API, the package stream is sent as a file.
-                // use first and ignore the rest
-                // as in https://docs.microsoft.com/en-us/nuget/api/package-publish-resource#multipart-form-data
-                uploadStream = Request.Form.Files[0].OpenReadStream();
-            }
-            else
-            {
-                // old clients
-                uploadStream = Request.Body;
-            }
-            if (uploadStream == null)
-            {
-                _log.LogWarning("package upload did not contain multipart/form-data or body");
-                HttpContext.Response.StatusCode = 400;
-                return;
-            }
-
-            try
-            {
-                string apiKey = Request.Headers[apiKeyHeader];
-                if (!await _authentication.AuthenticateAsync(apiKey))
-                {
-                    HttpContext.Response.StatusCode = 401;
-                    return;
-                }
-
-                var result = await _indexer.IndexAsync(uploadStream, ct);
-
-                switch (result)
-                {
-                    case PackageIndexingResult.InvalidPackage:
-                        HttpContext.Response.StatusCode = 400;
-                        break;
-
-                    case PackageIndexingResult.PackageAlreadyExists:
-                        HttpContext.Response.StatusCode = 409;
-                        break;
-
-                    case PackageIndexingResult.Success:
-                        HttpContext.Response.StatusCode = 201;
-                        break;
-                }
-            }
-            catch (Exception e)
-            {
-                _log.LogError(e, "Exception thrown during package upload");
-            }
-            finally
-            {
-                uploadStream.Dispose();
-            }
-        }
-
-        public async Task PostPackage(string id, string version)
-        {
-            if (!NuGetVersion.TryParse(version, out var nugetVersion))
-            {
-                HttpContext.Response.StatusCode = 400;
-            }
-
-            string apiKey = HttpContext.Request.Headers[apiKeyHeader];
-            if (!await _authentication.AuthenticateAsync(apiKey))
-            {
-                HttpContext.Response.StatusCode = 403;
-            }
-
-            if (await _packages.RelistPackageAsync(id, nugetVersion))
-            {
-                HttpContext.Response.StatusCode = 200;
-            }
-            else
-            {
-                HttpContext.Response.StatusCode = 404;
-            }
-        }
-
-        public async Task DeletePackage(string id, string version)
-        {
-            if (!NuGetVersion.TryParse(version, out var nugetVersion))
-            {
-                HttpContext.Response.StatusCode = 400;
-            }
-            await _deletion.TryDeletePackageAsync(id, nugetVersion, CancellationToken.None);
-        }
-
         private FileStreamResult ToODataStream(Package package)
         {
             var odataPackage = new ODataResponse<PackageWithUrls>(GetServiceUrl(Request), ToPackageWithUrls(Request, package));
@@ -307,4 +202,3 @@ namespace BaGet.Controllers
         }
     }
 }
-
