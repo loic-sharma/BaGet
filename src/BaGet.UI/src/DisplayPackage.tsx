@@ -206,13 +206,17 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
                   {this.state.package.dependencyGroups.map(depGroup => (
                     <div key={depGroup.targetFramework}>
                       <h4>{depGroup.targetFramework}</h4>
-                      <ul>
-                        {depGroup.dependencies.map(dep => (
-                          <li key={dep.id}>
-                            {dep.id} {dep.range}
-                          </li>
-                        ))}
-                      </ul>
+                      {depGroup.dependencies.length > 0 ? (
+                        <ul>
+                          {depGroup.dependencies.map(dep => (
+                            <li key={dep.id}>
+                              {dep.id} {dep.range}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <div>No dependencies.</div>
+                      )}
                     </div>
                   ))}
                 </div>
