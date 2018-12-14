@@ -109,7 +109,6 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
       let latestItem: IRegistrationPageItem | undefined;
 
       const versions: IPackageVersion[] = [];
-      const dependencyGroups: IDependencyGroup[] = [];
 
       for (const entry of results.items[0].items) {
         versions.push({
@@ -124,8 +123,12 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
       }
 
       if (latestItem) {
-        dependencyGroups.push(...latestItem.catalogEntry.dependencyGroups);
-
+        latestItem.catalogEntry.dependencyGroups.map(group => {
+          if (!group.dependencies) {
+            group.dependencies = [];
+          }
+        });
+        
         let readme = "";
         if (!latestItem.catalogEntry.hasReadme) {
           readme = latestItem.catalogEntry.description; 
@@ -134,7 +137,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
         this.setState({
           package: {
             authors: latestItem.catalogEntry.authors,
-            dependencyGroups,
+            dependencyGroups: latestItem.catalogEntry.dependencyGroups,
             downloadUrl: latestItem.packageContent,
             iconUrl: latestItem.catalogEntry.iconUrl,
             id: latestItem.catalogEntry.id,
@@ -199,18 +202,20 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
               <h3>Dependencies</h3>
 
               {this.state.package.dependencyGroups.length > 0 ? (
-                <div>{this.state.package.dependencyGroups.map(depGroup => (
-                  <div>
-                    <h4>{depGroup.targetFramework}</h4>
-                    <ul>
-                      {depGroup.dependencies.map(dep => (
-                        <li>
-                          {dep.id} {dep.range}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}</div>
+                <div>
+                  {this.state.package.dependencyGroups.map(depGroup => (
+                    <div key={depGroup.targetFramework}>
+                      <h4>{depGroup.targetFramework}</h4>
+                      <ul>
+                        {depGroup.dependencies.map(dep => (
+                          <li key={dep.id}>
+                            {dep.id} {dep.range}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
                 ) : (
                 <div>This package has no dependencies.</div>
               )}
