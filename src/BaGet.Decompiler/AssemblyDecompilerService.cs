@@ -79,7 +79,10 @@ namespace BaGet.Decompiler
 
         private AnalysisAssembly DecompileAssembly(MetadataModule module)
         {
-            var res = new AnalysisAssembly();
+            var res = new AnalysisAssembly
+            {
+                Display = module.FullAssemblyName
+            };
 
             // Process all types
             foreach (var type in module.TypeDefinitions.Where(_filter.Include))
