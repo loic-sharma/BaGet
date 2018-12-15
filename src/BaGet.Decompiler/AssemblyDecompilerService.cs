@@ -1,18 +1,33 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using BaGet.Decompiler.Decompilation;
 using BaGet.Decompiler.Objects;
 using BaGet.Decompiler.SourceCode;
 using ICSharpCode.Decompiler;
 using ICSharpCode.Decompiler.CSharp;
 using ICSharpCode.Decompiler.CSharp.OutputVisitor;
+using ICSharpCode.Decompiler.Metadata;
 using ICSharpCode.Decompiler.Output;
 using ICSharpCode.Decompiler.TypeSystem;
 
 namespace BaGet.Decompiler
 {
+    internal class MyAssmblyResolver : IAssemblyResolver
+    {
+        public PEFile Resolve(IAssemblyReference reference)
+        {
+            return null;
+        }
+
+        public PEFile ResolveModule(PEFile mainModule, string moduleName)
+        {
+            return null;
+        }
+    }
+
     public class AssemblyDecompilerService
     {
         private readonly Filter _filter;
@@ -30,69 +45,46 @@ namespace BaGet.Decompiler
             _filter = new Filter();
 
             _globalSourceCodeProviders = new List<ISourceCodeProvider>();
+
+            // TODO: Make source code provider for SourceLink
+            // TODO: Make source code provider for embedded source in nupkg
+            // TODO: Make source code provider for embedded source in pdb
         }
 
         public AnalysisAssembly AnalyzeAssembly(Stream assembly, Stream pdb = null, Stream documentationXml = null)
         {
-            string tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(tempDir);
+            var localSourceCodeProviders = new List<ISourceCodeProvider>();
 
-            List<ISourceCodeProvider> localSourceCodeProviders = new List<ISourceCodeProvider>();
+            var assemblyPe = new PEFile("Binary.dll", assembly, PEStreamOptions.PrefetchEntireImage);
 
-            AnalysisAssembly res;
-            try
-            {
-                string assemblyFile = Path.Combine(tempDir, "Binary.dll");
-                string assemblyPdb = Path.Combine(tempDir, "Binary.pdb");
+            // TODO: Read PDB's (are they even needed?)
+            //PEFile pdbPe = null;
+            //if (pdb != null)
+            //    pdbPe = new PEFile("Binary.pdb", pdb, PEStreamOptions.PrefetchEntireImage);
 
-                using (FileStream fs = File.Create(assemblyFile))
-                    assembly.CopyTo(fs);
+            var decompiler = new CSharpDecompiler(assemblyPe, new MyAssmblyResolver(), new DecompilerSettings(LanguageVersion.Latest));
+            var res = DecompileAssembly(decompiler.TypeSystem.MainModule);
 
-                if (pdb != null)
-                {
-                    using (FileStream fs = File.Create(assemblyPdb))
-                        pdb.CopyTo(fs);
-                }
+            // Read documentation
+            // TODO Read documentation
 
-                // TODO: Load PDB from memory
-                // TODO: Load module from memory
-                var decompiler = new CSharpDecompiler(assemblyFile, new DecompilerSettings(LanguageVersion.Latest));
-                res = DecompileAssembly(decompiler.TypeSystem.MainModule);
+            // Fetch sources
+            localSourceCodeProviders.Add(new SourceCodeDecompiler(decompiler));
 
-                // Read documentation
-                // TODO Read documentation
-
-                // Fetch sources
-                localSourceCodeProviders.Add(new SourceCodeDecompiler(decompiler));
-
-                foreach (ISourceCodeProvider provider in _globalSourceCodeProviders.Concat(localSourceCodeProviders))
-                {
-                    provider.TryFillSources(decompiler.TypeSystem.MainModule, res, assemblyFile, assemblyPdb);
-                }
-            }
-            finally
-            {
-                // TODO: Properly close CSharpDecompiler
-                try
-                {
-                    Directory.Delete(tempDir, true);
-                }
-                catch (Exception)
-                {
-                }
-            }
+            foreach (var provider in _globalSourceCodeProviders.Concat(localSourceCodeProviders))
+                provider.TryFillSources(decompiler.TypeSystem.MainModule, res);
 
             return res;
         }
 
         private AnalysisAssembly DecompileAssembly(MetadataModule module)
         {
-            AnalysisAssembly res = new AnalysisAssembly();
+            var res = new AnalysisAssembly();
 
             // Process all types
             foreach (var type in module.TypeDefinitions.Where(_filter.Include))
             {
-                AnalysisType analysisType = new AnalysisType
+                var analysisType = new AnalysisType
                 {
                     FullName = type.FullTypeName.ToString(),
                     Display = _ambience.ConvertSymbol(type)
@@ -106,7 +98,7 @@ namespace BaGet.Decompiler
                     if (!_filter.Include(method))
                         continue;
 
-                    AnalysisMember analysisMethod = new AnalysisMember
+                    var analysisMethod = new AnalysisMember
                     {
                         MemberType = method.IsConstructor ? AnalysisMemberType.Constructor : AnalysisMemberType.Method,
                         Name = method.Name,
@@ -138,7 +130,7 @@ namespace BaGet.Decompiler
                             throw new Exception();
                     }
 
-                    AnalysisMember analysisProperty = new AnalysisMember
+                    var analysisProperty = new AnalysisMember
                     {
                         MemberType = analysisMemberType,
                         Name = member.Name,

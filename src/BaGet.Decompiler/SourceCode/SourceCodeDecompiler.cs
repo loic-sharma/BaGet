@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using BaGet.Decompiler.Objects;
 using ICSharpCode.Decompiler.CSharp;
-using ICSharpCode.Decompiler.CSharp.Syntax;
 using ICSharpCode.Decompiler.TypeSystem;
 
 namespace BaGet.Decompiler.SourceCode
@@ -15,16 +14,16 @@ namespace BaGet.Decompiler.SourceCode
             _decompiler = decompiler;
         }
 
-        public bool TryFillSources(IModule module, AnalysisAssembly assembly, string assemblyFile, string assemblyPdb)
+        public bool TryFillSources(IModule module, AnalysisAssembly assembly)
         {
             try
             {
-                foreach (AnalysisType decompiledType in assembly.Types)
+                foreach (var decompiledType in assembly.Types)
                 {
-                    FullTypeName fullTypeName = new FullTypeName(decompiledType.FullName);
-                    SyntaxTree ast = _decompiler.DecompileType(fullTypeName);
+                    var fullTypeName = new FullTypeName(decompiledType.FullName);
+                    var ast = _decompiler.DecompileType(fullTypeName);
 
-                    string source = ast.ToString();
+                    var source = ast.ToString();
 
                     decompiledType.CSharp = source;
                 }

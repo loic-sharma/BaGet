@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -30,25 +30,46 @@ namespace BaGet.Decompiler.Nupkg
                 var file = item.Items.Single();
                 var folder = file.Substring(0, file.Length - Path.GetFileName(file).Length - 1);
 
+                MemoryStream assemblyStream = new MemoryStream();
+                using (var tmp = package.GetStream(file))
+                    tmp.CopyTo(assemblyStream);
+
+                assemblyStream.Seek(0, SeekOrigin.Begin);
+
                 var otherFiles = package.GetFiles(folder).ToList();
 
                 var pdbFileName = Path.ChangeExtension(file, ".pdb");
                 var pdbFile = otherFiles.Contains(pdbFileName, StringComparer.OrdinalIgnoreCase);
 
+                MemoryStream pdbStream = null;
+                if (pdbFile)
+                {
+                    pdbStream = new MemoryStream();
+                    using (var tmp = package.GetStream(pdbFileName))
+                        tmp.CopyTo(pdbStream);
+
+                    pdbStream.Seek(0, SeekOrigin.Begin);
+                }
+
                 var xmlDocFileName = Path.ChangeExtension(file, ".xml");
                 var xmlDocFile = otherFiles.Contains(xmlDocFileName, StringComparer.OrdinalIgnoreCase);
 
-                using (var assemblyStream = package.GetStream(file))
-                using (var pdbStream = pdbFile ? package.GetStream(pdbFileName) : null)
-                using (var xmlDocStream = xmlDocFile ? package.GetStream(xmlDocFileName) : null)
+                MemoryStream xmlDocStream = null;
+                if (xmlDocFile)
                 {
-                    var analysis = _assemblyDecompilerService.AnalyzeAssembly(assemblyStream, pdbStream, xmlDocStream);
+                    xmlDocStream = new MemoryStream();
+                    using (var tmp = package.GetStream(xmlDocFileName))
+                        tmp.CopyTo(xmlDocStream);
 
-                    var nugetAnalysis = AnalysisNugetAssemblyConverter.Convert(analysis);
-                    nugetAnalysis.Framework = item.TargetFramework.DotNetFrameworkName;
-
-                    res.Assemblies.Add(nugetAnalysis);
+                    xmlDocStream.Seek(0, SeekOrigin.Begin);
                 }
+
+                var analysis = _assemblyDecompilerService.AnalyzeAssembly(assemblyStream, pdbStream, xmlDocStream);
+
+                var nugetAnalysis = AnalysisNugetAssemblyConverter.Convert(analysis);
+                nugetAnalysis.Framework = item.TargetFramework.DotNetFrameworkName;
+
+                res.Assemblies.Add(nugetAnalysis);
             }
 
             return res;
