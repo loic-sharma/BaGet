@@ -10,8 +10,6 @@ class SourceRepository extends React.Component<ISourceRepositoryProps> {
 
   constructor(props: ISourceRepositoryProps) {
     super(props);
-
-    this.state = {items: []};
   }
 
   public render() {

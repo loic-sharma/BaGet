@@ -1,6 +1,6 @@
 import * as React from 'react';
 import './App.css';
-import DisplayPackage from './DisplayPackage';
+import DisplayPackage from './DisplayPackage/DisplayPackage';
 import SearchResults from './SearchResults';
 
 interface IAppState {

@@ -9,8 +9,6 @@ class LicenseInfo extends React.Component<ILicenseInfoProps> {
 
   constructor(props: ILicenseInfoProps) {
     super(props);
-
-    this.state = {items: []};
   }
 
   public render() {

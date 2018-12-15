@@ -2,7 +2,9 @@ import { HtmlRenderer, Parser } from 'commonmark';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as React from 'react';
 import timeago from 'timeago.js';
+import Dependencies from './Dependencies';
 import LicenseInfo from './LicenseInfo';
+import * as Registration from './Registration';
 import SourceRepository from './SourceRepository';
 
 import './DisplayPackage.css';
@@ -27,7 +29,7 @@ interface IPackage {
   authors: string;
   tags: string[];
   versions: IPackageVersion[];
-  dependencyGroups: IDependencyGroup[];
+  dependencyGroups: Registration.IDependencyGroup[];
 }
 
 interface IPackageVersion {
@@ -38,50 +40,6 @@ interface IPackageVersion {
 
 interface IDisplayPackageState {
   package?: IPackage;
-}
-
-interface IRegistrationIndex {
-  totalDownloads: number;
-  items: IRegistrationPage[];
-}
-
-interface IRegistrationPage {
-  id: string;
-  lower: string;
-  upper: string;
-  items: IRegistrationPageItem[];
-}
-
-interface IRegistrationPageItem {
-  packageContent: string;
-  catalogEntry: ICatalogEntry;
-}
-
-interface ICatalogEntry {
-  id: string;
-  version: string;
-  downloads: number;
-  published: string;
-  hasReadme: boolean;
-  description: string;
-  iconUrl: string;
-  projectUrl: string;
-  licenseUrl: string;
-  repositoryUrl: string;
-  repositoryType: string;
-  authors: string;
-  tags: string[];
-  dependencyGroups: IDependencyGroup[];
-}
-
-interface IDependencyGroup {
-  targetFramework: string;
-  dependencies: IDependency[];
-}
-
-interface IDependency {
-  id: string;
-  range: string;
 }
 
 class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPackageState> {
@@ -104,10 +62,10 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
     fetch(url).then(response => {
       return response.json();
     }).then(json => {
-      const results = json as IRegistrationIndex;
+      const results = json as Registration.IRegistrationIndex;
 
       const latestVersion = results.items[0].upper;
-      let latestItem: IRegistrationPageItem | undefined;
+      let latestItem: Registration.IRegistrationPageItem | undefined;
 
       const versions: IPackageVersion[] = [];
 
@@ -124,15 +82,9 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
       }
 
       if (latestItem) {
-        latestItem.catalogEntry.dependencyGroups.map(group => {
-          if (!group.dependencies) {
-            group.dependencies = [];
-          }
-        });
-        
         let readme = "";
         if (!latestItem.catalogEntry.hasReadme) {
-          readme = latestItem.catalogEntry.description; 
+          readme = latestItem.catalogEntry.description;
         }
 
         this.setState({
@@ -272,32 +224,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
             {/* TODO: Fix this */}
             <div dangerouslySetInnerHTML={{ __html: this.state.package.readme }} />
 
-            <div>
-              <h3>Dependencies</h3>
-
-              {this.state.package.dependencyGroups.length > 0 ? (
-                <div>
-                  {this.state.package.dependencyGroups.map(depGroup => (
-                    <div key={depGroup.targetFramework}>
-                      <h4>{depGroup.targetFramework}</h4>
-                      {depGroup.dependencies.length > 0 ? (
-                        <ul>
-                          {depGroup.dependencies.map(dep => (
-                            <li key={dep.id}>
-                              {dep.id} {dep.range}
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <div>No dependencies.</div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-                ) : (
-                <div>This package has no dependencies.</div>
-              )}
-          </div>
+            <Dependencies dependencyGroups={this.state.package.dependencyGroups} />
           </article>
           <aside className="col-sm-3 package-details-info">
             <div>
