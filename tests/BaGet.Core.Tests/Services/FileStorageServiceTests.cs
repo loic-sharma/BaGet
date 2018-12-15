@@ -1,7 +1,7 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Configuration;
 using BaGet.Core.Services;
@@ -49,7 +49,16 @@ namespace BaGet.Core.Tests.Services
 
                 // Assert
                 Assert.Equal("Hello world", await ToStringAsync(result));
+            }
 
+            [Fact]
+            public async Task NoAccessOutsideStorePath()
+            {
+                foreach (var path in OutsideStorePathData)
+                {
+                    await Assert.ThrowsAsync<ArgumentException>(async () =>
+                        await _target.GetAsync(path));
+                }
             }
         }
 
@@ -62,6 +71,16 @@ namespace BaGet.Core.Tests.Services
                 var expected = new Uri(Path.Combine(_storePath, "test.txt"));
 
                 Assert.Equal(expected, result);
+            }
+
+            [Fact]
+            public async Task NoAccessOutsideStorePath()
+            {
+                foreach (var path in OutsideStorePathData)
+                {
+                    await Assert.ThrowsAsync<ArgumentException>(async () =>
+                        await _target.GetDownloadUriAsync(path));
+                }
             }
         }
 
@@ -122,6 +141,19 @@ namespace BaGet.Core.Tests.Services
                 // Assert
                 Assert.Equal(PutResult.Conflict, result);
             }
+
+            [Fact]
+            public async Task NoAccessOutsideStorePath()
+            {
+                foreach (var path in OutsideStorePathData)
+                {
+                    using (var content = StringStream("Hello world"))
+                    {
+                        await Assert.ThrowsAsync<ArgumentException>(async () =>
+                            await _target.PutAsync(path, content, "text/plain"));
+                    }
+                }
+            }
         }
 
         public class DeleteAsync : FactsBase
@@ -145,6 +177,16 @@ namespace BaGet.Core.Tests.Services
                 await _target.DeleteAsync("test.txt");
 
                 Assert.False(File.Exists(path));
+            }
+
+            [Fact]
+            public async Task NoAccessOutsideStorePath()
+            {
+                foreach (var path in OutsideStorePathData)
+                {
+                    await Assert.ThrowsAsync<ArgumentException>(async () =>
+                        await _target.DeleteAsync(path));
+                }
             }
         }
 
@@ -189,6 +231,25 @@ namespace BaGet.Core.Tests.Services
                 using (var reader = new StreamReader(input))
                 {
                     return await reader.ReadToEndAsync();
+                }
+            }
+
+            public IEnumerable<string> OutsideStorePathData
+            {
+                get
+                {
+                    string fullPath = Path.GetFullPath(_storePath);
+                    yield return "../file";
+                    yield return ".";
+                    yield return $"../{Path.GetFileName(_storePath)}";
+                    yield return $"../{Path.GetFileName(_storePath)}suffix";
+                    yield return $"../{Path.GetFileName(_storePath)}suffix/file";
+                    yield return fullPath;
+                    yield return fullPath + Path.DirectorySeparatorChar;
+                    yield return fullPath + Path.DirectorySeparatorChar + "..";
+                    yield return fullPath + Path.DirectorySeparatorChar + ".." + Path.DirectorySeparatorChar + "file";
+                    yield return Path.GetPathRoot(_storePath);
+                    yield return Path.Combine(Path.GetPathRoot(_storePath), "file");
                 }
             }
         }
