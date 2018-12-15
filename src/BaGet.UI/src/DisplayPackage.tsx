@@ -26,6 +26,7 @@ interface IPackage {
   authors: string;
   tags: string[];
   versions: IPackageVersion[];
+  dependencyGroups: IDependencyGroup[];
 }
 
 interface IPackageVersion {
@@ -69,6 +70,17 @@ interface ICatalogEntry {
   repositoryType: string;
   authors: string;
   tags: string[];
+  dependencyGroups: IDependencyGroup[];
+}
+
+interface IDependencyGroup {
+  targetFramework: string;
+  dependencies: IDependency[];
+}
+
+interface IDependency {
+  id: string;
+  range: string;
 }
 
 class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPackageState> {
@@ -111,6 +123,12 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
       }
 
       if (latestItem) {
+        latestItem.catalogEntry.dependencyGroups.map(group => {
+          if (!group.dependencies) {
+            group.dependencies = [];
+          }
+        });
+        
         let readme = "";
         if (!latestItem.catalogEntry.hasReadme) {
           readme = latestItem.catalogEntry.description; 
@@ -119,6 +137,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
         this.setState({
           package: {
             authors: latestItem.catalogEntry.authors,
+            dependencyGroups: latestItem.catalogEntry.dependencyGroups,
             downloadUrl: latestItem.packageContent,
             iconUrl: latestItem.catalogEntry.iconUrl,
             id: latestItem.catalogEntry.id,
@@ -132,7 +151,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
             repositoryUrl: latestItem.catalogEntry.repositoryUrl,
             tags: latestItem.catalogEntry.tags,
             totalDownloads: results.totalDownloads,
-            versions,
+            versions
           }
         });
 
@@ -177,7 +196,34 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
             </div>
 
             {/* TODO: Fix this */}
-            <div dangerouslySetInnerHTML={ {__html: this.state.package.readme} } />
+            <div dangerouslySetInnerHTML={{ __html: this.state.package.readme }} />
+
+            <div>
+              <h3>Dependencies</h3>
+
+              {this.state.package.dependencyGroups.length > 0 ? (
+                <div>
+                  {this.state.package.dependencyGroups.map(depGroup => (
+                    <div key={depGroup.targetFramework}>
+                      <h4>{depGroup.targetFramework}</h4>
+                      {depGroup.dependencies.length > 0 ? (
+                        <ul>
+                          {depGroup.dependencies.map(dep => (
+                            <li key={dep.id}>
+                              {dep.id} {dep.range}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <div>No dependencies.</div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                ) : (
+                <div>This package has no dependencies.</div>
+              )}
+          </div>
           </article>
           <aside className="col-sm-3 package-details-info">
             <div>
