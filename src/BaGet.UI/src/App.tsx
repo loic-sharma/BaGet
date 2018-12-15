@@ -59,7 +59,7 @@ class App extends React.Component<{}, IAppState> {
               <ul className="nav navbar-nav" role="tablist">
                 <li className="active" role="presentation"><a role="tab" href="/"><span>Packages</span></a></li>
                 <li role="presentation"><a role="tab" href="/"><span>Upload</span></a></li>
-                <li role="presentation"><a role="tab" href="/"><span>Documentation</span></a></li>
+                <li role="presentation"><a role="tab" href="https://loic-sharma.github.io/BaGet/"><span>Documentation</span></a></li>
               </ul>
             </div>
           </div>
