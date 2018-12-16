@@ -3,6 +3,7 @@ import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as React from 'react';
 import timeago from 'timeago.js';
 import Dependencies from './Dependencies';
+import InstallationInfo from './InstallationInfo';
 import LicenseInfo from './LicenseInfo';
 import * as Registration from './Registration';
 import SourceRepository from './SourceRepository';
@@ -148,78 +149,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
 
             </div>
 
-            <div className="install-tabs">
-              <ul className="nav nav-tabs" role="tablist">
-
-                <li role="presentation" className="active">
-                  <a href="#dotnet-cli" aria-expanded="true" aria-selected="true" aria-controls="dotnet-cli" role="tab" data-toggle="tab" title="Switch to tab panel which contains package installation command for .NET CLI">
-                    .NET CLI
-                  </a>
-                </li>
-
-                <li role="presentation">
-                  <a href="#package-manager" aria-expanded="false" aria-selected="false" aria-controls="dotnet-cli" role="tab" data-toggle="tab" title="Switch to tab panel which contains package installation command for Package Manager">
-                    Package Manager
-                  </a>
-                </li>
-
-                <li role="presentation">
-                  <a href="#paket" aria-expanded="false" aria-selected="false" aria-controls="dotnet-cli" role="tab" data-toggle="tab" title="Switch to tab panel which contains package installation command for Paket">
-                    Paket CLI
-                  </a>
-                </li>
-
-              </ul>
-            </div>
-
-            <div className="tab-content">
-
-              <div role="tabpanel" className="tab-pane active" id="dotnet-cli">
-                <div>
-                  <div className="install-script" id="dotnet-cli-text">
-                    <span>
-                      dotnet add package Newtonsoft.Json --version 12.0.1
-                    </span>
-                  </div>
-                  <div className="copy-button">
-                    <button id="dotnet-cli-button" className="btn btn-default btn-warning" type="button" data-toggle="popover" data-placement="bottom" data-content="Copied." aria-label="Copy the .NET CLI command" data-original-title="" title="">
-                      <Icon iconName="Copy" className="ms-Icon" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div role="tabpanel" className="tab-pane" id="package-manager">
-                <div>
-                  <div className="install-script" id="package-manager-text">
-                    <span>
-                        Install-Package Newtonsoft.Json -Version 12.0.1
-                    </span>
-                  </div>
-                  <div className="copy-button">
-                    <button id="package-manager-button" className="btn btn-default btn-warning" type="button" data-toggle="popover" data-placement="bottom" data-content="Copied." aria-label="Copy the Package Manager command" data-original-title="" title="">
-                      <Icon iconName="Copy" className="ms-Icon" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div role="tabpanel" className="tab-pane " id="paket-cli">
-                <div>
-                  <div className="install-script" id="paket-cli-text">
-                    <span>
-                      paket add Newtonsoft.Json --version 12.0.1
-                    </span>
-                  </div>
-                  <div className="copy-button">
-                    <button id="paket-cli-button" className="btn btn-default btn-warning" type="button" data-toggle="popover" data-placement="bottom" data-content="Copied." aria-label="Copy the Paket CLI command" data-original-title="" title="">
-                      <Icon iconName="Copy" className="ms-Icon" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-            </div>
+            <InstallationInfo id={this.state.package.id} version={this.state.package.latestVersion} />
 
             {/* TODO: Fix this */}
             <div dangerouslySetInnerHTML={{ __html: this.state.package.readme }} />

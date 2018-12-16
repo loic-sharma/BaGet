@@ -7,20 +7,6 @@
   font-size: 45%;
 }
 
-.install-script:before {
-  content: "> ";
-}
-
-.install-script {
-  margin: 10px 0 10px;
-  color: #fff;
-  font-family: Consolas, Menlo, Monaco, "Courier New", monospace;
-  background-color: #002440;
-  border-color: #002440;
-  border-style: solid;
-  border-width: 1px;
-}
-
 .package-details-info .ms-Icon-ul li {
   margin-bottom: 15px;
 }
