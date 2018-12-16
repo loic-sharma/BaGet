@@ -49,7 +49,7 @@ namespace BaGet.Decompiler
             //if (pdb != null)
             //    pdbPe = new PEFile("Binary.pdb", pdb, PEStreamOptions.PrefetchEntireImage);
 
-            var decompiler = new CSharpDecompiler(assemblyPe, new MyAssmblyResolver(), new DecompilerSettings(LanguageVersion.Latest));
+            var decompiler = new CSharpDecompiler(assemblyPe, new NullAssmblyResolver(), new DecompilerSettings(LanguageVersion.Latest));
             var res = DecompileAssembly(decompiler.TypeSystem.MainModule);
 
             // Read documentation

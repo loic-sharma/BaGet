@@ -3,7 +3,7 @@ using ICSharpCode.Decompiler.TypeSystem;
 
 namespace BaGet.Decompiler.SourceCode
 {
-    public interface ISourceCodeProvider
+    internal interface ISourceCodeProvider
     {
         bool TryFillSources(IModule module, AnalysisAssembly assembly);
     }

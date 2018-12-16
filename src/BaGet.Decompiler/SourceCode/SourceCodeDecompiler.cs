@@ -5,7 +5,7 @@ using ICSharpCode.Decompiler.TypeSystem;
 
 namespace BaGet.Decompiler.SourceCode
 {
-    public class SourceCodeDecompiler : ISourceCodeProvider
+    internal class SourceCodeDecompiler : ISourceCodeProvider
     {
         private readonly CSharpDecompiler _decompiler;
 

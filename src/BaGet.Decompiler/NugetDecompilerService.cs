@@ -1,12 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BaGet.Decompiler.Nupkg.Objects;
 using BaGet.Decompiler.Objects;
 using NuGet.Packaging;
 
-namespace BaGet.Decompiler.Nupkg
+namespace BaGet.Decompiler
 {
     public class NugetDecompilerService
     {

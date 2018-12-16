@@ -1,8 +1,8 @@
 using ICSharpCode.Decompiler.Metadata;
 
-namespace BaGet.Decompiler
+namespace BaGet.Decompiler.Decompilation
 {
-    internal class MyAssmblyResolver : IAssemblyResolver
+    internal class NullAssmblyResolver : IAssemblyResolver
     {
         public PEFile Resolve(IAssemblyReference reference)
         {

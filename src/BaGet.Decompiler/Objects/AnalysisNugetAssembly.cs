@@ -1,6 +1,4 @@
-﻿using BaGet.Decompiler.Objects;
-
-namespace BaGet.Decompiler.Nupkg.Objects
+namespace BaGet.Decompiler.Objects
 {
     public class AnalysisNugetAssembly : AnalysisAssembly
     {
