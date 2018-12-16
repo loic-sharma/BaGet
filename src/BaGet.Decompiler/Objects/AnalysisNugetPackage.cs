@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
-namespace BaGet.Decompiler.Nupkg.Objects
+namespace BaGet.Decompiler.Objects
 {
     public class AnalysisNugetPackage
     {

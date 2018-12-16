@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using BaGet.Decompiler.Objects;
 
-namespace BaGet.Decompiler.Nupkg.Objects
+namespace BaGet.Decompiler.Objects
 {
     internal static class AnalysisNugetAssemblyConverter
     {
