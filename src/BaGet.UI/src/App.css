@@ -21,17 +21,14 @@
   line-height: 22px;
 }
 
-.navbar-inverse .navbar-nav > .active > a {
-  font-weight: 600;
-}
 
-.navbar-inverse .navbar-nav > .active > a {
+.navbar-inverse .navbar-nav a.active {
   color: #e3ebf1;
 }
 
-.navbar-inverse .navbar-nav > .active > a,
-.navbar-inverse .navbar-nav > .active > a:hover,
-.navbar-inverse .navbar-nav > .active > a:focus {
+.navbar-inverse .navbar-nav a.active,
+.navbar-inverse .navbar-nav a.active:hover,
+.navbar-inverse .navbar-nav a.active:focus {
   background-color: transparent;
 }
 
@@ -39,7 +36,7 @@
   color: #fff;
 }
 
-.navbar-inverse .navbar-nav > .active > a span {
+.navbar-inverse .navbar-nav a.active span {
   padding: 5px 0;
   border-bottom: 1px solid #fff;
 }

@@ -1,10 +1,10 @@
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import './SearchResults.css';
 
 interface ISearchResultsProps {
   input: string;
-  onSelect(value: string): void;
 }
 
 interface IPackage {
@@ -53,7 +53,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
             </div>
             <div className="col-sm-11">
               <div>
-                <a className="package-title" href="#" onClick={this.onSelect}>{value.id}</a>
+                <Link to={`/packages/${value.id}`} className="package-title">{value.id}</Link>
                 <span>by: {value.authors}</span>
               </div>
               <ul className="info">
@@ -99,8 +99,6 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
       this.setState({ items: results.data });
     });
   }
-
-  private onSelect = (e: React.MouseEvent<HTMLAnchorElement>) => this.props.onSelect(e.currentTarget.text);
 
   private loadDefaultIcon = (e: React.SyntheticEvent<HTMLImageElement>) => e.currentTarget.src = this.defaultIconUrl;
 }

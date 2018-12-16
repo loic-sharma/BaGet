@@ -11,7 +11,11 @@ import SourceRepository from './SourceRepository';
 import './DisplayPackage.css';
 
 interface IDisplayPackageProps {
-  id: string;
+  match: {
+    params: {
+      id: string;
+    }
+  }
 }
 
 interface IPackage {
@@ -45,6 +49,7 @@ interface IDisplayPackageState {
 
 class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPackageState> {
 
+  private id: string;
   private parser: Parser;
   private htmlRenderer: HtmlRenderer;
 
@@ -54,11 +59,12 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
     this.parser = new Parser();
     this.htmlRenderer = new HtmlRenderer();
 
+    this.id = props.match.params.id;
     this.state = {package: undefined};
   }
 
   public componentDidMount() {
-    const url = `/v3/registration/${this.props.id}/index.json`;
+    const url = `/v3/registration/${this.id}/index.json`;
 
     fetch(url).then(response => {
       return response.json();
@@ -110,7 +116,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
         });
 
         if (latestItem.catalogEntry.hasReadme) {
-          const readmeUrl = `/v3/package/${this.props.id}/${latestVersion}/readme`;
+          const readmeUrl = `/v3/package/${this.id}/${latestVersion}/readme`;
 
           fetch(readmeUrl).then(response => {
             return response.text();
