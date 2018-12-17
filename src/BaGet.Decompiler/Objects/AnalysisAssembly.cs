@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace BaGet.Decompiler.Objects
 {
@@ -7,6 +7,8 @@ namespace BaGet.Decompiler.Objects
         public List<AnalysisType> Types { get; set; }
 
         public string Display { get; set; }
+
+        public string Framework { get; set; }
 
         public AnalysisAssembly()
         {

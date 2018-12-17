@@ -28,7 +28,7 @@ namespace BaGet.Decompiler
                 var file = item.Items.Single();
                 var folder = file.Substring(0, file.Length - Path.GetFileName(file).Length - 1);
 
-                MemoryStream assemblyStream = new MemoryStream();
+                var assemblyStream = new MemoryStream();
                 using (var tmp = package.GetStream(file))
                     tmp.CopyTo(assemblyStream);
 
@@ -64,10 +64,9 @@ namespace BaGet.Decompiler
 
                 var analysis = _assemblyDecompilerService.AnalyzeAssembly(assemblyStream, pdbStream, xmlDocStream);
 
-                var nugetAnalysis = AnalysisNugetAssemblyConverter.Convert(analysis);
-                nugetAnalysis.Framework = item.TargetFramework.DotNetFrameworkName;
+                analysis.Framework = item.TargetFramework.DotNetFrameworkName;
 
-                res.Assemblies.Add(nugetAnalysis);
+                res.Assemblies.Add(analysis);
             }
 
             return res;
