@@ -1,4 +1,4 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +25,9 @@ namespace BaGet.Entities
         { }
 
         public DbSet<Package> Packages { get; set; }
+        public DbSet<SourceCodeAssembly> SourceCodeAssemblies { get; set; }
+        public DbSet<SourceCodeType> SourceCodeTypes { get; set; }
+        public DbSet<SourceCodeMember> SourceCodeMembers { get; set; }
         public DbSet<PackageDependency> PackageDependencies { get; set; }
 
         public Task<int> SaveChangesAsync() => SaveChangesAsync(default(CancellationToken));
@@ -35,6 +38,37 @@ namespace BaGet.Entities
         {
             builder.Entity<Package>(BuildPackageEntity);
             builder.Entity<PackageDependency>(BuildPackageDependencyEntity);
+            builder.Entity<SourceCodeAssembly>(BuildSourceCodeAssemblyEntity);
+            builder.Entity<SourceCodeType>(BuildSourceCodeTypeEntity);
+            builder.Entity<SourceCodeMember>(BuildSourceCodeMemberEntity);
+        }
+
+        private void BuildSourceCodeAssemblyEntity(EntityTypeBuilder<SourceCodeAssembly> package)
+        {
+            package.HasKey(p => p.Key);
+            //package.HasMany(s => s.Types)
+            //    .WithOne(s => s.Assembly)
+            //    .HasForeignKey(s => s.AssemblyKey)
+            //    .HasPrincipalKey(s => s.Key);
+
+            //package.HasOne(s => s.Package)
+            //    .WithMany(s => s.SourceCodeAssemblies)
+            //    .HasForeignKey(s => s.PackageKey)
+            //    .HasPrincipalKey(s => s.Key);
+        }
+
+        private void BuildSourceCodeTypeEntity(EntityTypeBuilder<SourceCodeType> package)
+        {
+            package.HasKey(p => p.Key);
+            //package.HasMany(s => s.Members)
+            //    .WithOne(s => s.Type)
+            //    .HasForeignKey(s => s.TypeKey)
+            //    .HasPrincipalKey(s => s.Key);
+        }
+
+        private void BuildSourceCodeMemberEntity(EntityTypeBuilder<SourceCodeMember> package)
+        {
+            package.HasKey(p => p.Key);
         }
 
         private void BuildPackageEntity(EntityTypeBuilder<Package> package)

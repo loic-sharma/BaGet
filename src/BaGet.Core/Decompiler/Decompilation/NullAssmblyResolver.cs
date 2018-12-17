@@ -1,6 +1,6 @@
 using ICSharpCode.Decompiler.Metadata;
 
-namespace BaGet.Decompiler.Decompilation
+namespace BaGet.Core.Decompiler.Decompilation
 {
     internal class NullAssmblyResolver : IAssemblyResolver
     {

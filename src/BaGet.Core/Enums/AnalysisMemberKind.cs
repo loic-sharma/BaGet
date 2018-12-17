@@ -1,6 +1,6 @@
-﻿namespace BaGet.Decompiler.Objects
+﻿namespace BaGet.Core.SourceCode
 {
-    public enum AnalysisMemberType
+    public enum AnalysisMemberKind
     {
         Unknown,
         Constructor,

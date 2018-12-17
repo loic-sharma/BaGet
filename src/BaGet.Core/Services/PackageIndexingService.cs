@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BaGet.Core.Decompiler;
 using BaGet.Core.Entities;
 using BaGet.Core.Extensions;
 using Microsoft.Extensions.Logging;
@@ -18,18 +19,24 @@ namespace BaGet.Core.Services
         private readonly IPackageService _packages;
         private readonly IPackageStorageService _storage;
         private readonly ISearchService _search;
+        private readonly ISourceCodeService _sourceCode;
+        private readonly NugetDecompilerService _decompilerService;
         private readonly ILogger<PackageIndexingService> _logger;
 
         public PackageIndexingService(
             IPackageService packages,
             IPackageStorageService storage,
             ISearchService search,
+            ISourceCodeService sourceCode,
             ILogger<PackageIndexingService> logger)
         {
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
             _search = search ?? throw new ArgumentNullException(nameof(search));
+            _sourceCode = sourceCode ?? throw new ArgumentNullException(nameof(sourceCode));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+            _decompilerService = new NugetDecompilerService(new AssemblyDecompilerService());
         }
 
         public async Task<PackageIndexingResult> IndexAsync(Stream packageStream, CancellationToken cancellationToken)
@@ -76,6 +83,7 @@ namespace BaGet.Core.Services
                 package.Id,
                 package.VersionString);
 
+            // Save to storage
             try
             {
                 packageStream.Position = 0;
@@ -106,6 +114,7 @@ namespace BaGet.Core.Services
                 package.Id,
                 package.VersionString);
 
+            // Save to database
             var result = await _packages.AddAsync(package);
             if (result == PackageAddResult.PackageAlreadyExists)
             {
@@ -124,6 +133,23 @@ namespace BaGet.Core.Services
                 throw new InvalidOperationException($"Unknown {nameof(PackageAddResult)} value: {result}");
             }
 
+            // Save to source code
+            SourceCodeAddResult sourceCodeResult;
+            using (var packageReader = new PackageArchiveReader(packageStream, leaveStreamOpen: true))
+            {
+                var sourceCodes = _decompilerService.AnalyzePackage(packageReader);
+
+                sourceCodeResult = await _sourceCode.IndexAsync(package, sourceCodes, cancellationToken);
+            }
+
+            if (sourceCodeResult != SourceCodeAddResult.Success)
+            {
+                _logger.LogError("Unable to add source code to index, result: {Result}", sourceCodeResult);
+
+                throw new InvalidOperationException($"Unable to add source code to index, result: {sourceCodeResult}");
+            }
+
+            // Save to search
             _logger.LogInformation(
                 "Successfully persisted package {Id} {Version} metadata to database. Indexing in search...",
                 package.Id,

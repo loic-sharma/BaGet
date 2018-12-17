@@ -1,9 +1,9 @@
 using System;
-using BaGet.Decompiler.Objects;
+using BaGet.Core.Entities;
 using ICSharpCode.Decompiler.CSharp;
 using ICSharpCode.Decompiler.TypeSystem;
 
-namespace BaGet.Decompiler.SourceCode
+namespace BaGet.Core.Decompiler.SourceCode
 {
     internal class SourceCodeDecompiler : ISourceCodeProvider
     {
@@ -14,7 +14,7 @@ namespace BaGet.Decompiler.SourceCode
             _decompiler = decompiler;
         }
 
-        public bool TryFillSources(IModule module, AnalysisAssembly assembly)
+        public bool TryFillSources(IModule module, SourceCodeAssembly assembly)
         {
             try
             {

@@ -37,5 +37,8 @@ namespace BaGet.Core.Configuration
 
         [Required]
         public MirrorOptions Mirror { get; set; }
+
+        [Required]
+        public SourceCodeOptions SourceCode { get; set; }
     }
 }

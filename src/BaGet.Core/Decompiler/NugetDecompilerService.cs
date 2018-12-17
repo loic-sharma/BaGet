@@ -1,10 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BaGet.Decompiler.Objects;
+using BaGet.Core.Entities;
 using NuGet.Packaging;
 
-namespace BaGet.Decompiler
+namespace BaGet.Core.Decompiler
 {
     public class NugetDecompilerService
     {
@@ -15,12 +16,12 @@ namespace BaGet.Decompiler
             _assemblyDecompilerService = assemblyDecompilerService;
         }
 
-        public AnalysisNugetPackage AnalyzePackage(PackageArchiveReader package)
+        public IReadOnlyList<SourceCodeAssembly> AnalyzePackage(PackageArchiveReader package)
         {
             // TODO: Read pdb's
             // TODO: Read xml docs
 
-            var res = new AnalysisNugetPackage();
+            var res = new List<SourceCodeAssembly>();
 
             foreach (var item in package.GetReferenceItems())
             {
@@ -66,7 +67,7 @@ namespace BaGet.Decompiler
 
                 analysis.Framework = item.TargetFramework.DotNetFrameworkName;
 
-                res.Assemblies.Add(analysis);
+                res.Add(analysis);
             }
 
             return res;

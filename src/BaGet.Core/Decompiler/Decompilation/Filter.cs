@@ -1,6 +1,6 @@
-﻿using ICSharpCode.Decompiler.TypeSystem;
+using ICSharpCode.Decompiler.TypeSystem;
 
-namespace BaGet.Decompiler.Decompilation
+namespace BaGet.Core.Decompiler.Decompilation
 {
     internal class Filter
     {

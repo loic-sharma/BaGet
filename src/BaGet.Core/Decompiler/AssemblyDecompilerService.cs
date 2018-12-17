@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection.PortableExecutable;
-using BaGet.Decompiler.Decompilation;
-using BaGet.Decompiler.Objects;
-using BaGet.Decompiler.SourceCode;
+using BaGet.Core.Decompiler.Decompilation;
+using BaGet.Core.Decompiler.SourceCode;
+using BaGet.Core.Entities;
+using BaGet.Core.SourceCode;
 using ICSharpCode.Decompiler;
 using ICSharpCode.Decompiler.CSharp;
 using ICSharpCode.Decompiler.CSharp.OutputVisitor;
@@ -13,7 +14,7 @@ using ICSharpCode.Decompiler.Metadata;
 using ICSharpCode.Decompiler.Output;
 using ICSharpCode.Decompiler.TypeSystem;
 
-namespace BaGet.Decompiler
+namespace BaGet.Core.Decompiler
 {
     public class AssemblyDecompilerService
     {
@@ -38,7 +39,7 @@ namespace BaGet.Decompiler
             // TODO: Make source code provider for embedded source in pdb
         }
 
-        public AnalysisAssembly AnalyzeAssembly(Stream assembly, Stream pdb = null, Stream documentationXml = null)
+        public SourceCodeAssembly AnalyzeAssembly(Stream assembly, Stream pdb = null, Stream documentationXml = null)
         {
             var localSourceCodeProviders = new List<ISourceCodeProvider>();
 
@@ -64,9 +65,9 @@ namespace BaGet.Decompiler
             return res;
         }
 
-        private AnalysisAssembly DecompileAssembly(MetadataModule module)
+        private SourceCodeAssembly DecompileAssembly(MetadataModule module)
         {
-            var res = new AnalysisAssembly
+            var res = new SourceCodeAssembly
             {
                 Display = module.FullAssemblyName
             };
@@ -74,7 +75,7 @@ namespace BaGet.Decompiler
             // Process all types
             foreach (var type in module.TypeDefinitions.Where(_filter.Include))
             {
-                var analysisType = new AnalysisType
+                var analysisType = new SourceCodeType
                 {
                     FullName = type.FullTypeName.ToString(),
                     Display = _ambience.ConvertSymbol(type)
@@ -88,11 +89,11 @@ namespace BaGet.Decompiler
                     if (!_filter.Include(method))
                         continue;
 
-                    var analysisMethod = new AnalysisMember
+                    var analysisMethod = new SourceCodeMember
                     {
-                        MemberType = method.IsConstructor ? AnalysisMemberType.Constructor : AnalysisMemberType.Method,
+                        MemberKind = method.IsConstructor ? AnalysisMemberKind.Constructor : AnalysisMemberKind.Method,
                         Name = method.Name,
-                        Type = _ambience.ConvertType(method.ReturnType),
+                        MemberType = _ambience.ConvertType(method.ReturnType),
                         Display = _ambience.ConvertSymbol(method)
                     };
 
@@ -104,27 +105,27 @@ namespace BaGet.Decompiler
                     .Concat(type.Fields.Where(_filter.Include))
                     .Concat(type.Events.Where(_filter.Include)))
                 {
-                    AnalysisMemberType analysisMemberType;
+                    AnalysisMemberKind analysisMemberKind;
                     switch (member)
                     {
                         case IProperty _:
-                            analysisMemberType = AnalysisMemberType.Property;
+                            analysisMemberKind = AnalysisMemberKind.Property;
                             break;
                         case IEvent _:
-                            analysisMemberType = AnalysisMemberType.Event;
+                            analysisMemberKind = AnalysisMemberKind.Event;
                             break;
                         case IField _:
-                            analysisMemberType = AnalysisMemberType.Field;
+                            analysisMemberKind = AnalysisMemberKind.Field;
                             break;
                         default:
                             throw new Exception();
                     }
 
-                    var analysisProperty = new AnalysisMember
+                    var analysisProperty = new SourceCodeMember
                     {
-                        MemberType = analysisMemberType,
+                        MemberKind = analysisMemberKind,
                         Name = member.Name,
-                        Type = _ambience.ConvertType(member.ReturnType),
+                        MemberType = _ambience.ConvertType(member.ReturnType),
                         Display = _ambience.ConvertSymbol(member)
                     };
 
