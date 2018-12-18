@@ -1,3 +1,4 @@
+import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as React from 'react';
 
 interface ILicenseInfoProps {
@@ -8,19 +9,18 @@ class LicenseInfo extends React.Component<ILicenseInfoProps> {
 
   constructor(props: ILicenseInfoProps) {
     super(props);
-
-    this.state = {items: []};
   }
 
   public render() {
     if (!this.props.url) {
-        return null;
+      return null;
     }
 
     return (
-        <div>
+        <li>
+            <Icon iconName="Certificate" className="ms-Icon" />
             <a href={this.props.url}>License Info</a>
-        </div>
+        </li>
     );
   }
 }

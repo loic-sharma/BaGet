@@ -1,19 +1,43 @@
 .search-result {
-  padding-top: 20px;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 
-.search-result .package-icon {
-  margin-top: 20px;
+.search-result .package-title {
+  font-size: 24px;
+  font-weight: 300;
+  line-height: .9;
+  margin-right: 5px;
 }
 
-.info {
-  color: #666;
+.search-result .info {
+  padding-left: 0;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  margin-left: -5px;
   line-height: 20px;
+  color: #666;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.info span:not(:first-child){
+.search-result .info span:not(:first-child){
   padding-left: 10px;
+}
+
+.search-result .info li {
+  display: inline;
+}
+
+.search-result .info li + li {
+  padding-left: 10px;
+  margin-left: 10px;
+  border-color: #dbdbdb;
+  border-width: 1px;
+  border-left-style: solid;
+}
+
+.search-result .ms-Icon {
+  position: relative;
+  top: 2px;
+  margin-right: 2px;
 }

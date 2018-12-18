@@ -1,9 +1,10 @@
+import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import './SearchResults.css';
 
 interface ISearchResultsProps {
   input: string;
-  onSelect(value: string): void;
 }
 
 interface IPackage {
@@ -52,14 +53,29 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
             </div>
             <div className="col-sm-11">
               <div>
-                <h2><a href="#" onClick={this.onSelect}>{value.id}</a></h2>
+                <Link to={`/packages/${value.id}`} className="package-title">{value.id}</Link>
                 <span>by: {value.authors}</span>
               </div>
-              <div className="info">
-                <span>{value.totalDownloads.toLocaleString()} total downloads</span>
-                <span>Latest version: {value.version}</span>
-                <span>{value.tags.join(' ')}</span>
-              </div>
+              <ul className="info">
+                <li>
+                  <span>
+                    <Icon iconName="Download" className="ms-Icon" />
+                    {value.totalDownloads.toLocaleString()} total downloads
+                  </span>
+                </li>
+                <li>
+                  <span>
+                    <Icon iconName="Flag" className="ms-Icon" />
+                    Latest version: {value.version}
+                  </span>
+                </li>
+                <li>
+                  <span>
+                    <Icon iconName="Tag" className="ms-Icon" />
+                    {value.tags.join(' ')}
+                  </span>
+                </li>
+              </ul>
               <div>
                 {value.description}
               </div>
@@ -83,8 +99,6 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
       this.setState({ items: results.data });
     });
   }
-
-  private onSelect = (e: React.MouseEvent<HTMLAnchorElement>) => this.props.onSelect(e.currentTarget.text);
 
   private loadDefaultIcon = (e: React.SyntheticEvent<HTMLImageElement>) => e.currentTarget.src = this.defaultIconUrl;
 }
