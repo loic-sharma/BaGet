@@ -14,21 +14,18 @@ namespace BaGet.Core.Decompiler.SourceCode
             _decompiler = decompiler ?? throw new ArgumentNullException(nameof(decompiler));
         }
 
-        public bool TryFillSources(IModule module, SourceCodeAssembly assembly)
+        public bool TryFillSources(IModule module, SourceCodeType type)
         {
             try
             {
-                foreach (var decompiledType in assembly.Types)
-                {
-                    var fullTypeName = new FullTypeName(decompiledType.FullName);
-                    var ast = _decompiler.DecompileType(fullTypeName);
+                var fullTypeName = new FullTypeName(type.FullName);
+                var ast = _decompiler.DecompileType(fullTypeName);
 
-                    var source = ast.ToString();
+                var source = ast.ToString();
 
-                    decompiledType.CSharp = source;
-                }
+                type.CSharp = source;
 
-                return true;
+                return !string.IsNullOrEmpty(type.CSharp);
             }
             catch (Exception)
             {

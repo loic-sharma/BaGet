@@ -56,8 +56,14 @@ namespace BaGet.Core.Decompiler
                 new SourceCodeDecompiler(decompiler)
             };
 
-            foreach (var provider in localSourceCodeProviders)
-                provider.TryFillSources(decompiler.TypeSystem.MainModule, res);
+            foreach (var sourceCodeType in res.Types)
+            {
+                foreach (var provider in localSourceCodeProviders)
+                {
+                    if (provider.TryFillSources(decompiler.TypeSystem.MainModule, sourceCodeType))
+                        break;
+                }
+            }
 
             return res;
         }
