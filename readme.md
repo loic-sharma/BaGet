@@ -4,6 +4,10 @@
 
 A lightweight [NuGet](https://docs.microsoft.com/en-us/nuget/what-is-nuget) and [Symbol](https://docs.microsoft.com/en-us/windows/desktop/debug/symbol-servers-and-symbol-stores) server.
 
+<p align="center">
+  <img width="100%" src="https://user-images.githubusercontent.com/737941/50140219-d8409700-0258-11e9-94c9-dad24d2b48bb.png">
+</p>
+
 ## Getting Started
 
 1. Install [.NET Core SDK](https://www.microsoft.com/net/download)
