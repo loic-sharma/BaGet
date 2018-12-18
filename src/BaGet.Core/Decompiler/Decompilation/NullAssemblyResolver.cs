@@ -2,7 +2,7 @@ using ICSharpCode.Decompiler.Metadata;
 
 namespace BaGet.Core.Decompiler.Decompilation
 {
-    internal class NullAssmblyResolver : IAssemblyResolver
+    internal class NullAssemblyResolver : IAssemblyResolver
     {
         public PEFile Resolve(IAssemblyReference reference)
         {
