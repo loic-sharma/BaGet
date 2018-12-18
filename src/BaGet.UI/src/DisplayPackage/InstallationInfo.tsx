@@ -1,5 +1,6 @@
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as React from 'react';
+import * as CopyToClipboard from 'react-copy-to-clipboard';
 
 import './InstallationInfo.css';
 
@@ -42,9 +43,11 @@ class InstallationInfo extends React.Component<IInstallationInfoProps, IInstalla
             {this.state.prefix} {this.state.content}
           </div>
           <div className="copy-button">
-            <button className="btn btn-default btn-warning" type="button" data-tottle="popover" data-placement="bottom" data-content="Copied">
-              <Icon iconName="Copy" className="ms-Icon" />
-            </button>
+            <CopyToClipboard text={this.state.content}>
+              <button className="btn btn-default btn-warning" type="button" data-tottle="popover" data-placement="bottom" data-content="Copied">
+                <Icon iconName="Copy" className="ms-Icon" />
+              </button>
+            </CopyToClipboard>
           </div>
         </div>
       </div>

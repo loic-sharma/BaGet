@@ -16,6 +16,7 @@
     "commonmark-react-renderer": "^4.3.4",
     "office-ui-fabric-react": "^6.110.2",
     "react": "^16.6.3",
+    "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.6.3",
     "react-router-dom": "^4.3.1",
     "react-scripts-ts": "3.1.0",
@@ -32,6 +33,7 @@
     "@types/jest": "^23.3.9",
     "@types/node": "^10.12.6",
     "@types/react": "^16.7.3",
+    "@types/react-copy-to-clipboard": "^4.2.6",
     "@types/react-dom": "^16.0.9",
     "@types/react-router-dom": "^4.3.1",
     "typescript": "^3.1.6"

@@ -1,5 +1,6 @@
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as React from 'react';
+import * as CopyToClipboard from 'react-copy-to-clipboard';
 
 import './Upload.css';
 
@@ -25,8 +26,8 @@ class Upload extends React.Component<{}, IUploadState> {
 
     const pathEnd = window.location.href.indexOf("/upload");
 
-    this.state = this.buildState(Tab.DotNet);
     this.serviceIndexUrl = window.location.href.substring(0, pathEnd) + "/v3/index.json";
+    this.state = this.buildState(Tab.DotNet);
   }
 
   public render() {
@@ -49,9 +50,11 @@ class Upload extends React.Component<{}, IUploadState> {
               > {this.state.content}
             </div>
             <div className="copy-button">
-              <button className="btn btn-default btn-warning" type="button" data-tottle="popover" data-placement="bottom" data-content="Copied">
-                <Icon iconName="Copy" className="ms-Icon" />
-              </button>
+              <CopyToClipboard text={this.state.content}>
+                <button className="btn btn-default btn-warning" type="button" data-tottle="popover" data-placement="bottom" data-content="Copied">
+                  <Icon iconName="Copy" className="ms-Icon" />
+                </button>
+              </CopyToClipboard>
             </div>
           </div>
           <div className="icon-text alert alert-warning">
