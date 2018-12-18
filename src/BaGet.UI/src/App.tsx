@@ -22,51 +22,73 @@ class App extends React.Component<{}, IAppState> {
     return (
       <Router>
         <div>
-          <nav className="navbar navbar-inverse" role="navigation">
-            <div className="container">
-              <div className="row">
-                <div className="col-sm-12">
-                  <div id="navbar-header">
-                    <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
-                      <span className="icon-bar" />
-                      <span className="icon-bar" />
-                      <span className="icon-bar" />
-                    </button>
+          {this._renderNavigationBar()}
 
-                  </div>
-                </div>
-                <div id="navbar" className="navbar-collapse collapse">
-                  <ul className="nav navbar-nav" role="tablist">
-                    <li role="presentation"><NavLink to="/" exact={true} role="tab"><span>Packages</span></NavLink></li>
-                    <li role="presentation"><NavLink to="/upload"><span>Upload</span></NavLink></li>
-                    <li role="presentation"><a role="tab" href="https://loic-sharma.github.io/BaGet/"><span>Documentation</span></a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div className="container search-container">
-              <div className="row">
-                <form className="col-sm-12">
-                  <input
-                    type="text"
-                    className="form-control"
-                    autoComplete="off"
-                    placeholder="Search packages..."
-                  onChange={this.handleChange} />
-                </form>
-              </div>
-            </div>
-          </nav>
-
-          <section role="main" className="container main-container">
-            <Route exact={true} path="/" render={this.renderSearch} />
-            <Route path="/packages/:id" component={DisplayPackage} />
-
-            <Route path="/upload" component={Upload} />
-          </section>
+          {this._renderContent()}
         </div>
       </Router>
     );
+  }
+
+  private _renderNavigationBar() {
+    return (
+      <nav className="navbar navbar-inverse" role="navigation">
+        <div className="container">
+          <div className="row">
+            <div className="col-sm-12">
+              <div id="navbar-header">
+                <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+                  <span className="icon-bar" />
+                  <span className="icon-bar" />
+                  <span className="icon-bar" />
+                </button>
+
+              </div>
+            </div>
+            <div id="navbar" className="navbar-collapse collapse">
+              <ul className="nav navbar-nav" role="tablist">
+                <li role="presentation"><NavLink to="/" exact={true} role="tab"><span>Packages</span></NavLink></li>
+                <li role="presentation"><NavLink to="/upload"><span>Upload</span></NavLink></li>
+                <li role="presentation"><a role="tab" href="https://loic-sharma.github.io/BaGet/"><span>Documentation</span></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div className="container search-container">
+          <div className="row">
+            <form className="col-sm-12">
+              <input
+                type="text"
+                className="form-control"
+                autoComplete="off"
+                placeholder="Search packages..."
+              onChange={this.handleChange} />
+            </form>
+          </div>
+        </div>
+      </nav>
+    );
+  }
+
+  private _renderContent() {
+    if (this.state.input.length === 0) {
+      return (
+        <section role="main" className="container main-container">
+          <Route exact={true} path="/" render={this.renderSearch} />
+          <Route path="/packages/:id" component={DisplayPackage} />
+
+          <Route path="/upload" component={Upload} />
+        </section>
+      );
+    }
+    else
+    {
+      return (
+        <section role="main" className="container main-container">
+          <SearchResults input={this.state.input} />
+        </section>
+      );
+    }
   }
 
   private renderSearch = (props: RouteComponentProps<any>) => (
