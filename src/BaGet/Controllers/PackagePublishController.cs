@@ -50,7 +50,7 @@ namespace BaGet.Controllers
                         return;
                     }
 
-                    var result = await _indexer.IndexAsync(uploadStream, cancellationToken);
+                    var result = await _indexer.IndexAsync(uploadStream, cancellationToken: cancellationToken);
 
                     switch (result)
                     {

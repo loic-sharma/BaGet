@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +10,7 @@ namespace BaGet.Core.Services
 {
     public class PackageStorageService : IPackageStorageService
     {
-        private const string PackagesPathPrefix = "packages";
+        public const string PackagesPathPrefix = "packages";
 
         // See: https://github.com/NuGet/NuGetGallery/blob/73a5c54629056b25b3a59960373e8fef88abff36/src/NuGetGallery.Core/CoreConstants.cs#L19
         private const string PackageContentType = "binary/octet-stream";

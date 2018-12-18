@@ -32,7 +32,12 @@ namespace BaGet.Core.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<PackageIndexingResult> IndexAsync(Stream packageStream, CancellationToken cancellationToken)
+        public async Task<PackageIndexingResult> IndexAsync(
+            Stream packageStream,
+            bool storage = true,
+            bool database = true,
+            bool search = true,
+            CancellationToken cancellationToken = default)
         {
             // Try to extract all the necessary information from the package.
             Package package;
@@ -76,65 +81,74 @@ namespace BaGet.Core.Services
                 package.Id,
                 package.VersionString);
 
-            try
+            if (storage)
             {
-                packageStream.Position = 0;
+                try
+                {
+                    packageStream.Position = 0;
 
-                await _storage.SavePackageContentAsync(
-                    package,
-                    packageStream,
-                    nuspecStream,
-                    readmeStream,
-                    cancellationToken);
-            }
-            catch (Exception e)
-            {
-                // This may happen due to concurrent pushes.
-                // TODO: Make IPackageStorageService.SavePackageContentAsync return a result enum so this
-                // can be properly handled.
-                _logger.LogError(
-                    e,
-                    "Failed to persist package {PackageId} {PackageVersion} content to storage",
+                    await _storage.SavePackageContentAsync(
+                        package,
+                        packageStream,
+                        nuspecStream,
+                        readmeStream,
+                        cancellationToken);
+                }
+                catch (Exception e)
+                {
+                    // This may happen due to concurrent pushes.
+                    // TODO: Make IPackageStorageService.SavePackageContentAsync return a result enum so this
+                    // can be properly handled.
+                    _logger.LogError(
+                        e,
+                        "Failed to persist package {PackageId} {PackageVersion} content to storage",
+                        package.Id,
+                        package.VersionString);
+
+                    throw;
+                }
+
+                _logger.LogInformation(
+                    "Persisted package {Id} {Version} content to storage, saving metadata to database...",
                     package.Id,
                     package.VersionString);
-
-                throw;
             }
 
-            _logger.LogInformation(
-                "Persisted package {Id} {Version} content to storage, saving metadata to database...",
-                package.Id,
-                package.VersionString);
-
-            var result = await _packages.AddAsync(package);
-            if (result == PackageAddResult.PackageAlreadyExists)
+            if (database)
             {
-                _logger.LogWarning(
-                    "Package {Id} {Version} metadata already exists in database",
+                var result = await _packages.AddAsync(package);
+                if (result == PackageAddResult.PackageAlreadyExists)
+                {
+                    _logger.LogWarning(
+                        "Package {Id} {Version} metadata already exists in database",
+                        package.Id,
+                        package.VersionString);
+
+                    return PackageIndexingResult.PackageAlreadyExists;
+                }
+
+                if (result != PackageAddResult.Success)
+                {
+                    _logger.LogError($"Unknown {nameof(PackageAddResult)} value: {{PackageAddResult}}", result);
+
+                    throw new InvalidOperationException($"Unknown {nameof(PackageAddResult)} value: {result}");
+                }
+
+                _logger.LogInformation(
+                    "Successfully persisted package {Id} {Version} metadata to database. Indexing in search...",
                     package.Id,
                     package.VersionString);
-
-                return PackageIndexingResult.PackageAlreadyExists;
             }
 
-            if (result != PackageAddResult.Success)
+            if (search)
             {
-                _logger.LogError($"Unknown {nameof(PackageAddResult)} value: {{PackageAddResult}}", result);
+                await _search.IndexAsync(package);
 
-                throw new InvalidOperationException($"Unknown {nameof(PackageAddResult)} value: {result}");
+                _logger.LogInformation(
+                    "Successfully indexed package {Id} {Version} in search",
+                    package.Id,
+                    package.VersionString);
             }
-
-            _logger.LogInformation(
-                "Successfully persisted package {Id} {Version} metadata to database. Indexing in search...",
-                package.Id,
-                package.VersionString);
-
-            await _search.IndexAsync(package);
-
-            _logger.LogInformation(
-                "Successfully indexed package {Id} {Version} in search",
-                package.Id,
-                package.VersionString);
 
             return PackageIndexingResult.Success;
         }

@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -64,5 +65,12 @@ namespace BaGet.Core.Services
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task DeleteAsync(string path, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Lists all stored packages.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<IEnumerable<string>> GetPackagePathsAsync(CancellationToken cancellationToken = default);
     }
 }

@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using BaGet.Configurations;
 using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
+using BaGet.Core.Services;
 using BaGet.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -51,6 +52,15 @@ namespace BaGet
                         .GetRequiredService<IContext>()
                         .Database
                         .Migrate();
+                }
+            }
+
+            if (options.StartupEnsurePackagesExistsInDatabase)
+            {
+                using (var scope = app.ApplicationServices.CreateScope())
+                {
+                    var packagesReconciler = scope.ServiceProvider.GetService<PackagesReconciler>();
+                    packagesReconciler.Reconcile().Wait(); // TODO better place for long running start routines
                 }
             }
 
