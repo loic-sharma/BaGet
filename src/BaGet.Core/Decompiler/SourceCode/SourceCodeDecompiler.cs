@@ -11,7 +11,7 @@ namespace BaGet.Core.Decompiler.SourceCode
 
         public SourceCodeDecompiler(CSharpDecompiler decompiler)
         {
-            _decompiler = decompiler;
+            _decompiler = decompiler ?? throw new ArgumentNullException(nameof(decompiler));
         }
 
         public bool TryFillSources(IModule module, SourceCodeAssembly assembly)
