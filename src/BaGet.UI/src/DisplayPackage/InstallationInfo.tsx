@@ -17,7 +17,7 @@ interface IInstallationInfoState {
 enum Tab {
   DotNet,
   Paket,
-  PackageManager
+  PackageManager,
 }
 
 class InstallationInfo extends React.Component<IInstallationInfoProps, IInstallationInfoState> {

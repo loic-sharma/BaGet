@@ -1,10 +1,14 @@
 .display-package .package-icon {
-  margin-top: 33px;
+  margin-top: 15px;
 }
 
 .display-package h1 small {
   margin-left: 10px;
   font-size: 45%;
+}
+
+.package-details-info {
+  margin-top: -25px;
 }
 
 .package-details-info .ms-Icon-ul li {

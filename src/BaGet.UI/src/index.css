@@ -17,7 +17,7 @@ h1, h2, h3, p {
 }
 
 h1 {
-  margin-top: 33px;
+  margin-top: 15px;
 }
 
 h2, h3 {
@@ -41,4 +41,16 @@ h2, h3 {
 .ms-Icon-ul li i.ms-Icon {
   position: absolute;
   left: -24px;
+}
+
+.alert {
+  padding: 8px 8px;
+  border: 1px solid transparent;
+  border-radius: 0;
+}
+
+.alert-warning {
+  color: #000;
+  background-color: #fff4ce;
+  border-color: #fff4ce;
 }

@@ -9,10 +9,11 @@ import './index.css';
 
 // import registerServiceWorker from './registerServiceWorker';
 
+initializeIcons();
+
 ReactDOM.render(
   <App />,
   document.getElementById('root') as HTMLElement
 );
 
-initializeIcons();
 // registerServiceWorker();
