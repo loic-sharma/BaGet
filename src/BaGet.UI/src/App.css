@@ -1,11 +1,10 @@
+#navbar ul {
+  margin-left: -15px;
+}
+
 .navbar-inverse {
   background-color: #004880;
   border-color: #002b4d;
-}
-
-/* TODO: Remove this once a logo is added in */
-#navbar {
-  padding-left: 0px;
 }
 
 .navbar {

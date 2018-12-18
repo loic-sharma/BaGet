@@ -35,17 +35,7 @@ class App extends React.Component<{}, IAppState> {
       <nav className="navbar navbar-inverse" role="navigation">
         <div className="container">
           <div className="row">
-            <div className="col-sm-12">
-              <div id="navbar-header">
-                <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
-                  <span className="icon-bar" />
-                  <span className="icon-bar" />
-                  <span className="icon-bar" />
-                </button>
-
-              </div>
-            </div>
-            <div id="navbar" className="navbar-collapse collapse">
+            <div id="navbar" className="col-sm-12">
               <ul className="nav navbar-nav" role="tablist">
                 <li role="presentation"><NavLink to="/" exact={true} role="tab"><span>Packages</span></NavLink></li>
                 <li role="presentation"><NavLink to="/upload"><span>Upload</span></NavLink></li>
