@@ -21,8 +21,6 @@ namespace BaGet.Core.Decompiler
         private readonly Filter _filter;
         private readonly CSharpAmbience _ambience;
 
-        private readonly List<ISourceCodeProvider> _globalSourceCodeProviders;
-
         public AssemblyDecompilerService()
         {
             _ambience = new CSharpAmbience
@@ -31,18 +29,10 @@ namespace BaGet.Core.Decompiler
             };
 
             _filter = new Filter();
-
-            _globalSourceCodeProviders = new List<ISourceCodeProvider>();
-
-            // TODO: Make source code provider for SourceLink
-            // TODO: Make source code provider for embedded source in nupkg
-            // TODO: Make source code provider for embedded source in pdb
         }
 
         public SourceCodeAssembly AnalyzeAssembly(Stream assembly, Stream pdb = null, Stream documentationXml = null)
         {
-            var localSourceCodeProviders = new List<ISourceCodeProvider>();
-
             var assemblyPe = new PEFile("Binary.dll", assembly, PEStreamOptions.PrefetchEntireImage);
 
             // TODO: Read PDB's (are they even needed?)
@@ -57,9 +47,16 @@ namespace BaGet.Core.Decompiler
             // TODO Read documentation
 
             // Fetch sources
-            localSourceCodeProviders.Add(new SourceCodeDecompiler(decompiler));
+            // TODO: Make source code provider for SourceLink
+            // TODO: Make source code provider for embedded source in nupkg
+            // TODO: Make source code provider for embedded source in pdb
 
-            foreach (var provider in _globalSourceCodeProviders.Concat(localSourceCodeProviders))
+            var localSourceCodeProviders = new List<ISourceCodeProvider>
+            {
+                new SourceCodeDecompiler(decompiler)
+            };
+
+            foreach (var provider in localSourceCodeProviders)
                 provider.TryFillSources(decompiler.TypeSystem.MainModule, res);
 
             return res;
