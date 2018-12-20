@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { BrowserRouter as Router, NavLink, Route, RouteComponentProps } from 'react-router-dom';
+import { BrowserRouter as Router, NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import './App.css';
 import DisplayPackage from './DisplayPackage/DisplayPackage';
 import SearchResults from './SearchResults';
@@ -61,24 +61,15 @@ class App extends React.Component<{}, IAppState> {
   }
 
   private _renderContent() {
-    if (this.state.input.length === 0) {
-      return (
+    return (
         <section role="main" className="container main-container">
-          <Route exact={true} path="/" render={this.renderSearch} />
-          <Route path="/packages/:id" component={DisplayPackage} />
-
-          <Route path="/upload" component={Upload} />
+		  <Switch>
+			<Route exact={true} path="/" render={this.renderSearch} />
+			<Route path="/packages/:id" component={DisplayPackage} />
+			<Route path="/upload" component={Upload} />
+		  </Switch>
         </section>
       );
-    }
-    else
-    {
-      return (
-        <section role="main" className="container main-container">
-          <SearchResults input={this.state.input} />
-        </section>
-      );
-    }
   }
 
   private renderSearch = (props: RouteComponentProps<any>) => (
