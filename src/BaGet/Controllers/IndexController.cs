@@ -28,6 +28,7 @@ namespace BaGet.Controllers
             var resources = new List<ServiceIndexResource>();
 
             resources.AddRange(BuildResource("PackagePublish", Url.PackagePublish(), "2.0.0"));
+            resources.AddRange(BuildResource("SymbolPackagePublish", Url.SymbolPublish(), "4.9.0"));
             resources.AddRange(BuildResource("SearchQueryService", Url.PackageSearch(), "", "3.0.0-beta", "3.0.0-rc"));
             resources.AddRange(BuildResource("RegistrationsBaseUrl", Url.RegistrationsBase(), "", "3.0.0-rc", "3.0.0-beta"));
             resources.AddRange(BuildResource("PackageBaseAddress", Url.PackageBase(), "3.0.0"));

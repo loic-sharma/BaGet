@@ -2,7 +2,9 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using BaGet.Core.Configuration;
 using BaGet.Core.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace BaGet.Core.Services
 {
@@ -16,9 +18,14 @@ namespace BaGet.Core.Services
 
         private readonly string _storePath;
 
-        public FileStorageService(string storePath)
+        public FileStorageService(IOptionsSnapshot<FileSystemStorageOptions> options)
         {
-            _storePath = storePath ?? throw new ArgumentNullException(nameof(storePath));
+            if (options == null) throw new ArgumentNullException(nameof(options));
+
+            // Resolve relative path components ('.'/'..') and ensure there is a trailing slash.
+            _storePath = Path.GetFullPath(options.Value.Path);
+            if (!_storePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
+                _storePath += Path.DirectorySeparatorChar;
         }
 
         public Task<Stream> GetAsync(string path, CancellationToken cancellationToken = default)
@@ -92,13 +99,21 @@ namespace BaGet.Core.Services
 
         private string GetFullPath(string path)
         {
-            // TODO: This should check that the result is in _storePath for security.
             if (string.IsNullOrEmpty(path))
             {
                 throw new ArgumentException("Path is required", nameof(path));
             }
 
-            return Path.Combine(_storePath, path);
+            string fullPath = Path.GetFullPath(Path.Combine(_storePath, path));
+
+            // Verify path is under the _storePath.
+            if (!fullPath.StartsWith(_storePath, StringComparison.Ordinal) ||
+                fullPath.Length == _storePath.Length)
+            {
+                throw new ArgumentException("Path resolves outside store path", nameof(path));
+            }
+
+            return fullPath;
         }
     }
 }

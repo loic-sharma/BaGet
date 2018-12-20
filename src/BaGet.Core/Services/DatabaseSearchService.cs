@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,6 +28,9 @@ namespace BaGet.Core.Services
                 search = search.Where(p => p.Id.ToLower().Contains(query));
             }
 
+            // This query MUST fetch all versions for each returned package, otherwise this could return
+            // incorrect results for a package's latest version. This query first finds package ids,
+            // then it returns all versions for those package ids.
             var packages = await _context.Packages
                 .Where(p =>
                     search.Select(p2 => p2.Id)

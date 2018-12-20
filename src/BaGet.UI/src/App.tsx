@@ -1,6 +1,9 @@
 import * as React from 'react';
-import DisplayPackage from './DisplayPackage';
+import { BrowserRouter as Router, NavLink, Route, RouteComponentProps } from 'react-router-dom';
+import './App.css';
+import DisplayPackage from './DisplayPackage/DisplayPackage';
 import SearchResults from './SearchResults';
+import Upload from './Upload';
 
 interface IAppState {
   input: string;
@@ -16,60 +19,74 @@ class App extends React.Component<{}, IAppState> {
   }
 
   public render() {
-    if (this.state.selected) {
-      return (
+    return (
+      <Router>
         <div>
-          {this._renderSearch()}
+          {this._renderNavigationBar()}
 
-          <section role="main" className="container main-container">
-            <DisplayPackage id={this.state.selected} />
-          </section>
+          {this._renderContent()}
         </div>
-      );
-    } else {
-      return (
-        <div>
-          {this._renderSearch()}
-
-          <section role="main" className="container main-container">
-            <SearchResults input={this.state.input} onSelect={this.handleSelect} />
-          </section>
-        </div>
-      );
-    }
+      </Router>
+    );
   }
 
-  private _renderSearch() {
+  private _renderNavigationBar() {
     return (
-      <nav>
+      <nav className="navbar navbar-inverse" role="navigation">
         <div className="container">
           <div className="row">
-            <div className="col-sm-12">
-              <div id="logo">
-                <h1><a href="/">BaGet</a></h1>
-              </div>
+            <div id="navbar" className="col-sm-12">
+              <ul className="nav navbar-nav" role="tablist">
+                <li role="presentation"><NavLink to="/" exact={true} role="tab"><span>Packages</span></NavLink></li>
+                <li role="presentation"><NavLink to="/upload"><span>Upload</span></NavLink></li>
+                <li role="presentation"><a role="tab" href="https://loic-sharma.github.io/BaGet/"><span>Documentation</span></a></li>
+              </ul>
             </div>
           </div>
         </div>
         <div className="container search-container">
           <div className="row">
-            <input
-              type="text"
-              className="form-control"
-              autoComplete="off"
-              placeholder="Search packages"
+            <form className="col-sm-12">
+              <input
+                type="text"
+                className="form-control"
+                autoComplete="off"
+                placeholder="Search packages..."
               onChange={this.handleChange} />
+            </form>
           </div>
         </div>
       </nav>
     );
   }
 
+  private _renderContent() {
+    if (this.state.input.length === 0) {
+      return (
+        <section role="main" className="container main-container">
+          <Route exact={true} path="/" render={this.renderSearch} />
+          <Route path="/packages/:id" component={DisplayPackage} />
+
+          <Route path="/upload" component={Upload} />
+        </section>
+      );
+    }
+    else
+    {
+      return (
+        <section role="main" className="container main-container">
+          <SearchResults input={this.state.input} />
+        </section>
+      );
+    }
+  }
+
+  private renderSearch = (props: RouteComponentProps<any>) => (
+    <SearchResults input={this.state.input} {...props} />
+  );
+
   private handleChange = (input: React.ChangeEvent<HTMLInputElement>) =>
     this.setState({ input: input.target.value, selected: undefined });
-
-  private handleSelect = (selected: string) =>
-    this.setState({input: "", selected});
 }
 
 export default App;

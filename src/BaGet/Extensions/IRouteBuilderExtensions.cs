@@ -17,7 +17,7 @@ namespace BaGet.Extensions
         public static IRouteBuilder MapPackagePublishRoutes(this IRouteBuilder routes)
         {
             routes.MapRoute(
-                name: Routes.UploadRouteName,
+                name: Routes.UploadPackageRouteName,
                 template: "api/v2/package",
                 defaults: new { controller = "PackagePublish", action = "Upload" },
                 constraints: new { httpMethod = new HttpMethodRouteConstraint("PUT") });
@@ -33,6 +33,22 @@ namespace BaGet.Extensions
                 template: "api/v2/package/{id}/{version}",
                 defaults: new { controller = "PackagePublish", action = "Relist" },
                 constraints: new { httpMethod = new HttpMethodRouteConstraint("POST") });
+
+            return routes;
+        }
+
+        public static IRouteBuilder MapSymbolRoutes(this IRouteBuilder routes)
+        {
+            routes.MapRoute(
+                name: Routes.UploadSymbolRouteName,
+                template: "api/v2/symbol",
+                defaults: new { controller = "Symbol", action = "Upload" },
+                constraints: new { httpMethod = new HttpMethodRouteConstraint("PUT") });
+
+            routes.MapRoute(
+                name: Routes.SymbolDownloadRouteName,
+                template: "api/download/symbols/{file}/{key}/{file2}",
+                defaults: new { controller = "Symbol", action = "Get" });
 
             return routes;
         }

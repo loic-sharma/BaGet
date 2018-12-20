@@ -1,0 +1,84 @@
+.installation-info {
+  font-size: 0.8em;
+  margin-bottom: 20px;
+}
+
+.installation-info ul {
+  margin-left: 0;
+  margin-bottom: 0;
+  padding-left: 0;
+  list-style: none;
+  border: 0;
+  width: 750px;
+}
+
+.installation-info li {
+  padding: 0;
+  margin-right: 5px;
+  margin-bottom: 0;
+  float: left;
+  position: relative;
+  display: block;
+}
+
+.installation-info li a {
+  padding: 5px 10px;
+  margin: 0;
+  color: #000;
+  background-color: #eaeaea;
+  border: 0;
+  position: relative;
+  display: block;
+  text-decoration: none;
+}
+
+.installation-info li.active a {
+  font-weight: 600;
+  color: #fff;
+  text-decoration: underline;
+  background-color: #002440;
+}
+
+.installation-info .content {
+  display: table;
+  height: 1px;
+}
+
+.installation-info .content .script {
+  display: table-cell;
+  width: 100%;
+  max-width: 1px;
+  padding: 0 10px 8px 10px;
+  font-family: Consolas, Menlo, Monaco, "Courier New", monospace;
+  line-height: 1.5;
+  color: #fff;
+  background-color: #002440;
+  border-color: #002440;
+  border-style: solid;
+  border-width: 1px 0 1px 1px;
+}
+
+.installation-info .content .copy-button {
+  display: table-cell;
+}
+
+.installation-info .content .copy-button button {
+  height: 100%;
+  min-height: 42px;
+  vertical-align: baseline;
+  border-radius: 0px;
+}
+
+.install-script:before {
+  content: "> ";
+}
+
+.install-script {
+  margin: 10px 0 10px;
+  color: #fff;
+  font-family: Consolas, Menlo, Monaco, "Courier New", monospace;
+  background-color: #002440;
+  border-color: #002440;
+  border-style: solid;
+  border-width: 1px;
+}

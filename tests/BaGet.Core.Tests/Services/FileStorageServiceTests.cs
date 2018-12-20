@@ -1,9 +1,12 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
+using BaGet.Core.Configuration;
 using BaGet.Core.Services;
+using Microsoft.Extensions.Options;
+using Moq;
 using Xunit;
 
 namespace BaGet.Core.Tests.Services
@@ -46,7 +49,16 @@ namespace BaGet.Core.Tests.Services
 
                 // Assert
                 Assert.Equal("Hello world", await ToStringAsync(result));
+            }
 
+            [Fact]
+            public async Task NoAccessOutsideStorePath()
+            {
+                foreach (var path in OutsideStorePathData)
+                {
+                    await Assert.ThrowsAsync<ArgumentException>(async () =>
+                        await _target.GetAsync(path));
+                }
             }
         }
 
@@ -59,6 +71,16 @@ namespace BaGet.Core.Tests.Services
                 var expected = new Uri(Path.Combine(_storePath, "test.txt"));
 
                 Assert.Equal(expected, result);
+            }
+
+            [Fact]
+            public async Task NoAccessOutsideStorePath()
+            {
+                foreach (var path in OutsideStorePathData)
+                {
+                    await Assert.ThrowsAsync<ArgumentException>(async () =>
+                        await _target.GetDownloadUriAsync(path));
+                }
             }
         }
 
@@ -119,6 +141,19 @@ namespace BaGet.Core.Tests.Services
                 // Assert
                 Assert.Equal(PutResult.Conflict, result);
             }
+
+            [Fact]
+            public async Task NoAccessOutsideStorePath()
+            {
+                foreach (var path in OutsideStorePathData)
+                {
+                    using (var content = StringStream("Hello world"))
+                    {
+                        await Assert.ThrowsAsync<ArgumentException>(async () =>
+                            await _target.PutAsync(path, content, "text/plain"));
+                    }
+                }
+            }
         }
 
         public class DeleteAsync : FactsBase
@@ -143,17 +178,34 @@ namespace BaGet.Core.Tests.Services
 
                 Assert.False(File.Exists(path));
             }
+
+            [Fact]
+            public async Task NoAccessOutsideStorePath()
+            {
+                foreach (var path in OutsideStorePathData)
+                {
+                    await Assert.ThrowsAsync<ArgumentException>(async () =>
+                        await _target.DeleteAsync(path));
+                }
+            }
         }
 
         public class FactsBase : IDisposable
         {
             protected readonly string _storePath;
+            protected readonly Mock<IOptionsSnapshot<FileSystemStorageOptions>> _options;
             protected readonly FileStorageService _target;
 
             public FactsBase()
             {
                 _storePath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
-                _target = new FileStorageService(_storePath);
+                _options = new Mock<IOptionsSnapshot<FileSystemStorageOptions>>();
+
+                _options
+                    .Setup(o => o.Value)
+                    .Returns(() => new FileSystemStorageOptions { Path = _storePath });
+
+                _target = new FileStorageService(_options.Object);
             }
 
             public void Dispose()
@@ -179,6 +231,25 @@ namespace BaGet.Core.Tests.Services
                 using (var reader = new StreamReader(input))
                 {
                     return await reader.ReadToEndAsync();
+                }
+            }
+
+            public IEnumerable<string> OutsideStorePathData
+            {
+                get
+                {
+                    string fullPath = Path.GetFullPath(_storePath);
+                    yield return "../file";
+                    yield return ".";
+                    yield return $"../{Path.GetFileName(_storePath)}";
+                    yield return $"../{Path.GetFileName(_storePath)}suffix";
+                    yield return $"../{Path.GetFileName(_storePath)}suffix/file";
+                    yield return fullPath;
+                    yield return fullPath + Path.DirectorySeparatorChar;
+                    yield return fullPath + Path.DirectorySeparatorChar + "..";
+                    yield return fullPath + Path.DirectorySeparatorChar + ".." + Path.DirectorySeparatorChar + "file";
+                    yield return Path.GetPathRoot(_storePath);
+                    yield return Path.Combine(Path.GetPathRoot(_storePath), "file");
                 }
             }
         }

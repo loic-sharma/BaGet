@@ -1,9 +1,10 @@
-﻿namespace BaGet
+namespace BaGet
 {
     public class Routes
     {
         public const string IndexRouteName = "index";
-        public const string UploadRouteName = "upload";
+        public const string UploadPackageRouteName = "upload-package";
+        public const string UploadSymbolRouteName = "upload-symbol";
         public const string DeleteRouteName = "delete";
         public const string RelistRouteName = "relist";
         public const string SearchRouteName = "search";
@@ -14,5 +15,6 @@
         public const string PackageDownloadRouteName = "package-download";
         public const string PackageDownloadManifestRouteName = "package-download-manifest";
         public const string PackageDownloadReadmeRouteName = "package-download-readme";
+        public const string SymbolDownloadRouteName = "symbol-download";
     }
 }

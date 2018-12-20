@@ -1,13 +1,21 @@
 import { HtmlRenderer, Parser } from 'commonmark';
+import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as React from 'react';
 import timeago from 'timeago.js';
+import Dependencies from './Dependencies';
+import InstallationInfo from './InstallationInfo';
 import LicenseInfo from './LicenseInfo';
+import * as Registration from './Registration';
 import SourceRepository from './SourceRepository';
 
 import './DisplayPackage.css';
 
 interface IDisplayPackageProps {
-  id: string;
+  match: {
+    params: {
+      id: string;
+    }
+  }
 }
 
 interface IPackage {
@@ -26,6 +34,7 @@ interface IPackage {
   authors: string;
   tags: string[];
   versions: IPackageVersion[];
+  dependencyGroups: Registration.IDependencyGroup[];
 }
 
 interface IPackageVersion {
@@ -38,41 +47,9 @@ interface IDisplayPackageState {
   package?: IPackage;
 }
 
-interface IRegistrationIndex {
-  totalDownloads: number;
-  items: IRegistrationPage[];
-}
-
-interface IRegistrationPage {
-  id: string;
-  lower: string;
-  upper: string;
-  items: IRegistrationPageItem[];
-}
-
-interface IRegistrationPageItem {
-  packageContent: string;
-  catalogEntry: ICatalogEntry;
-}
-
-interface ICatalogEntry {
-  id: string;
-  version: string;
-  downloads: number;
-  published: string;
-  hasReadme: boolean;
-  description: string;
-  iconUrl: string;
-  projectUrl: string;
-  licenseUrl: string;
-  repositoryUrl: string;
-  repositoryType: string;
-  authors: string;
-  tags: string[];
-}
-
 class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPackageState> {
 
+  private id: string;
   private parser: Parser;
   private htmlRenderer: HtmlRenderer;
 
@@ -82,19 +59,20 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
     this.parser = new Parser();
     this.htmlRenderer = new HtmlRenderer();
 
+    this.id = props.match.params.id;
     this.state = {package: undefined};
   }
 
   public componentDidMount() {
-    const url = `/v3/registration/${this.props.id}/index.json`;
+    const url = `/v3/registration/${this.id}/index.json`;
 
     fetch(url).then(response => {
       return response.json();
     }).then(json => {
-      const results = json as IRegistrationIndex;
+      const results = json as Registration.IRegistrationIndex;
 
       const latestVersion = results.items[0].upper;
-      let latestItem: IRegistrationPageItem | undefined;
+      let latestItem: Registration.IRegistrationPageItem | undefined;
 
       const versions: IPackageVersion[] = [];
 
@@ -113,12 +91,13 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
       if (latestItem) {
         let readme = "";
         if (!latestItem.catalogEntry.hasReadme) {
-          readme = latestItem.catalogEntry.description; 
+          readme = latestItem.catalogEntry.description;
         }
 
         this.setState({
           package: {
             authors: latestItem.catalogEntry.authors,
+            dependencyGroups: latestItem.catalogEntry.dependencyGroups,
             downloadUrl: latestItem.packageContent,
             iconUrl: latestItem.catalogEntry.iconUrl,
             id: latestItem.catalogEntry.id,
@@ -132,12 +111,12 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
             repositoryUrl: latestItem.catalogEntry.repositoryUrl,
             tags: latestItem.catalogEntry.tags,
             totalDownloads: results.totalDownloads,
-            versions,
+            versions
           }
         });
 
         if (latestItem.catalogEntry.hasReadme) {
-          const readmeUrl = `/v3/package/${this.props.id}/${latestVersion}/readme`;
+          const readmeUrl = `/v3/package/${this.id}/${latestVersion}/readme`;
 
           fetch(readmeUrl).then(response => {
             return response.text();
@@ -168,39 +147,60 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
             <img src={this.state.package.iconUrl} className="img-responsive" />
           </aside>
           <article className="col-sm-8 package-details-main">
-            <div>
-              <h1>{this.state.package.id}</h1>
-              <span>{this.state.package.latestVersion}</span>
-            </div>
-            <div className="install-script">
-              dotnet add package {this.state.package.id} --version {this.state.package.latestVersion}
+            <div className="package-title">
+              <h1>
+                {this.state.package.id}
+                <small className="text-nowrap">{this.state.package.latestVersion}</small>
+              </h1>
+
             </div>
 
+            <InstallationInfo id={this.state.package.id} version={this.state.package.latestVersion} />
+
             {/* TODO: Fix this */}
-            <div dangerouslySetInnerHTML={ {__html: this.state.package.readme} } />
+            <div dangerouslySetInnerHTML={{ __html: this.state.package.readme }} />
+
+            <Dependencies dependencyGroups={this.state.package.dependencyGroups} />
           </article>
           <aside className="col-sm-3 package-details-info">
             <div>
-              <h1>Info</h1>
+              <h2>Info</h2>
 
-              <div>Last updated {timeago().format(this.state.package.lastUpdate)}</div>
-              <div><a href={this.state.package.projectUrl}>{this.state.package.projectUrl}</a></div>
-
-              <SourceRepository url={this.state.package.repositoryUrl} type={this.state.package.repositoryType} />
-              <LicenseInfo url={this.state.package.licenseUrl} />
-
-              <div><a href={this.state.package.downloadUrl}>Download Package</a></div>
+              <ul className="list-unstyled ms-Icon-ul">
+                <li>
+                  <Icon iconName="History" className="ms-Icon" />
+                  Last updated {timeago().format(this.state.package.lastUpdate)}
+                </li>
+                <li>
+                  <Icon iconName="Globe" className="ms-Icon" />
+                  <a href={this.state.package.projectUrl}>{this.state.package.projectUrl}</a>
+                </li>
+                <SourceRepository url={this.state.package.repositoryUrl} type={this.state.package.repositoryType} />
+                <LicenseInfo url={this.state.package.licenseUrl} />
+                <li>
+                  <Icon iconName="CloudDownload" className="ms-Icon" />
+                  <a href={this.state.package.downloadUrl}>Download Package</a>
+                </li>
+              </ul>
             </div>
 
             <div>
-              <h1>Statistics</h1>
+              <h2>Statistics</h2>
 
-              <div>{this.state.package.totalDownloads.toLocaleString()} total downloads</div>
-              <div>{this.state.package.latestDownloads.toLocaleString()} downloads of latest version</div>
+              <ul className="list-unstyled ms-Icon-ul">
+                <li>
+                  <Icon iconName="Download" className="ms-Icon" />
+                  {this.state.package.totalDownloads.toLocaleString()} total downloads
+                </li>
+                <li>
+                  <Icon iconName="GiftBox" className="ms-Icon" />
+                  {this.state.package.latestDownloads.toLocaleString()} downloads of latest version
+                </li>
+              </ul>
             </div>
 
             <div>
-              <h1>Versions</h1>
+              <h2>Versions</h2>
 
               {this.state.package.versions.map(value => (
                 <div key={value.version}>
