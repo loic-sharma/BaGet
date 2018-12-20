@@ -63,11 +63,11 @@ class App extends React.Component<{}, IAppState> {
   private _renderContent() {
     return (
         <section role="main" className="container main-container">
-		  <Switch>
-			<Route exact={true} path="/" render={this.renderSearch} />
-			<Route path="/packages/:id" component={DisplayPackage} />
-			<Route path="/upload" component={Upload} />
-		  </Switch>
+          <Switch>
+            <Route exact={true} path="/" render={this.renderSearch} />
+            <Route path="/packages/:id" component={DisplayPackage} />
+            <Route path="/upload" component={Upload} />
+          </Switch>
         </section>
       );
   }
