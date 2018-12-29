@@ -25,6 +25,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using SourceCodeType = BaGet.Core.Configuration.SourceCodeType;
 
 namespace BaGet.Extensions
 {
@@ -43,6 +44,7 @@ namespace BaGet.Extensions
             services.ConfigureAndValidateSection<FileSystemStorageOptions>(configuration, nameof(BaGetOptions.Storage));
             services.ConfigureAndValidateSection<BlobStorageOptions>(configuration, nameof(BaGetOptions.Storage));
             services.ConfigureAndValidateSection<AzureSearchOptions>(configuration, nameof(BaGetOptions.Search));
+            services.ConfigureAndValidateSection<SourceCodeOptions>(configuration, nameof(BaGetOptions.SourceCode));
 
             services.AddBaGetContext();
             services.ConfigureAzure(configuration);
@@ -62,6 +64,7 @@ namespace BaGet.Extensions
             services.ConfigureStorageProviders();
             services.ConfigureSearchProviders();
             services.ConfigureAuthenticationProviders();
+            services.ConfigureSourceCodeProviders();
 
             return services;
         }
@@ -174,6 +177,28 @@ namespace BaGet.Extensions
                             $"Unsupported storage service: {options.Value.Storage.Type}");
                 }
             });
+
+            return services;
+        }
+
+        private static IServiceCollection ConfigureSourceCodeProviders(this IServiceCollection services)
+        {
+            services.AddTransient<ISourceCodeService>(provider =>
+            {
+                var options = provider.GetRequiredService<IOptionsSnapshot<SourceCodeOptions>>();
+
+                switch (options.Value.Type)
+                {
+                    case SourceCodeType.Database:
+                        return provider.GetRequiredService<DatabaseSourceCodeService>();
+
+                    default:
+                        throw new InvalidOperationException(
+                            $"Unsupported source code service: {options.Value.Type}");
+                }
+            });
+
+            services.AddTransient<DatabaseSourceCodeService>();
 
             return services;
         }

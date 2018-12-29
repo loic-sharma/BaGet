@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using BaGet.Core.Services;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -11,6 +11,7 @@ namespace BaGet.Core.Tests.Services
         private readonly Mock<IPackageService> _packages;
         private readonly Mock<IPackageStorageService> _storage;
         private readonly Mock<ISearchService> _search;
+        private readonly Mock<ISourceCodeService> _sourceCode;
         private readonly PackageIndexingService _target;
 
         public PackageIndexingServiceTests()
@@ -18,11 +19,13 @@ namespace BaGet.Core.Tests.Services
             _packages = new Mock<IPackageService>();
             _storage = new Mock<IPackageStorageService>();
             _search = new Mock<ISearchService>();
+            _sourceCode = new Mock<ISourceCodeService>();
 
             _target = new PackageIndexingService(
                 _packages.Object,
                 _storage.Object,
                 _search.Object,
+                _sourceCode.Object,
                 Mock.Of<ILogger<PackageIndexingService>>());
         }
 

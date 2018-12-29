@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using NuGet.Versioning;
 
@@ -37,6 +37,8 @@ namespace BaGet.Core.Entities
         /// Used for optimistic concurrency.
         /// </summary>
         public byte[] RowVersion { get; set; }
+
+        //public virtual ICollection<SourceCodeAssembly> SourceCodeAssemblies { get; set; }
 
         public List<PackageDependency> Dependencies { get; set; }
 
