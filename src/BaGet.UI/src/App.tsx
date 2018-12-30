@@ -1,11 +1,12 @@
-import { Action, Location } from 'history';
 import * as React from 'react';
+
+import { Action, Location } from 'history';
 import { withRouter } from 'react-router';
 import { NavLink, Route, RouteComponentProps } from 'react-router-dom';
-import './App.css';
-import DisplayPackage from './DisplayPackage/DisplayPackage';
+
 import SearchResults from './SearchResults';
-import Upload from './Upload';
+
+import './App.css';
 
 interface IAppState {
   input: string;
@@ -69,9 +70,8 @@ class App extends React.Component<RouteComponentProps, IAppState> {
       return (
         <section role="main" className="container main-container">
           <Route exact={true} path="/" render={this.renderSearch} />
-          <Route path="/packages/:id" component={DisplayPackage} />
 
-          <Route path="/upload" component={Upload} />
+          {this.props.children}
         </section>
       );
     }

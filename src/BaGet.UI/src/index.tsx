@@ -1,10 +1,13 @@
 import { initializeIcons } from '@uifabric/icons';
 import 'bootstrap/dist/css/bootstrap.css';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import App from './App';
+
+import DisplayPackage from './DisplayPackage/DisplayPackage';
+import Upload from './Upload';
 
 import './index.css';
 
@@ -14,7 +17,11 @@ initializeIcons();
 
 ReactDOM.render(
   <Router>
-    <App />
+    <App>
+      <Route path="/packages/:id" component={DisplayPackage} />
+
+      <Route path="/upload" component={Upload} />
+    </App>
   </Router>,
   document.getElementById('root') as HTMLElement
 );
