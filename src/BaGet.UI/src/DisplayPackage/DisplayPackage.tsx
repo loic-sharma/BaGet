@@ -53,20 +53,30 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
   private parser: Parser;
   private htmlRenderer: HtmlRenderer;
 
+  private registrationController: AbortController;
+  private readmeController: AbortController;
+
   constructor(props: IDisplayPackageProps) {
     super(props);
 
     this.parser = new Parser();
     this.htmlRenderer = new HtmlRenderer();
+    this.registrationController = new AbortController();
+    this.readmeController = new AbortController();
 
     this.id = props.match.params.id;
     this.state = {package: undefined};
   }
 
+  public componentWillUnmount() {
+    this.registrationController.abort();
+    this.readmeController.abort();
+  }
+
   public componentDidMount() {
     const url = `/v3/registration/${this.id}/index.json`;
 
-    fetch(url).then(response => {
+    fetch(url, {signal: this.registrationController.signal}).then(response => {
       return response.json();
     }).then(json => {
       const results = json as Registration.IRegistrationIndex;
@@ -118,7 +128,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
         if (latestItem.catalogEntry.hasReadme) {
           const readmeUrl = `/v3/package/${this.id}/${latestVersion}/readme`;
 
-          fetch(readmeUrl).then(response => {
+          fetch(readmeUrl, {signal: this.readmeController.signal}).then(response => {
             return response.text();
           }).then(result => {
             this.setState(prevState => {
@@ -132,7 +142,8 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
           });
         }
       }
-    });
+    // tslint:disable-next-line:no-console
+    }).catch((e) => console.log("Failed to load package.", e));
   }
 
   public render() {
