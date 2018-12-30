@@ -44,7 +44,6 @@ namespace BaGet.Extensions
             services.ConfigureAndValidateSection<BlobStorageOptions>(configuration, nameof(BaGetOptions.Storage));
             services.ConfigureAndValidateSection<AzureSearchOptions>(configuration, nameof(BaGetOptions.Search));
 
-            services.AddBaGetContext();
             services.ConfigureAzure(configuration);
             services.ConfigureAws(configuration);
 
@@ -53,15 +52,17 @@ namespace BaGet.Extensions
                 services.ConfigureHttpServices();
             }
 
+            services.AddBaGetContext();
+
             services.AddTransient<IPackageService, PackageService>();
             services.AddTransient<IPackageIndexingService, PackageIndexingService>();
             services.AddTransient<IPackageDeletionService, PackageDeletionService>();
             services.AddTransient<ISymbolIndexingService, SymbolIndexingService>();
             services.AddMirrorServices();
 
-            services.ConfigureStorageProviders();
-            services.ConfigureSearchProviders();
-            services.ConfigureAuthenticationProviders();
+            services.AddStorageProviders();
+            services.AddSearchProviders();
+            services.AddAuthenticationProviders();
 
             return services;
         }
@@ -145,7 +146,7 @@ namespace BaGet.Extensions
             return services;
         }
 
-        public static IServiceCollection ConfigureStorageProviders(this IServiceCollection services)
+        public static IServiceCollection AddStorageProviders(this IServiceCollection services)
         {
             services.AddTransient<FileStorageService>();
             services.AddTransient<IPackageStorageService, PackageStorageService>();
@@ -178,7 +179,7 @@ namespace BaGet.Extensions
             return services;
         }
 
-        public static IServiceCollection ConfigureSearchProviders(this IServiceCollection services)
+        public static IServiceCollection AddSearchProviders(this IServiceCollection services)
         {
             services.AddTransient<ISearchService>(provider =>
             {
@@ -268,7 +269,7 @@ namespace BaGet.Extensions
             return services;
         }
 
-        public static IServiceCollection ConfigureAuthenticationProviders(this IServiceCollection services)
+        public static IServiceCollection AddAuthenticationProviders(this IServiceCollection services)
         {
             services.AddTransient<IAuthenticationService, ApiKeyAuthenticationService>();
 
