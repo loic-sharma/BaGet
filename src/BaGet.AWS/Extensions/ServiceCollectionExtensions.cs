@@ -1,4 +1,4 @@
-﻿using Amazon;
+using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
 using BaGet.AWS.Configuration;
@@ -15,7 +15,7 @@ namespace BaGet.AWS.Extensions
             {
                 var options = provider.GetRequiredService<IOptions<S3StorageOptions>>().Value;
 
-                AmazonS3Config config = new AmazonS3Config
+                var config = new AmazonS3Config
                 {
                     RegionEndpoint = RegionEndpoint.GetBySystemName(options.Region)
                 };
