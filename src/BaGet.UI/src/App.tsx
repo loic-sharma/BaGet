@@ -1,5 +1,7 @@
+import { Action, Location } from 'history';
 import * as React from 'react';
-import { BrowserRouter as Router, NavLink, Route, RouteComponentProps } from 'react-router-dom';
+import { withRouter } from 'react-router';
+import { NavLink, Route, RouteComponentProps } from 'react-router-dom';
 import './App.css';
 import DisplayPackage from './DisplayPackage/DisplayPackage';
 import SearchResults from './SearchResults';
@@ -7,28 +9,30 @@ import Upload from './Upload';
 
 interface IAppState {
   input: string;
-  selected?: string;
 }
 
-class App extends React.Component<{}, IAppState> {
+class App extends React.Component<RouteComponentProps, IAppState> {
 
-  constructor(props: {}) {
+  constructor(props: RouteComponentProps) {
     super(props);
 
     this.state = { input: "" };
+
+    this.props.history.listen(this.onRouteChange);
   }
 
   public render() {
     return (
-      <Router>
-        <div>
-          {this._renderNavigationBar()}
+      <div>
+        {this._renderNavigationBar()}
 
-          {this._renderContent()}
-        </div>
-      </Router>
+        {this._renderContent()}
+      </div>
     );
   }
+
+  private onRouteChange = (location: Location, action: Action) =>
+    this.setState({ input: "" });
 
   private _renderNavigationBar() {
     return (
@@ -86,7 +90,7 @@ class App extends React.Component<{}, IAppState> {
   );
 
   private handleChange = (input: React.ChangeEvent<HTMLInputElement>) =>
-    this.setState({ input: input.target.value, selected: undefined });
+    this.setState({ input: input.target.value });
 }
 
-export default App;
+export default withRouter(App);

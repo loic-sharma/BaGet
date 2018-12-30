@@ -1,5 +1,6 @@
 import { initializeIcons } from '@uifabric/icons';
 import 'bootstrap/dist/css/bootstrap.css';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
@@ -12,7 +13,9 @@ import './index.css';
 initializeIcons();
 
 ReactDOM.render(
-  <App />,
+  <Router>
+    <App />
+  </Router>,
   document.getElementById('root') as HTMLElement
 );
 
