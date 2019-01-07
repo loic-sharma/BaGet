@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -104,7 +104,7 @@ namespace BaGet.Core.Services
                 throw new ArgumentException("Path is required", nameof(path));
             }
 
-            string fullPath = Path.GetFullPath(Path.Combine(_storePath, path));
+            var fullPath = Path.GetFullPath(Path.Combine(_storePath, path));
 
             // Verify path is under the _storePath.
             if (!fullPath.StartsWith(_storePath, StringComparison.Ordinal) ||

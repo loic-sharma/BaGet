@@ -1,48 +1,23 @@
 ---
 name: Bug report
-about: Create a report to help us improve
-
+about: Create a report about something that is not working
 ---
 
-### Do you want to request a *feature* or report a *bug*?
+### Describe the bug
+A clear and concise description of what the bug is.
 
-Bug
+### To Reproduce
+Steps to reproduce the behavior:
+1. Using this version of BaGet '...'
+2. Run this code '....'
+3. With these arguments '....'
+4. See error
 
-### What did you do?
+### Expected behavior
+A clear and concise description of what you expected to happen.
 
-<!--
+### Screenshots
+If applicable, add screenshots to help explain your problem.
 
-HOW TO WRITE A GOOD BUG REPORT?
-
-- Respect the issue template as much as possible.
-- The title should be short and descriptive.
-- Explain the conditions which led you to report this issue: the context.
-- The context should lead to something, an idea or a problem that you’re facing.
-- Remain clear and concise.
-- Format your messages to help the reader focus on what matters and understand the structure of your message, use Markdown syntax https://help.github.com/articles/github-flavored-markdown
-
--->
-
-### What did you expect to see?
-
-
-### What did you see instead?
-
-
-### Output of `git rev-parse HEAD`: (_What version of BaGet are you using?_)
-
-```
-(paste your output here)
-```
-
-### What is your environment & configuration (arguments, platform, ...)?
-
-<!--
-Add more configuration information here.
--->
-
-### If applicable, please paste the log output in DEBUG level
-
-```
-(paste your output here)
-```
+### Additional context
+Add any other context about the problem here.

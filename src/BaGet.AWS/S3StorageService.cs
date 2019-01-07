@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,12 +34,14 @@ namespace BaGet.AWS
 
         public async Task<Stream> GetAsync(string path, CancellationToken cancellationToken = default)
         {
-            MemoryStream stream = new MemoryStream();
+            var stream = new MemoryStream();
 
             try
             {
-                using (GetObjectResponse res = await _client.GetObjectAsync(_bucket, PrepareKey(path), cancellationToken))
-                    await res.ResponseStream.CopyToAsync(stream);
+                using (var request = await _client.GetObjectAsync(_bucket, PrepareKey(path), cancellationToken))
+                {
+                    await request.ResponseStream.CopyToAsync(stream);
+                }
 
                 stream.Seek(0, SeekOrigin.Begin);
             }
@@ -56,13 +58,13 @@ namespace BaGet.AWS
 
         public Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
         {
-            string res = _client.GetPreSignedURL(new GetPreSignedUrlRequest
+            var url = _client.GetPreSignedURL(new GetPreSignedUrlRequest
             {
                 BucketName = _bucket,
                 Key = PrepareKey(path)
             });
 
-            return Task.FromResult(new Uri(res));
+            return Task.FromResult(new Uri(url));
         }
 
         public async Task<PutResult> PutAsync(string path, Stream content, string contentType, CancellationToken cancellationToken = default)
@@ -70,17 +72,17 @@ namespace BaGet.AWS
             // TODO: Uploads should be idempotent. This should fail if and only if the blob
             // already exists but has different content.
 
-            using (MemoryStream ms = new MemoryStream())
+            using (var seekableContent = new MemoryStream())
             {
-                await content.CopyToAsync(ms, 4096, cancellationToken);
+                await content.CopyToAsync(seekableContent, 4096, cancellationToken);
 
-                ms.Seek(0, SeekOrigin.Begin);
+                seekableContent.Seek(0, SeekOrigin.Begin);
 
                 await _client.PutObjectAsync(new PutObjectRequest
                 {
                     BucketName = _bucket,
                     Key = PrepareKey(path),
-                    InputStream = ms,
+                    InputStream = seekableContent,
                     ContentType = contentType,
                     AutoResetStreamPosition = false,
                     AutoCloseStream = false
