@@ -128,6 +128,7 @@ namespace BaGet.Extensions
         {
             services
                 .AddMvc()
+                .AddApplicationPart(typeof(BaGet.Controllers.PackageController).Assembly)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddCors();
