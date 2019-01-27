@@ -17,6 +17,7 @@ using BaGet.Entities;
 using BaGet.Protocol;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -139,6 +140,10 @@ namespace BaGet.Extensions
                 // Do not restrict to local network/proxy
                 options.KnownNetworks.Clear();
                 options.KnownProxies.Clear();
+            });
+            services.Configure<FormOptions>(options =>
+            {
+                options.MultipartBodyLengthLimit = int.MaxValue;
             });
 
             return services;
