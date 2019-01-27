@@ -182,10 +182,12 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
                   <Icon iconName="History" className="ms-Icon" />
                   Last updated {timeago().format(this.state.package.lastUpdate)}
                 </li>
-                <li>
-                  <Icon iconName="Globe" className="ms-Icon" />
-                  <a href={this.state.package.projectUrl}>{this.state.package.projectUrl}</a>
-                </li>
+                {this.state.package.projectUrl &&
+                  <li>
+                    <Icon iconName="Globe" className="ms-Icon" />
+                    <a href={this.state.package.projectUrl}>{this.state.package.projectUrl}</a>
+                  </li>
+                }
                 <SourceRepository url={this.state.package.repositoryUrl} type={this.state.package.repositoryType} />
                 <LicenseInfo url={this.state.package.licenseUrl} />
                 <li>
