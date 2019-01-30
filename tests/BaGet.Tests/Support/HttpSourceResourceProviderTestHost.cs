@@ -18,7 +18,7 @@ namespace BaGet.Tests.Support
         // Only one HttpSource per source should exist. This is to reduce the number of TCP connections.
         private readonly ConcurrentDictionary<PackageSource, HttpSourceResource> _cache
             = new ConcurrentDictionary<PackageSource, HttpSourceResource>();
-        private HttpClient _httpClient;
+        private readonly HttpClient _httpClient;
 
         /// <summary>
         /// The throttle to apply to all <see cref="HttpSource"/> HTTP requests.
@@ -30,7 +30,7 @@ namespace BaGet.Tests.Support
                   nameof(HttpSourceResource),
                   NuGetResourceProviderPositions.Last)
         {
-            this._httpClient = client;
+            _httpClient = client;
         }
 
         public override Task<Tuple<bool, INuGetResource>> TryCreate(SourceRepository source, CancellationToken token)
