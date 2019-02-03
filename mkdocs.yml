@@ -40,8 +40,10 @@ pages:
     - Azure: cloud/azure.md
     - Google Cloud: cloud/gcp.md
     - AWS: cloud/aws.md
+  - Windows IIS Proxy: windows/iis-proxy.md
   - Tools:
     - Mirroring: tools/mirroring.md
+    - Powershell import: tools/powershell-import.md
   - BaGet vs. Other Software:
     - nuget.org: vs/nugetorg.md
     - NuGet.Server: vs/nugetserver.md

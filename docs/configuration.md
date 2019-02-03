@@ -16,7 +16,7 @@ To do so, you can insert the desired API key in the `ApiKey` field.
 
 Users will now have to provide the API key to push packages:
 
-```
+```c#
 dotnet nuget push -s http://localhost:5000/v3/index.json -k NUGET-SERVER-API-KEY newtonsoft.json.11.0.2.nupkg
 ```
 
