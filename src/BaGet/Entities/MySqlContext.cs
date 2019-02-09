@@ -19,5 +19,11 @@ namespace BaGet.Entities
             return exception.InnerException is MySqlException mysqlException &&
                    mysqlException.Number == UniqueConstraintViolationErrorCode;
         }
+
+        /// <summary>
+        /// MySQL does not support LIMIT clauses in subqueries for certain subquery operators.
+        /// See: https://dev.mysql.com/doc/refman/8.0/en/subquery-restrictions.html
+        /// </summary>
+        public override bool SupportsLimitInSubqueries => false;
     }
 }

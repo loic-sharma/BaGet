@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
@@ -16,6 +16,11 @@ namespace BaGet.Core.Entities
         /// <param name="exception">The exception to inspect.</param>
         /// <returns>Whether the exception was caused to SQL unique constraint violation.</returns>
         bool IsUniqueConstraintViolationException(DbUpdateException exception);
+
+        /// <summary>
+        /// Whether this database engine supports LINQ "Take" in subqueries.
+        /// </summary>
+        bool SupportsLimitInSubqueries { get; }
 
         Task<int> SaveChangesAsync();
     }

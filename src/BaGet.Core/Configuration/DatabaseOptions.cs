@@ -12,8 +12,8 @@ namespace BaGet.Core.Configuration
 
     public enum DatabaseType
     {
+        MySql,
         Sqlite,
         SqlServer,
-        MySqlServer
     }
 }
