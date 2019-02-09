@@ -23,7 +23,7 @@ Using IIS Manager, create a new web site:
 
 ## BaGet Folder permissions
 
-In order for the app to create the appropriate NuGet package folder, as well as create various files (SqLite database for example) you **may** need to give special rights to the top level BaGet folder. 
+In order for the app to create the appropriate NuGet package folder, as well as create various files (SQLite database for example) you **may** need to give special rights to the top level BaGet folder. 
 
 Read under, "Application Pools" and, "Application Pool Identity" [here](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/?view=aspnetcore-2.2). Basically the identity used in the app pool isn't a real user account and doesn't show up in the Windows User Management Console.
 
@@ -31,7 +31,7 @@ Read under, "Application Pools" and, "Application Pool Identity" [here](https://
 
 Note that Virtual Directories will not work with IIS and Kestrel. Read more about that [here](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/?view=aspnetcore-2.2)
 
-Ensure that the configuration storage Path uses approprite forward slashes in the settings such as:
+Ensure that the configuration storage Path uses appropriate forward slashes in the settings such as:
 
 ```javascript
 ...
