@@ -1,4 +1,4 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -27,9 +27,11 @@ namespace BaGet.Entities
         public DbSet<Package> Packages { get; set; }
         public DbSet<PackageDependency> PackageDependencies { get; set; }
 
-        public Task<int> SaveChangesAsync() => SaveChangesAsync(default(CancellationToken));
+        public Task<int> SaveChangesAsync() => SaveChangesAsync(default);
 
         public abstract bool IsUniqueConstraintViolationException(DbUpdateException exception);
+
+        public virtual bool SupportsLimitInSubqueries => true;
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

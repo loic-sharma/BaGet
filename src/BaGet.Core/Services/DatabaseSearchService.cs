@@ -20,29 +20,8 @@ namespace BaGet.Core.Services
 
         public async Task<IReadOnlyList<SearchResult>> SearchAsync(string query, int skip = 0, int take = 20)
         {
-            IQueryable<Package> search = _context.Packages;
-
-            if (!string.IsNullOrEmpty(query))
-            {
-                query = query.ToLower();
-                search = search.Where(p => p.Id.ToLower().Contains(query));
-            }
-
-            // This query MUST fetch all versions for each returned package, otherwise this could return
-            // incorrect results for a package's latest version. This query first finds package ids,
-            // then it returns all versions for those package ids.
-            var packages = await _context.Packages
-                .Where(p =>
-                    search.Select(p2 => p2.Id)
-                        .OrderBy(id => id)
-                        .Distinct()
-                        .Skip(skip)
-                        .Take(take)
-                        .Contains(p.Id))
-                .GroupBy(p => p.Id)
-                .ToListAsync();
-
             var result = new List<SearchResult>();
+            var packages = await SearchImplAsync(query, skip, take);
 
             foreach (var package in packages)
             {
@@ -69,6 +48,42 @@ namespace BaGet.Core.Services
             }
 
             return result.AsReadOnly();
+        }
+
+        private async Task<List<IGrouping<string, Package>>> SearchImplAsync(string query, int skip, int take)
+        {
+            IQueryable<Package> search = _context.Packages;
+
+            if (!string.IsNullOrEmpty(query))
+            {
+                query = query.ToLower();
+                search = search.Where(p => p.Id.ToLower().Contains(query));
+            }
+
+            var packageIds = search.Select(p => p.Id)
+                .OrderBy(id => id)
+                .Distinct()
+                .Skip(skip)
+                .Take(take);
+
+            // This query MUST fetch all versions for each package that matches the search,
+            // otherwise the results for a package's latest version may be incorrect.
+            // If possible, we'll find all these packages in a single query by matching
+            // the package IDs in a subquery. Otherwise, run two queries:
+            //   1. Find the package IDs that match the search
+            //   2. Find all package versions for these package IDs
+            if (_context.SupportsLimitInSubqueries)
+            {
+                search = _context.Packages.Where(p => packageIds.Contains(p.Id));
+            }
+            else
+            {
+                var packageIdResults = await packageIds.ToListAsync();
+
+                search = _context.Packages.Where(p => packageIdResults.Contains(p.Id));
+            }
+
+            return await search.GroupBy(p => p.Id).ToListAsync();
         }
 
         public async Task<IReadOnlyList<string>> AutocompleteAsync(string query, int skip = 0, int take = 20)
