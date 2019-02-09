@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\BaGet.Protocol\BaGet.Protocol.csproj" />
     <ProjectReference Include="..\..\src\BaGet\BaGet.csproj" />
   </ItemGroup>
 

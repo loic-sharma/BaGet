@@ -57,6 +57,7 @@ namespace BaGet.Extensions
             services.AddTransient<IPackageIndexingService, PackageIndexingService>();
             services.AddTransient<IPackageDeletionService, PackageDeletionService>();
             services.AddTransient<ISymbolIndexingService, SymbolIndexingService>();
+            services.AddTransient<IRegistrationIndexService, RegistrationIndexService>();
             services.AddMirrorServices();
 
             services.AddStorageProviders();
