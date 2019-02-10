@@ -33,6 +33,8 @@ Stay tuned, more features are planned!
 
 1. Install [.NET Core SDK](https://www.microsoft.com/net/download) and [Node.js](https://nodejs.org/)
 2. Run `git clone https://github.com/loic-sharma/BaGet.git`
-3. Navigate to `.\BaGet\src\BaGet`
-4. Start the service with `dotnet run`
-5. Open the URL `http://localhost:5000/v3/index.json` in your browser
+3. Navigate to `.\BaGet\src\BaGet.UI`
+4. Install the frontend's dependencies with `npm install`
+5. Navigate to `..\BaGet`
+6. Start the service with `dotnet run`
+7. Open the URL `http://localhost:5000/v3/index.json` in your browser
