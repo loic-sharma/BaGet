@@ -394,15 +394,27 @@
       
 
 
+  <li class="md-nav__item">
+    <a href="../windows/iis-proxy/" title="Windows IIS Proxy" class="md-nav__link">
+      Windows IIS Proxy
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
     
-    <label class="md-nav__link" for="nav-5">
+    <label class="md-nav__link" for="nav-6">
       Tools
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-5">
+      <label class="md-nav__title" for="nav-6">
         Tools
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -432,13 +444,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
     
-    <label class="md-nav__link" for="nav-6">
+    <label class="md-nav__link" for="nav-7">
       BaGet vs. Other Software
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-6">
+      <label class="md-nav__title" for="nav-7">
         BaGet vs. Other Software
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -618,7 +630,7 @@ To do so, you can insert the desired API key in the <code>ApiKey</code> field.</
 
 
 <p>Users will now have to provide the API key to push packages:</p>
-<div class="codehilite"><pre><span></span>dotnet nuget push -s http://localhost:5000/v3/index.json -k NUGET-SERVER-API-KEY newtonsoft.json.11.0.2.nupkg
+<div class="codehilite"><pre><span></span><span class="n">dotnet</span> <span class="n">nuget</span> <span class="n">push</span> <span class="p">-</span><span class="n">s</span> <span class="n">http</span><span class="p">:</span><span class="c1">//localhost:5000/v3/index.json -k NUGET-SERVER-API-KEY newtonsoft.json.11.0.2.nupkg</span>
 </pre></div>
 
 
