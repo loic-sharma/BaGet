@@ -164,6 +164,7 @@ namespace BaGet.Core.Services
                     var fileName = Path.GetFileName(pdbPath).ToLowerInvariant();
                     var key = $"{signature}ffffffff";
 
+                    pdbStream.Position = 0;
                     result = new PortablePdb(fileName, key, pdbStream);
                 }
             }
