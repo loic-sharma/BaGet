@@ -14,6 +14,7 @@ using BaGet.Core.Entities;
 using BaGet.Core.Mirror;
 using BaGet.Core.Services;
 using BaGet.Entities;
+using BaGet.Legacy;
 using BaGet.Protocol;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
@@ -62,6 +63,8 @@ namespace BaGet.Extensions
             services.AddStorageProviders();
             services.AddSearchProviders();
             services.AddAuthenticationProviders();
+
+            services.ConfigureApiV2();
 
             return services;
         }
@@ -296,6 +299,25 @@ namespace BaGet.Extensions
         {
             services.Configure<TOptions>(config);
             services.AddSingleton<IPostConfigureOptions<TOptions>, ValidatePostConfigureOptions<TOptions>>();
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureApiV2(this IServiceCollection services)
+        {
+            services.AddSingleton(provider => {
+                var odataModelBuilder = new NuGetWebApiODataModelBuilder();
+                odataModelBuilder.Build();
+                return odataModelBuilder.Model;
+            });
+
+            services.AddTransient<IODataPackageSerializer, ODataPackageSerializer>();
+            
+            services.Configure<FormOptions>(x =>
+            {
+                x.ValueLengthLimit = int.MaxValue;
+                x.MultipartBodyLengthLimit = int.MaxValue;
+            });
 
             return services;
         }

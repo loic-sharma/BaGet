@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Routing.Constraints;
 
@@ -104,6 +104,49 @@ namespace BaGet.Extensions
                 name: Routes.PackageDownloadReadmeRouteName,
                 template: "v3/package/{id}/{version}/readme",
                 defaults: new { controller = "Package", action = "DownloadReadme" });
+
+            return routes;
+        }
+
+        public static IRouteBuilder MapApiV2Routes(this IRouteBuilder routes)
+        {
+            routes.MapRoute(
+                name: Routes.IndexRouteName,
+                template: "v2",
+                defaults: new { controller = "PackagesV2", action = "Index" },
+                constraints: new { httpMethod = new HttpMethodRouteConstraint("GET") });
+
+            routes.MapRoute(
+                name: Routes.IndexRouteName,
+                template: "v2/$metadata",
+                defaults: new { controller = "PackagesV2", action = "Index" },
+                constraints: new { httpMethod = new HttpMethodRouteConstraint("GET") });
+
+            routes.MapRoute(
+                name: Routes.UploadPackageRouteName,
+                template: "v2",
+                defaults: new { controller = "PackagesV2", action = "PutPackage" },
+                constraints: new { httpMethod = new HttpMethodRouteConstraint("PUT") });
+
+            routes.MapRoute(
+                name: Routes.PackageDownloadRouteName,
+                template: "v2/contents/{id}/{version}",
+                defaults: new { controller = "PackagesV2", action = "DownloadPackage" });
+
+            routes.MapRoute(
+                name: Routes.PackageDownloadRouteName,
+                template: "v2/Packages(Id='{id}',Version='{version}')",
+                defaults: new { controller = "PackagesV2", action = "DownloadPackage" });
+
+            routes.MapRoute(
+                name: Routes.SearchRouteName,
+                template: "v2/FindPackagesById",
+                defaults: new { controller = "PackagesV2", action = "FindPackagesById" });
+
+            routes.MapRoute(
+                name: Routes.SearchRouteName,
+                template: "v2/Packages()",
+                defaults: new { controller = "PackagesV2", action = "QueryPackages" });
 
             return routes;
         }
