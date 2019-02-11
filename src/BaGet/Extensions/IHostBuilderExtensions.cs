@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -23,18 +23,17 @@ namespace BaGet.Extensions
                     config.AddCommandLine(args);
                 }
             });
-
         }
 
         public static IHostBuilder ConfigureBaGetLogging(this IHostBuilder builder)
         {
             return builder
                 .ConfigureLogging((context, logging) =>
-                    {
-                        logging.AddConfiguration(context.Configuration.GetSection("Logging"));
-                        logging.AddConsole();
-                        logging.AddDebug();
-                    });
+                {
+                    logging.AddConfiguration(context.Configuration.GetSection("Logging"));
+                    logging.AddConsole();
+                    logging.AddDebug();
+                });
         }
 
         public static IHostBuilder ConfigureBaGetServices(this IHostBuilder builder)
