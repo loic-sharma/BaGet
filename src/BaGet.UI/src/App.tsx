@@ -44,7 +44,7 @@ class App extends React.Component<RouteComponentProps, IAppState> {
               <ul className="nav navbar-nav" role="tablist">
                 <li role="presentation"><NavLink to="/" exact={true} role="tab"><span>Packages</span></NavLink></li>
                 <li role="presentation"><NavLink to="/upload"><span>Upload</span></NavLink></li>
-                <li role="presentation"><a role="tab" href="https://loic-sharma.github.io/BaGet/"><span>Documentation</span></a></li>
+                <li role="presentation"><a role="tab" href="https://loic-sharma.github.io/BaGet/" target="_blank"><span>Documentation</span></a></li>
               </ul>
             </div>
           </div>

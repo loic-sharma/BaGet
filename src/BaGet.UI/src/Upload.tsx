@@ -76,20 +76,20 @@ class Upload extends React.Component<{}, IUploadState> {
     switch (tab) {
       case Tab.DotNet:
         name = ".NET CLI";
-        content = `dotnet nuget push -s ${this.serviceIndexUrl} newtonsoft.json.1.0.0.nupkg`;
+        content = `dotnet nuget push -s ${this.serviceIndexUrl} package.nupkg`;
         documentationUrl = "https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-nuget-push";
         break;
 
       case Tab.NuGet:
         name = "NuGet";
-        content = `nuget -Source ${this.serviceIndexUrl} newtonsoft.json.1.0.0.nupkg`;
+        content = `nuget -Source ${this.serviceIndexUrl} package.nupkg`;
         documentationUrl = "https://docs.microsoft.com/en-us/nuget/tools/cli-ref-push";
         break;
 
       default:
       case Tab.Paket:
         name = "Paket";
-        content = `paket push --url ${this.serviceIndexUrl}`;
+        content = `paket push --url ${this.serviceIndexUrl} package.nupkg`;
         documentationUrl = "https://fsprojects.github.io/Paket/paket-push.html";
         break;
     }
