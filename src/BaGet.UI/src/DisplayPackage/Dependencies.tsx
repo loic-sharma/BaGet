@@ -6,7 +6,7 @@ interface IDependenciesProps {
 }
 
 interface IPackageDependenciesProps {
-  dependencies: Registration.IDependency[];
+  dependencies: Registration.IDependency[] | undefined;
 }
 
 class Dependencies extends React.Component<IDependenciesProps> {
@@ -58,7 +58,7 @@ class PackageDependencies extends React.Component<IPackageDependenciesProps> {
   }
 
   public render() {
-    if (this.props.dependencies.length === 0) {
+    if (!this.props.dependencies || this.props.dependencies.length === 0) {
       return <div>No dependencies.</div>
     }
 

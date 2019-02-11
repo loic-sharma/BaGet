@@ -34,7 +34,7 @@ export interface ICatalogEntry {
 
 export interface IDependencyGroup {
   targetFramework: string;
-  dependencies: IDependency[];
+  dependencies: IDependency[] | undefined;
 }
 
 export interface IDependency {
