@@ -654,9 +654,9 @@ symbol package using this command:</p>
 <h2 id="running-baget-on-docker">Running BaGet on Docker<a class="headerlink" href="#running-baget-on-docker" title="Permanent link">&para;</a></h2>
 <p>If you'd like, you can run BaGet on Docker:</p>
 <ol>
-<li>Build the docker image:</li>
+<li>Pull the latest docker image:</li>
 </ol>
-<div class="codehilite"><pre><span></span>docker build . -t baget
+<div class="codehilite"><pre><span></span>docker pull loicsharma/baget
 </pre></div>
 
 
@@ -682,7 +682,7 @@ variables. To learn how these configurations work, please refer to
 <li>Create a folder named <code>baget-data</code></li>
 <li>Run:</li>
 </ol>
-<div class="codehilite"><pre><span></span>docker run --rm --name nuget-server -p 5555:80 --env-file baget.env -v &quot;$(pwd)/baget-data:/var/baget&quot; baget:latest
+<div class="codehilite"><pre><span></span>docker run --rm --name nuget-server -p 5555:80 --env-file baget.env -v &quot;$(pwd)/baget-data:/var/baget&quot; loicsharma/baget:latest
 </pre></div>
 
 
