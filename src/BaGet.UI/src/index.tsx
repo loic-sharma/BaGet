@@ -18,7 +18,7 @@ initializeIcons();
 ReactDOM.render(
   <Router>
     <App>
-      <Route path="/packages/:id" component={DisplayPackage} />
+      <Route path="/packages/:id/:version?" component={DisplayPackage} />
 
       <Route path="/upload" component={Upload} />
     </App>
