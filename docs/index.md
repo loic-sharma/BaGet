@@ -33,10 +33,10 @@ You will need to add the symbol location `http://localhost:5000/api/download/sym
 
 If you'd like, you can run BaGet on Docker:
 
-1. Build the docker image:
+1. Pull the latest docker image:
 
 ```
-docker build . -t baget
+docker pull loicsharma/baget
 ```
 
 2. Create a file named `baget.env` with the content:
@@ -59,7 +59,7 @@ Search__Type=Database
 4. Run:
 
 ```
-docker run --rm --name nuget-server -p 5555:80 --env-file baget.env -v "$(pwd)/baget-data:/var/baget" baget:latest
+docker run --rm --name nuget-server -p 5555:80 --env-file baget.env -v "$(pwd)/baget-data:/var/baget" loicsharma/baget:latest
 ```
 
 5. Push your first package with:
