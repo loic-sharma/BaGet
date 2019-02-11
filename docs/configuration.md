@@ -48,13 +48,32 @@ The following `Mirror` settings configures BaGet to index packages from [nuget.o
 
 ## Enabling Package Hard Deletions
 
-To prevent the ["left pad" problem](https://blog.npmjs.org/post/141577284765/kik-left-pad-and-npm), BaGet's default configuration doesn't allow package deletions. Whenever BaGet receives a package deletion request, it will instead "unlist" the package. An unlisted package is undiscoverable but can still be downloaded if you know the package's id and version. You can override this behavior by setting the `PackageDeletionBehavior`:
+To prevent the ["left pad" problem](https://blog.npmjs.org/post/141577284765/kik-left-pad-and-npm),
+BaGet's default configuration doesn't allow package deletions. Whenever BaGet receives a package deletion
+request, it will instead "unlist" the package. An unlisted package is undiscoverable but can still be
+downloaded if you know the package's id and version. You can override this behavior by setting the
+`PackageDeletionBehavior`:
 
 ```json
 {
     ...
 
     "PackageDeletionBehavior": "HardDelete",
+
+    ...
+}
+```
+
+## Enabling Package Overwrites
+
+Normally, pushing a package with an already existing id and version will be rejected. You can configure BaGet
+to instead overwrite the existing package by setting `AllowPackageOverwrites`:
+
+```json
+{
+    ...
+
+    "AllowPackageOverwrites": true,
 
     ...
 }
