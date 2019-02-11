@@ -66,8 +66,8 @@ downloaded if you know the package's id and version. You can override this behav
 
 ## Enabling Package Overwrites
 
-Normally, pushing a package with an already existing id and version will be rejected. You can configure BaGet
-to instead overwrite the existing package by setting `AllowPackageOverwrites`:
+Normally, BaGet will reject a package upload if the id and version is already taken. You can configure BaGet
+to overwrite the already existing package by setting `AllowPackageOverwrites`:
 
 ```json
 {
