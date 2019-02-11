@@ -26,6 +26,12 @@ namespace BaGet.Core.Configuration
         /// </summary>
         public PackageDeletionBehavior PackageDeletionBehavior { get; set; } = PackageDeletionBehavior.Unlist;
 
+        /// <summary>
+        /// If enabled, pushing a package that already exists will replace the
+        /// existing package.
+        /// </summary>
+        public bool AllowPackageOverwrites { get; set; } = false;
+
         [Required]
         public DatabaseOptions Database { get; set; }
 

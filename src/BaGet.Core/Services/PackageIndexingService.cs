@@ -4,9 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
 using BaGet.Core.Extensions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NuGet.Packaging;
 
 namespace BaGet.Core.Services
@@ -18,17 +20,20 @@ namespace BaGet.Core.Services
         private readonly IPackageService _packages;
         private readonly IPackageStorageService _storage;
         private readonly ISearchService _search;
+        private readonly IOptionsSnapshot<BaGetOptions> _options;
         private readonly ILogger<PackageIndexingService> _logger;
 
         public PackageIndexingService(
             IPackageService packages,
             IPackageStorageService storage,
             ISearchService search,
+            IOptionsSnapshot<BaGetOptions> options,
             ILogger<PackageIndexingService> logger)
         {
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
             _search = search ?? throw new ArgumentNullException(nameof(search));
+            _options = options ?? throw new ArgumentNullException(nameof(options));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -66,7 +71,13 @@ namespace BaGet.Core.Services
             // The package is well-formed. Ensure this is a new package.
             if (await _packages.ExistsAsync(package.Id, package.Version))
             {
-                return PackageIndexingResult.PackageAlreadyExists;
+                if (!_options.Value.AllowPackageOverwrites)
+                {
+                    return PackageIndexingResult.PackageAlreadyExists;
+                }
+
+                await _packages.HardDeletePackageAsync(package.Id, package.Version);
+                await _storage.DeleteAsync(package.Id, package.Version, cancellationToken);
             }
 
             // TODO: Add more package validations
