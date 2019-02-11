@@ -336,9 +336,38 @@
       
     
     
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        AWS
+      </label>
+    
     <a href="./" title="AWS" class="md-nav__link md-nav__link--active">
       AWS
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#amazon-s3" title="Amazon S3" class="md-nav__link">
+    Amazon S3
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
     
   </li>
 
@@ -533,6 +562,22 @@
     
   
   
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#amazon-s3" title="Amazon S3" class="md-nav__link">
+    Amazon S3
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -551,9 +596,23 @@
 <p class="admonition-title">Warning</p>
 <p>This page is a work in progress!</p>
 </div>
-<p>Sadly, BaGet does not support AWS today. We're open source and accept contributions!
-<a href="https://github.com/loic-sharma/BaGet">Fork us on GitHub</a>.</p>
-<p>For now, please refer to the <a href="../azure">Azure documentation</a>.</p>
+<h2 id="amazon-s3">Amazon S3<a class="headerlink" href="#amazon-s3" title="Permanent link">&para;</a></h2>
+<p>You can configure BaGet to store uploaded packages on <a href="https://aws.amazon.com/s3/">Amazon S3</a>
+by updating <a href="https://github.com/loic-sharma/BaGet/blob/master/src/BaGet/appsettings.json"><code>appsettings.json</code></a> file:</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+    <span class="err">...</span>
+
+    <span class="nt">&quot;Storage&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;AwsS3&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;Region&quot;</span><span class="p">:</span> <span class="s2">&quot;us-west-1&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;Bucket&quot;</span><span class="p">:</span> <span class="s2">&quot;foo&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;AccessKey&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;SecretKey&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span>
+    <span class="p">},</span>
+
+    <span class="err">...</span>
+<span class="p">}</span>
+</pre></div>
                 
                   
                 

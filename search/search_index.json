@@ -107,13 +107,18 @@
         }, 
         {
             "location": "/cloud/aws/", 
-            "text": "Running BaGet on AWS\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nSadly, BaGet does not support AWS today. We're open source and accept contributions!\n\nFork us on GitHub\n.\n\n\nFor now, please refer to the \nAzure documentation\n.", 
+            "text": "Running BaGet on AWS\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nAmazon S3\n\n\nYou can configure BaGet to store uploaded packages on \nAmazon S3\n\nby updating \nappsettings.json\n file:\n\n\n{\n\n    \n...\n\n\n    \nStorage\n:\n \n{\n\n        \nType\n:\n \nAwsS3\n,\n\n        \nRegion\n:\n \nus-west-1\n,\n\n        \nBucket\n:\n \nfoo\n,\n\n        \nAccessKey\n:\n \n,\n\n        \nSecretKey\n:\n \n\n    \n},\n\n\n    \n...\n\n\n}", 
             "title": "AWS"
         }, 
         {
             "location": "/cloud/aws/#running-baget-on-aws", 
-            "text": "Warning  This page is a work in progress!   Sadly, BaGet does not support AWS today. We're open source and accept contributions! Fork us on GitHub .  For now, please refer to the  Azure documentation .", 
+            "text": "Warning  This page is a work in progress!", 
             "title": "Running BaGet on AWS"
+        }, 
+        {
+            "location": "/cloud/aws/#amazon-s3", 
+            "text": "You can configure BaGet to store uploaded packages on  Amazon S3 \nby updating  appsettings.json  file:  { \n     ... \n\n     Storage :   { \n         Type :   AwsS3 , \n         Region :   us-west-1 , \n         Bucket :   foo , \n         AccessKey :   , \n         SecretKey :   \n     }, \n\n     ...  }", 
+            "title": "Amazon S3"
         }, 
         {
             "location": "/windows/iis-proxy/", 
