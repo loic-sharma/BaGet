@@ -107,7 +107,7 @@
         }, 
         {
             "location": "/cloud/aws/", 
-            "text": "Running BaGet on AWS\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nAmazon S3\n\n\nYou can configure BaGet to store uploaded packages on \nAmazon S3\n\nby updating \nappsettings.json\n file:\n\n\n{\n\n    \n...\n\n\n    \nStorage\n:\n \n{\n\n        \nType\n:\n \nAwsS3\n,\n\n        \nRegion\n:\n \nus-west-1\n,\n\n        \nBucket\n:\n \nfoo\n,\n\n        \nAccessKey\n:\n \n,\n\n        \nSecretKey\n:\n \n\n    \n},\n\n\n    \n...\n\n\n}", 
+            "text": "Running BaGet on AWS\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nAmazon S3\n\n\nYou can configure BaGet to store uploaded packages on \nAmazon S3\n\nby updating the \nappsettings.json\n file:\n\n\n{\n\n    \n...\n\n\n    \nStorage\n:\n \n{\n\n        \nType\n:\n \nAwsS3\n,\n\n        \nRegion\n:\n \nus-west-1\n,\n\n        \nBucket\n:\n \nfoo\n,\n\n        \nAccessKey\n:\n \n,\n\n        \nSecretKey\n:\n \n\n    \n},\n\n\n    \n...\n\n\n}", 
             "title": "AWS"
         }, 
         {
@@ -117,7 +117,7 @@
         }, 
         {
             "location": "/cloud/aws/#amazon-s3", 
-            "text": "You can configure BaGet to store uploaded packages on  Amazon S3 \nby updating  appsettings.json  file:  { \n     ... \n\n     Storage :   { \n         Type :   AwsS3 , \n         Region :   us-west-1 , \n         Bucket :   foo , \n         AccessKey :   , \n         SecretKey :   \n     }, \n\n     ...  }", 
+            "text": "You can configure BaGet to store uploaded packages on  Amazon S3 \nby updating the  appsettings.json  file:  { \n     ... \n\n     Storage :   { \n         Type :   AwsS3 , \n         Region :   us-west-1 , \n         Bucket :   foo , \n         AccessKey :   , \n         SecretKey :   \n     }, \n\n     ...  }", 
             "title": "Amazon S3"
         }, 
         {
