@@ -8,18 +8,14 @@ using BaGet.AWS.Extensions;
 using BaGet.Azure.Configuration;
 using BaGet.Azure.Extensions;
 using BaGet.Azure.Search;
-using BaGet.Configuration;
 using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
 using BaGet.Core.Extensions;
 using BaGet.Core.Mirror;
+using BaGet.Core.Server.Extensions;
 using BaGet.Core.Services;
 using BaGet.Entities;
 using BaGet.Protocol;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Cors.Infrastructure;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,7 +23,7 @@ using Microsoft.Extensions.Options;
 
 namespace BaGet.Extensions
 {
-    public static class ServiceCollectionExtensions
+    public static class IServiceCollectionExtensions
     {
         public static IServiceCollection ConfigureBaGet(
             this IServiceCollection services,
@@ -134,24 +130,6 @@ namespace BaGet.Extensions
             return services;
         }
 
-        public static IServiceCollection ConfigureHttpServices(this IServiceCollection services)
-        {
-            services
-                .AddMvc()
-                .AddApplicationPart(typeof(BaGet.Controllers.PackageController).Assembly)
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
-            services.AddCors();
-            services.AddSingleton<IConfigureOptions<CorsOptions>, ConfigureCorsOptions>();
-            services.AddSingleton<IConfigureOptions<ForwardedHeadersOptions>, ConfigureForwardedHeadersOptions>();
-            services.Configure<FormOptions>(options =>
-            {
-                options.MultipartBodyLengthLimit = int.MaxValue;
-            });
-
-            return services;
-        }
-
         public static IServiceCollection AddStorageProviders(this IServiceCollection services)
         {
             services.AddTransient<FileStorageService>();
@@ -242,10 +220,11 @@ namespace BaGet.Extensions
             services.AddSingleton<IServiceIndexService>(provider =>
             {
                 var options = provider.GetRequiredService<IOptions<MirrorOptions>>();
+                var serviceIndexClient = provider.GetRequiredService<IServiceIndexClient>();
 
                 return new ServiceIndexService(
                     options.Value.PackageSource.ToString(),
-                    provider.GetRequiredService<IServiceIndexClient>());
+                    serviceIndexClient);
             });
 
             services.AddTransient<IPackageDownloader, PackageDownloader>();
