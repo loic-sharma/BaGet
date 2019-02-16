@@ -33,7 +33,7 @@ You will need to add the symbol location `http://localhost:5000/api/download/sym
 
 If you'd like, you can run BaGet on Docker:
 
-1. Pull the latest docker image:
+1. Pull the latest [docker image](https://hub.docker.com/r/loicsharma/baget):
 
 ```
 docker pull loicsharma/baget
