@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,7 +20,7 @@ namespace BaGet.Protocol
         Task<Uri> GetPackageContentUriAsync(string packageId, NuGetVersion version);
 
         /// <summary>
-        /// Get the metadata for each versions of a package from a remote NuGet feed.
+        /// Get the metadata for each version of a package from a remote NuGet feed.
         /// </summary>
         /// <param name="packageId">The package to look up</param>
         /// <param name="cancellationToken">A token to cancel the lookup</param>
