@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="NuGet.Versioning" Version="4.8.0" />
+    <PackageReference Include="NuGet.Versioning" Version="$(NuGetPackageVersion)" />
   </ItemGroup>
 
 </Project>

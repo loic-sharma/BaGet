@@ -19,12 +19,20 @@
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
+  <!-- NuGet dependencies shared across projects -->
+  <PropertyGroup>
+    <MicrosoftAspNetCorePackageVersion>2.2.0</MicrosoftAspNetCorePackageVersion>
+    <MicrosoftEntityFrameworkCorePackageVersion>2.2.2</MicrosoftEntityFrameworkCorePackageVersion>
+    <MicrosoftExtensionsPackageVersion>2.2.0</MicrosoftExtensionsPackageVersion>
+    <NuGetPackageVersion>4.9.3</NuGetPackageVersion>
+  </PropertyGroup>
+
   <ItemGroup Condition="$(DOTNET_RUNNING_IN_CONTAINER) == ''">
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All"/>
   </ItemGroup>
 
   <ItemGroup Condition="$(IsPackable) == 'true' AND $(DOTNET_RUNNING_IN_CONTAINER) == ''">
-    <PackageReference Include="Nerdbank.GitVersioning" Version="2.2.13" PrivateAssets="all" />
+    <PackageReference Include="Nerdbank.GitVersioning" Version="2.3.105" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>

@@ -12,16 +12,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.5" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Data.SQLite" Version="2.2.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
-    <PackageReference Include="NuGet.Client" Version="4.2.0" />
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.2" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="$(MicrosoftAspNetCorePackageVersion)" />
+    <PackageReference Include="Microsoft.Data.SQLite" Version="$(MicrosoftEntityFrameworkCorePackageVersion)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(MicrosoftEntityFrameworkCorePackageVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="$(MicrosoftExtensionsPackageVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="$(MicrosoftExtensionsPackageVersion)" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.1.4" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\BaGet.AWS\BaGet.AWS.csproj" />
     <ProjectReference Include="..\BaGet.Azure\BaGet.Azure.csproj" />
@@ -49,9 +48,9 @@
     <ItemGroup>
       <DistFiles Include="$(SpaRoot)build\**" />
       <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
-        <!-- Because the root is relative and has ..\, the "Workaround" folder just tricks msbuild to put 
+        <!-- Because the root is relative and has ..\, the "Workaround" folder just tricks msbuild to put
           the files where we want them. Otherwise they would be placed up a directory under the BaGet folder. -->
-        <RelativePath>Workaround\%(DistFiles.Identity)</RelativePath> 
+        <RelativePath>Workaround\%(DistFiles.Identity)</RelativePath>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </ResolvedFileToPublish>
     </ItemGroup>
