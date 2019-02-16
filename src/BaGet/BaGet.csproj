@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -13,20 +13,17 @@
 
   <ItemGroup>
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.2" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="$(MicrosoftAspNetCorePackageVersion)" />
     <PackageReference Include="Microsoft.Data.SQLite" Version="$(MicrosoftEntityFrameworkCorePackageVersion)" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(MicrosoftEntityFrameworkCorePackageVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="$(MicrosoftExtensionsPackageVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="$(MicrosoftExtensionsPackageVersion)" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BaGet.AWS\BaGet.AWS.csproj" />
     <ProjectReference Include="..\BaGet.Azure\BaGet.Azure.csproj" />
+    <ProjectReference Include="..\BaGet.Controllers\BaGet.Core.Server.csproj" />
     <ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
     <ProjectReference Include="..\BaGet.Protocol\BaGet.Protocol.csproj" />
-    <ProjectReference Include="..\BaGet.Controllers\BaGet.Controllers.csproj" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

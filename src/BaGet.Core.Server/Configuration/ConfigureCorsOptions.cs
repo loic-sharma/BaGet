@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.Options;
 
-namespace BaGet.Configurations
+namespace BaGet.Configuration
 {
     public class ConfigureCorsOptions : IConfigureOptions<CorsOptions>
     {

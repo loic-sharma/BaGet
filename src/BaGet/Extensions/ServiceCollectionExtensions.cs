@@ -8,9 +8,10 @@ using BaGet.AWS.Extensions;
 using BaGet.Azure.Configuration;
 using BaGet.Azure.Extensions;
 using BaGet.Azure.Search;
-using BaGet.Configurations;
+using BaGet.Configuration;
 using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
+using BaGet.Core.Extensions;
 using BaGet.Core.Mirror;
 using BaGet.Core.Services;
 using BaGet.Entities;
@@ -18,7 +19,6 @@ using BaGet.Protocol;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -143,15 +143,7 @@ namespace BaGet.Extensions
 
             services.AddCors();
             services.AddSingleton<IConfigureOptions<CorsOptions>, ConfigureCorsOptions>();
-
-            services.Configure<ForwardedHeadersOptions>(options =>
-            {
-                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-
-                // Do not restrict to local network/proxy
-                options.KnownNetworks.Clear();
-                options.KnownProxies.Clear();
-            });
+            services.AddSingleton<IConfigureOptions<ForwardedHeadersOptions>, ConfigureForwardedHeadersOptions>();
             services.Configure<FormOptions>(options =>
             {
                 options.MultipartBodyLengthLimit = int.MaxValue;
@@ -268,7 +260,7 @@ namespace BaGet.Extensions
 
                 var client = new HttpClient(new HttpClientHandler
                 {
-                    AutomaticDecompression = (DecompressionMethods.GZip | DecompressionMethods.Deflate),
+                    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
                 });
 
                 client.DefaultRequestHeaders.Add("User-Agent", $"{assemblyName}/{assemblyVersion}");
@@ -286,17 +278,6 @@ namespace BaGet.Extensions
         public static IServiceCollection AddAuthenticationProviders(this IServiceCollection services)
         {
             services.AddTransient<IAuthenticationService, ApiKeyAuthenticationService>();
-
-            return services;
-        }
-
-        public static IServiceCollection ConfigureAndValidate<TOptions>(
-            this IServiceCollection services,
-            IConfiguration config)
-          where TOptions : class
-        {
-            services.Configure<TOptions>(config);
-            services.AddSingleton<IPostConfigureOptions<TOptions>, ValidatePostConfigureOptions<TOptions>>();
 
             return services;
         }

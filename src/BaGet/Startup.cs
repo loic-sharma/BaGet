@@ -1,5 +1,5 @@
-﻿using System;
-using BaGet.Configurations;
+using System;
+using BaGet.Configuration;
 using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
 using BaGet.Extensions;
