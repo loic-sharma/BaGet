@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using BaGet.Core.Configuration;
 using Microsoft.Extensions.Options;
 
-namespace BaGet.Configurations
+namespace BaGet.Core.Configuration
 {
     /// <summary>
     /// A configuration that validates options using data annotations.
@@ -24,7 +23,7 @@ namespace BaGet.Configurations
                     : $"Invalid '{optionName}' options";
 
                 throw new InvalidOperationException(
-                    $"{message}: {string.Join('\n', validationResults)}");
+                    $"{message}: {string.Join("\n", validationResults)}");
             }
         }
 

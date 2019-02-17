@@ -9,7 +9,7 @@ using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace BaGet.Azure.Extensions
 {
-    public static class ServiceCollectionExtensions
+    public static class IServiceCollectionExtensions
     {
         public static IServiceCollection AddBlobStorageService(this IServiceCollection services)
         {
