@@ -50,10 +50,12 @@ namespace BaGet.Core.Services
                 {
                     package = GetPackageMetadata(packageReader);
                     nuspecStream = await packageReader.GetNuspecAsync(cancellationToken);
+                    nuspecStream = await nuspecStream.AsTemporaryFileStreamAsync();
 
                     if (package.HasReadme)
                     {
                         readmeStream = await packageReader.GetReadmeAsync(cancellationToken);
+                        readmeStream = await readmeStream.AsTemporaryFileStreamAsync();
                     }
                     else
                     {
