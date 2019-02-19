@@ -312,9 +312,59 @@
       
     
     
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Azure
+      </label>
+    
     <a href="./" title="Azure" class="md-nav__link md-nav__link--active">
       Azure
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#azure-sql-database" title="Azure SQL Database" class="md-nav__link">
+    Azure SQL Database
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#azure-blob-storage" title="Azure Blob Storage" class="md-nav__link">
+    Azure Blob Storage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#azure-search" title="Azure Search" class="md-nav__link">
+    Azure Search
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#todo" title="TODO" class="md-nav__link">
+    TODO
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
     
   </li>
 
@@ -533,6 +583,43 @@
     
   
   
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#azure-sql-database" title="Azure SQL Database" class="md-nav__link">
+    Azure SQL Database
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#azure-blob-storage" title="Azure Blob Storage" class="md-nav__link">
+    Azure Blob Storage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#azure-search" title="Azure Search" class="md-nav__link">
+    Azure Search
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#todo" title="TODO" class="md-nav__link">
+    TODO
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -551,13 +638,58 @@
 <p class="admonition-title">Warning</p>
 <p>This page is a work in progress!</p>
 </div>
-<p>Use Azure to scale BaGet to nuget.org scale.</p>
-<p>TODO:</p>
+<p>Use Azure to scale BaGet to nuget.org scale. You can configure BaGet to store metadata on <a href="https://azure.microsoft.com/en-us/services/sql-database/">Azure SQL Database</a>, upload packages to <a href="https://azure.microsoft.com/en-us/services/storage/blobs/">Azure Blob Storage</a>, and provide powerful search using <a href="https://azure.microsoft.com/en-us/services/search/">Azure Search</a>.</p>
+<h2 id="azure-sql-database">Azure SQL Database<a class="headerlink" href="#azure-sql-database" title="Permanent link">&para;</a></h2>
+<p>Update the <a href="https://github.com/loic-sharma/BaGet/blob/master/src/BaGet/appsettings.json"><code>appsettings.json</code></a> file:</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+    <span class="err">...</span>
+
+    <span class="nt">&quot;Database&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;SqlServer&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;ConnectionString&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+    <span class="p">},</span>
+
+    <span class="err">...</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2 id="azure-blob-storage">Azure Blob Storage<a class="headerlink" href="#azure-blob-storage" title="Permanent link">&para;</a></h2>
+<p>Update the <a href="https://github.com/loic-sharma/BaGet/blob/master/src/BaGet/appsettings.json"><code>appsettings.json</code></a> file:</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+    <span class="err">...</span>
+
+    <span class="nt">&quot;Storage&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;AzureBlobStorage&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;AccountName&quot;</span><span class="p">:</span> <span class="s2">&quot;my-account&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;Container&quot;</span><span class="p">:</span> <span class="s2">&quot;my-container&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;AccessKey&quot;</span><span class="p">:</span> <span class="s2">&quot;abcd1234&quot;</span>
+    <span class="p">},</span>
+
+    <span class="err">...</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2 id="azure-search">Azure Search<a class="headerlink" href="#azure-search" title="Permanent link">&para;</a></h2>
+<p>Update the <a href="https://github.com/loic-sharma/BaGet/blob/master/src/BaGet/appsettings.json"><code>appsettings.json</code></a> file:</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+    <span class="err">...</span>
+
+    <span class="nt">&quot;Search&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;Azure&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;AccountName&quot;</span><span class="p">:</span> <span class="s2">&quot;my-account&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;ApiKey&quot;</span><span class="p">:</span> <span class="s2">&quot;ABCD1234&quot;</span>
+    <span class="p">},</span>
+
+    <span class="err">...</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2 id="todo">TODO<a class="headerlink" href="#todo" title="Permanent link">&para;</a></h2>
 <ul>
 <li>App Service</li>
-<li>Azure SQL Database</li>
-<li>Azure Blob Storage</li>
-<li>Azure Search</li>
 <li>High availibility setup</li>
 </ul>
                 

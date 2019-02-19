@@ -87,13 +87,33 @@
         }, 
         {
             "location": "/cloud/azure/", 
-            "text": "Running BaGet on Azure\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nUse Azure to scale BaGet to nuget.org scale.\n\n\nTODO:\n\n\n\n\nApp Service\n\n\nAzure SQL Database\n\n\nAzure Blob Storage\n\n\nAzure Search\n\n\nHigh availibility setup", 
+            "text": "Running BaGet on Azure\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nUse Azure to scale BaGet to nuget.org scale. You can configure BaGet to store metadata on \nAzure SQL Database\n, upload packages to \nAzure Blob Storage\n, and provide powerful search using \nAzure Search\n.\n\n\nAzure SQL Database\n\n\nUpdate the \nappsettings.json\n file:\n\n\n{\n\n    \n...\n\n\n    \nDatabase\n:\n \n{\n\n        \nType\n:\n \nSqlServer\n,\n\n        \nConnectionString\n:\n \n...\n\n    \n},\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\nAzure Blob Storage\n\n\nUpdate the \nappsettings.json\n file:\n\n\n{\n\n    \n...\n\n\n    \nStorage\n:\n \n{\n\n        \nType\n:\n \nAzureBlobStorage\n,\n\n        \nAccountName\n:\n \nmy-account\n,\n\n        \nContainer\n:\n \nmy-container\n,\n\n        \nAccessKey\n:\n \nabcd1234\n\n    \n},\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\nAzure Search\n\n\nUpdate the \nappsettings.json\n file:\n\n\n{\n\n    \n...\n\n\n    \nSearch\n:\n \n{\n\n        \nType\n:\n \nAzure\n,\n\n        \nAccountName\n:\n \nmy-account\n,\n\n        \nApiKey\n:\n \nABCD1234\n\n    \n},\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\nTODO\n\n\n\n\nApp Service\n\n\nHigh availibility setup", 
             "title": "Azure"
         }, 
         {
             "location": "/cloud/azure/#running-baget-on-azure", 
-            "text": "Warning  This page is a work in progress!   Use Azure to scale BaGet to nuget.org scale.  TODO:   App Service  Azure SQL Database  Azure Blob Storage  Azure Search  High availibility setup", 
+            "text": "Warning  This page is a work in progress!   Use Azure to scale BaGet to nuget.org scale. You can configure BaGet to store metadata on  Azure SQL Database , upload packages to  Azure Blob Storage , and provide powerful search using  Azure Search .", 
             "title": "Running BaGet on Azure"
+        }, 
+        {
+            "location": "/cloud/azure/#azure-sql-database", 
+            "text": "Update the  appsettings.json  file:  { \n     ... \n\n     Database :   { \n         Type :   SqlServer , \n         ConnectionString :   ... \n     }, \n\n     ...  }", 
+            "title": "Azure SQL Database"
+        }, 
+        {
+            "location": "/cloud/azure/#azure-blob-storage", 
+            "text": "Update the  appsettings.json  file:  { \n     ... \n\n     Storage :   { \n         Type :   AzureBlobStorage , \n         AccountName :   my-account , \n         Container :   my-container , \n         AccessKey :   abcd1234 \n     }, \n\n     ...  }", 
+            "title": "Azure Blob Storage"
+        }, 
+        {
+            "location": "/cloud/azure/#azure-search", 
+            "text": "Update the  appsettings.json  file:  { \n     ... \n\n     Search :   { \n         Type :   Azure , \n         AccountName :   my-account , \n         ApiKey :   ABCD1234 \n     }, \n\n     ...  }", 
+            "title": "Azure Search"
+        }, 
+        {
+            "location": "/cloud/azure/#todo", 
+            "text": "App Service  High availibility setup", 
+            "title": "TODO"
         }, 
         {
             "location": "/cloud/gcp/", 
