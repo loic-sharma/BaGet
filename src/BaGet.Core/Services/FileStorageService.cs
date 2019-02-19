@@ -75,6 +75,7 @@ namespace BaGet.Core.Services
             {
                 using (var targetStream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
+                    content.Position = 0;
                     return content.Matches(targetStream)
                         ? PutResult.AlreadyExists
                         : PutResult.Conflict;

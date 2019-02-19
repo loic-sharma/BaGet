@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Net;
 using System.Threading;
@@ -65,10 +65,11 @@ namespace BaGet.Azure.Configuration
 
                 return PutResult.Success;
             }
-            catch (StorageException e) when(IsAlreadyExistsException(e))
+            catch (StorageException e) when (IsAlreadyExistsException(e))
             {
                 using (var targetStream = await blob.OpenReadAsync(cancellationToken))
                 {
+                    content.Position = 0;
                     return content.Matches(targetStream)
                         ? PutResult.AlreadyExists
                         : PutResult.Conflict;
