@@ -96,8 +96,7 @@ namespace BaGet.Core.Services
                 search = search.Where(p => p.Id.ToLower().Contains(query));
             }
 
-            return await search
-                .Where(p => p.Listed)
+            return await search.Where(p => p.Listed)
                 .OrderByDescending(p => p.Downloads)
                 .Skip(skip)
                 .Take(take)

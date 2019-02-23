@@ -93,7 +93,9 @@ namespace BaGet.Tools.AzureSearchImporter
                 batchCount++;
             }
 
-            _logger.LogInformation("Finished adding {PackageIdCount} package ids to indexer state");
+            _logger.LogInformation(
+                "Finished adding {PackageIdCount} package ids to indexer state",
+                packageIds.Count);
         }
     }
 }
