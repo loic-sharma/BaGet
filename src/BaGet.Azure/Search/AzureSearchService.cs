@@ -1,15 +1,16 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Core.Services;
+using BaGet.Core.Entities;
 using Microsoft.Azure.Search;
 using NuGet.Versioning;
 
 namespace BaGet.Azure.Search
 {
-    using BaGet.Core.Entities;
     using SearchParameters = Microsoft.Azure.Search.Models.SearchParameters;
+    using QueryType = Microsoft.Azure.Search.Models.QueryType;
 
     public class AzureSearchService : ISearchService
     {
@@ -74,7 +75,28 @@ namespace BaGet.Azure.Search
 
         public async Task<IReadOnlyList<string>> AutocompleteAsync(string query, int skip = 0, int take = 20)
         {
-            var search = await _searchClient.Documents.SearchAsync<PackageDocument>(query);
+            var search = await _searchClient.Documents.SearchAsync<PackageDocument>(query, new SearchParameters
+            {
+                Skip = skip,
+                Top = take,
+            });
+
+            return search.Results
+                .Select(r => r.Document.Id)
+                .ToList()
+                .AsReadOnly();
+        }
+
+        public async Task<IReadOnlyList<string>> FindDependentsAsync(string packageId, int skip = 0, int take = 20)
+        {
+            // TODO: Escape packageId.
+            var query = $"dependencies:{packageId.ToLowerInvariant()}";
+            var search = await _searchClient.Documents.SearchAsync<PackageDocument>(query, new SearchParameters
+            {
+                QueryType = QueryType.Full,
+                Skip = skip,
+                Top = take,
+            });
 
             return search.Results
                 .Select(r => r.Document.Id)

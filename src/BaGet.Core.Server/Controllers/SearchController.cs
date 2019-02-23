@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Core.Services;
@@ -20,24 +21,27 @@ namespace BaGet.Controllers
             _searchService = searchService ?? throw new ArgumentNullException(nameof(searchService));
         }
 
-        public async Task<IActionResult> Get([FromQuery(Name = "q")] string query = null)
+        public async Task<ActionResult<SearchResponse>> Get([FromQuery(Name = "q")] string query = null)
         {
-            query = query ?? string.Empty;
+            var results = await _searchService.SearchAsync(query ?? string.Empty);
 
-            var results = await _searchService.SearchAsync(query);
-            var response = new SearchResponse(
+            return new SearchResponse(
                 totalHits: results.Count,
                 data: results.Select(ToSearchResult).ToList());
-
-            return Json(response);
         }
 
-        public async Task<IActionResult> Autocomplete([FromQuery(Name = "q")] string query = null)
+        public async Task<ActionResult<AutocompleteResult>> Autocomplete([FromQuery(Name = "q")] string query = null)
         {
             var results = await _searchService.AutocompleteAsync(query);
-            var response = new AutocompleteResult(results.Count, results);
 
-            return Json(response);
+            return new AutocompleteResult(results.Count, results);
+        }
+
+        public async Task<ActionResult<DependentResult>> Dependents([FromQuery(Name = "packageId")] string packageId)
+        {
+            var results = await _searchService.FindDependentsAsync(packageId);
+
+            return new DependentResult(results.Count, results);
         }
 
         private ProtocolSearchResult ToSearchResult(QuerySearchResult result)

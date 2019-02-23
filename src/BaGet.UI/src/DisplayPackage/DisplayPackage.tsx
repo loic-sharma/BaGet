@@ -4,6 +4,7 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import timeago from 'timeago.js';
 import Dependencies from './Dependencies';
+import Dependents from './Dependents';
 import InstallationInfo from './InstallationInfo';
 import LicenseInfo from './LicenseInfo';
 import * as Registration from './Registration';
@@ -192,6 +193,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
             {/* TODO: Fix this */}
             <div dangerouslySetInnerHTML={{ __html: this.state.package.readme }} />
 
+            <Dependents packageId={this.id} />
             <Dependencies dependencyGroups={this.state.package.dependencyGroups} />
           </article>
           <aside className="col-sm-3 package-details-info">

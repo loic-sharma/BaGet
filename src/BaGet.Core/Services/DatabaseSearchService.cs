@@ -96,15 +96,27 @@ namespace BaGet.Core.Services
                 search = search.Where(p => p.Id.ToLower().Contains(query));
             }
 
-            var results = await search.Where(p => p.Listed)
+            return await search.Where(p => p.Listed)
                 .OrderByDescending(p => p.Downloads)
                 .Skip(skip)
                 .Take(take)
                 .Select(p => p.Id)
                 .Distinct()
                 .ToListAsync();
+        }
 
-            return results.AsReadOnly();
+        public async Task<IReadOnlyList<string>> FindDependentsAsync(string packageId, int skip = 0, int take = 20)
+        {
+            return await _context
+                .Packages
+                .Where(p => p.Listed)
+                .OrderByDescending(p => p.Downloads)
+                .Where(p => p.Dependencies.Any(d => d.Id == packageId))
+                .Skip(skip)
+                .Take(take)
+                .Select(p => p.Id)
+                .Distinct()
+                .ToListAsync();
         }
     }
 }

@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using BaGet.AWS.Extensions;
 using BaGet.Azure.Extensions;
 using BaGet.Core.Configuration;
 using BaGet.Core.Services;
@@ -59,9 +58,7 @@ namespace BaGet.Tools.AzureSearchImporter
         {
             var services = new ServiceCollection();
 
-            services.Configure<BaGetOptions>(configuration);
-            services.ConfigureAzure(configuration);
-            services.ConfigureAws(configuration);
+            services.ConfigureBaGet(configuration, httpServices: false);
 
             services.AddLogging(logging =>
             {
@@ -69,14 +66,10 @@ namespace BaGet.Tools.AzureSearchImporter
                 logging.AddConsole();
             });
 
-            services.AddBaGetContext();
             services.AddDbContext<IndexerContext>((provider, options) =>
             {
                 options.UseSqlite(IndexerContextFactory.ConnectionString);
             });
-
-            services.AddTransient<IPackageService, PackageService>();
-            services.AddAzureSearch();
 
             services.AddTransient<Initializer>();
             services.AddTransient<Importer>();

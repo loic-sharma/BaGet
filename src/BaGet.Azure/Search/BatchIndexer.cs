@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -78,6 +78,12 @@ namespace BaGet.Azure.Search
 
             var latest = packages.OrderByDescending(p => p.Version).First();
             var versions = packages.OrderBy(p => p.Version).ToList();
+            var dependencies = latest
+                .Dependencies
+                .Select(d => d.Id?.ToLowerInvariant())
+                .Where(d => d != null)
+                .Distinct()
+                .ToArray();
 
             result.Key = EncodeKey(packageId.ToLowerInvariant());
             result.Id = latest.Id;
@@ -95,6 +101,7 @@ namespace BaGet.Azure.Search
             result.DownloadsMagnitude = result.TotalDownloads.ToString().Length;
             result.Versions = versions.Select(p => p.VersionString).ToArray();
             result.VersionDownloads = versions.Select(p => p.Downloads.ToString()).ToArray();
+            result.Dependencies = dependencies;
 
             return result;
         }
