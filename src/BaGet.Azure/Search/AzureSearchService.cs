@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -80,6 +80,11 @@ namespace BaGet.Azure.Search
                 .Select(r => r.Document.Id)
                 .ToList()
                 .AsReadOnly();
+        }
+
+        public Task<IReadOnlyList<string>> FindDependentsAsync(string packageId, int skip = 0, int take = 20)
+        {
+            throw new NotImplementedException();
         }
     }
 }

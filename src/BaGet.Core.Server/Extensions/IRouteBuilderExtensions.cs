@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Routing.Constraints;
 
@@ -64,6 +64,12 @@ namespace BaGet.Extensions
                 name: Routes.AutocompleteRouteName,
                 template: "v3/autocomplete",
                 defaults: new { controller = "Search", action = "Autocomplete" });
+
+            // This is an unofficial API to find packages that depend on a given package.
+            routes.MapRoute(
+                name: Routes.DependentsRouteName,
+                template: "v3/dependents",
+                defaults: new { controller = "Search", action = "Dependents" });
 
             return routes;
         }

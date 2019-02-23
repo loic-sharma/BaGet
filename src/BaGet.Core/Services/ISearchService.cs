@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
@@ -13,6 +13,8 @@ namespace BaGet.Core.Services
         Task<IReadOnlyList<SearchResult>> SearchAsync(string query, int skip = 0, int take = 20);
 
         Task<IReadOnlyList<string>> AutocompleteAsync(string query, int skip = 0, int take = 20);
+
+        Task<IReadOnlyList<string>> FindDependentsAsync(string packageId, int skip = 0, int take = 20);
     }
 
     public class SearchResult
