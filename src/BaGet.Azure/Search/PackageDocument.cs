@@ -49,5 +49,9 @@ namespace BaGet.Azure.Search
         [IsSearchable]
         [Analyzer(AnalyzerName.AsString.Keyword)]
         public string[] Dependencies { get; set; }
+
+        [IsSearchable]
+        [Analyzer(AnalyzerName.AsString.Keyword)]
+        public string[] Frameworks { get; set; }
     }
 }

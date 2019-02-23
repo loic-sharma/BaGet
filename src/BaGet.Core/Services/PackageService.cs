@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -48,7 +48,10 @@ namespace BaGet.Core.Services
 
         public async Task<IReadOnlyList<Package>> FindAsync(string id, bool includeUnlisted = false)
         {
-            var query = _context.Packages.Include(a => a.Dependencies).Where(p => p.Id == id);
+            var query = _context.Packages
+                .Include(p => p.Dependencies)
+                .Include(p => p.TargetFrameworks)
+                .Where(p => p.Id == id);
 
             if (!includeUnlisted)
             {
@@ -61,7 +64,8 @@ namespace BaGet.Core.Services
         public Task<Package> FindOrNullAsync(string id, NuGetVersion version, bool includeUnlisted = false)
         {
             var query = _context.Packages
-                .Include(a => a.Dependencies)
+                .Include(p => p.Dependencies)
+                .Include(p => p.TargetFrameworks)
                 .Where(p => p.Id == id)
                 .Where(p => p.VersionString == version.ToNormalizedString());
 
@@ -94,6 +98,7 @@ namespace BaGet.Core.Services
                 .Where(p => p.Id == id)
                 .Where(p => p.VersionString == version.ToNormalizedString())
                 .Include(p => p.Dependencies)
+                .Include(p => p.TargetFrameworks)
                 .FirstOrDefaultAsync();
 
             if (package == null)

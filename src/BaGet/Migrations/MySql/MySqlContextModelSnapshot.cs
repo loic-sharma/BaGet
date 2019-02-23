@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace BaGet.Migrations.MySqlServer
+namespace BaGet.Migrations.MySql
 {
     [DbContext(typeof(MySqlContext))]
     partial class MySqlContextModelSnapshot : ModelSnapshot
@@ -14,7 +14,7 @@ namespace BaGet.Migrations.MySqlServer
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.0-rtm-35687")
+                .HasAnnotation("ProductVersion", "2.2.2-servicing-10034")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("BaGet.Core.Entities.Package", b =>
@@ -99,7 +99,7 @@ namespace BaGet.Migrations.MySqlServer
                     b.Property<string>("Id")
                         .HasMaxLength(128);
 
-                    b.Property<int>("PackageKey");
+                    b.Property<int?>("PackageKey");
 
                     b.Property<string>("TargetFramework")
                         .HasMaxLength(256);
@@ -109,15 +109,43 @@ namespace BaGet.Migrations.MySqlServer
 
                     b.HasKey("Key");
 
+                    b.HasIndex("Id");
+
                     b.HasIndex("PackageKey");
 
                     b.ToTable("PackageDependencies");
+                });
+
+            modelBuilder.Entity("BaGet.Core.Entities.TargetFramework", b =>
+                {
+                    b.Property<int>("Key")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Moniker")
+                        .HasMaxLength(256);
+
+                    b.Property<int>("PackageKey");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("Moniker");
+
+                    b.HasIndex("PackageKey");
+
+                    b.ToTable("TargetFrameworks");
                 });
 
             modelBuilder.Entity("BaGet.Core.Entities.PackageDependency", b =>
                 {
                     b.HasOne("BaGet.Core.Entities.Package", "Package")
                         .WithMany("Dependencies")
+                        .HasForeignKey("PackageKey");
+                });
+
+            modelBuilder.Entity("BaGet.Core.Entities.TargetFramework", b =>
+                {
+                    b.HasOne("BaGet.Core.Entities.Package", "Package")
+                        .WithMany("TargetFrameworks")
                         .HasForeignKey("PackageKey")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

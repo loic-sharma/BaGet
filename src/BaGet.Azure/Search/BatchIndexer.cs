@@ -102,6 +102,7 @@ namespace BaGet.Azure.Search
             result.Versions = versions.Select(p => p.VersionString).ToArray();
             result.VersionDownloads = versions.Select(p => p.Downloads.ToString()).ToArray();
             result.Dependencies = dependencies;
+            result.Frameworks = latest.TargetFrameworks.Select(f => f.Moniker.ToLowerInvariant()).ToArray();
 
             return result;
         }

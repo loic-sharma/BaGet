@@ -178,7 +178,8 @@ namespace BaGet.Core.Services
                 RepositoryUrl = repositoryUri,
                 RepositoryType = repositoryType,
                 Dependencies = GetDependencies(nuspec),
-                Tags = ParseTags(nuspec.GetTags())
+                Tags = ParseTags(nuspec.GetTags()),
+                TargetFrameworks = GetTargetFrameworks(packageReader),
             };
         }
 
@@ -256,6 +257,17 @@ namespace BaGet.Core.Services
             }
 
             return dependencies;
+        }
+
+        private List<TargetFramework> GetTargetFrameworks(PackageArchiveReader packageReader)
+        {
+            return packageReader
+                .GetSupportedFrameworks()
+                .Select(f => new TargetFramework
+                {
+                    Moniker = f.GetShortFolderName()
+                })
+                .ToList();
         }
     }
 }

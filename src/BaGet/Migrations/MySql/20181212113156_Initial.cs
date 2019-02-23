@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace BaGet.Migrations.MySqlServer
+namespace BaGet.Migrations.MySql
 {
     public partial class Initial : Migration
     {

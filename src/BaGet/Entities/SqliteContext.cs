@@ -1,4 +1,4 @@
-﻿using BaGet.Core.Entities;
+using BaGet.Core.Entities;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,7 +30,11 @@ namespace BaGet.Entities
                 .HasColumnType("TEXT COLLATE NOCASE");
 
             builder.Entity<PackageDependency>()
-                .Property(p => p.Id)
+                .Property(d => d.Id)
+                .HasColumnType("TEXT COLLATE NOCASE");
+
+            builder.Entity<TargetFramework>()
+                .Property(f => f.Moniker)
                 .HasColumnType("TEXT COLLATE NOCASE");
         }
     }

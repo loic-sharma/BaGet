@@ -16,9 +16,9 @@ namespace BaGet.Entities
         public const int MaxPackageLanguageLength = 20;
         public const int MaxPackageTitleLength = 256;
         public const int MaxRepositoryTypeLength = 100;
+        public const int MaxTargetFrameworkLength = 256;
 
         public const int MaxPackageDependencyVersionRangeLength = 256;
-        public const int MaxPackageDependencyTargetFrameworkLength = 256;
 
         public AbstractContext(DbContextOptions<TContext> options)
             : base(options)
@@ -26,6 +26,7 @@ namespace BaGet.Entities
 
         public DbSet<Package> Packages { get; set; }
         public DbSet<PackageDependency> PackageDependencies { get; set; }
+        public DbSet<TargetFramework> TargetFrameworks { get; set; }
 
         public Task<int> SaveChangesAsync() => SaveChangesAsync(default);
 
@@ -37,6 +38,7 @@ namespace BaGet.Entities
         {
             builder.Entity<Package>(BuildPackageEntity);
             builder.Entity<PackageDependency>(BuildPackageDependencyEntity);
+            builder.Entity<TargetFramework>(BuildTargetFrameworkEntity);
         }
 
         private void BuildPackageEntity(EntityTypeBuilder<Package> package)
@@ -92,16 +94,39 @@ namespace BaGet.Entities
             package.Ignore(p => p.ProjectUrlString);
             package.Ignore(p => p.RepositoryUrlString);
 
+            // TODO: This is needed to make the dependency to package relationship required.
+            // Unfortunately, this would generate a migration that drops a foreign key, which
+            // isn't supported by SQLite. The migrations will be need to be recreated for this.
+            // Consumers will need to recreate their database and reindex all their packages.
+            // To make this transition easier, I'd like to finish this change:
+            // https://github.com/loic-sharma/BaGet/pull/174
+            //package.HasMany(p => p.Dependencies)
+            //    .WithOne(d => d.Package)
+            //    .IsRequired();
+
+            package.HasMany(p => p.TargetFrameworks)
+                .WithOne(d => d.Package)
+                .IsRequired();
+
             package.Property(p => p.RowVersion).IsRowVersion();
         }
 
         private void BuildPackageDependencyEntity(EntityTypeBuilder<PackageDependency> dependency)
         {
             dependency.HasKey(d => d.Key);
+            dependency.HasIndex(d => d.Id);
 
             dependency.Property(d => d.Id).HasMaxLength(MaxPackageIdLength);
             dependency.Property(d => d.VersionRange).HasMaxLength(MaxPackageDependencyVersionRangeLength);
-            dependency.Property(d => d.TargetFramework).HasMaxLength(MaxPackageDependencyTargetFrameworkLength);
+            dependency.Property(d => d.TargetFramework).HasMaxLength(MaxTargetFrameworkLength);
+        }
+
+        private void BuildTargetFrameworkEntity(EntityTypeBuilder<TargetFramework> targetFramework)
+        {
+            targetFramework.HasKey(f => f.Key);
+            targetFramework.HasIndex(f => f.Moniker);
+
+            targetFramework.Property(f => f.Moniker).HasMaxLength(MaxTargetFrameworkLength);
         }
     }
 }
