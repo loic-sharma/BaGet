@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Core.Services;
@@ -21,9 +20,24 @@ namespace BaGet.Controllers
             _searchService = searchService ?? throw new ArgumentNullException(nameof(searchService));
         }
 
-        public async Task<ActionResult<SearchResponse>> Get([FromQuery(Name = "q")] string query = null)
+        public async Task<ActionResult<SearchResponse>> Get(
+            [FromQuery(Name = "q")] string query = null,
+            [FromQuery]int skip = 0,
+            [FromQuery]int take = 20,
+            [FromQuery]bool prerelease = true,
+            [FromQuery]string semVerLevel = null,
+
+            // This is an unofficial parameter that filters results by target framework
+            [FromQuery]string framework = null)
         {
-            var results = await _searchService.SearchAsync(query ?? string.Empty);
+            var includeSemVer2 = semVerLevel == "2.0.0";
+            var results = await _searchService.SearchAsync(
+                query ?? string.Empty,
+                skip,
+                take,
+                prerelease,
+                includeSemVer2,
+                framework);
 
             return new SearchResponse(
                 totalHits: results.Count,

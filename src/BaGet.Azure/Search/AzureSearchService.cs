@@ -16,21 +16,33 @@ namespace BaGet.Azure.Search
     {
         private readonly BatchIndexer _indexer;
         private readonly SearchIndexClient _searchClient;
+        private readonly IFrameworkCompatibilityService _frameworks;
 
-        public AzureSearchService(BatchIndexer indexer, SearchIndexClient searchClient)
+        public AzureSearchService(
+            BatchIndexer indexer,
+            SearchIndexClient searchClient,
+            IFrameworkCompatibilityService frameworks)
         {
             _indexer = indexer ?? throw new ArgumentNullException(nameof(indexer));
             _searchClient = searchClient ?? throw new ArgumentNullException(nameof(searchClient));
+            _frameworks = frameworks ?? throw new ArgumentNullException(nameof(frameworks));
         }
 
         public Task IndexAsync(Package package) => _indexer.IndexAsync(package.Id);
 
-        public async Task<IReadOnlyList<SearchResult>> SearchAsync(string query, int skip = 0, int take = 20)
+        public async Task<IReadOnlyList<SearchResult>> SearchAsync(
+            string query,
+            int skip = 0,
+            int take = 20,
+            bool includePrerelease = true,
+            bool includeSemVer2 = true,
+            string framework = null)
         {
-            query = query.TrimEnd().TrimEnd('*') + '*';
-
+            // TODO: Add filters for includePrerelease and includeSemVer2
+            query = BuildSeachQuery(query, framework);
             var search = await _searchClient.Documents.SearchAsync<PackageDocument>(query, new SearchParameters
             {
+                QueryType = QueryType.Full,
                 Skip = skip,
                 Top = take
             });
@@ -71,6 +83,18 @@ namespace BaGet.Azure.Search
             }
 
             return results.AsReadOnly();
+        }
+
+        private string BuildSeachQuery(string query, string framework)
+        {
+            if (framework != null)
+            {
+                var frameworks = _frameworks.FindAllCompatibleFrameworks(framework);
+
+                query = $"+frameworks:({string.Join(" ", frameworks)}) {query}";
+            }
+
+            return query.TrimEnd().TrimEnd('*') + '*';
         }
 
         public async Task<IReadOnlyList<string>> AutocompleteAsync(string query, int skip = 0, int take = 20)

@@ -10,7 +10,13 @@ namespace BaGet.Core.Services
     {
         Task IndexAsync(Package package);
 
-        Task<IReadOnlyList<SearchResult>> SearchAsync(string query, int skip = 0, int take = 20);
+        Task<IReadOnlyList<SearchResult>> SearchAsync(
+            string query,
+            int skip = 0,
+            int take = 20,
+            bool includePrerelease = true,
+            bool includeSemVer2 = true,
+            string framework = null);
 
         Task<IReadOnlyList<string>> AutocompleteAsync(string query, int skip = 0, int take = 20);
 
