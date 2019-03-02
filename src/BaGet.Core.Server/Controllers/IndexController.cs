@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using BaGet.Extensions;
 using BaGet.Protocol;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Versioning;
 
@@ -9,6 +10,7 @@ namespace BaGet.Controllers
     /// <summary>
     /// The NuGet Service Index. This aids NuGet client to discover this server's services.
     /// </summary>
+    [Authorize]
     public class IndexController : Controller
     {
         private IEnumerable<ServiceIndexResource> BuildResource(string name, string url, params string[] versions) 

@@ -1,10 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Core.Services;
 using BaGet.Extensions;
 using BaGet.Protocol;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BaGet.Controllers
@@ -12,6 +12,7 @@ namespace BaGet.Controllers
     using ProtocolSearchResult = Protocol.SearchResult;
     using QuerySearchResult = Core.Services.SearchResult;
 
+    [Authorize]
     public class SearchController : Controller
     {
         private readonly ISearchService _searchService;
