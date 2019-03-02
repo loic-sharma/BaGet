@@ -87,6 +87,11 @@ namespace BaGet.Azure.Search
 
         private string BuildSeachQuery(string query, string framework)
         {
+            if (!string.IsNullOrEmpty(query))
+            {
+                query = query.TrimEnd().TrimEnd('*') + '*';
+            }
+
             if (framework != null)
             {
                 var frameworks = _frameworks.FindAllCompatibleFrameworks(framework);
@@ -94,7 +99,7 @@ namespace BaGet.Azure.Search
                 query = $"+frameworks:({string.Join(" ", frameworks)}) {query}";
             }
 
-            return query.TrimEnd().TrimEnd('*') + '*';
+            return query;
         }
 
         public async Task<IReadOnlyList<string>> AutocompleteAsync(string query, int skip = 0, int take = 20)
