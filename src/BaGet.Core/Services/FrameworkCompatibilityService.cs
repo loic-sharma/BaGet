@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -5,6 +6,8 @@ using NuGet.Frameworks;
 
 namespace BaGet.Core.Services
 {
+    using static NuGet.Frameworks.FrameworkConstants;
+
     public class FrameworkCompatibilityService : IFrameworkCompatibilityService
     {
         private static readonly Dictionary<string, NuGetFramework> KnownFrameworks;
@@ -14,20 +17,24 @@ namespace BaGet.Core.Services
         static FrameworkCompatibilityService()
         {
             var supportedFrameworks = new HashSet<string>();
-            supportedFrameworks.Add(FrameworkConstants.FrameworkIdentifiers.NetStandard);
-            supportedFrameworks.Add(FrameworkConstants.FrameworkIdentifiers.NetCoreApp);
-            supportedFrameworks.Add(FrameworkConstants.FrameworkIdentifiers.Net);
+            supportedFrameworks.Add(FrameworkIdentifiers.NetStandard);
+            supportedFrameworks.Add(FrameworkIdentifiers.NetCoreApp);
+            supportedFrameworks.Add(FrameworkIdentifiers.Net);
 
             CompatibilityMapping = DefaultFrameworkMappings.Instance.CompatibilityMappings.ToList();
             CompatibleFrameworks = new ConcurrentDictionary<NuGetFramework, IReadOnlyList<string>>();
 
-            KnownFrameworks = typeof(FrameworkConstants.CommonFrameworks)
+            KnownFrameworks = typeof(CommonFrameworks)
                 .GetFields()
                 .Where(f => f.IsStatic)
                 .Where(f => f.FieldType == typeof(NuGetFramework))
                 .Select(f => (NuGetFramework)f.GetValue(null))
                 .Where(f => supportedFrameworks.Contains(f.Framework))
                 .ToDictionary(f => f.GetShortFolderName());
+
+            // Add more frameworks missing from "CommonFrameworks"
+            KnownFrameworks["net472"] = new NuGetFramework(FrameworkIdentifiers.Net, new Version(4, 7, 2, 0));
+            KnownFrameworks["net471"] = new NuGetFramework(FrameworkIdentifiers.Net, new Version(4, 7, 1, 0));
         }
 
         public IReadOnlyList<string> FindAllCompatibleFrameworks(string name)
