@@ -24,7 +24,7 @@
     <MicrosoftAspNetCorePackageVersion>2.2.0</MicrosoftAspNetCorePackageVersion>
     <MicrosoftEntityFrameworkCorePackageVersion>2.2.2</MicrosoftEntityFrameworkCorePackageVersion>
     <MicrosoftExtensionsPackageVersion>2.2.0</MicrosoftExtensionsPackageVersion>
-    <NuGetPackageVersion>4.9.3</NuGetPackageVersion>
+    <NuGetPackageVersion>5.0.0-rtm.5856</NuGetPackageVersion>
   </PropertyGroup>
 
   <ItemGroup Condition="$(DOTNET_RUNNING_IN_CONTAINER) == ''">

@@ -27,7 +27,8 @@ namespace BaGet.Controllers
             [FromQuery]bool prerelease = true,
             [FromQuery]string semVerLevel = null,
 
-            // This is an unofficial parameter that filters results by target framework
+            // These are unofficial parameters
+            [FromQuery]string packageType = null,
             [FromQuery]string framework = null)
         {
             var includeSemVer2 = semVerLevel == "2.0.0";
@@ -37,6 +38,7 @@ namespace BaGet.Controllers
                 take,
                 prerelease,
                 includeSemVer2,
+                packageType,
                 framework);
 
             return new SearchResponse(

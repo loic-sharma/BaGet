@@ -36,10 +36,11 @@ namespace BaGet.Azure.Search
             int take = 20,
             bool includePrerelease = true,
             bool includeSemVer2 = true,
+            string packageType = null,
             string framework = null)
         {
             // TODO: Add filters for includePrerelease and includeSemVer2
-            query = BuildSeachQuery(query, framework);
+            query = BuildSeachQuery(query, packageType, framework);
             var search = await _searchClient.Documents.SearchAsync<PackageDocument>(query, new SearchParameters
             {
                 QueryType = QueryType.Full,
@@ -85,14 +86,19 @@ namespace BaGet.Azure.Search
             return results.AsReadOnly();
         }
 
-        private string BuildSeachQuery(string query, string framework)
+        private string BuildSeachQuery(string query, string packageType, string framework)
         {
             if (!string.IsNullOrEmpty(query))
             {
                 query = query.TrimEnd().TrimEnd('*') + '*';
             }
 
-            if (framework != null)
+            if (!string.IsNullOrEmpty(packageType))
+            {
+                query = $"+packageTypes:{packageType} {query}";
+            }
+
+            if (!string.IsNullOrEmpty(framework))
             {
                 var frameworks = _frameworks.FindAllCompatibleFrameworks(framework);
 

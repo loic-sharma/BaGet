@@ -3,25 +3,29 @@ using System;
 using BaGet.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace BaGet.Migrations.Sqlite
+namespace BaGet.Migrations.SqlServer
 {
-    [DbContext(typeof(SqliteContext))]
-    [Migration("20190223234538_AddTargetFrameworks")]
-    partial class AddTargetFrameworks
+    [DbContext(typeof(SqlServerContext))]
+    [Migration("20190303014353_AddSearchDimensions")]
+    partial class AddSearchDimensions
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.2-servicing-10034");
+                .HasAnnotation("ProductVersion", "2.2.2-servicing-10034")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("BaGet.Core.Entities.Package", b =>
                 {
                     b.Property<int>("Key")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Authors")
                         .HasMaxLength(4000);
@@ -38,7 +42,6 @@ namespace BaGet.Migrations.Sqlite
 
                     b.Property<string>("Id")
                         .IsRequired()
-                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasMaxLength(128);
 
                     b.Property<string>("Language")
@@ -96,10 +99,10 @@ namespace BaGet.Migrations.Sqlite
             modelBuilder.Entity("BaGet.Core.Entities.PackageDependency", b =>
                 {
                     b.Property<int>("Key")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Id")
-                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasMaxLength(128);
 
                     b.Property<int?>("PackageKey");
@@ -119,13 +122,36 @@ namespace BaGet.Migrations.Sqlite
                     b.ToTable("PackageDependencies");
                 });
 
+            modelBuilder.Entity("BaGet.Core.Entities.PackageType", b =>
+                {
+                    b.Property<int>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(512);
+
+                    b.Property<int>("PackageKey");
+
+                    b.Property<string>("Version")
+                        .HasMaxLength(64);
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("PackageKey");
+
+                    b.ToTable("PackageTypes");
+                });
+
             modelBuilder.Entity("BaGet.Core.Entities.TargetFramework", b =>
                 {
                     b.Property<int>("Key")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Moniker")
-                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasMaxLength(256);
 
                     b.Property<int>("PackageKey");
@@ -144,6 +170,14 @@ namespace BaGet.Migrations.Sqlite
                     b.HasOne("BaGet.Core.Entities.Package", "Package")
                         .WithMany("Dependencies")
                         .HasForeignKey("PackageKey");
+                });
+
+            modelBuilder.Entity("BaGet.Core.Entities.PackageType", b =>
+                {
+                    b.HasOne("BaGet.Core.Entities.Package", "Package")
+                        .WithMany("PackageTypes")
+                        .HasForeignKey("PackageKey")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("BaGet.Core.Entities.TargetFramework", b =>

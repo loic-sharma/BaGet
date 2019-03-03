@@ -13,6 +13,7 @@ using NuGet.Packaging;
 
 namespace BaGet.Core.Services
 {
+    using NuGetPackageType = NuGet.Packaging.Core.PackageType;
     using BaGetPackageDependency = Entities.PackageDependency;
 
     public class PackageIndexingService : IPackageIndexingService
@@ -179,6 +180,7 @@ namespace BaGet.Core.Services
                 RepositoryType = repositoryType,
                 Dependencies = GetDependencies(nuspec),
                 Tags = ParseTags(nuspec.GetTags()),
+                PackageTypes = GetPackageTypes(nuspec),
                 TargetFrameworks = GetTargetFrameworks(packageReader),
             };
         }
@@ -257,6 +259,30 @@ namespace BaGet.Core.Services
             }
 
             return dependencies;
+        }
+
+        private List<PackageType> GetPackageTypes(NuspecReader nuspec)
+        {
+            var packageTypes = nuspec
+                .GetPackageTypes()
+                .Select(t => new PackageType
+                {
+                    Name = t.Name,
+                    Version = t.Version.ToString()
+                })
+                .ToList();
+
+            // Default to the standard dependency type if no types were found.
+            if (packageTypes.Count == 0)
+            {
+                packageTypes.Add(new PackageType
+                {
+                    Name = NuGetPackageType.Dependency.Name,
+                    Version = NuGetPackageType.Dependency.Version.ToString(),
+                });
+            }
+
+            return packageTypes;
         }
 
         private List<TargetFramework> GetTargetFrameworks(PackageArchiveReader packageReader)

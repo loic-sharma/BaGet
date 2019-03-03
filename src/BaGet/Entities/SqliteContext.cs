@@ -33,6 +33,10 @@ namespace BaGet.Entities
                 .Property(d => d.Id)
                 .HasColumnType("TEXT COLLATE NOCASE");
 
+            builder.Entity<PackageType>()
+                .Property(t => t.Name)
+                .HasColumnType("TEXT COLLATE NOCASE");
+
             builder.Entity<TargetFramework>()
                 .Property(f => f.Moniker)
                 .HasColumnType("TEXT COLLATE NOCASE");

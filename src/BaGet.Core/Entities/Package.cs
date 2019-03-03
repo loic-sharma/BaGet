@@ -39,6 +39,7 @@ namespace BaGet.Core.Entities
         public byte[] RowVersion { get; set; }
 
         public List<PackageDependency> Dependencies { get; set; }
+        public List<PackageType> PackageTypes { get; set; }
         public List<TargetFramework> TargetFrameworks { get; set; }
 
         public string VersionString

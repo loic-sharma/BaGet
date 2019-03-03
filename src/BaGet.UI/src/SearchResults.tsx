@@ -19,7 +19,8 @@ interface IPackage {
 
 interface ISearchResultsState {
   includePrerelease: boolean;
-  targetFramework?: string;
+  packageType: string;
+  targetFramework: string;
   items: IPackage[];
 }
 
@@ -38,11 +39,17 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     this.state = {
       includePrerelease: true,
       items: [],
+      packageType: 'any',
+      targetFramework: 'any'
     };
   }
 
   public componentDidMount() {
-    this._loadItems(this.props.input, this.state.includePrerelease, this.state.targetFramework);
+    this._loadItems(
+      this.props.input,
+      this.state.includePrerelease,
+      this.state.packageType,
+      this.state.targetFramework);
   }
 
   public componentWillUnmount() {
@@ -56,13 +63,26 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
       return;
     }
 
-    this._loadItems(props.input, this.state.includePrerelease, this.state.targetFramework);
+    this._loadItems(
+      props.input,
+      this.state.includePrerelease,
+      this.state.packageType,
+      this.state.targetFramework);
   }
 
   public render() {
     return (
       <div>
         <form className="search-options form-inline">
+        <div className="form-group">
+            <label>Package Type:</label>
+            <select value={this.state.packageType} onChange={this.onChangePackageType} className="form-control">
+              <option value="any">Any</option>
+              <option value="dependency">Dependency</option>
+              <option value="dotnettool">.NET Tool</option>
+            </select>
+          </div>
+
           <div className="form-group">
             <label>Framework:</label>
             <select value={this.state.targetFramework} onChange={this.onChangeFramework} className="form-control">
@@ -145,7 +165,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     );
   }
 
-  private _loadItems(query: string, includePrerelease: boolean, targetFramework?: string): void {
+  private _loadItems(query: string, includePrerelease: boolean, packageType: string, targetFramework: string): void {
     if (this.resultsController) {
       this.resultsController.abort();
     }
@@ -155,13 +175,14 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     this.setState({
       includePrerelease,
       items: [],
+      packageType,
       targetFramework,
     });
 
     // tslint:disable-next-line:no-console
     console.log(targetFramework);
 
-    const url = this.buildUrl(query, includePrerelease, targetFramework);
+    const url = this.buildUrl(query, includePrerelease, packageType, targetFramework);
 
     fetch(url, {signal: this.resultsController.signal}).then(response => {
       return response.json();
@@ -176,7 +197,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     });
   }
 
-  private buildUrl(query: string, includePrerelease: boolean, targetFramework?: string) {
+  private buildUrl(query: string, includePrerelease: boolean, packageType?: string, targetFramework?: string) {
     const parameters: { [parameter: string]: string } = {};
 
     if (query && query.length !== 0) {
@@ -185,6 +206,10 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
 
     if (includePrerelease) {
       parameters.prerelease = 'true';
+    }
+
+    if (packageType && packageType !== 'any') {
+      parameters.packageType = packageType;
     }
 
     if (targetFramework && targetFramework !== 'any') {
@@ -204,12 +229,28 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     e.currentTarget.src = this.defaultIconUrl;
   }
 
+  private onChangePackageType = (e: React.ChangeEvent<HTMLSelectElement>) : void => {
+    this._loadItems(
+      this.props.input,
+      this.state.includePrerelease,
+      e.currentTarget.value,
+      this.state.targetFramework);
+  }
+
   private onChangeFramework = (e: React.ChangeEvent<HTMLSelectElement>) : void => {
-    this._loadItems(this.props.input, this.state.includePrerelease, e.currentTarget.value);
+    this._loadItems(
+      this.props.input,
+      this.state.includePrerelease,
+      this.state.packageType,
+      e.currentTarget.value);
   }
 
   private onChangePrerelease = () : void => {
-    this._loadItems(this.props.input, !this.state.includePrerelease, this.state.targetFramework);
+    this._loadItems(
+      this.props.input,
+      !this.state.includePrerelease,
+      this.state.packageType,
+      this.state.targetFramework);
   }
 }
 

@@ -120,6 +120,29 @@ namespace BaGet.Migrations.SqlServer
                     b.ToTable("PackageDependencies");
                 });
 
+            modelBuilder.Entity("BaGet.Core.Entities.PackageType", b =>
+                {
+                    b.Property<int>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(512);
+
+                    b.Property<int>("PackageKey");
+
+                    b.Property<string>("Version")
+                        .HasMaxLength(64);
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("PackageKey");
+
+                    b.ToTable("PackageTypes");
+                });
+
             modelBuilder.Entity("BaGet.Core.Entities.TargetFramework", b =>
                 {
                     b.Property<int>("Key")
@@ -145,6 +168,14 @@ namespace BaGet.Migrations.SqlServer
                     b.HasOne("BaGet.Core.Entities.Package", "Package")
                         .WithMany("Dependencies")
                         .HasForeignKey("PackageKey");
+                });
+
+            modelBuilder.Entity("BaGet.Core.Entities.PackageType", b =>
+                {
+                    b.HasOne("BaGet.Core.Entities.Package", "Package")
+                        .WithMany("PackageTypes")
+                        .HasForeignKey("PackageKey")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("BaGet.Core.Entities.TargetFramework", b =>

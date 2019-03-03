@@ -3,10 +3,31 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BaGet.Migrations.SqlServer
 {
-    public partial class AddTargetFrameworks : Migration
+    public partial class AddSearchDimensions : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "PackageTypes",
+                columns: table => new
+                {
+                    Key = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(maxLength: 512, nullable: true),
+                    Version = table.Column<string>(maxLength: 64, nullable: true),
+                    PackageKey = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PackageTypes", x => x.Key);
+                    table.ForeignKey(
+                        name: "FK_PackageTypes_Packages_PackageKey",
+                        column: x => x.PackageKey,
+                        principalTable: "Packages",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateTable(
                 name: "TargetFrameworks",
                 columns: table => new
@@ -33,6 +54,16 @@ namespace BaGet.Migrations.SqlServer
                 column: "Id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PackageTypes_Name",
+                table: "PackageTypes",
+                column: "Name");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PackageTypes_PackageKey",
+                table: "PackageTypes",
+                column: "PackageKey");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TargetFrameworks_Moniker",
                 table: "TargetFrameworks",
                 column: "Moniker");
@@ -45,6 +76,9 @@ namespace BaGet.Migrations.SqlServer
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "PackageTypes");
+
             migrationBuilder.DropTable(
                 name: "TargetFrameworks");
 
