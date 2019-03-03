@@ -10,6 +10,8 @@ namespace BaGet.Core.Services
 
     public class FrameworkCompatibilityService : IFrameworkCompatibilityService
     {
+        private const string AnyFramework = "any";
+
         private static readonly Dictionary<string, NuGetFramework> KnownFrameworks;
         private static readonly IReadOnlyList<OneWayCompatibilityMappingEntry> CompatibilityMapping;
         private static readonly ConcurrentDictionary<NuGetFramework, IReadOnlyList<string>> CompatibleFrameworks;
@@ -41,7 +43,7 @@ namespace BaGet.Core.Services
         {
             if (!KnownFrameworks.TryGetValue(name, out var framework))
             {
-                return new List<string> { name };
+                return new List<string> { name, AnyFramework };
             }
 
             return CompatibleFrameworks.GetOrAdd(framework, FindAllCompatibleFrameworks);
@@ -49,7 +51,7 @@ namespace BaGet.Core.Services
 
         private IReadOnlyList<string> FindAllCompatibleFrameworks(NuGetFramework targetFramework)
         {
-            var results = new HashSet<string>();
+            var results = new HashSet<string> { AnyFramework };
 
             // Find all framework mappings that apply to the target framework
             foreach (var mapping in CompatibilityMapping)

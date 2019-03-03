@@ -297,7 +297,7 @@ namespace BaGet.Core.Services
                 })
                 .ToList();
 
-            // Default to the standard dependency type if no types were found.
+            // Default to the standard "dependency" package type if no types were found.
             if (packageTypes.Count == 0)
             {
                 packageTypes.Add(new PackageType
@@ -312,13 +312,21 @@ namespace BaGet.Core.Services
 
         private List<TargetFramework> GetTargetFrameworks(PackageArchiveReader packageReader)
         {
-            return packageReader
+            var targetFrameworks = packageReader
                 .GetSupportedFrameworks()
                 .Select(f => new TargetFramework
                 {
                     Moniker = f.GetShortFolderName()
                 })
                 .ToList();
+
+            // Default to the "any" framework if no frameworks were found.
+            if (targetFrameworks.Count == 0)
+            {
+                targetFrameworks.Add(new TargetFramework { Moniker = "any" });
+            }
+
+            return targetFrameworks;
         }
     }
 }
