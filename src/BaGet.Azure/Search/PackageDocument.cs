@@ -47,15 +47,18 @@ namespace BaGet.Azure.Search
         public string[] VersionDownloads { get; set; }
 
         [IsSearchable]
-        [Analyzer(AnalyzerName.AsString.Keyword)]
+        [Analyzer(ExactMatchCustomAnalyzer.Name)]
         public string[] Dependencies { get; set; }
 
         [IsSearchable]
-        [Analyzer(AnalyzerName.AsString.Keyword)]
+        [Analyzer(ExactMatchCustomAnalyzer.Name)]
         public string[] PackageTypes { get; set; }
 
         [IsSearchable]
-        [Analyzer(AnalyzerName.AsString.Keyword)]
+        [Analyzer(ExactMatchCustomAnalyzer.Name)]
         public string[] Frameworks { get; set; }
+
+        [IsFilterable]
+        public string SearchFilters { get; set; }
     }
 }

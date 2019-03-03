@@ -50,6 +50,7 @@ namespace BaGet.Core.Services
         {
             var query = _context.Packages
                 .Include(p => p.Dependencies)
+                .Include(p => p.PackageTypes)
                 .Include(p => p.TargetFrameworks)
                 .Where(p => p.Id == id);
 

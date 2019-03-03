@@ -24,7 +24,7 @@ namespace BaGet.Controllers
             [FromQuery(Name = "q")] string query = null,
             [FromQuery]int skip = 0,
             [FromQuery]int take = 20,
-            [FromQuery]bool prerelease = true,
+            [FromQuery]bool prerelease = false,
             [FromQuery]string semVerLevel = null,
 
             // These are unofficial parameters

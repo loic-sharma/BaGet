@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Azure.Search;
@@ -51,7 +52,11 @@ namespace BaGet.Tools.AzureSearchImporter
             await _searchClient.Indexes.CreateAsync(new Index
             {
                 Name = PackageDocument.IndexName,
-                Fields = FieldBuilder.BuildForType<PackageDocument>()
+                Fields = FieldBuilder.BuildForType<PackageDocument>(),
+                Analyzers = new List<Analyzer>
+                {
+                    ExactMatchCustomAnalyzer.Instance
+                }
             });
 
             _logger.LogInformation("Created search index");

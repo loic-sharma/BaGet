@@ -1,3 +1,7 @@
+.search-options {
+  margin-bottom: 20px;
+}
+
 .search-options .checkbox label {
   font-weight: bold;
 }

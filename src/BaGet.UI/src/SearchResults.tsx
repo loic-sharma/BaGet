@@ -74,7 +74,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     return (
       <div>
         <form className="search-options form-inline">
-        <div className="form-group">
+          <div className="form-group">
             <label>Package Type:</label>
             <select value={this.state.packageType} onChange={this.onChangePackageType} className="form-control">
               <option value="any">Any</option>
@@ -198,7 +198,9 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
   }
 
   private buildUrl(query: string, includePrerelease: boolean, packageType?: string, targetFramework?: string) {
-    const parameters: { [parameter: string]: string } = {};
+    const parameters: { [parameter: string]: string } = {
+      semVerLevel: "2.0.0"
+    };
 
     if (query && query.length !== 0) {
       parameters.q = query;
@@ -220,9 +222,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
       .map(k => `${k}=${encodeURIComponent(parameters[k])}`)
       .join('&');
 
-    return (queryString.length > 0)
-      ? `/v3/search?${queryString}`
-      : '/v3/search';
+    return `/v3/search?${queryString}`;
   }
 
   private loadDefaultIcon = (e: React.SyntheticEvent<HTMLImageElement>) => {

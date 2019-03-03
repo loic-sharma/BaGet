@@ -39,13 +39,26 @@ namespace BaGet.Azure.Search
             string packageType = null,
             string framework = null)
         {
-            // TODO: Add filters for includePrerelease and includeSemVer2
             query = BuildSeachQuery(query, packageType, framework);
+
+            var searchFilters = SearchFilters.Default;
+
+            if (includePrerelease)
+            {
+                searchFilters |= SearchFilters.IncludePrerelease;
+            }
+
+            if (includeSemVer2)
+            {
+                searchFilters |= SearchFilters.IncludeSemVer2;
+            }
+
             var search = await _searchClient.Documents.SearchAsync<PackageDocument>(query, new SearchParameters
             {
                 QueryType = QueryType.Full,
                 Skip = skip,
-                Top = take
+                Top = take,
+                Filter = $"searchFilters eq '{searchFilters}'"
             });
 
             var results = new List<SearchResult>();

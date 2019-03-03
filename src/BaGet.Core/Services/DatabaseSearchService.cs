@@ -32,7 +32,7 @@ namespace BaGet.Core.Services
             // TODO: Support includePrerelease and includeSemVer2 parameters
             var result = new List<SearchResult>();
             var frameworks = GetCompatibleFrameworks(framework);
-            var packages = await SearchImplAsync(query, skip, take, packageType, frameworks);
+            var packages = await SearchImplAsync(query, skip, take, includePrerelease, includeSemVer2, packageType, frameworks);
 
             foreach (var package in packages)
             {
@@ -72,6 +72,8 @@ namespace BaGet.Core.Services
             string query,
             int skip,
             int take,
+            bool includePrerelease,
+            bool includeSemVer2,
             string packageType,
             IReadOnlyList<string> frameworks)
         {
@@ -81,6 +83,16 @@ namespace BaGet.Core.Services
             {
                 query = query.ToLower();
                 search = search.Where(p => p.Id.ToLower().Contains(query));
+            }
+
+            if (!includePrerelease)
+            {
+                search = search.Where(p => !p.IsPrerelease);
+            }
+
+            if (!includeSemVer2)
+            {
+                search = search.Where(p => p.SemVerLevel != SemVerLevel.SemVer2);
             }
 
             if (!string.IsNullOrEmpty(packageType))
