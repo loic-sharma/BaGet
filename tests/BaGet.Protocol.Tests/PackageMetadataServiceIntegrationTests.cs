@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -10,7 +11,11 @@ namespace BaGet.Protocol.Tests
 
         public PackageMetadataServiceIntegrationTests()
         {
-            var httpClient = new HttpClient();
+            var httpClient = new HttpClient(new HttpClientHandler
+            {
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+            });
+
             var serviceIndexClient = new ServiceIndexClient(httpClient);
             var registrationClient = new RegistrationClient(httpClient);
             var packageContentClient = new PackageContentClient(httpClient);
