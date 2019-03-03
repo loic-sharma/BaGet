@@ -29,7 +29,6 @@ namespace BaGet.Core.Services
             string packageType = null,
             string framework = null)
         {
-            // TODO: Support includePrerelease and includeSemVer2 parameters
             var result = new List<SearchResult>();
             var frameworks = GetCompatibleFrameworks(framework);
             var packages = await SearchImplAsync(query, skip, take, includePrerelease, includeSemVer2, packageType, frameworks);
