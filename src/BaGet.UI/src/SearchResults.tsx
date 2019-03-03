@@ -179,9 +179,6 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
       targetFramework,
     });
 
-    // tslint:disable-next-line:no-console
-    console.log(targetFramework);
-
     const url = this.buildUrl(query, includePrerelease, packageType, targetFramework);
 
     fetch(url, {signal: this.resultsController.signal}).then(response => {
