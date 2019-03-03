@@ -1,37 +1,30 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace BaGet.Migrations.Mysql
+namespace BaGet.Migrations.SqlServer
 {
     public partial class AddSearchDimensions : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_PackageDependencies_Packages_PackageKey",
-                table: "PackageDependencies");
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "RowVersion",
+            migrationBuilder.AddColumn<bool>(
+                name: "IsPrerelease",
                 table: "Packages",
-                rowVersion: true,
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldNullable: true);
+                nullable: false,
+                defaultValue: false);
 
-            migrationBuilder.AlterColumn<int>(
-                name: "PackageKey",
-                table: "PackageDependencies",
-                nullable: true,
-                oldClrType: typeof(int));
+            migrationBuilder.AddColumn<int>(
+                name: "SemVerLevel",
+                table: "Packages",
+                nullable: false,
+                defaultValue: 0);
 
             migrationBuilder.CreateTable(
                 name: "PackageTypes",
                 columns: table => new
                 {
                     Key = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(maxLength: 512, nullable: true),
                     Version = table.Column<string>(maxLength: 64, nullable: true),
                     PackageKey = table.Column<int>(nullable: false)
@@ -52,7 +45,7 @@ namespace BaGet.Migrations.Mysql
                 columns: table => new
                 {
                     Key = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Moniker = table.Column<string>(maxLength: 256, nullable: true),
                     PackageKey = table.Column<int>(nullable: false)
                 },
@@ -68,8 +61,8 @@ namespace BaGet.Migrations.Mysql
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Packages_Id",
-                table: "Packages",
+                name: "IX_PackageDependencies_Id",
+                table: "PackageDependencies",
                 column: "Id");
 
             migrationBuilder.CreateIndex(
@@ -91,22 +84,10 @@ namespace BaGet.Migrations.Mysql
                 name: "IX_TargetFrameworks_PackageKey",
                 table: "TargetFrameworks",
                 column: "PackageKey");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_PackageDependencies_Packages_PackageKey",
-                table: "PackageDependencies",
-                column: "PackageKey",
-                principalTable: "Packages",
-                principalColumn: "Key",
-                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_PackageDependencies_Packages_PackageKey",
-                table: "PackageDependencies");
-
             migrationBuilder.DropTable(
                 name: "PackageTypes");
 
@@ -114,31 +95,16 @@ namespace BaGet.Migrations.Mysql
                 name: "TargetFrameworks");
 
             migrationBuilder.DropIndex(
-                name: "IX_Packages_Id",
+                name: "IX_PackageDependencies_Id",
+                table: "PackageDependencies");
+
+            migrationBuilder.DropColumn(
+                name: "IsPrerelease",
                 table: "Packages");
 
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "RowVersion",
-                table: "Packages",
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldRowVersion: true,
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<int>(
-                name: "PackageKey",
-                table: "PackageDependencies",
-                nullable: false,
-                oldClrType: typeof(int),
-                oldNullable: true);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_PackageDependencies_Packages_PackageKey",
-                table: "PackageDependencies",
-                column: "PackageKey",
-                principalTable: "Packages",
-                principalColumn: "Key",
-                onDelete: ReferentialAction.Cascade);
+            migrationBuilder.DropColumn(
+                name: "SemVerLevel",
+                table: "Packages");
         }
     }
 }

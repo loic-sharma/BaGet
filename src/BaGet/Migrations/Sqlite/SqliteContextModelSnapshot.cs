@@ -39,6 +39,8 @@ namespace BaGet.Migrations.Sqlite
                         .HasColumnType("TEXT COLLATE NOCASE")
                         .HasMaxLength(128);
 
+                    b.Property<bool>("IsPrerelease");
+
                     b.Property<string>("Language")
                         .HasMaxLength(20);
 
@@ -66,6 +68,8 @@ namespace BaGet.Migrations.Sqlite
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
+
+                    b.Property<int>("SemVerLevel");
 
                     b.Property<string>("Summary")
                         .HasMaxLength(4000);

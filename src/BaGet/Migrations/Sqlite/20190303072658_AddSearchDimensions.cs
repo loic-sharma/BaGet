@@ -6,6 +6,18 @@ namespace BaGet.Migrations.Sqlite
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<bool>(
+                name: "IsPrerelease",
+                table: "Packages",
+                nullable: false,
+                defaultValue: false);
+
+            migrationBuilder.AddColumn<int>(
+                name: "SemVerLevel",
+                table: "Packages",
+                nullable: false,
+                defaultValue: 0);
+
             migrationBuilder.CreateTable(
                 name: "PackageTypes",
                 columns: table => new
@@ -84,6 +96,14 @@ namespace BaGet.Migrations.Sqlite
             migrationBuilder.DropIndex(
                 name: "IX_PackageDependencies_Id",
                 table: "PackageDependencies");
+
+            migrationBuilder.DropColumn(
+                name: "IsPrerelease",
+                table: "Packages");
+
+            migrationBuilder.DropColumn(
+                name: "SemVerLevel",
+                table: "Packages");
         }
     }
 }

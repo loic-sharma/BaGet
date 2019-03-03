@@ -39,6 +39,8 @@ namespace BaGet.Migrations.MySql
                         .IsRequired()
                         .HasMaxLength(128);
 
+                    b.Property<bool>("IsPrerelease");
+
                     b.Property<string>("Language")
                         .HasMaxLength(20);
 
@@ -66,6 +68,8 @@ namespace BaGet.Migrations.MySql
                     b.Property<DateTime?>("RowVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
+
+                    b.Property<int>("SemVerLevel");
 
                     b.Property<string>("Summary")
                         .HasMaxLength(4000);

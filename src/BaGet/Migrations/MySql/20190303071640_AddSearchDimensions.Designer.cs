@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaGet.Migrations.Mysql
 {
     [DbContext(typeof(MySqlContext))]
-    [Migration("20190303014359_AddSearchDimensions")]
+    [Migration("20190303071640_AddSearchDimensions")]
     partial class AddSearchDimensions
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,6 +41,8 @@ namespace BaGet.Migrations.Mysql
                         .IsRequired()
                         .HasMaxLength(128);
 
+                    b.Property<bool>("IsPrerelease");
+
                     b.Property<string>("Language")
                         .HasMaxLength(20);
 
@@ -68,6 +70,8 @@ namespace BaGet.Migrations.Mysql
                     b.Property<DateTime?>("RowVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
+
+                    b.Property<int>("SemVerLevel");
 
                     b.Property<string>("Summary")
                         .HasMaxLength(4000);

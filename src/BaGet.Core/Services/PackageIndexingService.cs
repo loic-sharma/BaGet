@@ -166,11 +166,13 @@ namespace BaGet.Core.Services
                 Authors = ParseAuthors(nuspec.GetAuthors()),
                 Description = nuspec.GetDescription(),
                 HasReadme = packageReader.HasReadme(),
+                IsPrerelease = nuspec.GetVersion().IsPrerelease,
                 Language = nuspec.GetLanguage() ?? string.Empty,
                 Listed = true,
                 MinClientVersion = nuspec.GetMinClientVersion()?.ToNormalizedString() ?? string.Empty,
                 Published = DateTime.UtcNow,
                 RequireLicenseAcceptance = nuspec.GetRequireLicenseAcceptance(),
+                SemVerLevel = GetSemVerLevel(nuspec),
                 Summary = nuspec.GetSummary(),
                 Title = nuspec.GetTitle(),
                 IconUrl = ParseUri(nuspec.GetIconUrl()),
@@ -183,6 +185,29 @@ namespace BaGet.Core.Services
                 PackageTypes = GetPackageTypes(nuspec),
                 TargetFrameworks = GetTargetFrameworks(packageReader),
             };
+        }
+
+        // Based off https://github.com/NuGet/NuGetGallery/blob/master/src/NuGetGallery.Core/SemVerLevelKey.cs
+        private SemVerLevel GetSemVerLevel(NuspecReader nuspec)
+        {
+            if (nuspec.GetVersion().IsSemVer2)
+            {
+                return SemVerLevel.SemVer2;
+            }
+
+            foreach (var dependencyGroup in nuspec.GetDependencyGroups())
+            {
+                foreach (var dependency in dependencyGroup.Packages)
+                {
+                    if ((dependency.VersionRange.MinVersion != null && dependency.VersionRange.MinVersion.IsSemVer2)
+                        || (dependency.VersionRange.MaxVersion != null && dependency.VersionRange.MaxVersion.IsSemVer2))
+                    {
+                        return SemVerLevel.SemVer2;
+                    }
+                }
+            }
+
+            return SemVerLevel.Unknown;
         }
 
         private Uri ParseUri(string uriString)

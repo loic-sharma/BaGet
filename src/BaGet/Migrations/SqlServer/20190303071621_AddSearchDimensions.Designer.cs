@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaGet.Migrations.SqlServer
 {
     [DbContext(typeof(SqlServerContext))]
-    [Migration("20190303014353_AddSearchDimensions")]
+    [Migration("20190303071621_AddSearchDimensions")]
     partial class AddSearchDimensions
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,6 +44,8 @@ namespace BaGet.Migrations.SqlServer
                         .IsRequired()
                         .HasMaxLength(128);
 
+                    b.Property<bool>("IsPrerelease");
+
                     b.Property<string>("Language")
                         .HasMaxLength(20);
 
@@ -71,6 +73,8 @@ namespace BaGet.Migrations.SqlServer
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
+
+                    b.Property<int>("SemVerLevel");
 
                     b.Property<string>("Summary")
                         .HasMaxLength(4000);

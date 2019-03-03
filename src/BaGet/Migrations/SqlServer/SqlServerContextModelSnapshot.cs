@@ -42,6 +42,8 @@ namespace BaGet.Migrations.SqlServer
                         .IsRequired()
                         .HasMaxLength(128);
 
+                    b.Property<bool>("IsPrerelease");
+
                     b.Property<string>("Language")
                         .HasMaxLength(20);
 
@@ -69,6 +71,8 @@ namespace BaGet.Migrations.SqlServer
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
+
+                    b.Property<int>("SemVerLevel");
 
                     b.Property<string>("Summary")
                         .HasMaxLength(4000);

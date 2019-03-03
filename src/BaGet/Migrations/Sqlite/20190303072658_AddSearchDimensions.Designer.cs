@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaGet.Migrations.Sqlite
 {
     [DbContext(typeof(SqliteContext))]
-    [Migration("20190303014342_AddSearchDimensions")]
+    [Migration("20190303072658_AddSearchDimensions")]
     partial class AddSearchDimensions
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,6 +41,8 @@ namespace BaGet.Migrations.Sqlite
                         .HasColumnType("TEXT COLLATE NOCASE")
                         .HasMaxLength(128);
 
+                    b.Property<bool>("IsPrerelease");
+
                     b.Property<string>("Language")
                         .HasMaxLength(20);
 
@@ -68,6 +70,8 @@ namespace BaGet.Migrations.Sqlite
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
+
+                    b.Property<int>("SemVerLevel");
 
                     b.Property<string>("Summary")
                         .HasMaxLength(4000);
