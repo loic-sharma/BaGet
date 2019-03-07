@@ -21,12 +21,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 
 namespace BaGet.Extensions
 {
     public static class IServiceCollectionExtensions
     {
+
         public static IServiceCollection ConfigureBaGet(
             this IServiceCollection services,
             IConfiguration configuration,
@@ -62,23 +62,19 @@ namespace BaGet.Extensions
 
             services.AddAuthenticationProviders(); //API-Key
 
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-           .AddJwtBearer( (options) =>
-           {
-               options.RequireHttpsMetadata = false;
-               options.TokenValidationParameters = new TokenValidationParameters();
-               options.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.ASCII.GetBytes("mysecret12345abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMN"));
-               options.TokenValidationParameters.ValidateIssuerSigningKey = true;
-               options.SaveToken = false;
-               options.TokenValidationParameters.ValidateIssuer = false;
-               options.TokenValidationParameters.ValidateAudience = false;
-           });
+            services.ConfigureAzureAdAuthentication(configuration);
 
             return services;
+        }
+
+
+        public static void ConfigureAzureAdAuthentication(this IServiceCollection services, IConfiguration configuration)
+        {
+                services.AddAuthentication(sharedOptions =>
+                {
+                    sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddAzureAdBearer(options => configuration.Bind("AzureAd", options));
         }
 
         public static IServiceCollection AddBaGetContext(this IServiceCollection services)
