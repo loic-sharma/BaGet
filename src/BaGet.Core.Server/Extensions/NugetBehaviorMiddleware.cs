@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 
 namespace BaGet.Extensions
@@ -13,12 +14,14 @@ namespace BaGet.Extensions
     /// </summary>
     public class NugetBehaviorMiddleware
     {
-        private readonly RequestDelegate _next;
-
-        public NugetBehaviorMiddleware(RequestDelegate next)
+        private readonly RequestDelegate NextRequest;
+        private readonly ILogger Logger;
+        public NugetBehaviorMiddleware(RequestDelegate next, ILogger<NugetBehaviorMiddleware> logger)
         {
-            _next = next;
+            NextRequest = next ?? throw new ArgumentNullException(nameof(next));
+            Logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
+
         private  void ModifyRequest(HttpContext context, bool isNuGetClientCall)
         {
 
@@ -70,7 +73,9 @@ namespace BaGet.Extensions
         {
             var isNuGetClinetCall = context.Request.Headers.ContainsKey("X-NuGet-Session-Id");
             ModifyRequest(context, isNuGetClinetCall);
-            await _next(context);
+
+            await NextRequest(context);
+
             ModifyResponse(context,isNuGetClinetCall);
         }
     }
