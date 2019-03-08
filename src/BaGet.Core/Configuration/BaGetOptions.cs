@@ -38,6 +38,12 @@ namespace BaGet.Core.Configuration
         /// </summary>
         public bool ShowPII { get; set; } = false;
 
+        /// <summary>
+        /// Middleware for "Basic" to "Bearer" translation is added 
+        /// </summary>
+        public bool AddTokenMiddleware { get; set; } = false;
+
+
         [Required]
         public DatabaseOptions Database { get; set; }
 

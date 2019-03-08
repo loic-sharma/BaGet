@@ -9,9 +9,6 @@ namespace BaGet.Extensions
 {
     public static class AzureAdServiceCollectionExtensions
     {
-        public static AuthenticationBuilder AddAzureAdBearer(this AuthenticationBuilder builder)
-            => builder.AddAzureAdBearer(_ => { });
-
         public static AuthenticationBuilder AddAzureAdBearer(this AuthenticationBuilder builder, Action<AzureAdOptions> configureOptions)
         {
             builder.Services.Configure(configureOptions);

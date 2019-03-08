@@ -67,7 +67,10 @@ namespace BaGet
 
             app.UseCors(ConfigureCorsOptions.CorsPolicy);
 
-            app.UseNugetBehaviorMiddleware(); //BEFORE AUTH!
+            if (options.AddTokenMiddleware)
+            {
+                app.UseNugetBehaviorMiddleware(); //BEFORE AUTH!
+            }
 
             app.UseAuthentication();
 
