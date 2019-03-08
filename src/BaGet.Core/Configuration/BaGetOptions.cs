@@ -32,6 +32,12 @@ namespace BaGet.Core.Configuration
         /// </summary>
         public bool AllowPackageOverwrites { get; set; } = false;
 
+        /// <summary>
+        /// if enabled "Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII" is set to true, means the tracing shows some (security) critical information
+        /// should be used ONLY for debugging Security (private feeds)
+        /// </summary>
+        public bool ShowPII { get; set; } = false;
+
         [Required]
         public DatabaseOptions Database { get; set; }
 
