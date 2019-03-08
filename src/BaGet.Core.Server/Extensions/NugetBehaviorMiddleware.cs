@@ -16,6 +16,8 @@ namespace BaGet.Extensions
     {
         private readonly RequestDelegate NextRequest;
         private readonly ILogger Logger;
+        private const string BasicAuthenticationScheme = "Basic";
+
         public NugetBehaviorMiddleware(RequestDelegate next, ILogger<NugetBehaviorMiddleware> logger)
         {
             NextRequest = next ?? throw new ArgumentNullException(nameof(next));
@@ -24,10 +26,10 @@ namespace BaGet.Extensions
 
         private  void ModifyRequest(HttpContext context, bool isNuGetClientCall)
         {
-
+            
             if (!isNuGetClientCall) return;
 
-            string authorization = context.Request.Headers["Authorization"];
+            string authorization = context.Request.Headers[HeaderNames.Authorization];
             // If no authorization header found, nothing to process further
             if (string.IsNullOrEmpty(authorization))
             {
@@ -37,13 +39,14 @@ namespace BaGet.Extensions
             var authHeader = AuthenticationHeaderValue.Parse(authorization);
             if (string.IsNullOrEmpty(authHeader.Parameter)) return;
 
-            if (authHeader.Scheme == "Basic") 
+            if (authHeader.Scheme == BasicAuthenticationScheme)
             {
                 var credentialBytes = Convert.FromBase64String(authHeader.Parameter);
                 var credentialSplit = Encoding.UTF8.GetString(credentialBytes).Split(':');
+
                 if (credentialSplit.Length == 0)
                 {
-                    return ;
+                    return;
                 }
 
                 var username = credentialSplit[0];
@@ -54,7 +57,8 @@ namespace BaGet.Extensions
                     password = credentialSplit[1];
                 }
                 //NuGet.exe has only "Basic" implemented. convert this into "Bearer" directly on the request/response pipeline, the we can use the default jwt implementation from aspnetcore
-                context.Request.Headers["Authorization"] = string.Format("{0} {1}", Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme, password);
+                context.Request.Headers[HeaderNames.Authorization] = string.Format("{0} {1}", Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme, password);
+                Logger.LogTrace(string.Format("Request header field '{0}' rewritten to '{1}'", HeaderNames.Authorization, Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme));
             }
         }
 
@@ -64,19 +68,21 @@ namespace BaGet.Extensions
             {
                 if (context.Response.StatusCode == 401)
                 {
-                    context.Response.Headers[HeaderNames.WWWAuthenticate] = "Basic"; //NuGet.exe supports "Basic" ONLY!
+                    context.Response.Headers[HeaderNames.WWWAuthenticate] = BasicAuthenticationScheme; //NuGet.exe supports "Basic" ONLY!
+                    Logger.LogTrace(string.Format("Response header field '{0}' rewritten to '{1}'", HeaderNames.WWWAuthenticate, BasicAuthenticationScheme));
                 }
             }
         }
 
         public async Task Invoke(HttpContext context)
         {
-            var isNuGetClinetCall = context.Request.Headers.ContainsKey("X-NuGet-Session-Id");
-            ModifyRequest(context, isNuGetClinetCall);
+            var isNuGetClientCall = context.Request.Headers.ContainsKey("X-NuGet-Session-Id");
+            Logger.LogTrace(string.Format("{0}={1}", nameof(isNuGetClientCall), isNuGetClientCall));
+            ModifyRequest(context, isNuGetClientCall);
 
             await NextRequest(context);
 
-            ModifyResponse(context,isNuGetClinetCall);
+            ModifyResponse(context, isNuGetClientCall);
         }
     }
 }
