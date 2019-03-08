@@ -11,5 +11,6 @@ namespace BaGet.Core.Configuration
         public string Instance { get; set; }
         public string Domain { get; set; }
         public string TenantId { get; set; }
+        public string Audience { get; set; }
     }
 }
