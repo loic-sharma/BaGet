@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
+using BaGet.Authentication;
 using BaGet.AWS;
 using BaGet.AWS.Configuration;
 using BaGet.AWS.Extensions;
@@ -17,6 +18,7 @@ using BaGet.Core.Services;
 using BaGet.Entities;
 using BaGet.Protocol;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,6 +42,7 @@ namespace BaGet.Extensions
             services.ConfigureAndValidate<FileSystemStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
             services.ConfigureAndValidate<BlobStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
             services.ConfigureAndValidate<AzureSearchOptions>(configuration.GetSection(nameof(BaGetOptions.Search)));
+            services.ConfigureAndValidate<FeedAuthenticationOptions>(configuration.GetSection(nameof(BaGetOptions.FeedAuthentication)));
 
             services.ConfigureAzure(configuration);
             services.ConfigureAws(configuration);
@@ -55,6 +58,7 @@ namespace BaGet.Extensions
             services.AddTransient<IPackageIndexingService, PackageIndexingService>();
             services.AddTransient<IPackageDeletionService, PackageDeletionService>();
             services.AddTransient<ISymbolIndexingService, SymbolIndexingService>();
+
             services.AddMirrorServices();
 
             services.AddStorageProviders();
@@ -63,18 +67,39 @@ namespace BaGet.Extensions
             services.AddAuthenticationProviders(); //API-Key
 
             services.ConfigureAzureAdAuthentication(configuration);
+            services.AddSingleton<IConfigureOptions<MvcOptions>, ConfigureMvcOptions>();
 
             return services;
         }
 
-
         public static void ConfigureAzureAdAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-                services.AddAuthentication(sharedOptions =>
-                {
-                    sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddAzureAdBearer(options => configuration.Bind("AzureAd", options));
+            var options = services.BuildServiceProvider().GetRequiredService<IOptionsSnapshot<FeedAuthenticationOptions>>();
+            switch (options.Value.Type)
+            {
+                case AuthenticationType.None:
+                    break;
+                case AuthenticationType.AzureActiveDirectory:
+                    ConfigureAzureAdAuthentication(services, configuration, options.Value.SettingsKey);
+                    break;
+                default:
+                    throw new NotImplementedException(string.Format("AuthenticationType '{0}' not implemented yet", options.Value.Type));
+            }
+
+        }
+
+        public static void ConfigureAzureAdAuthentication(this IServiceCollection services, IConfiguration configuration, string bindingKey)
+        {
+            if (services == null) throw new ArgumentNullException(nameof(services));
+            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+
+            if (string.IsNullOrEmpty(bindingKey)) throw new ArgumentNullException(nameof(bindingKey));
+
+            services.AddAuthentication(sharedOptions =>
+            {
+                sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddAzureAdBearer(options => configuration.Bind(bindingKey, options));
         }
 
         public static IServiceCollection AddBaGetContext(this IServiceCollection services)

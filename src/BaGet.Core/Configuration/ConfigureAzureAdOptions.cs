@@ -27,10 +27,10 @@ namespace BaGet.Core.Configuration
             }
             options.Authority = $"{_azureOptions.Instance}{_azureOptions.TenantId}";
 
-            //this may be the right place for customizing the Token Validation process, but be carefult to not break security!
-            //options.TokenValidationParameters.ValidateAudience = false;
-            //options.TokenValidationParameters.ValidateIssuer = false;
-            //options.TokenValidationParameters.ValidateLifetime = false;
+            //this may be the right place for customizing the Token Validation process, but be carefult to not break security - default setting (=best security) for all this = true
+            options.TokenValidationParameters.ValidateAudience = _azureOptions.ValidateAudience;
+            options.TokenValidationParameters.ValidateIssuer = _azureOptions.ValidateIssuer;
+            options.TokenValidationParameters.ValidateLifetime = _azureOptions.ValidateLifetime;
         }
 
         public void Configure(JwtBearerOptions options)

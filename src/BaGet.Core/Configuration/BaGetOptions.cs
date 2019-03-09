@@ -55,5 +55,10 @@ namespace BaGet.Core.Configuration
 
         [Required]
         public MirrorOptions Mirror { get; set; }
+
+        [Required] //Required but WITH Default value => section can be missing inside appsettings for older configurations without feed authentication
+        public FeedAuthenticationOptions FeedAuthentication { get; set; } = new FeedAuthenticationOptions() { Type = AuthenticationType.None };
+
+
     }
 }
