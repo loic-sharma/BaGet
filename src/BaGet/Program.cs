@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using BaGet.Core.Mirror;
 using BaGet.Extensions;
 using McMaster.Extensions.CommandLineUtils;
@@ -53,6 +54,11 @@ namespace BaGet
                     // Remove the upload limit from Kestrel. If needed, an upload limit can
                     // be enforced by a reverse proxy server, like IIS.
                     options.Limits.MaxRequestBodySize = null;
+
+                    if (Startup.UseHttps)
+                    {
+                        Startup.KestrelServerOptions = options;
+                    }
                 })
                 .ConfigureAppConfiguration((builderContext, config) =>
                 {

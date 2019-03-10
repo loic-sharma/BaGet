@@ -43,5 +43,7 @@ namespace BaGet.Core.Configuration
 
         [Required]
         public MirrorOptions Mirror { get; set; }
+        
+        public HttpsOptions Https { get; set; }
     }
 }
