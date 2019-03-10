@@ -4,7 +4,7 @@ This project contains BaGet's Microsoft SQL Server database provider.
 
 ## Migrations
 
-Regenerate migrations with:
+Add a migration with:
 
 ```
 dotnet ef migrations add MigrationName --context SqlServerContext --output-dir Migrations --startup-project ..\BaGet\BaGet.csproj

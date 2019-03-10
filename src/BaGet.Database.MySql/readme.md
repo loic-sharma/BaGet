@@ -4,7 +4,7 @@ This project contains BaGet's MySQL database provider.
 
 ## Migrations
 
-Regenerate migrations with:
+Add a migration with:
 
 ```
 dotnet ef migrations add MigrationName --context MySqlContext --output-dir Migrations --startup-project ..\BaGet\BaGet.csproj
