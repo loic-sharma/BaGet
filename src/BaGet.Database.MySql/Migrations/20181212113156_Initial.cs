@@ -1,7 +1,8 @@
-﻿using System;
+using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace BaGet.Migrations.Sqlite
+namespace BaGet.Database.MySql.Migrations
 {
     public partial class Initial : Migration
     {
@@ -12,8 +13,8 @@ namespace BaGet.Migrations.Sqlite
                 columns: table => new
                 {
                     Key = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Id = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 128, nullable: false),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<string>(maxLength: 128, nullable: false),
                     Authors = table.Column<string>(maxLength: 4000, nullable: true),
                     Description = table.Column<string>(maxLength: 4000, nullable: true),
                     Downloads = table.Column<long>(nullable: false),
@@ -31,7 +32,7 @@ namespace BaGet.Migrations.Sqlite
                     RepositoryUrl = table.Column<string>(maxLength: 4000, nullable: true),
                     RepositoryType = table.Column<string>(maxLength: 100, nullable: true),
                     Tags = table.Column<string>(maxLength: 4000, nullable: true),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
+                    RowVersion = table.Column<DateTime>(rowVersion: true, nullable: true),
                     Version = table.Column<string>(maxLength: 64, nullable: false)
                 },
                 constraints: table =>
@@ -44,11 +45,11 @@ namespace BaGet.Migrations.Sqlite
                 columns: table => new
                 {
                     Key = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Id = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 128, nullable: true),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<string>(maxLength: 128, nullable: true),
                     VersionRange = table.Column<string>(maxLength: 256, nullable: true),
                     TargetFramework = table.Column<string>(maxLength: 256, nullable: true),
-                    PackageKey = table.Column<int>(nullable: true)
+                    PackageKey = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -58,7 +59,7 @@ namespace BaGet.Migrations.Sqlite
                         column: x => x.PackageKey,
                         principalTable: "Packages",
                         principalColumn: "Key",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

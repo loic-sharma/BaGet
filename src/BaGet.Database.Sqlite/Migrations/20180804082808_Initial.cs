@@ -1,8 +1,7 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace BaGet.Migrations.SqlServer
+namespace BaGet.Database.Sqlite
 {
     public partial class Initial : Migration
     {
@@ -13,8 +12,8 @@ namespace BaGet.Migrations.SqlServer
                 columns: table => new
                 {
                     Key = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Id = table.Column<string>(maxLength: 128, nullable: false),
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 128, nullable: false),
                     Authors = table.Column<string>(maxLength: 4000, nullable: true),
                     Description = table.Column<string>(maxLength: 4000, nullable: true),
                     Downloads = table.Column<long>(nullable: false),
@@ -45,8 +44,8 @@ namespace BaGet.Migrations.SqlServer
                 columns: table => new
                 {
                     Key = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Id = table.Column<string>(maxLength: 128, nullable: true),
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 128, nullable: true),
                     VersionRange = table.Column<string>(maxLength: 256, nullable: true),
                     TargetFramework = table.Column<string>(maxLength: 256, nullable: true),
                     PackageKey = table.Column<int>(nullable: true)
