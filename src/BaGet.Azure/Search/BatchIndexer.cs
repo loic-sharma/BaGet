@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BaGet.Core.Entities;
 using BaGet.Core.Services;
 using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
@@ -12,7 +13,10 @@ namespace BaGet.Azure.Search
 {
     public class BatchIndexer
     {
-        public const int MaxBatchSize = 1000;
+        /// <summary>
+        /// Each package creates up to 4 documents, Azure Search accepts batches of up to 1000 documents.
+        /// </summary>
+        public const int MaxBatchSize = 1000 / 4;
 
         private readonly IPackageService _packageService;
         private readonly ISearchIndexClient _indexClient;
@@ -47,9 +51,10 @@ namespace BaGet.Azure.Search
 
             foreach (var packageId in packageIdSet)
             {
-                var document = await BuildDocumentAsync(packageId);
-
-                actions.Add(IndexAction.Upload(document));
+                foreach (var document in await BuildDocumentsAsync(packageId))
+                {
+                    actions.Add(IndexAction.Upload(document));
+                }
             }
 
             var batch = IndexBatch.New(actions);
@@ -61,7 +66,7 @@ namespace BaGet.Azure.Search
             _logger.LogInformation("Indexed {PackageCount} packages", packageIdSet.Count);
         }
 
-        private async Task<PackageDocument> BuildDocumentAsync(string packageId)
+        private async Task<IReadOnlyList<PackageDocument>> BuildDocumentsAsync(string packageId)
         {
             if (packageId == null) throw new ArgumentNullException(nameof(packageId));
 
@@ -74,34 +79,64 @@ namespace BaGet.Azure.Search
                 throw new ArgumentException($"Invalid package id {packageId}", nameof(packageId));
             }
 
-            var result = new PackageDocument();
+            var result = new List<PackageDocument>();
+            for (var i = 0; i < 4; i++)
+            {
+                var includePrerelease = (i & 1) != 0;
+                var includeSemVer2 = (i & 2) != 0;
+                var searchFilters = (SearchFilters)i;
 
-            var latest = packages.OrderByDescending(p => p.Version).First();
-            var versions = packages.OrderBy(p => p.Version).ToList();
-            var dependencies = latest
-                .Dependencies
-                .Select(d => d.Id?.ToLowerInvariant())
-                .Where(d => d != null)
-                .Distinct()
-                .ToArray();
+                IEnumerable<Package> filtered = packages;
+                if (!includePrerelease)
+                {
+                    filtered = filtered.Where(p => !p.IsPrerelease);
+                }
 
-            result.Key = EncodeKey(packageId.ToLowerInvariant());
-            result.Id = latest.Id;
-            result.Version = latest.VersionString;
-            result.Description = latest.Description;
-            result.Authors = latest.Authors;
-            result.IconUrl = latest.IconUrlString;
-            result.LicenseUrl = latest.LicenseUrlString;
-            result.ProjectUrl = latest.ProjectUrlString;
-            result.Published = latest.Published;
-            result.Summary = latest.Summary;
-            result.Tags = latest.Tags;
-            result.Title = latest.Title;
-            result.TotalDownloads = versions.Sum(p => p.Downloads);
-            result.DownloadsMagnitude = result.TotalDownloads.ToString().Length;
-            result.Versions = versions.Select(p => p.VersionString).ToArray();
-            result.VersionDownloads = versions.Select(p => p.Downloads.ToString()).ToArray();
-            result.Dependencies = dependencies;
+                if (!includeSemVer2)
+                {
+                    filtered = filtered.Where(p => p.SemVerLevel != SemVerLevel.SemVer2);
+                }
+
+                var versions = filtered.OrderBy(p => p.Version).ToList();
+                if (versions.Count == 0)
+                {
+                    continue;
+                }
+
+                var latest = versions.Last();
+                var dependencies = latest
+                    .Dependencies
+                    .Select(d => d.Id?.ToLowerInvariant())
+                    .Where(d => d != null)
+                    .Distinct()
+                    .ToArray();
+
+                var document = new PackageDocument();
+                var encodedId = EncodeKey(packageId.ToLowerInvariant());
+
+                document.Key = $"{encodedId}-{searchFilters}";
+                document.Id = latest.Id;
+                document.Version = latest.VersionString;
+                document.Description = latest.Description;
+                document.Authors = latest.Authors;
+                document.IconUrl = latest.IconUrlString;
+                document.LicenseUrl = latest.LicenseUrlString;
+                document.ProjectUrl = latest.ProjectUrlString;
+                document.Published = latest.Published;
+                document.Summary = latest.Summary;
+                document.Tags = latest.Tags;
+                document.Title = latest.Title;
+                document.TotalDownloads = versions.Sum(p => p.Downloads);
+                document.DownloadsMagnitude = document.TotalDownloads.ToString().Length;
+                document.Versions = versions.Select(p => p.VersionString).ToArray();
+                document.VersionDownloads = versions.Select(p => p.Downloads.ToString()).ToArray();
+                document.Dependencies = dependencies;
+                document.PackageTypes = latest.PackageTypes.Select(t => t.Name).ToArray();
+                document.Frameworks = latest.TargetFrameworks.Select(f => f.Moniker.ToLowerInvariant()).ToArray();
+                document.SearchFilters = searchFilters.ToString();
+
+                result.Add(document);
+            }
 
             return result;
         }

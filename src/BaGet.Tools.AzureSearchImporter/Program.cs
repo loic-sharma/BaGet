@@ -1,8 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using BaGet.Azure.Extensions;
-using BaGet.Core.Configuration;
-using BaGet.Core.Services;
 using BaGet.Extensions;
 using BaGet.Tools.AzureSearchImporter.Entities;
 using Microsoft.EntityFrameworkCore;

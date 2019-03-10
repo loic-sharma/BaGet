@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using NuGet.Versioning;
 
@@ -16,11 +16,13 @@ namespace BaGet.Core.Entities
         public string Description { get; set; }
         public long Downloads { get; set; }
         public bool HasReadme { get; set; }
+        public bool IsPrerelease { get; set; }
         public string Language { get; set; }
         public bool Listed { get; set; }
         public string MinClientVersion { get; set; }
         public DateTime Published { get; set; }
         public bool RequireLicenseAcceptance { get; set; }
+        public SemVerLevel SemVerLevel { get; set; }
         public string Summary { get; set; }
         public string Title { get; set; }
 
@@ -39,6 +41,8 @@ namespace BaGet.Core.Entities
         public byte[] RowVersion { get; set; }
 
         public List<PackageDependency> Dependencies { get; set; }
+        public List<PackageType> PackageTypes { get; set; }
+        public List<TargetFramework> TargetFrameworks { get; set; }
 
         public string VersionString
         {

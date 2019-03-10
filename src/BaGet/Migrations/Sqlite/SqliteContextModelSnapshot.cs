@@ -14,7 +14,7 @@ namespace BaGet.Migrations.Sqlite
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.1-rtm-30846");
+                .HasAnnotation("ProductVersion", "2.2.2-servicing-10034");
 
             modelBuilder.Entity("BaGet.Core.Entities.Package", b =>
                 {
@@ -38,6 +38,8 @@ namespace BaGet.Migrations.Sqlite
                         .IsRequired()
                         .HasColumnType("TEXT COLLATE NOCASE")
                         .HasMaxLength(128);
+
+                    b.Property<bool>("IsPrerelease");
 
                     b.Property<string>("Language")
                         .HasMaxLength(20);
@@ -66,6 +68,8 @@ namespace BaGet.Migrations.Sqlite
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
+
+                    b.Property<int>("SemVerLevel");
 
                     b.Property<string>("Summary")
                         .HasMaxLength(4000);
@@ -110,9 +114,54 @@ namespace BaGet.Migrations.Sqlite
 
                     b.HasKey("Key");
 
+                    b.HasIndex("Id");
+
                     b.HasIndex("PackageKey");
 
                     b.ToTable("PackageDependencies");
+                });
+
+            modelBuilder.Entity("BaGet.Core.Entities.PackageType", b =>
+                {
+                    b.Property<int>("Key")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT COLLATE NOCASE")
+                        .HasMaxLength(512);
+
+                    b.Property<int>("PackageKey");
+
+                    b.Property<string>("Version")
+                        .HasMaxLength(64);
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("PackageKey");
+
+                    b.ToTable("PackageTypes");
+                });
+
+            modelBuilder.Entity("BaGet.Core.Entities.TargetFramework", b =>
+                {
+                    b.Property<int>("Key")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Moniker")
+                        .HasColumnType("TEXT COLLATE NOCASE")
+                        .HasMaxLength(256);
+
+                    b.Property<int>("PackageKey");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("Moniker");
+
+                    b.HasIndex("PackageKey");
+
+                    b.ToTable("TargetFrameworks");
                 });
 
             modelBuilder.Entity("BaGet.Core.Entities.PackageDependency", b =>
@@ -120,6 +169,22 @@ namespace BaGet.Migrations.Sqlite
                     b.HasOne("BaGet.Core.Entities.Package", "Package")
                         .WithMany("Dependencies")
                         .HasForeignKey("PackageKey");
+                });
+
+            modelBuilder.Entity("BaGet.Core.Entities.PackageType", b =>
+                {
+                    b.HasOne("BaGet.Core.Entities.Package", "Package")
+                        .WithMany("PackageTypes")
+                        .HasForeignKey("PackageKey")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("BaGet.Core.Entities.TargetFramework", b =>
+                {
+                    b.HasOne("BaGet.Core.Entities.Package", "Package")
+                        .WithMany("TargetFrameworks")
+                        .HasForeignKey("PackageKey")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

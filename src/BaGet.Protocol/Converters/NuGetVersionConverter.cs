@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Newtonsoft.Json;
 using NuGet.Versioning;
 
@@ -14,7 +14,7 @@ namespace BaGet.Protocol.Converters
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             var version = (NuGetVersion)value;
-            serializer.Serialize(writer, version.ToNormalizedString());
+            serializer.Serialize(writer, version.ToFullString());
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)

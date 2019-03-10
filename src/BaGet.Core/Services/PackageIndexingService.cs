@@ -13,6 +13,7 @@ using NuGet.Packaging;
 
 namespace BaGet.Core.Services
 {
+    using NuGetPackageType = NuGet.Packaging.Core.PackageType;
     using BaGetPackageDependency = Entities.PackageDependency;
 
     public class PackageIndexingService : IPackageIndexingService
@@ -165,11 +166,13 @@ namespace BaGet.Core.Services
                 Authors = ParseAuthors(nuspec.GetAuthors()),
                 Description = nuspec.GetDescription(),
                 HasReadme = packageReader.HasReadme(),
+                IsPrerelease = nuspec.GetVersion().IsPrerelease,
                 Language = nuspec.GetLanguage() ?? string.Empty,
                 Listed = true,
                 MinClientVersion = nuspec.GetMinClientVersion()?.ToNormalizedString() ?? string.Empty,
                 Published = DateTime.UtcNow,
                 RequireLicenseAcceptance = nuspec.GetRequireLicenseAcceptance(),
+                SemVerLevel = GetSemVerLevel(nuspec),
                 Summary = nuspec.GetSummary(),
                 Title = nuspec.GetTitle(),
                 IconUrl = ParseUri(nuspec.GetIconUrl()),
@@ -178,8 +181,33 @@ namespace BaGet.Core.Services
                 RepositoryUrl = repositoryUri,
                 RepositoryType = repositoryType,
                 Dependencies = GetDependencies(nuspec),
-                Tags = ParseTags(nuspec.GetTags())
+                Tags = ParseTags(nuspec.GetTags()),
+                PackageTypes = GetPackageTypes(nuspec),
+                TargetFrameworks = GetTargetFrameworks(packageReader),
             };
+        }
+
+        // Based off https://github.com/NuGet/NuGetGallery/blob/master/src/NuGetGallery.Core/SemVerLevelKey.cs
+        private SemVerLevel GetSemVerLevel(NuspecReader nuspec)
+        {
+            if (nuspec.GetVersion().IsSemVer2)
+            {
+                return SemVerLevel.SemVer2;
+            }
+
+            foreach (var dependencyGroup in nuspec.GetDependencyGroups())
+            {
+                foreach (var dependency in dependencyGroup.Packages)
+                {
+                    if ((dependency.VersionRange.MinVersion != null && dependency.VersionRange.MinVersion.IsSemVer2)
+                        || (dependency.VersionRange.MaxVersion != null && dependency.VersionRange.MaxVersion.IsSemVer2))
+                    {
+                        return SemVerLevel.SemVer2;
+                    }
+                }
+            }
+
+            return SemVerLevel.Unknown;
         }
 
         private Uri ParseUri(string uriString)
@@ -256,6 +284,49 @@ namespace BaGet.Core.Services
             }
 
             return dependencies;
+        }
+
+        private List<PackageType> GetPackageTypes(NuspecReader nuspec)
+        {
+            var packageTypes = nuspec
+                .GetPackageTypes()
+                .Select(t => new PackageType
+                {
+                    Name = t.Name,
+                    Version = t.Version.ToString()
+                })
+                .ToList();
+
+            // Default to the standard "dependency" package type if no types were found.
+            if (packageTypes.Count == 0)
+            {
+                packageTypes.Add(new PackageType
+                {
+                    Name = NuGetPackageType.Dependency.Name,
+                    Version = NuGetPackageType.Dependency.Version.ToString(),
+                });
+            }
+
+            return packageTypes;
+        }
+
+        private List<TargetFramework> GetTargetFrameworks(PackageArchiveReader packageReader)
+        {
+            var targetFrameworks = packageReader
+                .GetSupportedFrameworks()
+                .Select(f => new TargetFramework
+                {
+                    Moniker = f.GetShortFolderName()
+                })
+                .ToList();
+
+            // Default to the "any" framework if no frameworks were found.
+            if (targetFrameworks.Count == 0)
+            {
+                targetFrameworks.Add(new TargetFramework { Moniker = "any" });
+            }
+
+            return targetFrameworks;
         }
     }
 }

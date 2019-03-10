@@ -10,18 +10,28 @@ namespace BaGet.Core.Services
     public class DatabaseSearchService : ISearchService
     {
         private readonly IContext _context;
+        private readonly IFrameworkCompatibilityService _frameworks;
 
-        public DatabaseSearchService(IContext context)
+        public DatabaseSearchService(IContext context, IFrameworkCompatibilityService frameworks)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _frameworks = frameworks ?? throw new ArgumentNullException(nameof(frameworks));
         }
 
         public Task IndexAsync(Package package) => Task.CompletedTask;
 
-        public async Task<IReadOnlyList<SearchResult>> SearchAsync(string query, int skip = 0, int take = 20)
+        public async Task<IReadOnlyList<SearchResult>> SearchAsync(
+            string query,
+            int skip = 0,
+            int take = 20,
+            bool includePrerelease = true,
+            bool includeSemVer2 = true,
+            string packageType = null,
+            string framework = null)
         {
             var result = new List<SearchResult>();
-            var packages = await SearchImplAsync(query, skip, take);
+            var frameworks = GetCompatibleFrameworks(framework);
+            var packages = await SearchImplAsync(query, skip, take, includePrerelease, includeSemVer2, packageType, frameworks);
 
             foreach (var package in packages)
             {
@@ -50,7 +60,21 @@ namespace BaGet.Core.Services
             return result.AsReadOnly();
         }
 
-        private async Task<List<IGrouping<string, Package>>> SearchImplAsync(string query, int skip, int take)
+        private IReadOnlyList<string> GetCompatibleFrameworks(string framework)
+        {
+            if (framework == null) return null;
+
+            return _frameworks.FindAllCompatibleFrameworks(framework);
+        }
+
+        private async Task<List<IGrouping<string, Package>>> SearchImplAsync(
+            string query,
+            int skip,
+            int take,
+            bool includePrerelease,
+            bool includeSemVer2,
+            string packageType,
+            IReadOnlyList<string> frameworks)
         {
             IQueryable<Package> search = _context.Packages;
 
@@ -58,6 +82,26 @@ namespace BaGet.Core.Services
             {
                 query = query.ToLower();
                 search = search.Where(p => p.Id.ToLower().Contains(query));
+            }
+
+            if (!includePrerelease)
+            {
+                search = search.Where(p => !p.IsPrerelease);
+            }
+
+            if (!includeSemVer2)
+            {
+                search = search.Where(p => p.SemVerLevel != SemVerLevel.SemVer2);
+            }
+
+            if (!string.IsNullOrEmpty(packageType))
+            {
+                search = search.Where(p => p.PackageTypes.Any(t => t.Name == packageType));
+            }
+
+            if (frameworks != null)
+            {
+                search = search.Where(p => p.TargetFrameworks.Any(f => frameworks.Contains(f.Moniker)));
             }
 
             var packageIds = search.Select(p => p.Id)

@@ -3,27 +3,25 @@ using System;
 using BaGet.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace BaGet.Migrations.SqlServer
+namespace BaGet.Migrations.Sqlite
 {
-    [DbContext(typeof(SqlServerContext))]
-    partial class SqlServerContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(SqliteContext))]
+    [Migration("20190303072658_AddSearchDimensions")]
+    partial class AddSearchDimensions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.2-servicing-10034")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "2.2.2-servicing-10034");
 
             modelBuilder.Entity("BaGet.Core.Entities.Package", b =>
                 {
                     b.Property<int>("Key")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Authors")
                         .HasMaxLength(4000);
@@ -40,6 +38,7 @@ namespace BaGet.Migrations.SqlServer
 
                     b.Property<string>("Id")
                         .IsRequired()
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasMaxLength(128);
 
                     b.Property<bool>("IsPrerelease");
@@ -101,10 +100,10 @@ namespace BaGet.Migrations.SqlServer
             modelBuilder.Entity("BaGet.Core.Entities.PackageDependency", b =>
                 {
                     b.Property<int>("Key")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Id")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasMaxLength(128);
 
                     b.Property<int?>("PackageKey");
@@ -127,10 +126,10 @@ namespace BaGet.Migrations.SqlServer
             modelBuilder.Entity("BaGet.Core.Entities.PackageType", b =>
                 {
                     b.Property<int>("Key")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasMaxLength(512);
 
                     b.Property<int>("PackageKey");
@@ -150,10 +149,10 @@ namespace BaGet.Migrations.SqlServer
             modelBuilder.Entity("BaGet.Core.Entities.TargetFramework", b =>
                 {
                     b.Property<int>("Key")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Moniker")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasMaxLength(256);
 
                     b.Property<int>("PackageKey");

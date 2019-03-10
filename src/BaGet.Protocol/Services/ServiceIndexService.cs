@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,12 +11,13 @@ namespace BaGet.Protocol
         public static readonly string Version300beta = "/3.0.0-beta";
         public static readonly string Version300 = "/3.0.0";
         public static readonly string Version340 = "/3.4.0";
+        public static readonly string Version360 = "/3.6.0";
         public static readonly string Versioned = "/Versioned";
         public static readonly string Version470 = "/4.7.0";
         public static readonly string Version490 = "/4.9.0";
 
         public static readonly string[] SearchQueryService = { "SearchQueryService" + Versioned, "SearchQueryService" + Version340, "SearchQueryService" + Version300beta };
-        public static readonly string[] RegistrationsBaseUrl = { "RegistrationsBaseUrl" + Versioned, "RegistrationsBaseUrl" + Version340, "RegistrationsBaseUrl" + Version300beta };
+        public static readonly string[] RegistrationsBaseUrl = { "RegistrationsBaseUrl" + Versioned, "RegistrationsBaseUrl" + Version360, "RegistrationsBaseUrl" + Version340, "RegistrationsBaseUrl" + Version300beta };
         public static readonly string[] SearchAutocompleteService = { "SearchAutocompleteService" + Versioned, "SearchAutocompleteService" + Version300beta };
         public static readonly string[] ReportAbuse = { "ReportAbuseUriTemplate" + Versioned, "ReportAbuseUriTemplate" + Version300 };
         public static readonly string[] LegacyGallery = { "LegacyGallery" + Versioned, "LegacyGallery" + Version200 };
@@ -57,7 +58,7 @@ namespace BaGet.Protocol
         private async Task<string> GetUrlForResourceType(string[] types)
         {
             var serviceIndex = await _serviceIndexTask.Value;
-            var resource = serviceIndex.Resources.First(r => types.Contains(r.Type));
+            var resource = types.SelectMany(t => serviceIndex.Resources.Where(r => r.Type == t)).First();
 
             return resource.Url.Trim('/');
         }
