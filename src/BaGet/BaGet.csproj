@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Entities\**" />
+    <Content Remove="Entities\**" />
+    <EmbeddedResource Remove="Entities\**" />
+    <None Remove="Entities\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
@@ -24,10 +31,6 @@
     <ProjectReference Include="..\BaGet.Database.Sqlite\BaGet.Database.Sqlite.csproj" />
     <ProjectReference Include="..\BaGet.Database.SqlServer\BaGet.Database.SqlServer.csproj" />
     <ProjectReference Include="..\BaGet.Protocol\BaGet.Protocol.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Entities\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
