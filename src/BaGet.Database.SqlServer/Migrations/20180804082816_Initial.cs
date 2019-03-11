@@ -2,7 +2,7 @@ using System;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace BaGet.Migrations.MySql
+namespace BaGet.Database.SqlServer.Migrations
 {
     public partial class Initial : Migration
     {
@@ -13,7 +13,7 @@ namespace BaGet.Migrations.MySql
                 columns: table => new
                 {
                     Key = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Id = table.Column<string>(maxLength: 128, nullable: false),
                     Authors = table.Column<string>(maxLength: 4000, nullable: true),
                     Description = table.Column<string>(maxLength: 4000, nullable: true),
@@ -32,7 +32,7 @@ namespace BaGet.Migrations.MySql
                     RepositoryUrl = table.Column<string>(maxLength: 4000, nullable: true),
                     RepositoryType = table.Column<string>(maxLength: 100, nullable: true),
                     Tags = table.Column<string>(maxLength: 4000, nullable: true),
-                    RowVersion = table.Column<DateTime>(rowVersion: true, nullable: true),
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
                     Version = table.Column<string>(maxLength: 64, nullable: false)
                 },
                 constraints: table =>
@@ -45,11 +45,11 @@ namespace BaGet.Migrations.MySql
                 columns: table => new
                 {
                     Key = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Id = table.Column<string>(maxLength: 128, nullable: true),
                     VersionRange = table.Column<string>(maxLength: 256, nullable: true),
                     TargetFramework = table.Column<string>(maxLength: 256, nullable: true),
-                    PackageKey = table.Column<int>(nullable: false)
+                    PackageKey = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -59,7 +59,7 @@ namespace BaGet.Migrations.MySql
                         column: x => x.PackageKey,
                         principalTable: "Packages",
                         principalColumn: "Key",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(

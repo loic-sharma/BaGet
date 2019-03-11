@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
-using BaGet.Entities;
+using BaGet.Database.Sqlite;
 using BaGet.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

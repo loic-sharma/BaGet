@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Newtonsoft.Json;
 
-namespace BaGet.Entities
+namespace BaGet.Core.Entities
 {
     public class StringArrayToJsonConverter : ValueConverter<string[], string>
     {
@@ -9,8 +9,8 @@ namespace BaGet.Entities
 
         public StringArrayToJsonConverter()
             : base(
-                  v => JsonConvert.SerializeObject(v),
-                  v => (!string.IsNullOrEmpty(v)) ? JsonConvert.DeserializeObject<string[]>(v) : new string[0])
+                v => JsonConvert.SerializeObject(v),
+                v => (!string.IsNullOrEmpty(v)) ? JsonConvert.DeserializeObject<string[]>(v) : new string[0])
         {
         }
     }

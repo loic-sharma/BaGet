@@ -2,7 +2,7 @@ using BaGet.Core.Entities;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace BaGet.Entities
+namespace BaGet.Database.Sqlite
 {
     public class SqliteContext : AbstractContext<SqliteContext>
     {

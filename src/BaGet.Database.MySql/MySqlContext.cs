@@ -1,7 +1,8 @@
+using BaGet.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 
-namespace BaGet.Entities
+namespace BaGet.Database.MySql
 {
     public class MySqlContext : AbstractContext<MySqlContext>
     {

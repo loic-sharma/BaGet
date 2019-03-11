@@ -1,9 +1,8 @@
 using System.Threading.Tasks;
-using BaGet.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BaGet.Entities
+namespace BaGet.Core.Entities
 {
     public abstract class AbstractContext<TContext> : DbContext, IContext where TContext : DbContext
     {
