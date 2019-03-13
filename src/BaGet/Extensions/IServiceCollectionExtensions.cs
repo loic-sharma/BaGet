@@ -9,6 +9,7 @@ using BaGet.AWS.Extensions;
 using BaGet.Azure.Configuration;
 using BaGet.Azure.Extensions;
 using BaGet.Azure.Search;
+using BaGet.Core.Authentication;
 using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
 using BaGet.Core.Extensions;
@@ -66,13 +67,13 @@ namespace BaGet.Extensions
 
             services.AddAuthenticationProviders(); //API-Key
 
-            services.ConfigureAzureAdAuthentication(configuration);
+            services.ConfigureFeedAuthentication(configuration);
             services.AddSingleton<IConfigureOptions<MvcOptions>, ConfigureMvcOptions>();
 
             return services;
         }
 
-        public static void ConfigureAzureAdAuthentication(this IServiceCollection services, IConfiguration configuration)
+        public static void ConfigureFeedAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             var options = services.BuildServiceProvider().GetRequiredService<IOptionsSnapshot<FeedAuthenticationOptions>>();
             switch (options.Value.Type)
@@ -82,11 +83,34 @@ namespace BaGet.Extensions
                 case AuthenticationType.AzureActiveDirectory:
                     ConfigureAzureAdAuthentication(services, configuration, options.Value.SettingsKey);
                     break;
+                case AuthenticationType.Basic: 
+                    ConfigureBasicAuthentication(services, configuration, options.Value.SettingsKey);
+                    break;
                 default:
                     throw new NotImplementedException(string.Format("AuthenticationType '{0}' not implemented yet", options.Value.Type));
             }
-
         }
+
+        /// <summary>
+        /// really simple scenario, basically for Testing the Infrastructure
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configuration"></param>
+        /// <param name="bindingKey"></param>
+        public static void ConfigureBasicAuthentication(this IServiceCollection services, IConfiguration configuration, string bindingKey)
+        {
+            if (services == null) throw new ArgumentNullException(nameof(services));
+            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+
+            if (string.IsNullOrEmpty(bindingKey)) throw new ArgumentNullException(nameof(bindingKey));
+            services.AddAuthentication(sharedOptions =>
+            {
+                sharedOptions.DefaultScheme = BasicAuthenticationDefaults.AuthenticationScheme;
+            })
+            .AddBasic(BasicAuthenticationDefaults.AuthenticationScheme, options => configuration.Bind(bindingKey, options));
+        }
+
+
 
         public static void ConfigureAzureAdAuthentication(this IServiceCollection services, IConfiguration configuration, string bindingKey)
         {
