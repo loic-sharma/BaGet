@@ -6,6 +6,8 @@ namespace BaGet.Core.Configuration
     public enum AuthenticationType
     {
         None,
+        Basic,
+        JwtBearer,
         AzureActiveDirectory,
     }
        
