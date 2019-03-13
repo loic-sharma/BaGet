@@ -1,6 +1,8 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Services;
@@ -29,32 +31,47 @@ namespace BaGet.GCP.Services
             {
                 var stream = new MemoryStream();
                 await storage.DownloadObjectAsync(_bucketName, CoercePath(path), stream, cancellationToken: cancellationToken);
-                stream.Seek(0, SeekOrigin.Begin);
+                stream.Position = 0;
                 return stream;
             }
         }
 
         public Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
         {
-            return Task.FromResult(new Uri($"http://storage.googleapis.com/{_bucketName}/{CoercePath(path).TrimStart('/')}"));
+            // returns an Authenticated Browser Download URL: https://cloud.google.com/storage/docs/request-endpoints#cookieauth
+            return Task.FromResult(new Uri($"https://storage.googleapis.com/{_bucketName}/{CoercePath(path).TrimStart('/')}"));
         }
 
         public async Task<PutResult> PutAsync(string path, Stream content, string contentType, CancellationToken cancellationToken = default)
         {
             using (var storage = await StorageClient.CreateAsync())
+            using (var seekableContent = new MemoryStream())
             {
+                await content.CopyToAsync(seekableContent, 65536, cancellationToken);
+                seekableContent.Position = 0;
+
+                var objectName = CoercePath(path);
+
                 try
                 {
-                    await storage.GetObjectAsync(_bucketName, CoercePath(path), cancellationToken: cancellationToken);
-                    return PutResult.AlreadyExists;
-                }
-                catch (GoogleApiException e)
-                {
-                    if (e.HttpStatusCode != HttpStatusCode.NotFound)
-                        throw;
-
-                    await storage.UploadObjectAsync(_bucketName, CoercePath(path), contentType, content, cancellationToken: cancellationToken);
+                    // attempt to upload, succeeding only if the object doesn't exist
+                    await storage.UploadObjectAsync(_bucketName, objectName, contentType, seekableContent, new UploadObjectOptions { IfGenerationMatch = 0 }, cancellationToken);
                     return PutResult.Success;
+                }
+                catch (GoogleApiException e) when (e.HttpStatusCode == HttpStatusCode.PreconditionFailed)
+                {
+                    // the object already exists; get the hash of its content from its metadata
+                    var existingObject = await storage.GetObjectAsync(_bucketName, objectName, cancellationToken: cancellationToken);
+                    var existingHash = Convert.FromBase64String(existingObject.Md5Hash);
+
+                    // hash the content that was uploaded
+                    seekableContent.Position = 0;
+                    byte[] contentHash;
+                    using (var md5 = MD5.Create())
+                        contentHash = md5.ComputeHash(seekableContent);
+
+                    // conflict if the two hashes are different
+                    return existingHash.SequenceEqual(contentHash) ? PutResult.AlreadyExists : PutResult.Conflict;
                 }
             }
         }
@@ -68,17 +85,16 @@ namespace BaGet.GCP.Services
                     var obj = await storage.GetObjectAsync(_bucketName, CoercePath(path), cancellationToken: cancellationToken);
                     await storage.DeleteObjectAsync(obj, cancellationToken: cancellationToken);
                 }
-                catch (GoogleApiException e)
+                catch (GoogleApiException e) when (e.HttpStatusCode == HttpStatusCode.NotFound)
                 {
-                    if (e.HttpStatusCode != HttpStatusCode.NotFound)
-                        throw;
                 }
             }
         }
 
         private static string CoercePath(string path)
         {
-            // bucket folder structure is always forward slash regardless of what platform baget server is running on
+            // although Google Cloud Storage objects exist in a flat namespace, using forward slashes allows the objects to
+            // be exposed as nested subdirectories, e.g., when browsing via Google Cloud Console
             return path.Replace('\\', '/');
         }
     }
