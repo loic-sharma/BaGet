@@ -11,11 +11,11 @@ using Microsoft.Extensions.Options;
 
 namespace BaGet.GCP.Services
 {
-    public class GoogleBucketStorageService : IStorageService
+    public class GoogleCloudStorageService : IStorageService
     {
         private readonly string _bucketName;
 
-        public GoogleBucketStorageService(IOptionsSnapshot<GoogleBucketStorageOptions> options)
+        public GoogleCloudStorageService(IOptionsSnapshot<GoogleCloudStorageOptions> options)
         {
             if (options == null)
                 throw new ArgumentNullException(nameof(options));

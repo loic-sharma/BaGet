@@ -152,7 +152,7 @@ namespace BaGet.Extensions
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.ConfigureAndValidate<GoogleBucketStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
+            services.ConfigureAndValidate<GoogleCloudStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
 
             return services;
         }
@@ -165,7 +165,7 @@ namespace BaGet.Extensions
 
             services.AddBlobStorageService();
             services.AddS3StorageService();
-            services.AddGoogleBucketStorageService();
+            services.AddGoogleCloudStorageService();
 
             services.AddTransient<IStorageService>(provider =>
             {
@@ -182,8 +182,8 @@ namespace BaGet.Extensions
                     case StorageType.AwsS3:
                         return provider.GetRequiredService<S3StorageService>();
 
-                    case StorageType.GoogleBucket:
-                        return provider.GetRequiredService<GoogleBucketStorageService>();
+                    case StorageType.GoogleCloud:
+                        return provider.GetRequiredService<GoogleCloudStorageService>();
 
                     default:
                         throw new InvalidOperationException(

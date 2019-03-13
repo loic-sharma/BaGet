@@ -6,9 +6,9 @@ namespace BaGet.GCP.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddGoogleBucketStorageService(this IServiceCollection services)
+        public static IServiceCollection AddGoogleCloudStorageService(this IServiceCollection services)
         {
-            services.AddTransient<GoogleBucketStorageService>();
+            services.AddTransient<GoogleCloudStorageService>();
             return services;
         }
     }
