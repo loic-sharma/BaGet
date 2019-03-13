@@ -40,6 +40,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Database.MySql", "src
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaGet.Database.PostgreSql", "src\BaGet.Database.PostgreSql\BaGet.Database.PostgreSql.csproj", "{F48F201A-4DEE-4D5B-9C0B-59490FE942FA}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.GCP", "src\BaGet.GCP\BaGet.GCP.csproj", "{D7D60BA0-FF7F-4B37-815C-74D487C5176E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -102,6 +104,10 @@ Global
 		{F48F201A-4DEE-4D5B-9C0B-59490FE942FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F48F201A-4DEE-4D5B-9C0B-59490FE942FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F48F201A-4DEE-4D5B-9C0B-59490FE942FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7D60BA0-FF7F-4B37-815C-74D487C5176E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7D60BA0-FF7F-4B37-815C-74D487C5176E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7D60BA0-FF7F-4B37-815C-74D487C5176E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7D60BA0-FF7F-4B37-815C-74D487C5176E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -121,6 +127,7 @@ Global
 		{4C513AFC-BA7B-471D-B8F6-268E7AD2074C} = {26A0B557-53FB-4B9A-94C4-BCCF1BDCB0CC}
 		{A4375529-E855-4D46-AA4F-B3FE630C3DE1} = {26A0B557-53FB-4B9A-94C4-BCCF1BDCB0CC}
 		{F48F201A-4DEE-4D5B-9C0B-59490FE942FA} = {26A0B557-53FB-4B9A-94C4-BCCF1BDCB0CC}
+		{D7D60BA0-FF7F-4B37-815C-74D487C5176E} = {26A0B557-53FB-4B9A-94C4-BCCF1BDCB0CC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1423C027-2C90-417F-8629-2A4CF107C055}

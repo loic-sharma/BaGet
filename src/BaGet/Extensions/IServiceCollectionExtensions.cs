@@ -18,6 +18,9 @@ using BaGet.Database.MySql;
 using BaGet.Database.PostgreSql;
 using BaGet.Database.Sqlite;
 using BaGet.Database.SqlServer;
+using BaGet.GCP.Configuration;
+using BaGet.GCP.Extensions;
+using BaGet.GCP.Services;
 using BaGet.Protocol;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -44,6 +47,7 @@ namespace BaGet.Extensions
 
             services.ConfigureAzure(configuration);
             services.ConfigureAws(configuration);
+            services.ConfigureGcp(configuration);
 
             if (httpServices)
             {
@@ -144,6 +148,15 @@ namespace BaGet.Extensions
             return services;
         }
 
+        public static IServiceCollection ConfigureGcp(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            services.ConfigureAndValidate<GoogleBucketStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
+
+            return services;
+        }
+
         public static IServiceCollection AddStorageProviders(this IServiceCollection services)
         {
             services.AddTransient<FileStorageService>();
@@ -152,6 +165,7 @@ namespace BaGet.Extensions
 
             services.AddBlobStorageService();
             services.AddS3StorageService();
+            services.AddGoogleBucketStorageService();
 
             services.AddTransient<IStorageService>(provider =>
             {
@@ -167,6 +181,9 @@ namespace BaGet.Extensions
 
                     case StorageType.AwsS3:
                         return provider.GetRequiredService<S3StorageService>();
+
+                    case StorageType.GoogleBucket:
+                        return provider.GetRequiredService<GoogleBucketStorageService>();
 
                     default:
                         throw new InvalidOperationException(

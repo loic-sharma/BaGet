@@ -9,6 +9,7 @@
     {
         FileSystem = 0,
         AzureBlobStorage = 1,
-        AwsS3 = 2
+        AwsS3 = 2,
+        GoogleBucket = 3,
     }
 }
