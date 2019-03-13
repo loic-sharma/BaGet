@@ -1,11 +1,12 @@
 using System;
 using System.Threading.Tasks;
+using BaGet.Tests.Fixtures;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace BaGet.Tests.Abstractions
 {
-    public abstract class PackageControllerTest //: AuthenticatedNugetClientWorkflowTest
+    public abstract class PackageControllerTest 
     {
         private readonly string IndexUrlFormatString = "v3/package/{0}/index.json";
         protected readonly BaGetServerFixture Fixture;

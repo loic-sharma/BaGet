@@ -1,5 +1,6 @@
 using System.Net;
 using System.Diagnostics;
+using BaGet.Tests.Support;
 
 namespace BaGet.Tests.Fixtures
 {
@@ -18,38 +19,4 @@ namespace BaGet.Tests.Fixtures
             return TestServerBuilder.Create().UseBasicAuthentication(AllowedUserCredentials, "myRealm");
         }
     }
-
-
-
-
-
-
-    //public abstract class AuthenticatedNugetClientWorkflowTest : IDisposable
-    //{
-    //    protected readonly ITestOutputHelper Helper;
-    //    private readonly TestServer _server;
-    //    protected readonly HttpClient HttpClient;
-
-    //    public AuthenticatedNugetClientWorkflowTest(ITestOutputHelper helper)
-    //    {
-    //        Helper = helper ?? throw new ArgumentNullException(nameof(helper));
-    //        _server = TestServerBuilder.Create().TraceToTestOutputHelper(Helper, LogLevel.Error).Build();
-    //        var innerHandler = _server.CreateHandler();
-    //        var authHandler = new NuGetLikeAuthenticationHandler(innerHandler);
-    //        HttpClient = new HttpClient(authHandler);
-    //    }
-
-
-
-    //    //public async void dummytest()
-    //    //{
-    //    //    var response = await _server.CreateClient().GetAsync(string.Format("", ""));
-    //    //}
-
-
-    //    public void Dispose()
-    //    {
-    //        _server?.Dispose();
-    //    }
-    //}
 }
