@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using BaGet.Core.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -12,10 +13,10 @@ namespace BaGet.Extensions
         {
             if (configureOptions == null) throw new ArgumentNullException(nameof(configureOptions));
 
-            var vs = new ValidatorService();
+            var vs = new UserValidationService();
             System.Net.NetworkCredential allowedUser = null;
             builder.Services.AddSingleton<IPostConfigureOptions<BasicAuthenticationOptions>, BasicAuthenticationPostConfigureOptions>();
-            builder.Services.AddSingleton<IBasicAuthenticationService>(vs);
+            builder.Services.AddSingleton<IUserValidationService>(vs);
 
             vs.Validator = (c) =>
             {
@@ -24,7 +25,7 @@ namespace BaGet.Extensions
                     return Task.FromResult(false);
                 }
 
-                return Task.FromResult((allowedUser.UserName == c.UserName) && allowedUser.Password == c.Password && allowedUser.Domain== c.Domain);
+                return Task.FromResult((allowedUser.UserName == c.UserName) && allowedUser.Password == c.Password && allowedUser.Domain == c.Domain);
 
             };
 
