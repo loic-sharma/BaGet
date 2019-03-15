@@ -32,6 +32,11 @@ namespace BaGet.Core.Configuration
         /// </summary>
         public bool AllowPackageOverwrites { get; set; } = false;
 
+        /// <summary>
+        /// If true, disables package pushing, deleting, and relisting.
+        /// </summary>
+        public bool IsReadOnlyMode { get; set; } = false;
+
         [Required]
         public DatabaseOptions Database { get; set; }
 

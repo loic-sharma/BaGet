@@ -1,10 +1,12 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using BaGet.Core.Configuration;
 using BaGet.Core.Services;
 using BaGet.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NuGet.Versioning;
 
 namespace BaGet.Controllers
@@ -15,6 +17,7 @@ namespace BaGet.Controllers
         private readonly IPackageIndexingService _indexer;
         private readonly IPackageService _packages;
         private readonly IPackageDeletionService _deleteService;
+        private readonly IOptionsSnapshot<BaGetOptions> _options;
         private readonly ILogger<PackagePublishController> _logger;
 
         public PackagePublishController(
@@ -22,19 +25,22 @@ namespace BaGet.Controllers
             IPackageIndexingService indexer,
             IPackageService packages,
             IPackageDeletionService deletionService,
+            IOptionsSnapshot<BaGetOptions> options,
             ILogger<PackagePublishController> logger)
         {
             _authentication = authentication ?? throw new ArgumentNullException(nameof(authentication));
             _indexer = indexer ?? throw new ArgumentNullException(nameof(indexer));
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));
             _deleteService = deletionService ?? throw new ArgumentNullException(nameof(deletionService));
+            _options = options ?? throw new ArgumentNullException(nameof(options));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         // See: https://docs.microsoft.com/en-us/nuget/api/package-publish-resource#push-a-package
         public async Task Upload(CancellationToken cancellationToken)
         {
-            if (!await _authentication.AuthenticateAsync(Request.GetApiKey()))
+            if (_options.Value.IsReadOnlyMode ||
+                !await _authentication.AuthenticateAsync(Request.GetApiKey()))
             {
                 HttpContext.Response.StatusCode = 401;
                 return;
@@ -79,6 +85,11 @@ namespace BaGet.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(string id, string version, CancellationToken cancellationToken)
         {
+            if (_options.Value.IsReadOnlyMode)
+            {
+                return Unauthorized();
+            }
+
             if (!NuGetVersion.TryParse(version, out var nugetVersion))
             {
                 return NotFound();
@@ -102,6 +113,11 @@ namespace BaGet.Controllers
         [HttpPost]
         public async Task<IActionResult> Relist(string id, string version)
         {
+            if (_options.Value.IsReadOnlyMode)
+            {
+                return Unauthorized();
+            }
+
             if (!NuGetVersion.TryParse(version, out var nugetVersion))
             {
                 return NotFound();
