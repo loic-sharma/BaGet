@@ -2,12 +2,14 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
+using BaGet.Authentication;
 using BaGet.AWS;
 using BaGet.AWS.Configuration;
 using BaGet.AWS.Extensions;
 using BaGet.Azure.Configuration;
 using BaGet.Azure.Extensions;
 using BaGet.Azure.Search;
+using BaGet.Core.Authentication;
 using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
 using BaGet.Core.Extensions;
@@ -18,6 +20,8 @@ using BaGet.Database.MySql;
 using BaGet.Database.Sqlite;
 using BaGet.Database.SqlServer;
 using BaGet.Protocol;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +31,7 @@ namespace BaGet.Extensions
 {
     public static class IServiceCollectionExtensions
     {
+
         public static IServiceCollection ConfigureBaGet(
             this IServiceCollection services,
             IConfiguration configuration,
@@ -40,6 +45,7 @@ namespace BaGet.Extensions
             services.ConfigureAndValidate<FileSystemStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
             services.ConfigureAndValidate<BlobStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
             services.ConfigureAndValidate<AzureSearchOptions>(configuration.GetSection(nameof(BaGetOptions.Search)));
+            services.ConfigureAndValidate<FeedAuthenticationOptions>(configuration.GetSection(nameof(BaGetOptions.FeedAuthentication)));
 
             services.ConfigureAzure(configuration);
             services.ConfigureAws(configuration);
@@ -60,10 +66,88 @@ namespace BaGet.Extensions
 
             services.AddStorageProviders();
             services.AddSearchProviders();
-            services.AddAuthenticationProviders();
+
+            services.AddAuthenticationProviders(); //API-Key
+
+            services.ConfigureFeedAuthentication(configuration);
+            services.AddSingleton<IConfigureOptions<MvcOptions>, ConfigureMvcOptions>();
 
             return services;
         }
+
+        public static void ConfigureFeedAuthentication(this IServiceCollection services, IConfiguration configuration)
+        {
+            var options = services.BuildServiceProvider().GetRequiredService<IOptionsSnapshot<FeedAuthenticationOptions>>();
+            switch (options.Value.Type)
+            {
+                case AuthenticationType.None:
+                    break;
+                case AuthenticationType.AzureActiveDirectory:
+                    ConfigureAzureAdAuthentication(services, configuration, options.Value.SettingsKey);
+                    break;
+                case AuthenticationType.Basic: 
+                    ConfigureBasicAuthentication(services, configuration, options.Value.SettingsKey);
+                    break;
+                case AuthenticationType.JwtBearer:
+                    ConfigureJwtBearerAuthentication(services, configuration, options.Value.SettingsKey);
+                    break;
+                default:
+                    throw new NotImplementedException(string.Format("AuthenticationType '{0}' not implemented yet", options.Value.Type));
+            }
+        }
+
+        /// <summary>
+        /// really simple scenario, basically for Testing the Infrastructure
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configuration"></param>
+        /// <param name="bindingKey"></param>
+        public static void ConfigureBasicAuthentication(this IServiceCollection services, IConfiguration configuration, string bindingKey)
+        {
+            if (services == null) throw new ArgumentNullException(nameof(services));
+            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+
+            if (string.IsNullOrEmpty(bindingKey)) throw new ArgumentNullException(nameof(bindingKey));
+            services.AddAuthentication(sharedOptions =>
+            {
+                sharedOptions.DefaultScheme = BasicAuthenticationDefaults.AuthenticationScheme;
+            })
+            .AddBasic(BasicAuthenticationDefaults.AuthenticationScheme, options => configuration.Bind(bindingKey, options));
+        }
+
+
+
+        public static void ConfigureAzureAdAuthentication(this IServiceCollection services, IConfiguration configuration, string bindingKey)
+        {
+            if (services == null) throw new ArgumentNullException(nameof(services));
+            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+
+            if (string.IsNullOrEmpty(bindingKey)) throw new ArgumentNullException(nameof(bindingKey));
+
+            services.AddAuthentication(sharedOptions =>
+            {
+                sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddAzureAdBearer(options => configuration.Bind(bindingKey, options));
+        }
+
+        public static void ConfigureJwtBearerAuthentication(this IServiceCollection services, IConfiguration configuration, string bindingKey)
+        {
+            if (services == null) throw new ArgumentNullException(nameof(services));
+            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+
+            if (string.IsNullOrEmpty(bindingKey)) throw new ArgumentNullException(nameof(bindingKey));
+
+            services.AddAuthentication(sharedOptions =>
+            {
+                sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer1(options => configuration.Bind(bindingKey, options));
+        }
+
+
+
+
 
         public static IServiceCollection AddBaGetContext(this IServiceCollection services)
         {
@@ -259,8 +343,7 @@ namespace BaGet.Extensions
 
         public static IServiceCollection AddAuthenticationProviders(this IServiceCollection services)
         {
-            services.AddTransient<IAuthenticationService, ApiKeyAuthenticationService>();
-
+            services.AddTransient<BaGet.Core.Services.IAuthenticationService, ApiKeyAuthenticationService>();
             return services;
         }
     }

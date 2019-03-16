@@ -43,6 +43,13 @@ namespace BaGet
 
             // Run migrations if necessary.
             var options = Configuration.Get<BaGetOptions>();
+
+            if (options.ShowPII)
+            {
+                //enhance trace for (failed) token validation => it breaks security! Should be used only 
+                Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
+            }
+
             if (options.RunMigrationsAtStartup)
             {
                 using (var scope = app.ApplicationServices.CreateScope())
@@ -59,6 +66,14 @@ namespace BaGet
             app.UseSpaStaticFiles();
 
             app.UseCors(ConfigureCorsOptions.CorsPolicy);
+
+            if (options.AddTokenMiddleware)
+            {
+                app.UseNugetBehaviorMiddleware(); //BEFORE AUTH!
+            }
+
+            app.UseAuthentication();
+
 
             app.UseMvc(routes =>
             {
