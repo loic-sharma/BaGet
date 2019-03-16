@@ -1,10 +1,12 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
+using BaGet.Core.Configuration;
 using BaGet.Core.Services;
 using BaGet.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace BaGet.Controllers
 {
@@ -13,24 +15,27 @@ namespace BaGet.Controllers
         private readonly IAuthenticationService _authentication;
         private readonly ISymbolIndexingService _indexer;
         private readonly ISymbolStorageService _storage;
+        private readonly IOptionsSnapshot<BaGetOptions> _options;
         private readonly ILogger<SymbolController> _logger;
 
         public SymbolController(
             IAuthenticationService authentication,
             ISymbolIndexingService indexer,
             ISymbolStorageService storage,
+            IOptionsSnapshot<BaGetOptions> options,
             ILogger<SymbolController> logger)
         {
             _authentication = authentication ?? throw new ArgumentNullException(nameof(authentication));
             _indexer = indexer ?? throw new ArgumentNullException(nameof(indexer));
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
+            _options = options ?? throw new ArgumentNullException(nameof(options));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         // See: https://docs.microsoft.com/en-us/nuget/api/package-publish-resource#push-a-package
         public async Task Upload(CancellationToken cancellationToken)
         {
-            if (!await _authentication.AuthenticateAsync(Request.GetApiKey()))
+            if (_options.Value.IsReadOnlyMode || !await _authentication.AuthenticateAsync(Request.GetApiKey()))
             {
                 HttpContext.Response.StatusCode = 401;
                 return;
