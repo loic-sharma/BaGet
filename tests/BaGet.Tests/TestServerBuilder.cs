@@ -99,8 +99,17 @@ namespace BaGet.Tests
             Configuration.Add(FeedAuthenticationTypeKey, AuthenticationType.Basic.ToString());
             Configuration.Add(AddTokenMiddlewareKey, false.ToString()); //NOT required for Basic
             Configuration.Add(FeedAuthenticationSettingsKey, "basicSettings");
-            Configuration.Add("basicSettings:Domain", allowedUser.Domain);
-            Configuration.Add("basicSettings:Realm", realm);
+
+            if (string.IsNullOrEmpty(allowedUser.Domain) == false)
+            {
+                Configuration.Add("basicSettings:Domain", allowedUser.Domain);
+            }
+
+            if (string.IsNullOrEmpty(realm) == false)
+            {
+                Configuration.Add("basicSettings:Realm", realm);
+            }
+
             Configuration.Add("basicSettings:UserName", allowedUser.UserName);
             Configuration.Add("basicSettings:Password", allowedUser.Password);
             return this;

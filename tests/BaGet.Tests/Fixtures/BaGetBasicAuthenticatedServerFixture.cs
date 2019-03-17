@@ -7,6 +7,7 @@ namespace BaGet.Tests.Fixtures
     public class BaGetBasicAuthenticatedServerFixture : BaGetServerFixture
     {
         public NetworkCredential AllowedUserCredentials { get; set; }
+        public string Realm { get; set; }
 
         protected override void OnAfterNuGetLikeAuthenticationHandlerCreated(NuGetLikeAuthenticationHandler handler)
         {
@@ -15,7 +16,7 @@ namespace BaGet.Tests.Fixtures
         }
         protected override ITestServerBuilder GetBuilder()
         {
-            return TestServerBuilder.Create().UseBasicAuthentication(AllowedUserCredentials, "myRealm"); //inject testcase credential into BaGet Server
+            return TestServerBuilder.Create().UseBasicAuthentication(AllowedUserCredentials, Realm); //inject testcase credential into BaGet Server
         }
     }
 }

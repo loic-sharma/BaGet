@@ -71,7 +71,12 @@ namespace BaGet.Extensions
 
         protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
         {
-            Response.Headers[HeaderNames.WWWAuthenticate] = $"Basic realm=\"{Options.Realm}\", charset=\"UTF-8\"";
+            var header = $"Basic charset=\"UTF-8\"";
+            if (string.IsNullOrEmpty(Options.Realm)==false)
+            {
+                header = $"Basic realm=\"{Options.Realm}\", charset=\"UTF-8\"";
+            }
+            Response.Headers[HeaderNames.WWWAuthenticate] = header;
             await base.HandleChallengeAsync(properties);
         }
     }
