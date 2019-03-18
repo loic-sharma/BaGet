@@ -17,7 +17,7 @@ namespace BaGet.Tests
     /// fluent builder pattern implementation.
     /// private/hidden Constructor, please use one of the static methods for creation.
     /// </summary>
-    public class TestServerBuilder
+    public class TestServerBuilder : ITestServerBuilder
     {
 
         private const string DefaultPackagesFolderName = "Packages";
