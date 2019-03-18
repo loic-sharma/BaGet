@@ -15,5 +15,6 @@ namespace BaGet.Core.Configuration
         MySql,
         Sqlite,
         SqlServer,
+        PostgreSql
     }
 }

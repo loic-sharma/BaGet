@@ -15,6 +15,7 @@ using BaGet.Core.Mirror;
 using BaGet.Core.Server.Extensions;
 using BaGet.Core.Services;
 using BaGet.Database.MySql;
+using BaGet.Database.PostgreSql;
 using BaGet.Database.Sqlite;
 using BaGet.Database.SqlServer;
 using BaGet.Protocol;
@@ -84,6 +85,9 @@ namespace BaGet.Extensions
                     case DatabaseType.MySql:
                         return provider.GetRequiredService<MySqlContext>();
 
+                    case DatabaseType.PostgreSql:
+                        return provider.GetRequiredService<PostgreSqlContext>();
+
                     default:
                         throw new InvalidOperationException(
                             $"Unsupported database provider: {databaseOptions.Value.Type}");
@@ -109,6 +113,13 @@ namespace BaGet.Extensions
                 var databaseOptions = provider.GetRequiredService<IOptionsSnapshot<DatabaseOptions>>();
 
                 options.UseMySql(databaseOptions.Value.ConnectionString);
+            });
+
+            services.AddDbContext<PostgreSqlContext>((provider, options) =>
+            {
+                var databaseOptions = provider.GetRequiredService<IOptionsSnapshot<DatabaseOptions>>();
+
+                options.UseNpgsql(databaseOptions.Value.ConnectionString);
             });
 
             return services;
