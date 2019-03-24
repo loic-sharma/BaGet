@@ -31,6 +31,7 @@
     <ProjectReference Include="..\BaGet.Database.Sqlite\BaGet.Database.Sqlite.csproj" />
     <ProjectReference Include="..\BaGet.Database.SqlServer\BaGet.Database.SqlServer.csproj" />
     <ProjectReference Include="..\BaGet.Database.PostgreSql\BaGet.Database.PostgreSql.csproj" />
+    <ProjectReference Include="..\BaGet.GCP\BaGet.GCP.csproj" />
     <ProjectReference Include="..\BaGet.Protocol\BaGet.Protocol.csproj" />
   </ItemGroup>
 
