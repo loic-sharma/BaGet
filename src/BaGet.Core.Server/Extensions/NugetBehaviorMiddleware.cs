@@ -14,14 +14,15 @@ namespace BaGet.Extensions
     /// </summary>
     public class NugetBehaviorMiddleware
     {
-        private readonly RequestDelegate NextRequest;
-        private readonly ILogger Logger;
         private const string BasicAuthenticationScheme = "Basic";
 
+        private readonly RequestDelegate _nextRequest;
+        private readonly ILogger _logger;
+ 
         public NugetBehaviorMiddleware(RequestDelegate next, ILogger<NugetBehaviorMiddleware> logger)
         {
-            NextRequest = next ?? throw new ArgumentNullException(nameof(next));
-            Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _nextRequest = next ?? throw new ArgumentNullException(nameof(next));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         private void ModifyRequest(HttpContext context, bool isNuGetClientCall)
@@ -58,7 +59,7 @@ namespace BaGet.Extensions
                 }
                 //NuGet.exe has only "Basic" implemented. convert this into "Bearer" directly on the request/response pipeline, then we can use the default jwt implementation from aspnetcore
                 context.Request.Headers[HeaderNames.Authorization] = $"{Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme} {password}";
-                Logger.LogTrace($"Request header field '{HeaderNames.Authorization}' rewritten to '{Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme}'");
+                _logger.LogTrace($"Request header field '{HeaderNames.Authorization}' rewritten to '{Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme}'");
             }
         }
 
@@ -69,7 +70,7 @@ namespace BaGet.Extensions
                 if (context.Response.StatusCode == 401)
                 {
                     context.Response.Headers[HeaderNames.WWWAuthenticate] = BasicAuthenticationScheme; //NuGet.exe supports "Basic" ONLY!
-                    Logger.LogTrace($"Response header field '{HeaderNames.WWWAuthenticate}' rewritten to '{BasicAuthenticationScheme}'");
+                    _logger.LogTrace($"Response header field '{HeaderNames.WWWAuthenticate}' rewritten to '{BasicAuthenticationScheme}'");
                 }
             }
         }
@@ -77,10 +78,10 @@ namespace BaGet.Extensions
         public async Task Invoke(HttpContext context)
         {
             var isNuGetClientCall = context.Request.Headers.ContainsKey("X-NuGet-Session-Id");
-            Logger.LogTrace($"{nameof(isNuGetClientCall)}={isNuGetClientCall}");
+            _logger.LogTrace($"{nameof(isNuGetClientCall)}={isNuGetClientCall}");
             ModifyRequest(context, isNuGetClientCall);
 
-            await NextRequest(context);
+            await _nextRequest(context);
 
             ModifyResponse(context, isNuGetClientCall);
         }
