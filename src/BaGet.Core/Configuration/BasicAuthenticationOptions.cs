@@ -14,7 +14,7 @@ namespace BaGet.Core.Configuration
 
     public class BasicAuthenticationOptions 
     {
-        public List<BasicCredential>AllowedUsers { get; set; }
+        public List<BasicCredential> AllowedUsers { get; set; }
     }
 
 }
