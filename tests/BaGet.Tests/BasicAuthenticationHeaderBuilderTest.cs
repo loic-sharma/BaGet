@@ -6,7 +6,7 @@ namespace BaGet.Tests
     public class BasicAuthenticationHeaderBuilderTest
     {
         [Theory]
-        [InlineData("myUserName","myPassword", "myDomain")]
+        [InlineData("myUserName", "myPassword", "myDomain")]
         [InlineData("myUserName", "myPassword", null)]
         [InlineData("myUserName", "myPassword", "")]
         [InlineData("myUserName", "myPassword", " ")]
