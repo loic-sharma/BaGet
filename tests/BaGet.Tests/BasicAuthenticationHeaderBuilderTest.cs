@@ -18,7 +18,7 @@ namespace BaGet.Tests
         {
             var credential = new NetworkCredential(userName, password, domain);
             var header = BasicAuthenticationHeaderBuilder.CreateWith(credential);
-            Assert.True(AuthenticationHeaderValueExtensions.TryGetNetworkCredentialFromHeader(header, out var cred2));
+            Assert.True(header.TryGetNetworkCredentialFromHeader(out var cred2));
             Assert.Equal(credential.UserName, cred2.UserName);
             Assert.Equal(credential.Password, cred2.Password);
             Assert.Equal(credential.Domain, cred2.Domain);
