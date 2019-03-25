@@ -5,15 +5,15 @@ using System.Text;
 
 namespace BaGet.Core.Authentication
 {
-    public class AuthenticationHeaderValueExtensions
+    public static class AuthenticationHeaderValueExtensions
     {
-        public static string GetBase64BasicAuthHeaderString(NetworkCredential credential)
+        public static string GetBase64BasicAuthHeaderString(this NetworkCredential credential)
         {
             if (credential == null) throw new ArgumentNullException(nameof(credential));
             return Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(GetBasicAuthHeaderString(credential)));
         }
 
-        public static string GetBasicAuthHeaderString(NetworkCredential credential)
+        public static string GetBasicAuthHeaderString(this NetworkCredential credential)
         {
             if (credential == null) throw new ArgumentNullException(nameof(credential));
             var username = credential.UserName;
@@ -24,7 +24,7 @@ namespace BaGet.Core.Authentication
             return $"{username}:{credential.Password}";
         }
 
-        public static bool TryGetNetworkCredentialFromHeader(AuthenticationHeaderValue authHeader, out NetworkCredential credential)
+        public static bool TryGetNetworkCredentialFromHeader(this AuthenticationHeaderValue authHeader, out NetworkCredential credential)
         {
             if (authHeader == null) throw new ArgumentNullException(nameof(authHeader));
             credential = null;
