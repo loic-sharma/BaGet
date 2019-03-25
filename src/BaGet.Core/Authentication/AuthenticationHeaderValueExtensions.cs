@@ -10,7 +10,7 @@ namespace BaGet.Core.Authentication
         public static string GetBase64BasicAuthHeaderString(NetworkCredential credential)
         {
             if (credential == null) throw new ArgumentNullException(nameof(credential));
-            return System.Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(GetBasicAuthHeaderString(credential)));
+            return Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(GetBasicAuthHeaderString(credential)));
         }
 
         public static string GetBasicAuthHeaderString(NetworkCredential credential)
