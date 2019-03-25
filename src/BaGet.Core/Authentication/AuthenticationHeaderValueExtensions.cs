@@ -13,7 +13,7 @@ namespace BaGet.Core.Authentication
             return Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(GetBasicAuthHeaderString(credential)));
         }
 
-        public static string GetBasicAuthHeaderString(this NetworkCredential credential)
+        private static string GetBasicAuthHeaderString(this NetworkCredential credential)
         {
             if (credential == null) throw new ArgumentNullException(nameof(credential));
             var username = credential.UserName;
