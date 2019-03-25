@@ -7,7 +7,7 @@ namespace BaGet.Core.Authentication
     {
         public static AuthenticationHeaderValue CreateWith(NetworkCredential credential)
         {
-            return new System.Net.Http.Headers.AuthenticationHeaderValue(BasicAuthenticationDefaults.AuthenticationScheme, AuthenticationHeaderValueExtensions.GetBase64BasicAuthHeaderString(credential));
+            return new AuthenticationHeaderValue(BasicAuthenticationDefaults.AuthenticationScheme, AuthenticationHeaderValueExtensions.GetBase64BasicAuthHeaderString(credential));
         }
     }
 }
