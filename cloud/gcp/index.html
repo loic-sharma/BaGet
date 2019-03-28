@@ -104,7 +104,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#running-baget-on-the-google-cloud" tabindex="1" class="md-skip">
+      <a href="#running-baget-on-google-cloud" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -324,9 +324,72 @@
       
     
     
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Google Cloud
+      </label>
+    
     <a href="./" title="Google Cloud" class="md-nav__link md-nav__link--active">
       Google Cloud
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#google-cloud-storage" title="Google Cloud Storage" class="md-nav__link">
+    Google Cloud Storage
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setup" title="Setup" class="md-nav__link">
+    Setup
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration" title="Configuration" class="md-nav__link">
+    Configuration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#google-cloud-sql" title="Google Cloud SQL" class="md-nav__link">
+    Google Cloud SQL
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#google-appengine" title="Google AppEngine" class="md-nav__link">
+    Google AppEngine
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
     
   </li>
 
@@ -533,6 +596,56 @@
     
   
   
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#google-cloud-storage" title="Google Cloud Storage" class="md-nav__link">
+    Google Cloud Storage
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setup" title="Setup" class="md-nav__link">
+    Setup
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration" title="Configuration" class="md-nav__link">
+    Configuration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#google-cloud-sql" title="Google Cloud SQL" class="md-nav__link">
+    Google Cloud SQL
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#google-appengine" title="Google AppEngine" class="md-nav__link">
+    Google AppEngine
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -546,14 +659,98 @@
                   <a href="https://github.com/loic-sharma/BaGet/edit/master/docs/cloud/gcp.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                <h1 id="running-baget-on-the-google-cloud">Running BaGet on the Google Cloud<a class="headerlink" href="#running-baget-on-the-google-cloud" title="Permanent link">&para;</a></h1>
+                <h1 id="running-baget-on-google-cloud">Running BaGet on Google Cloud<a class="headerlink" href="#running-baget-on-google-cloud" title="Permanent link">&para;</a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This page is a work in progress!</p>
 </div>
-<p>Sadly, BaGet does not support GCP today. We're open source and accept contributions!
+<p>We're open source and accept contributions!
 <a href="https://github.com/loic-sharma/BaGet">Fork us on GitHub</a>.</p>
-<p>For now, please refer to the <a href="../azure">Azure documentation</a>.</p>
+<p>Before you begin, you should decide <a href="https://cloud.google.com/appengine/docs/locations">which AppEngine region</a>
+you're going to use. For best performance, Cloud Storage and Cloud SQL should be located
+in the same region as your AppEngine deployment.</p>
+<h2 id="google-cloud-storage">Google Cloud Storage<a class="headerlink" href="#google-cloud-storage" title="Permanent link">&para;</a></h2>
+<p>Packages can be stored in <a href="https://cloud.google.com/storage/">Google Cloud Storage</a>.</p>
+<h3 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h3>
+<p>Follow the instructions in <a href="https://cloud.google.com/appengine/docs/flexible/dotnet/using-cloud-storage">Using Cloud Storage</a> to create a bucket.</p>
+<h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h3>
+<p><strong>NOTE:</strong> If you plan to use AppEngine, skip this part and follow the AppEngine instructions below.</p>
+<p>Set up a service account and download credentials. Set the <code>GOOGLE_APPLICATION_CREDENTIALS</code> environment variable to the path to the JSON file you downloaded.</p>
+<p>Configure BaGet to use GCS by updating the <a href="https://github.com/loic-sharma/BaGet/blob/master/src/BaGet/appsettings.json"><code>appsettings.json</code></a> file:</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+    <span class="err">...</span>
+
+    <span class="nt">&quot;Storage&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;GoogleCloud&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;BucketName&quot;</span><span class="p">:</span> <span class="s2">&quot;your-gcs-bucket&quot;</span>
+    <span class="p">},</span>
+
+    <span class="err">...</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2 id="google-cloud-sql">Google Cloud SQL<a class="headerlink" href="#google-cloud-sql" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Follow the instructions in <a href="https://cloud.google.com/appengine/docs/flexible/dotnet/using-cloud-sql">Using Cloud SQL</a> to create a 2nd Gen MySQL 5.7 Google Cloud SQL instance. The default options should work well.</li>
+<li>Create a database named <code>baget</code>. This can be done through the Google Cloud Console. Use <code>utf8mb4</code> as the Character set.</li>
+<li>Follow <a href="https://cloud.google.com/sql/docs/mysql/configure-ssl-instance#new-client">Configuring SSL/TLS</a> to create a client certificate. Download the three files it creates.</li>
+<li>Convert the PEM to a PFX by running <code>openssl pkcs12 -inkey client-key.pem -in client-cert.pem -export -out client.pfx</code></li>
+<li>One way to obtain OpenSSL on Windows is to install <a href="https://gitforwindows.org/">Git Bash</a>.</li>
+<li>Configure BaGet to use Google Cloud SQL by updating the <a href="https://github.com/loic-sharma/BaGet/blob/master/src/BaGet/appsettings.json"><code>appsettings.json</code></a> file:</li>
+</ul>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+    <span class="err">...</span>
+    <span class="nt">&quot;Database&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;MySql&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;ConnectionString&quot;</span><span class="p">:</span> <span class="s2">&quot;Server=YOURIP;User Id=root;Password=***;Database=baget;CertificateFile=C:\\Path\\To\\client.pfx;CACertificateFile=C:\\Path\\To\\server-ca.pem;SSL Mode=VerifyCA&quot;</span>
+    <span class="p">},</span>
+    <span class="err">...</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>Create the tables by running <code>dotnet ef database update --context MySqlContext --project src\BaGet</code></li>
+</ul>
+<h2 id="google-appengine">Google AppEngine<a class="headerlink" href="#google-appengine" title="Permanent link">&para;</a></h2>
+<p>BaGet can be hosted in Google AppEngine. See <a href="https://cloud.google.com/appengine/docs/flexible/dotnet/quickstart">here</a>
+for a tutorial on how to create a new AppEngine project.</p>
+<p>Create a <code>app.yaml</code> file to publish the Docker container built by the Dockerfile in this repo. In the template
+below, make the following replacements:</p>
+<ul>
+<li><code>PROJECT</code> - your GCP project, as returned by <code>gcloud config get-value project</code></li>
+<li><code>REGION</code> -- the GCP region your Google Cloud SQL database is in, e.g., <code>us-central1</code> or <code>us-west2</code></li>
+<li><code>DBINSTANCE</code> -- the name of your Google Cloud SQL database instance</li>
+<li><code>DBNAME</code> -- the name of the BaGet database on that instance (e.g., <code>baget</code> in the instructions above)</li>
+<li><code>PASSWORD</code> -- the password for the database root user</li>
+<li><code>BUCKETNAME</code> -- the name of the Google Cloud Storage Bucket configured above</li>
+</ul>
+<div class="codehilite"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">runtime</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">custom</span>
+<span class="l l-Scalar l-Scalar-Plain">env</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">flex</span>
+
+<span class="c1"># The settings below are to reduce costs during testing and are not necessarily</span>
+<span class="c1"># appropriate for production use. For more information, see:</span>
+<span class="c1"># https://cloud.google.com/appengine/docs/flexible/dotnet/configuring-your-app-with-app-yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">resources</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">cpu</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+  <span class="l l-Scalar l-Scalar-Plain">memory_gb</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
+  <span class="l l-Scalar l-Scalar-Plain">disk_size_gb</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+
+<span class="l l-Scalar l-Scalar-Plain">beta_settings</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">cloud_sql_instances</span><span class="p p-Indicator">:</span> <span class="s">&quot;PROJECT:REGION:DBINSTANCE&quot;</span>
+
+<span class="l l-Scalar l-Scalar-Plain">env_variables</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">Database__Type</span><span class="p p-Indicator">:</span> <span class="s">&quot;MySql&quot;</span>
+  <span class="l l-Scalar l-Scalar-Plain">Database__ConnectionString</span><span class="p p-Indicator">:</span> <span class="s">&quot;Server=/cloudsql/PROJECT:REGION:DBINSTANCE;User</span><span class="nv"> </span><span class="s">Id=root;Password=PASSWORD;Database=DBNAME;SslMode=None&quot;</span>
+  <span class="l l-Scalar l-Scalar-Plain">Storage__Type</span><span class="p p-Indicator">:</span> <span class="s">&quot;GoogleCloud&quot;</span>
+  <span class="l l-Scalar l-Scalar-Plain">Storage__BucketName</span><span class="p p-Indicator">:</span> <span class="s">&quot;BUCKETNAME&quot;</span>
+  <span class="l l-Scalar l-Scalar-Plain">Search__Type</span><span class="p p-Indicator">:</span> <span class="s">&quot;Database&quot;</span>
+  <span class="l l-Scalar l-Scalar-Plain">ASPNETCORE_URLS</span><span class="p p-Indicator">:</span> <span class="s">&quot;http://0.0.0.0:8080&quot;</span>
+</pre></div>
+
+
+<p>To publish the application, run <code>gcloud app deploy</code>.</p>
                 
                   
                 
