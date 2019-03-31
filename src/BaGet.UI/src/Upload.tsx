@@ -6,7 +6,7 @@ import './Upload.css';
 
 interface IUploadState {
   selected: Tab;
-  content: string;
+  content: string[];
   documentationUrl: string;
   name: string;
 }
@@ -15,18 +15,24 @@ enum Tab {
   DotNet,
   NuGet,
   Paket,
+  PowerShellGet
 }
 
 class Upload extends React.Component<{}, IUploadState> {
 
+  private baseUrl: string;
   private serviceIndexUrl: string;
+  private publishUrl: string;
+
 
   constructor(props: {}) {
     super(props);
 
     const pathEnd = window.location.href.indexOf("/upload");
 
-    this.serviceIndexUrl = window.location.href.substring(0, pathEnd) + "/v3/index.json";
+    this.baseUrl = window.location.href.substring(0, pathEnd);
+    this.serviceIndexUrl = this.baseUrl + "/v3/index.json";
+    this.publishUrl = this.baseUrl + "/api/v2/package";
     this.state = this.buildState(Tab.DotNet);
   }
 
@@ -43,14 +49,19 @@ class Upload extends React.Component<{}, IUploadState> {
             <UploadTab type={Tab.DotNet} selected={this.state.selected} onSelect={this.handleSelect} />
             <UploadTab type={Tab.NuGet} selected={this.state.selected} onSelect={this.handleSelect} />
             <UploadTab type={Tab.Paket} selected={this.state.selected} onSelect={this.handleSelect} />
+            <UploadTab type={Tab.PowerShellGet} selected={this.state.selected} onSelect={this.handleSelect} />
           </ul>
 
           <div className="content">
             <div className="script">
-              > {this.state.content}
+              {this.state.content.map(value => (
+                <div key={value}>
+                  > {value}
+                </div>
+              ))}
             </div>
             <div className="copy-button">
-              <CopyToClipboard text={this.state.content}>
+              <CopyToClipboard text={this.state.content.join("\n")}>
                 <button className="btn btn-default btn-warning" type="button" data-tottle="popover" data-placement="bottom" data-content="Copied">
                   <Icon iconName="Copy" className="ms-Icon" />
                 </button>
@@ -58,7 +69,7 @@ class Upload extends React.Component<{}, IUploadState> {
             </div>
           </div>
           <div className="icon-text alert alert-warning">
-            For more information, please refer to <a href={this.state.documentationUrl}>{this.state.name}'s documentation</a>.
+            For more information, please refer to <a target="_blank" href={this.state.documentationUrl}>{this.state.name}'s documentation</a>.
           </div>
         </div>
       </div>
@@ -70,27 +81,36 @@ class Upload extends React.Component<{}, IUploadState> {
 
   private buildState(tab: Tab): IUploadState {
     let name: string;
-    let content: string;
+    let content: string[];
     let documentationUrl: string;
 
     switch (tab) {
       case Tab.DotNet:
         name = ".NET CLI";
-        content = `dotnet nuget push -s ${this.serviceIndexUrl} package.nupkg`;
+        content = [`dotnet nuget push -s ${this.serviceIndexUrl} package.nupkg`];
         documentationUrl = "https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-nuget-push";
         break;
 
       case Tab.NuGet:
         name = "NuGet";
-        content = `nuget -Source ${this.serviceIndexUrl} package.nupkg`;
+        content = [`nuget -Source ${this.serviceIndexUrl} package.nupkg`];
         documentationUrl = "https://docs.microsoft.com/en-us/nuget/tools/cli-ref-push";
         break;
 
-      default:
       case Tab.Paket:
         name = "Paket";
-        content = `paket push --url ${this.serviceIndexUrl} package.nupkg`;
+        content = [`paket push --url ${this.baseUrl} package.nupkg`];
         documentationUrl = "https://fsprojects.github.io/Paket/paket-push.html";
+        break;
+
+      default:
+      case Tab.PowerShellGet:
+        name = "PowerShellGet";
+        content = [
+          `Register-PSRepository -Name "BaGet" -SourceLocation "${this.serviceIndexUrl}" -PublishLocation "${this.publishUrl}" -InstallationPolicy "Trusted"`,
+          `Publish-Module -Name PS-Module -Repository BaGet`
+        ];
+        documentationUrl = "https://docs.microsoft.com/en-us/powershell/module/powershellget/publish-module";
         break;
     }
 
@@ -121,6 +141,7 @@ class UploadTab extends React.Component<IUploadTabProps> {
       case Tab.DotNet: this.title = ".NET CLI"; break;
       case Tab.NuGet: this.title = "NuGet CLI"; break;
       case Tab.Paket: this.title = "Paket CLI"; break;
+      case Tab.PowerShellGet: this.title = "PowerShellGet"; break;
     }
   }
 
