@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -18,11 +18,9 @@ namespace BaGet.Protocol
 
         public async Task<ServiceIndex> GetServiceIndexAsync(string indexUrl)
         {
-            var response = await _httpClient.GetAsync(indexUrl);
+            var response = await _httpClient.DeserializeUrlAsync<ServiceIndex>(indexUrl);
 
-            response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadAsAsync<ServiceIndex>();
+            return response.GetResultOrThrow();
         }
     }
 }

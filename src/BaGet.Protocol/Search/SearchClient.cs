@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -15,20 +15,16 @@ namespace BaGet.Protocol
 
         public async Task<SearchResponse> GetSearchResultsAsync(string searchUrl)
         {
-            var response = await _httpClient.GetAsync(searchUrl);
+            var response = await _httpClient.DeserializeUrlAsync<SearchResponse>(searchUrl);
 
-            response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadAsAsync<SearchResponse>();
+            return response.GetResultOrThrow();
         }
 
         public async Task<AutocompleteResult> GetAutocompleteResultsAsync(string searchUrl)
         {
-            var response = await _httpClient.GetAsync(searchUrl);
+            var response = await _httpClient.DeserializeUrlAsync<AutocompleteResult>(searchUrl);
 
-            response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadAsAsync<AutocompleteResult>();
+            return response.GetResultOrThrow();
         }
     }
 }

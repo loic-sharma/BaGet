@@ -44,6 +44,7 @@ namespace BaGet.Controllers.Registration
             }
 
             var result = new RegistrationLeaf(
+                type: RegistrationLeaf.DefaultType,
                 registrationUri: Url.PackageRegistration(id, nugetVersion),
                 listed: package.Listed,
                 downloads: package.Downloads,

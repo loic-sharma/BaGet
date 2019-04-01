@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace BaGet.Protocol
 {
@@ -9,20 +10,27 @@ namespace BaGet.Protocol
     /// </summary>
     public class SearchResponse
     {
-        public SearchResponse(int totalHits, IReadOnlyList<SearchResult> data)
+        public SearchResponse(
+            int totalHits,
+            IReadOnlyList<SearchResult> data,
+            SearchContext context = null)
         {
             TotalHits = totalHits;
             Data = data ?? throw new ArgumentNullException(nameof(data));
+            Context = context;
         }
+
+        [JsonProperty("@context")]
+        public SearchContext Context { get; }
 
         /// <summary>
         /// The total number of matches, disregarding skip and take.
         /// </summary>
-        public int TotalHits;
+        public int TotalHits { get; }
 
         /// <summary>
         /// The packages that matched the search query.
         /// </summary>
-        public IReadOnlyList<SearchResult> Data;
+        public IReadOnlyList<SearchResult> Data { get; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -16,33 +16,27 @@ namespace BaGet.Protocol
 
         public async Task<RegistrationIndex> GetRegistrationIndexOrNullAsync(string indexUrl)
         {
-            var response = await _httpClient.GetAsync(indexUrl);
+            var response = await _httpClient.DeserializeUrlAsync<RegistrationIndex>(indexUrl);
             if (response.StatusCode == HttpStatusCode.NotFound)
             {
                 return null;
             }
 
-            response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadAsAsync<RegistrationIndex>();
+            return response.GetResultOrThrow();
         }
 
         public async Task<RegistrationIndexPage> GetRegistrationIndexPageAsync(string pageUrl)
         {
-            var response = await _httpClient.GetAsync(pageUrl);
+            var response = await _httpClient.DeserializeUrlAsync<RegistrationIndexPage>(pageUrl);
 
-            response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadAsAsync<RegistrationIndexPage>();
+            return response.GetResultOrThrow();
         }
 
         public async Task<RegistrationLeaf> GetRegistrationLeafAsync(string leafUrl)
         {
-            var response = await _httpClient.GetAsync(leafUrl);
+            var response = await _httpClient.DeserializeUrlAsync<RegistrationLeaf>(leafUrl);
 
-            response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadAsAsync<RegistrationLeaf>();
+            return response.GetResultOrThrow();
         }
     }
 }
