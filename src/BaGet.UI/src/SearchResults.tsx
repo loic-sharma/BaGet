@@ -1,4 +1,5 @@
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
+import { Checkbox, Dropdown, IDropdownOption, SelectableOptionMenuItemType } from 'office-ui-fabric-react/lib/index';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import './SearchResults.css';
@@ -76,53 +77,81 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         <form className="search-options form-inline">
           <div className="form-group">
             <label>Package Type:</label>
-            <select value={this.state.packageType} onChange={this.onChangePackageType} className="form-control">
-              <option value="any">Any</option>
-              <option value="dependency">Dependency</option>
-              <option value="dotnettool">.NET Tool</option>
-            </select>
+
+            <div className="search-dropdown">
+              <Dropdown
+                defaultSelectedKey={this.state.packageType}
+                dropdownWidth={200}
+                onChange={this.onChangePackageType}
+                options={[
+                  {key: 'any', text: 'Any'},
+                  {key: 'dependency', text: 'Dependency'},
+                  {key: 'dotnettool', text: '.NET Tool'}
+                ]}
+              />
+            </div>
           </div>
 
           <div className="form-group">
             <label>Framework:</label>
-            <select value={this.state.targetFramework} onChange={this.onChangeFramework} className="form-control">
-            <option value="any">Any</option>
-              <option value="netstandard2.0">netstandard2.0</option>
-              <option value="netstandard1.6">netstandard1.6</option>
-              <option value="netstandard1.5">netstandard1.5</option>
-              <option value="netstandard1.4">netstandard1.4</option>
-              <option value="netstandard1.3">netstandard1.3</option>
-              <option value="netstandard1.2">netstandard1.2</option>
-              <option value="netstandard1.1">netstandard1.1</option>
-              <option value="netstandard1.0">netstandard1.0</option>
 
-              <option value="netcoreapp3.0">netcoreapp3.0</option>
-              <option value="netcoreapp2.2">netcoreapp2.2</option>
-              <option value="netcoreapp2.1">netcoreapp2.1</option>
-              <option value="netcoreapp1.1">netcoreapp1.1</option>
-              <option value="netcoreapp1.0">netcoreapp1.0</option>
+            <div className="search-dropdown">
+              <Dropdown
+                defaultSelectedKey={this.state.targetFramework}
+                dropdownWidth={200}
+                onChange={this.onChangeFramework}
+                options={[
+                  {key: 'any', text: 'Any' },
 
-              <option value="net472">net472</option>
-              <option value="net471">net471</option>
-              <option value="net463">net463</option>
-              <option value="net462">net462</option>
-              <option value="net461">net461</option>
-              <option value="net46">net46</option>
-              <option value="net452">net452</option>
-              <option value="net451">net451</option>
-              <option value="net45">net45</option>
-              <option value="net403">net403</option>
-              <option value="net4">net4</option>
-              <option value="net35">net35</option>
-              <option value="net2">net2</option>
-              <option value="net11">net11</option>
-            </select>
+                  { key: 'divider1', text: '-', itemType: SelectableOptionMenuItemType.Divider },
+                  { key: 'header1', text: '.NET Standard', itemType: SelectableOptionMenuItemType.Header },
+
+                  { key: 'netstandard2.0', text: '.NET Standard 2.0' },
+                  { key: 'netstandard1.6', text: '.NET Standard 1.6' },
+                  { key: 'netstandard1.5', text: '.NET Standard 1.5' },
+                  { key: 'netstandard1.4', text: '.NET Standard 1.4' },
+                  { key: 'netstandard1.3', text: '.NET Standard 1.3' },
+                  { key: 'netstandard1.2', text: '.NET Standard 1.2' },
+                  { key: 'netstandard1.1', text: '.NET Standard 1.1' },
+                  { key: 'netstandard1.0', text: '.NET Standard 1.0' },
+
+                  { key: 'divider2', text: '-', itemType: SelectableOptionMenuItemType.Divider },
+                  { key: 'header2', text: '.NET Core', itemType: SelectableOptionMenuItemType.Header },
+
+                  { key: 'netcoreapp3.0', text: '.NET Core 3.0' },
+                  { key: 'netcoreapp2.2', text: '.NET Core 2.2' },
+                  { key: 'netcoreapp2.1', text: '.NET Core 2.1' },
+                  { key: 'netcoreapp1.1', text: '.NET Core 1.1' },
+                  { key: 'netcoreapp1.0', text: '.NET Core 1.0' },
+
+                  { key: 'divider3', text: '-', itemType: SelectableOptionMenuItemType.Divider },
+                  { key: 'header3', text: '.NET Framework', itemType: SelectableOptionMenuItemType.Header },
+
+                  { key: 'net472', text: '.NET Framework 4.7.2' },
+                  { key: 'net471', text: '.NET Framework 4.7.1' },
+                  { key: 'net463', text: '.NET Framework 4.6.3' },
+                  { key: 'net462', text: '.NET Framework 4.6.2' },
+                  { key: 'net461', text: '.NET Framework 4.6.1' },
+                  { key: 'net46', text: '.NET Framework 4.6' },
+                  { key: 'net452', text: '.NET Framework 4.5.2' },
+                  { key: 'net451', text: '.NET Framework 4.5.1' },
+                  { key: 'net45', text: '.NET Framework 4.5' },
+                  { key: 'net403', text: '.NET Framework 4.0.3' },
+                  { key: 'net4', text: '.NET Framework 4' },
+                  { key: 'net35', text: '.NET Framework 3.5' },
+                  { key: 'net2', text: '.NET Framework 2' },
+                  { key: 'net11', text: '.NET Framework 1.1' },
+                ]}
+                />
+              </div>
           </div>
-          <div className="form-group checkbox">
-            <label>
-              Include prerelease:
-              <input defaultChecked={this.state.includePrerelease} onChange={this.onChangePrerelease} type="checkbox" id="prerelease" />
-            </label>
+          <div className="form-group">
+            <Checkbox
+              defaultChecked={this.state.includePrerelease}
+              onChange={this.onChangePrerelease}
+              label="Include prerelease:"
+              boxSide="end"
+            />
           </div>
         </form>
         {this.state.items.map(value => (
@@ -226,20 +255,20 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     e.currentTarget.src = this.defaultIconUrl;
   }
 
-  private onChangePackageType = (e: React.ChangeEvent<HTMLSelectElement>) : void => {
+  private onChangePackageType = (e: React.FormEvent<HTMLDivElement>, option?: IDropdownOption) : void => {
     this._loadItems(
       this.props.input,
       this.state.includePrerelease,
-      e.currentTarget.value,
+      (option) ? option.key.toString() : 'any',
       this.state.targetFramework);
   }
 
-  private onChangeFramework = (e: React.ChangeEvent<HTMLSelectElement>) : void => {
+  private onChangeFramework = (e: React.FormEvent<HTMLDivElement>, option?: IDropdownOption) : void => {
     this._loadItems(
       this.props.input,
       this.state.includePrerelease,
       this.state.packageType,
-      e.currentTarget.value);
+      option!.key.toString());
   }
 
   private onChangePrerelease = () : void => {

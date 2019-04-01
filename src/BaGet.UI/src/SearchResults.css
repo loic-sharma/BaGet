@@ -2,8 +2,9 @@
   margin-bottom: 20px;
 }
 
-.search-options .checkbox label {
+.search-options span.ms-Checkbox-text {
   font-weight: bold;
+  font-size: 16px;
 }
 
 .search-options .form-group {
@@ -12,6 +13,13 @@
 
 .search-options select, .search-options #prerelease {
   margin-left: 10px;
+}
+
+.search-dropdown {
+  margin-left: 5px;
+  display: inline-block;
+  width: auto;
+  vertical-align: middle;
 }
 
 .search-result {
