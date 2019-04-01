@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -22,15 +22,13 @@ namespace BaGet.Protocol
         /// <returns>The package's versions, or null if the package does not exist</returns>
         public async Task<PackageVersions> GetPackageVersionsOrNullAsync(string url)
         {
-            var response = await _httpClient.GetAsync(url);
+            var response = await _httpClient.DeserializeUrlAsync<PackageVersions>(url);
             if (response.StatusCode == HttpStatusCode.NotFound)
             {
                 return null;
             }
 
-            response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadAsAsync<PackageVersions>();
+            return response.GetResultOrThrow();
         }
 
         public async Task<Stream> GetPackageContentStreamAsync(string url)

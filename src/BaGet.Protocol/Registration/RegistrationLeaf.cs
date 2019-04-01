@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace BaGet.Protocol
@@ -9,6 +10,12 @@ namespace BaGet.Protocol
     /// </summary>
     public class RegistrationLeaf
     {
+        private static readonly IReadOnlyList<string> CachedType = new List<string>
+        {
+            "Package",
+            "http://schema.nuget.org/catalog#Permalink"
+        };
+
         public RegistrationLeaf(
             string registrationUri,
             bool listed,
@@ -27,6 +34,9 @@ namespace BaGet.Protocol
 
         [JsonProperty(PropertyName = "@id")]
         public string RegistrationUri { get; }
+
+        [JsonProperty(PropertyName = "@type")]
+        public IReadOnlyList<string> Type => CachedType;
 
         public bool Listed { get; }
 

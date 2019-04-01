@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace BaGet.Protocol
@@ -9,20 +9,26 @@ namespace BaGet.Protocol
     /// </summary>
     public class AutocompleteResult
     {
-        public AutocompleteResult(int totalHits, IReadOnlyList<string> data)
+        public AutocompleteResult(
+            int totalHits,
+            IReadOnlyList<string> data,
+            AutocompleteContext context = null)
         {
             TotalHits = totalHits;
             Data = data ?? throw new ArgumentNullException(nameof(data));
+            Context = context;
         }
+
+        public AutocompleteContext Context { get; }
 
         /// <summary>
         /// The total number of matches, disregarding skip and take.
         /// </summary>
-        public int TotalHits;
+        public int TotalHits { get; }
 
         /// <summary>
         /// The package IDs matched by the autocomplete query.
         /// </summary>
-        public IReadOnlyList<string> Data;
+        public IReadOnlyList<string> Data { get; }
     }
 }

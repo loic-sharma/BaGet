@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
@@ -9,11 +9,21 @@ namespace BaGet.Protocol
     /// </summary>
     public class RegistrationIndex
     {
+        private static readonly IReadOnlyList<string> CachedType = new List<string>
+        {
+            "catalog:CatalogRoot",
+            "PackageRegistration",
+            "catalog:Permalink"
+        };
+
         public RegistrationIndex(int count, long totalDownloads, IReadOnlyList<RegistrationIndexPage> pages)
         {
             Count = count;
             Pages = pages ?? throw new ArgumentNullException(nameof(pages));
         }
+
+        [JsonProperty(PropertyName = "@type")]
+        public IReadOnlyList<string> Type => CachedType;
 
         /// <summary>
         /// The number of registration pages. See <see cref="Pages"/>. 
