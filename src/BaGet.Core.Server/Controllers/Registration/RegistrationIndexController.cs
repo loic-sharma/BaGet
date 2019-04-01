@@ -51,6 +51,7 @@ namespace BaGet.Controllers.Registration
             // "Un-paged" example: https://api.nuget.org/v3/registration3/newtonsoft.json/index.json
             // Paged example: https://api.nuget.org/v3/registration3/fake/index.json
             return Json(new RegistrationIndex(
+                type: RegistrationIndex.DefaultType,
                 count: packages.Count,
                 totalDownloads: packages.Sum(p => p.Downloads),
                 pages: new[]

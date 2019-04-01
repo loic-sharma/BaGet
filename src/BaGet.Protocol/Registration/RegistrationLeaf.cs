@@ -10,7 +10,7 @@ namespace BaGet.Protocol
     /// </summary>
     public class RegistrationLeaf
     {
-        private static readonly IReadOnlyList<string> CachedType = new List<string>
+        public static readonly IReadOnlyList<string> DefaultType = new List<string>
         {
             "Package",
             "http://schema.nuget.org/catalog#Permalink"
@@ -22,7 +22,8 @@ namespace BaGet.Protocol
             long downloads,
             string packageContentUrl,
             DateTimeOffset published,
-            string registrationIndexUrl)
+            string registrationIndexUrl,
+            IReadOnlyList<string> type = null)
         {
             RegistrationUri = registrationUri ?? throw new ArgumentNullException(nameof(registrationIndexUrl));
             Listed = listed;
@@ -30,13 +31,14 @@ namespace BaGet.Protocol
             Downloads = downloads;
             PackageContentUrl = packageContentUrl ?? throw new ArgumentNullException(nameof(packageContentUrl));
             RegistrationIndexUrl = registrationIndexUrl ?? throw new ArgumentNullException(nameof(registrationIndexUrl));
+            Type = type;
         }
 
         [JsonProperty(PropertyName = "@id")]
         public string RegistrationUri { get; }
 
         [JsonProperty(PropertyName = "@type")]
-        public IReadOnlyList<string> Type => CachedType;
+        public IReadOnlyList<string> Type { get; }
 
         public bool Listed { get; }
 
