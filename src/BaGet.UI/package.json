@@ -14,7 +14,7 @@
     "bootstrap": "3.3.7",
     "commonmark": "^0.27.0",
     "commonmark-react-renderer": "^4.3.4",
-    "office-ui-fabric-react": "^6.110.2",
+    "office-ui-fabric-react": "^6.163.0",
     "react": "^16.6.3",
     "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.6.3",
