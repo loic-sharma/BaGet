@@ -82,6 +82,7 @@ namespace BaGet.Controllers.Registration
                     listed: package.Listed,
                     minClientVersion: package.MinClientVersion,
                     packageContent: Url.PackageDownload(package.Id, package.Version),
+                    packageTypes: package.PackageTypes.Select(t => t.Name).ToList(),
                     projectUrl: package.ProjectUrlString,
                     repositoryUrl: package.RepositoryUrlString,
                     repositoryType: package.RepositoryType,

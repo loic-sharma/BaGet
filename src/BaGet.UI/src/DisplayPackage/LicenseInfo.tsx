@@ -19,7 +19,7 @@ class LicenseInfo extends React.Component<ILicenseInfoProps> {
     return (
         <li>
             <Icon iconName="Certificate" className="ms-Icon" />
-            <a href={this.props.url}>License Info</a>
+            <a href={this.props.url}>License</a>
         </li>
     );
   }

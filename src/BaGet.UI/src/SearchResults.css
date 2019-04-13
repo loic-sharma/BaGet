@@ -41,6 +41,8 @@
   margin-left: -5px;
   line-height: 20px;
   color: #666;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
@@ -64,4 +66,10 @@
   position: relative;
   top: 2px;
   margin-right: 2px;
+}
+
+.search-result .tags {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

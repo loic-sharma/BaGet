@@ -33,6 +33,7 @@ interface IPackage {
   repositoryUrl: string;
   repositoryType: string;
   totalDownloads: number;
+  isDotnetTool: boolean;
   downloads: number;
   authors: string;
   tags: string[];
@@ -135,10 +136,14 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
           readme = currentItem.catalogEntry.description;
         }
 
+        const isDotnetTool = (currentItem.catalogEntry.packageTypes &&
+          currentItem.catalogEntry.packageTypes.indexOf("DotnetTool") !== -1);
+
         this.setState({
           package: {
             ...currentItem.catalogEntry,
             downloadUrl: currentItem.packageContent,
+            isDotnetTool,
             lastUpdate,
             latestVersion,
             readme,
@@ -188,7 +193,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
 
             </div>
 
-            <InstallationInfo id={this.state.package.id} version={this.state.package.version} />
+            <InstallationInfo id={this.state.package.id} version={this.state.package.version} isDotnetTool={this.state.package.isDotnetTool} />
 
             {/* TODO: Fix this */}
             <div dangerouslySetInnerHTML={{ __html: this.state.package.readme }} />
@@ -215,7 +220,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
                 <LicenseInfo url={this.state.package.licenseUrl} />
                 <li>
                   <Icon iconName="CloudDownload" className="ms-Icon" />
-                  <a href={this.state.package.downloadUrl}>Download Package</a>
+                  <a href={this.state.package.downloadUrl}>Download package</a>
                 </li>
               </ul>
             </div>
