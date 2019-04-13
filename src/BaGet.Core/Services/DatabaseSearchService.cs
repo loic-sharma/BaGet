@@ -76,7 +76,7 @@ namespace BaGet.Core.Services
             string packageType,
             IReadOnlyList<string> frameworks)
         {
-            IQueryable<Package> search = _context.Packages;
+            IQueryable<Package> search = _context.Packages.Where(p => p.Listed);
 
             if (!string.IsNullOrEmpty(query))
             {

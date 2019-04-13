@@ -122,6 +122,7 @@ namespace BaGet.Core.Mirror
                 IconUrl = ParseUri(metadata.IconUrl),
                 LicenseUrl = ParseUri(metadata.LicenseUrl),
                 ProjectUrl = ParseUri(metadata.ProjectUrl),
+                PackageTypes = ParsePackageTypes(metadata.PackageTypes),
                 RepositoryUrl = ParseUri(metadata.RepositoryUrl),
                 RepositoryType = metadata.RepositoryType,
                 Tags = metadata.Tags.ToArray(),
@@ -150,6 +151,18 @@ namespace BaGet.Core.Mirror
                 .Split(new[] { ',', ';', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(a => a.Trim())
                 .ToArray();
+        }
+
+        private List<PackageType> ParsePackageTypes(IReadOnlyList<string> packageTypes)
+        {
+            if (packageTypes == null || packageTypes.Count == 0)
+            {
+                return new List<PackageType>();
+            }
+
+            return packageTypes
+                .Select(t => new PackageType { Name = t, Version = "0.0.0" })
+                .ToList();
         }
 
         private List<PackageDependency> FindDependencies(PackageMetadata package)

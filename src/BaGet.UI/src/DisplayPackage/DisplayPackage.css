@@ -2,6 +2,11 @@
   margin-top: 15px;
 }
 
+.display-package .package-title {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
 .display-package h1 small {
   margin-left: 10px;
   font-size: 45%;

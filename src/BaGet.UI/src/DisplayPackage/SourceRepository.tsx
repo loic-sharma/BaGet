@@ -21,7 +21,7 @@ class SourceRepository extends React.Component<ISourceRepositoryProps> {
     return (
         <li>
           <img className="icon" aria-hidden="true" alt="GitHub logo" src="https://www.nuget.org/Content/gallery/img/github-32x32.png" />
-          <a href={this.props.url}>Source Code</a>
+          <a href={this.props.url}>Source code</a>
         </li>
     );
   }

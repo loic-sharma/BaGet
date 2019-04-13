@@ -178,7 +178,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                   </span>
                 </li>
                 <li>
-                  <span>
+                  <span className="tags">
                     <Icon iconName="Tag" className="ms-Icon" />
                     {value.tags.join(' ')}
                   </span>

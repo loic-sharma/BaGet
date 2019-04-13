@@ -22,6 +22,7 @@ namespace BaGet.Protocol
             bool listed,
             string minClientVersion,
             string packageContent,
+            IReadOnlyList<string> packageTypes,
             string projectUrl,
             string repositoryUrl,
             string repositoryType,
@@ -46,6 +47,7 @@ namespace BaGet.Protocol
             Listed = listed;
             MinClientVersion = minClientVersion;
             PackageContent = packageContent;
+            PackageTypes = packageTypes;
             ProjectUrl = projectUrl;
             RepositoryUrl = repositoryUrl;
             RepositoryType = repositoryType;
@@ -76,6 +78,7 @@ namespace BaGet.Protocol
         public bool Listed { get; }
         public string MinClientVersion { get; }
         public string PackageContent { get; }
+        public IReadOnlyList<string> PackageTypes { get; }
         public string ProjectUrl { get; }
         public string RepositoryUrl { get; }
         public string RepositoryType { get; }
