@@ -1,9 +1,9 @@
-using BaGet.Core.Entities;
-using Microsoft.Azure.Cosmos.Table;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BaGet.Core.Entities;
+using Microsoft.Azure.Cosmos.Table;
+using Newtonsoft.Json;
 
 namespace BaGet.Azure
 {

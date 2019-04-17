@@ -1,12 +1,12 @@
+using System;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using BaGet.Azure.Extensions;
 using BaGet.Core.Extensions;
 using BaGet.Core.Services;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
-using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace BaGet.Azure.Configuration
 {

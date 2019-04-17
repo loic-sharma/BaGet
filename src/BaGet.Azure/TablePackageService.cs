@@ -115,7 +115,7 @@ namespace BaGet.Azure
             var query = new TableQuery<PackageEntity>().Where(filter);
             var results = new List<Package>();
 
-            // Request 500 results at a time from the server. 
+            // Request 500 results at a time from the server.
             TableContinuationToken token = null;
             query.TakeCount = 500;
 
