@@ -29,7 +29,7 @@ namespace BaGet.Core
         Task<Package> FindOrNullAsync(
             string id,
             NuGetVersion version,
-            bool includeUnlisted = false,
+            bool includeUnlisted,
             CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace BaGet.Core
         /// <param name="id">The packages' id.</param>
         /// <param name="includeUnlisted">Whether unlisted results should be included.</param>
         /// <returns>The packages found. Always non-null.</returns>
-        Task<IReadOnlyList<Package>> FindAsync(string id, bool includeUnlisted = false);
+        Task<IReadOnlyList<Package>> FindAsync(string id, bool includeUnlisted);
 
         /// <summary>
         /// Determine whether a package exists in the database (even if the package is unlisted).

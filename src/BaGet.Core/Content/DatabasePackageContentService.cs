@@ -39,7 +39,7 @@ namespace BaGet.Core.Content
             if (versions == null)
             {
                 // Fallback to the local packages if mirroring is disabled.
-                var packages = await _packages.FindAsync(id);
+                var packages = await _packages.FindAsync(id, includeUnlisted: true);
 
                 if (!packages.Any())
                 {
