@@ -5,6 +5,7 @@ using System.Reflection;
 using BaGet.AWS;
 using BaGet.AWS.Configuration;
 using BaGet.AWS.Extensions;
+using BaGet.Azure;
 using BaGet.Azure.Configuration;
 using BaGet.Azure.Extensions;
 using BaGet.Azure.Search;
@@ -56,7 +57,27 @@ namespace BaGet.Extensions
 
             services.AddBaGetContext();
 
-            services.AddTransient<IPackageService, PackageService>();
+            services.AddTransient<IPackageService>(provider =>
+            {
+                var databaseOptions = provider.GetRequiredService<IOptionsSnapshot<DatabaseOptions>>();
+
+                switch (databaseOptions.Value.Type)
+                {
+                    case DatabaseType.Sqlite:
+                    case DatabaseType.SqlServer:
+                    case DatabaseType.MySql:
+                    case DatabaseType.PostgreSql:
+                        return new PackageService(provider.GetRequiredService<IContext>());
+
+                    case DatabaseType.AzureTable:
+                        return provider.GetRequiredService<TablePackageService>();
+
+                    default:
+                        throw new InvalidOperationException(
+                            $"Unsupported database provider: {databaseOptions.Value.Type}");
+                }
+            });
+
             services.AddTransient<IPackageIndexingService, PackageIndexingService>();
             services.AddTransient<IPackageDeletionService, PackageDeletionService>();
             services.AddTransient<ISymbolIndexingService, SymbolIndexingService>();
@@ -92,6 +113,7 @@ namespace BaGet.Extensions
                     case DatabaseType.PostgreSql:
                         return provider.GetRequiredService<PostgreSqlContext>();
 
+                    case DatabaseType.AzureTable:
                     default:
                         throw new InvalidOperationException(
                             $"Unsupported database provider: {databaseOptions.Value.Type}");
@@ -163,6 +185,7 @@ namespace BaGet.Extensions
             services.AddTransient<IPackageStorageService, PackageStorageService>();
             services.AddTransient<ISymbolStorageService, SymbolStorageService>();
 
+            services.AddTableStorageService();
             services.AddBlobStorageService();
             services.AddS3StorageService();
             services.AddGoogleCloudStorageService();

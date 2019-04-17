@@ -1,8 +1,9 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BaGet.Core.Configuration
 {
-    public class BaGetOptions
+    public class BaGetOptions : IValidatableObject
     {
          /// <summary>
         /// The API Key required to authenticate package
@@ -48,5 +49,17 @@ namespace BaGet.Core.Configuration
 
         [Required]
         public MirrorOptions Mirror { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (Database.Type == DatabaseType.AzureTable && Search.Type == SearchType.Database)
+            {
+                yield return new ValidationResult(
+                    $"{nameof(Search)}.{nameof(SearchOptions.Type)} cannot be '{nameof(SearchType.Database)}' if " +
+                    $"{nameof(Database)}.{nameof(DatabaseOptions.Type)} is '{nameof(DatabaseType.AzureTable)}' as " +
+                    $"Azure Table Storage is not a supported search provider. Consider setting " +
+                    $"{nameof(Search)}.{nameof(SearchOptions.Type)} to '{nameof(SearchType.Azure)}' instead.");
+            }
+        }
     }
 }

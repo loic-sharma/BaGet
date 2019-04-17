@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
 using NuGet.Versioning;
@@ -42,7 +42,7 @@ namespace BaGet.Core.Services
         /// <param name="version">The package's version.</param>
         /// <param name="includeUnlisted">Whether unlisted results should be included.</param>
         /// <returns>The package found, or null.</returns>
-        Task<Package> FindOrNullAsync(string id, NuGetVersion version, bool includeUnlisted = false);
+        Task<Package> FindOrNullAsync(string id, NuGetVersion version, bool includeUnlisted);
 
         /// <summary>
         /// Attempt to find all packages with a given id.
@@ -50,7 +50,7 @@ namespace BaGet.Core.Services
         /// <param name="id">The packages' id.</param>
         /// <param name="includeUnlisted">Whether unlisted results should be included.</param>
         /// <returns>The packages found. Always non-null.</returns>
-        Task<IReadOnlyList<Package>> FindAsync(string id, bool includeUnlisted = false);
+        Task<IReadOnlyList<Package>> FindAsync(string id, bool includeUnlisted);
 
         /// <summary>
         /// Determine whether a package exists in the database (even if the package is unlisted).

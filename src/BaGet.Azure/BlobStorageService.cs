@@ -1,12 +1,12 @@
-using System;
-using System.IO;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
+using BaGet.Azure.Extensions;
 using BaGet.Core.Extensions;
 using BaGet.Core.Services;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using System;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BaGet.Azure.Configuration
 {
@@ -65,7 +65,7 @@ namespace BaGet.Azure.Configuration
 
                 return PutResult.Success;
             }
-            catch (StorageException e) when (IsAlreadyExistsException(e))
+            catch (StorageException e) when (e.IsAlreadyExistsException())
             {
                 using (var targetStream = await blob.OpenReadAsync(cancellationToken))
                 {
@@ -82,11 +82,6 @@ namespace BaGet.Azure.Configuration
             await _container
                 .GetBlockBlobReference(path)
                 .DeleteIfExistsAsync(cancellationToken);
-        }
-
-        private bool IsAlreadyExistsException(StorageException e)
-        {
-            return e?.RequestInformation?.HttpStatusCode == (int?)HttpStatusCode.Conflict;
         }
     }
 }

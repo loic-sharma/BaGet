@@ -70,7 +70,7 @@ namespace BaGet.Azure.Search
         {
             if (packageId == null) throw new ArgumentNullException(nameof(packageId));
 
-            var packages = await _packageService.FindAsync(packageId);
+            var packages = await _packageService.FindAsync(packageId, includeUnlisted: false);
 
             if (packages.Count == 0)
             {

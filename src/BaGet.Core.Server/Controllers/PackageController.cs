@@ -26,6 +26,7 @@ namespace BaGet.Controllers
 
         public async Task<IActionResult> Versions(string id, CancellationToken cancellationToken)
         {
+            // TODO: This should merge the versions from the upstream source.
             // First, attempt to find all package versions using the upstream source.
             var versions = await _mirror.FindPackageVersionsOrNullAsync(id, cancellationToken);
 
@@ -33,7 +34,7 @@ namespace BaGet.Controllers
             {
                 // Fallback to the local packages if the package couldn't be found
                 // on the upstream source.
-                var packages = await _packages.FindAsync(id);
+                var packages = await _packages.FindAsync(id, includeUnlisted: true);
 
                 if (!packages.Any())
                 {
@@ -96,7 +97,7 @@ namespace BaGet.Controllers
             // Allow read-through caching if it is configured.
             await _mirror.MirrorAsync(id, nugetVersion, cancellationToken);
 
-            var package = await _packages.FindOrNullAsync(id, nugetVersion);
+            var package = await _packages.FindOrNullAsync(id, nugetVersion, includeUnlisted: true);
 
             if (package == null || !package.HasReadme)
             {

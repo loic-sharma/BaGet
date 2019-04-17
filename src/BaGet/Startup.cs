@@ -43,7 +43,7 @@ namespace BaGet
 
             // Run migrations if necessary.
             var options = Configuration.Get<BaGetOptions>();
-            if (options.RunMigrationsAtStartup)
+            if (options.RunMigrationsAtStartup && options.Database.Type != DatabaseType.AzureTable)
             {
                 using (var scope = app.ApplicationServices.CreateScope())
                 {
