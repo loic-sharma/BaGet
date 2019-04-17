@@ -1,4 +1,8 @@
 using System;
+using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using BaGet.Configuration;
 using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
@@ -9,6 +13,8 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using NuGet.Versioning;
 
 namespace BaGet
 {
@@ -28,7 +34,32 @@ namespace BaGet
             // In production, the UI files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "BaGet.UI/build";
+                var assembly = Assembly.GetEntryAssembly();
+                var assemblyName = assembly.GetName().Name.ToLowerInvariant();
+                var assemblyVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "0.0.0";
+
+                var version = NuGetVersion.Parse(assemblyVersion).ToNormalizedString().ToLowerInvariant();
+
+                // Try to detect the path of the UI if BaGet is installed as a tool.
+                var root = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+                    ? Environment.ExpandEnvironmentVariables("%USERPROFILE%")
+                    : Environment.ExpandEnvironmentVariables("%HOME%");
+
+                // TODO: Make this resilient to TargetFramework changes. Ideally this should read the "project.assets.json" file
+                // in the "bagetToolPath".
+                var toolsPath = Path.Combine(root, ".dotnet", "tools", ".store");
+                var bagetToolPath = Path.Combine(toolsPath, assemblyName, version);
+                var bagetBinPath = Path.Combine(bagetToolPath, assemblyName, version, "tools", "netcoreapp2.2", "any");
+                var bagetSpaRoot = Path.Combine(bagetBinPath, "BaGet.UI", "build");
+
+                if (Directory.Exists(bagetSpaRoot))
+                {
+                    configuration.RootPath = bagetSpaRoot;
+                }
+                else
+                {
+                    configuration.RootPath = "BaGet.UI/build";
+                }
             });
         }
 

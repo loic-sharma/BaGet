@@ -3,16 +3,12 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
 
+    <IsPackable>true</IsPackable>
+    <PackAsTool>true</PackAsTool>
+
     <SpaRoot>..\BaGet.UI\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Entities\**" />
-    <Content Remove="Entities\**" />
-    <EmbeddedResource Remove="Entities\**" />
-    <None Remove="Entities\**" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
