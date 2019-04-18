@@ -56,6 +56,8 @@ namespace BaGet
                 })
                 .ConfigureAppConfiguration((builderContext, config) =>
                 {
+                    config.AddJsonFile(BaGetTool.ConfigPath, optional: true, reloadOnChange: false);
+
                     var root = Environment.GetEnvironmentVariable("BAGET_CONFIG_ROOT");
                     if (!string.IsNullOrEmpty(root))
                         config.SetBasePath(root);

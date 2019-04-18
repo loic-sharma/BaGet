@@ -18,6 +18,40 @@ using NuGet.Versioning;
 
 namespace BaGet
 {
+    public class BaGetTool
+    {
+
+        public static string FullPath => Instance.Value._fullPath;
+        public static string ConfigPath => Instance.Value._configPath;
+        public static string SpaRoot => Instance.Value._spaRoot;
+
+        private static readonly Lazy<BaGetTool> Instance = new Lazy<BaGetTool>(() => new BaGetTool());
+
+        private readonly string _fullPath;
+        private readonly string _configPath;
+        private readonly string _spaRoot;
+
+        private BaGetTool()
+        {
+            var assembly = Assembly.GetEntryAssembly();
+            var assemblyName = assembly.GetName().Name.ToLowerInvariant();
+            var assemblyVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "0.0.0";
+
+            var version = NuGetVersion.Parse(assemblyVersion).ToNormalizedString().ToLowerInvariant();
+
+            var root = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+                ? Environment.ExpandEnvironmentVariables("%USERPROFILE%")
+                : Environment.ExpandEnvironmentVariables("%HOME%");
+
+            var toolsPath = Path.Combine(root, ".dotnet", "tools", ".store");
+
+            // TODO: The SPA Root should be found by reading the tool's project.assets.json file.
+            _fullPath = Path.Combine(toolsPath, assemblyName, version);
+            _configPath = Path.Combine(_fullPath, assemblyName, version, "content", "appsettings.json");
+            _spaRoot = Path.Combine(_fullPath, assemblyName, version, "tools", "netcoreapp2.2", "any", "BaGet.UI", "build");
+        }
+    }
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -34,31 +68,16 @@ namespace BaGet
             // In production, the UI files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                var assembly = Assembly.GetEntryAssembly();
-                var assemblyName = assembly.GetName().Name.ToLowerInvariant();
-                var assemblyVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "0.0.0";
+                // Try to find the UI in the current path, but allow falling back to the tool if it installed. 
+                var spaRoot = Path.Combine(Directory.GetCurrentDirectory(), "BaGet.UI", "build");
 
-                var version = NuGetVersion.Parse(assemblyVersion).ToNormalizedString().ToLowerInvariant();
-
-                // Try to detect the path of the UI if BaGet is installed as a tool.
-                var root = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-                    ? Environment.ExpandEnvironmentVariables("%USERPROFILE%")
-                    : Environment.ExpandEnvironmentVariables("%HOME%");
-
-                // TODO: Make this resilient to TargetFramework changes. Ideally this should read the "project.assets.json" file
-                // in the "bagetToolPath".
-                var toolsPath = Path.Combine(root, ".dotnet", "tools", ".store");
-                var bagetToolPath = Path.Combine(toolsPath, assemblyName, version);
-                var bagetBinPath = Path.Combine(bagetToolPath, assemblyName, version, "tools", "netcoreapp2.2", "any");
-                var bagetSpaRoot = Path.Combine(bagetBinPath, "BaGet.UI", "build");
-
-                if (Directory.Exists(bagetSpaRoot))
+                if (Directory.Exists(spaRoot) || !Directory.Exists(BaGetTool.SpaRoot))
                 {
-                    configuration.RootPath = bagetSpaRoot;
+                    configuration.RootPath = "BaGet.UI/build";
                 }
                 else
                 {
-                    configuration.RootPath = "BaGet.UI/build";
+                    configuration.RootPath = BaGetTool.SpaRoot;
                 }
             });
         }
