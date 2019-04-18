@@ -158,27 +158,29 @@ namespace BaGet.Azure
 
         public async Task<bool> HardDeletePackageAsync(string id, NuGetVersion version)
         {
-            return await TryUpdatePackageAsync(id, version, TableOperation.Delete);
+            return await TryUpdatePackageAsync(
+                id,
+                version,
+                new PackageEntity(),
+                TableOperation.Delete);
         }
 
         public async Task<bool> RelistPackageAsync(string id, NuGetVersion version)
         {
-            return await TryUpdatePackageAsync(id, version, package =>
-            {
-                package.Listed = true;
-
-                return TableOperation.Merge(package);
-            });
+            return await TryUpdatePackageAsync(
+                id,
+                version,
+                new PackageListingEntity { Listed = true },
+                TableOperation.Merge);
         }
 
         public async Task<bool> UnlistPackageAsync(string id, NuGetVersion version)
         {
-            return await TryUpdatePackageAsync(id, version, package =>
-            {
-                package.Listed = false;
-
-                return TableOperation.Merge(package);
-            });
+            return await TryUpdatePackageAsync(
+                id,
+                version,
+                new PackageListingEntity { Listed = false },
+                TableOperation.Merge);
         }
 
         private List<string> MinimalColumnSet => new List<string> { "PartitionKey" };
@@ -186,14 +188,14 @@ namespace BaGet.Azure
         private async Task<bool> TryUpdatePackageAsync(
             string id,
             NuGetVersion version,
-            Func<PackageEntity, TableOperation> update)
+            TableEntity entity,
+            Func<TableEntity, TableOperation> prepare)
         {
-            var operation = update(new PackageEntity
-            {
-                PartitionKey = id.ToLowerInvariant(),
-                RowKey = version.ToNormalizedString().ToLowerInvariant(),
-                ETag = "*"
-            });
+            entity.PartitionKey = id.ToLowerInvariant();
+            entity.RowKey = version.ToNormalizedString().ToLowerInvariant();
+            entity.ETag = "*";
+
+            var operation = prepare(entity);
 
             try
             {
