@@ -6,6 +6,7 @@ using BaGet.Azure.Extensions;
 using BaGet.Core.Entities;
 using BaGet.Core.Services;
 using Microsoft.Azure.Cosmos.Table;
+using Microsoft.Extensions.Logging;
 using NuGet.Versioning;
 
 namespace BaGet.Azure
@@ -15,13 +16,17 @@ namespace BaGet.Azure
     /// </summary>
     public partial class TablePackageService : IPackageService
     {
+        // TODO: Make the table name a config
         private const string TableName = "BaGet";
+        private const int MaxPreconditionFailures = 5;
 
         private readonly CloudTable _table;
+        private readonly ILogger<TablePackageService> _logger;
 
-        public TablePackageService(CloudTableClient client)
+        public TablePackageService(CloudTableClient client, ILogger<TablePackageService> logger)
         {
             _table = client?.GetTableReference(TableName) ?? throw new ArgumentNullException(nameof(client));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<PackageAddResult> AddAsync(Package package)
@@ -43,31 +48,25 @@ namespace BaGet.Azure
 
         public async Task<bool> AddDownloadAsync(string id, NuGetVersion version)
         {
-            var operation = TableOperation.Retrieve<PackageEntity>(
-                id.ToLowerInvariant(),
-                version.ToNormalizedString().ToLowerInvariant(),
-                new List<string> { nameof(PackageEntity.Downloads) });
-
-            var result = await _table.ExecuteAsync(operation);
-            var entity = result.Result as PackageEntity;
-
-            if (entity == null)
+            return await RetryOnPreconditionFailures(async () =>
             {
-                return false;
-            }
+                var operation = TableOperation.Retrieve<PackageDownloadsEntity>(
+                    id.ToLowerInvariant(),
+                    version.ToNormalizedString().ToLowerInvariant());
 
-            entity.Downloads += 1;
+                var result = await _table.ExecuteAsync(operation);
+                var entity = result.Result as PackageDownloadsEntity;
 
-            try
-            {
+                if (entity == null)
+                {
+                    return false;
+                }
+
+                entity.Downloads += 1;
+
                 await _table.ExecuteAsync(TableOperation.Merge(entity));
-            }
-            catch (StorageException e) when (e.IsPreconditionFailedException())
-            {
-                // TODO
-            }
-
-            return true;
+                return true;
+            });
         }
 
         public async Task<bool> ExistsAsync(string id, NuGetVersion version = null)
@@ -184,6 +183,27 @@ namespace BaGet.Azure
         }
 
         private List<string> MinimalColumnSet => new List<string> { "PartitionKey" };
+
+        private async Task<TResult> RetryOnPreconditionFailures<TResult>(Func<Task<TResult>> action)
+        {
+            var attempt = 0;
+
+            while (true)
+            {
+                try
+                {
+                    return await action();
+                }
+                catch (StorageException e)
+                    when (attempt < MaxPreconditionFailures && e.IsPreconditionFailedException())
+                {
+                    _logger.LogWarning(
+                        e,
+                        $"Retrying due to precondition failure, attempt {{Attempt}} of {MaxPreconditionFailures}..",
+                        attempt);
+                }
+            }
+        }
 
         private async Task<bool> TryUpdatePackageAsync(
             string id,
