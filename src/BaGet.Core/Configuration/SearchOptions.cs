@@ -1,4 +1,4 @@
-﻿namespace BaGet.Core.Configuration
+namespace BaGet.Core.Configuration
 {
     public class SearchOptions
     {
@@ -9,5 +9,6 @@
     {
         Database = 0,
         Azure = 1,
+        Null = 2,
     }
 }
