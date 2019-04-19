@@ -159,6 +159,7 @@ namespace BaGet.Extensions
 
         public static IServiceCollection AddStorageProviders(this IServiceCollection services)
         {
+            services.AddSingleton<NullStorageService>();
             services.AddTransient<FileStorageService>();
             services.AddTransient<IPackageStorageService, PackageStorageService>();
             services.AddTransient<ISymbolStorageService, SymbolStorageService>();
@@ -185,6 +186,9 @@ namespace BaGet.Extensions
                     case StorageType.GoogleCloud:
                         return provider.GetRequiredService<GoogleCloudStorageService>();
 
+                    case StorageType.Null:
+                        return provider.GetRequiredService<NullStorageService>();
+
                     default:
                         throw new InvalidOperationException(
                             $"Unsupported storage service: {options.Value.Storage.Type}");
@@ -208,6 +212,9 @@ namespace BaGet.Extensions
                     case SearchType.Azure:
                         return provider.GetRequiredService<AzureSearchService>();
 
+                    case SearchType.Null:
+                        return provider.GetRequiredService<NullSearchService>();
+
                     default:
                         throw new InvalidOperationException(
                             $"Unsupported search service: {options.Value.Type}");
@@ -215,6 +222,7 @@ namespace BaGet.Extensions
             });
 
             services.AddTransient<DatabaseSearchService>();
+            services.AddSingleton<NullSearchService>();
             services.AddAzureSearch();
 
             return services;
