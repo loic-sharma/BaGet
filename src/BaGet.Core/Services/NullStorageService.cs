@@ -25,7 +25,11 @@ namespace BaGet.Core.Services
             throw new NotImplementedException();
         }
 
-        public Task<PutResult> PutAsync(string path, Stream content, string contentType, CancellationToken cancellationToken = default)
+        public Task<PutResult> PutAsync(
+            string path,
+            Stream content,
+            string contentType,
+            CancellationToken cancellationToken = default)
         {
             return Task.FromResult(PutResult.Success);
         }
