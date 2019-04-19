@@ -4,7 +4,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Extensions;
-using BaGet.Core.Services;
+using BaGet.Core.Storage;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 
@@ -43,7 +43,7 @@ namespace BaGet.Azure.Configuration
             return Task.FromResult(result);
         }
 
-        public async Task<PutResult> PutAsync(
+        public async Task<StoragePutResult> PutAsync(
             string path,
             Stream content,
             string contentType,
@@ -63,7 +63,7 @@ namespace BaGet.Azure.Configuration
                     operationContext: null,
                     cancellationToken: cancellationToken);
 
-                return PutResult.Success;
+                return StoragePutResult.Success;
             }
             catch (StorageException e) when (IsAlreadyExistsException(e))
             {
@@ -71,8 +71,8 @@ namespace BaGet.Azure.Configuration
                 {
                     content.Position = 0;
                     return content.Matches(targetStream)
-                        ? PutResult.AlreadyExists
-                        : PutResult.Conflict;
+                        ? StoragePutResult.AlreadyExists
+                        : StoragePutResult.Conflict;
                 }
             }
         }

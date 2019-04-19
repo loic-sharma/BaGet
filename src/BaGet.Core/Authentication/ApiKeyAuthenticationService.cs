@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using BaGet.Core.Configuration;
 using Microsoft.Extensions.Options;
 
-namespace BaGet.Core.Services
+namespace BaGet.Core.Authentication
 {
     public class ApiKeyAuthenticationService : IAuthenticationService
     {

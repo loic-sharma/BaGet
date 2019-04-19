@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using BaGet.Core.Configuration;
-using BaGet.Core.Services;
+using BaGet.Core.Storage;
 using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
@@ -89,7 +89,7 @@ namespace BaGet.Core.Tests.Services
             [Fact]
             public async Task SavesContent()
             {
-                PutResult result;
+                StoragePutResult result;
                 using (var content = StringStream("Hello world"))
                 {
                     result = await _target.PutAsync("test.txt", content, "text/plain");
@@ -98,7 +98,7 @@ namespace BaGet.Core.Tests.Services
                 var path = Path.Combine(_storePath, "test.txt");
 
                 Assert.True(File.Exists(path));
-                Assert.Equal(PutResult.Success, result);
+                Assert.Equal(StoragePutResult.Success, result);
                 Assert.Equal("Hello world", await File.ReadAllTextAsync(path));
             }
 
@@ -111,7 +111,7 @@ namespace BaGet.Core.Tests.Services
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
                 File.WriteAllText(path, "Hello world");
 
-                PutResult result;
+                StoragePutResult result;
                 using (var content = StringStream("Hello world"))
                 {
                     // Act
@@ -119,7 +119,7 @@ namespace BaGet.Core.Tests.Services
                 }
 
                 // Assert
-                Assert.Equal(PutResult.AlreadyExists, result);
+                Assert.Equal(StoragePutResult.AlreadyExists, result);
             }
 
             [Fact]
@@ -131,7 +131,7 @@ namespace BaGet.Core.Tests.Services
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
                 File.WriteAllText(path, "Hello world");
 
-                PutResult result;
+                StoragePutResult result;
                 using (var content = StringStream("foo bar"))
                 {
                     // Act
@@ -139,7 +139,7 @@ namespace BaGet.Core.Tests.Services
                 }
 
                 // Assert
-                Assert.Equal(PutResult.Conflict, result);
+                Assert.Equal(StoragePutResult.Conflict, result);
             }
 
             [Fact]

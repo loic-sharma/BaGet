@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,12 +6,12 @@ using System.Reflection.Metadata;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Extensions;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using BaGet.Core.State;
+using BaGet.Core.Storage;
 using Microsoft.Extensions.Logging;
 using NuGet.Packaging;
-using NuGet.Packaging.Core;
 
-namespace BaGet.Core.Services
+namespace BaGet.Core.Indexing
 {
     // Based off: https://github.com/NuGet/NuGetGallery/blob/master/src/NuGetGallery/Services/SymbolPackageUploadService.cs
     // Based off: https://github.com/NuGet/NuGet.Jobs/blob/master/src/Validation.Symbols/SymbolsValidatorService.cs#L44

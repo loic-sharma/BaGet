@@ -1,8 +1,10 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using BaGet.Core.Authentication;
 using BaGet.Core.Configuration;
-using BaGet.Core.Services;
+using BaGet.Core.Indexing;
+using BaGet.Core.Storage;
 using BaGet.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

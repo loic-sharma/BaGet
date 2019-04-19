@@ -2,7 +2,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BaGet.Core.Services
+namespace BaGet.Core.Indexing
 {
     /// <summary>
     /// The result of attempting to index a package.

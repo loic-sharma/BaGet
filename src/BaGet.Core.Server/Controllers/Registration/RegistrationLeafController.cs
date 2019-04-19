@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Mirror;
-using BaGet.Core.Services;
+using BaGet.Core.State;
 using BaGet.Extensions;
 using BaGet.Protocol;
 using Microsoft.AspNetCore.Mvc;

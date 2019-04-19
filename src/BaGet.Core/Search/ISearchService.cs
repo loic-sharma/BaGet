@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using BaGet.Core.Entities;
 using NuGet.Versioning;
 
-namespace BaGet.Core.Services
+namespace BaGet.Core.Search
 {
     public interface ISearchService
     {

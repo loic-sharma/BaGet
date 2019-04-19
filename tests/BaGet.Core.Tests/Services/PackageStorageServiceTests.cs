@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
-using BaGet.Core.Services;
+using BaGet.Core.Storage;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NuGet.Versioning;
@@ -54,7 +54,7 @@ namespace BaGet.Core.Tests.Services
             public async Task SavesContent()
             {
                 // Arrange
-                SetupPutResult(PutResult.Success);
+                SetupPutResult(StoragePutResult.Success);
 
                 using (var packageStream = StringStream("My package"))
                 using (var nuspecStream = StringStream("My nuspec"))
@@ -86,7 +86,7 @@ namespace BaGet.Core.Tests.Services
             public async Task DoesNotSaveReadmeIfItIsNull()
             {
                 // Arrange
-                SetupPutResult(PutResult.Success);
+                SetupPutResult(StoragePutResult.Success);
 
                 using (var packageStream = StringStream("My package"))
                 using (var nuspecStream = StringStream("My nuspec"))
@@ -107,7 +107,7 @@ namespace BaGet.Core.Tests.Services
             public async Task NormalizesVersionWhenContentIsSaved()
             {
                 // Arrange
-                SetupPutResult(PutResult.Success);
+                SetupPutResult(StoragePutResult.Success);
 
                 _package.Version = new NuGetVersion("1.2.3.0");
                 using (var packageStream = StringStream("My package"))
@@ -132,7 +132,7 @@ namespace BaGet.Core.Tests.Services
             public async Task DoesNotThrowIfContentAlreadyExistsAndContentsMatch()
             {
                 // Arrange
-                SetupPutResult(PutResult.AlreadyExists);
+                SetupPutResult(StoragePutResult.AlreadyExists);
 
                 using (var packageStream = StringStream("My package"))
                 using (var nuspecStream = StringStream("My nuspec"))
@@ -163,7 +163,7 @@ namespace BaGet.Core.Tests.Services
             public async Task ThrowsIfContentAlreadyExistsButContentsDoNotMatch()
             {
                 // Arrange
-                SetupPutResult(PutResult.Conflict);
+                SetupPutResult(StoragePutResult.Conflict);
 
                 using (var packageStream = StringStream("My package"))
                 using (var nuspecStream = StringStream("My nuspec"))
@@ -349,7 +349,7 @@ namespace BaGet.Core.Tests.Services
                 }
             }
 
-            protected void SetupPutResult(PutResult result)
+            protected void SetupPutResult(StoragePutResult result)
             {
                 _storage
                     .Setup(

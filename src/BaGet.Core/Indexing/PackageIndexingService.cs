@@ -7,14 +7,16 @@ using System.Threading.Tasks;
 using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
 using BaGet.Core.Extensions;
+using BaGet.Core.Search;
+using BaGet.Core.State;
+using BaGet.Core.Storage;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NuGet.Packaging;
 
-namespace BaGet.Core.Services
+namespace BaGet.Core.Indexing
 {
     using NuGetPackageType = NuGet.Packaging.Core.PackageType;
-    using BaGetPackageDependency = Entities.PackageDependency;
 
     public class PackageIndexingService : IPackageIndexingService
     {
@@ -254,9 +256,9 @@ namespace BaGet.Core.Services
             return (repositoryUri, repository.Type);
         }
 
-        private List<BaGetPackageDependency> GetDependencies(NuspecReader nuspec)
+        private List<PackageDependency> GetDependencies(NuspecReader nuspec)
         {
-            var dependencies = new List<BaGetPackageDependency>();
+            var dependencies = new List<PackageDependency>();
 
             foreach (var group in nuspec.GetDependencyGroups())
             {
@@ -264,7 +266,7 @@ namespace BaGet.Core.Services
 
                 if (!group.Packages.Any())
                 {
-                    dependencies.Add(new BaGetPackageDependency
+                    dependencies.Add(new PackageDependency
                     {
                         Id = null,
                         VersionRange = null,
@@ -274,7 +276,7 @@ namespace BaGet.Core.Services
 
                 foreach (var dependency in group.Packages)
                 {
-                    dependencies.Add(new BaGetPackageDependency
+                    dependencies.Add(new PackageDependency
                     {
                         Id = dependency.Id,
                         VersionRange = dependency.VersionRange?.ToString(),

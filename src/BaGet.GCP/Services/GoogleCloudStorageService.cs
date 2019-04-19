@@ -5,7 +5,7 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.Services;
+using BaGet.Core.Storage;
 using BaGet.GCP.Configuration;
 using Google;
 using Google.Cloud.Storage.V1;
@@ -42,7 +42,7 @@ namespace BaGet.GCP.Services
             return Task.FromResult(new Uri($"https://storage.googleapis.com/{_bucketName}/{CoercePath(path).TrimStart('/')}"));
         }
 
-        public async Task<PutResult> PutAsync(string path, Stream content, string contentType, CancellationToken cancellationToken = default)
+        public async Task<StoragePutResult> PutAsync(string path, Stream content, string contentType, CancellationToken cancellationToken = default)
         {
             using (var storage = await StorageClient.CreateAsync())
             using (var seekableContent = new MemoryStream())
@@ -56,7 +56,7 @@ namespace BaGet.GCP.Services
                 {
                     // attempt to upload, succeeding only if the object doesn't exist
                     await storage.UploadObjectAsync(_bucketName, objectName, contentType, seekableContent, new UploadObjectOptions { IfGenerationMatch = 0 }, cancellationToken);
-                    return PutResult.Success;
+                    return StoragePutResult.Success;
                 }
                 catch (GoogleApiException e) when (e.HttpStatusCode == HttpStatusCode.PreconditionFailed)
                 {
@@ -71,7 +71,7 @@ namespace BaGet.GCP.Services
                         contentHash = md5.ComputeHash(seekableContent);
 
                     // conflict if the two hashes are different
-                    return existingHash.SequenceEqual(contentHash) ? PutResult.AlreadyExists : PutResult.Conflict;
+                    return existingHash.SequenceEqual(contentHash) ? StoragePutResult.AlreadyExists : StoragePutResult.Conflict;
                 }
             }
         }

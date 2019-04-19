@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BaGet.Core.Services
+namespace BaGet.Core.Storage
 {
     public class SymbolStorageService : ISymbolStorageService
     {
@@ -27,7 +27,7 @@ namespace BaGet.Core.Services
             var path = GetPathForKey(filename, key);
             var result = await _storage.PutAsync(path, pdbStream, PdbContentType, cancellationToken);
 
-            if (result == PutResult.Conflict)
+            if (result == StoragePutResult.Conflict)
             {
                 throw new InvalidOperationException($"Could not save PDB {filename} {key} due to conflict");
             }

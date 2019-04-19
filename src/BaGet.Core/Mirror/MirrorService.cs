@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
-using BaGet.Core.Services;
+using BaGet.Core.Indexing;
+using BaGet.Core.State;
 using BaGet.Protocol;
 using Microsoft.Extensions.Logging;
 using NuGet.Versioning;
