@@ -11,7 +11,7 @@ namespace BaGet.Extensions
             return routes.MapRoute(
                 name: Routes.IndexRouteName,
                 template: "v3/index.json",
-                defaults: new { controller = "Index", action = "Get" });
+                defaults: new { controller = "ServiceIndex", action = "GetAsync" });
         }
 
         public static IRouteBuilder MapPackagePublishRoutes(this IRouteBuilder routes)
@@ -63,33 +63,33 @@ namespace BaGet.Extensions
             routes.MapRoute(
                 name: Routes.SearchRouteName,
                 template: "v3/search",
-                defaults: new { controller = "Search", action = "Get" });
+                defaults: new { controller = "Search", action = "SearchAsync" });
 
             routes.MapRoute(
                 name: Routes.AutocompleteRouteName,
                 template: "v3/autocomplete",
-                defaults: new { controller = "Search", action = "Autocomplete" });
+                defaults: new { controller = "Search", action = "AutocompleteAsync" });
 
             // This is an unofficial API to find packages that depend on a given package.
             routes.MapRoute(
                 name: Routes.DependentsRouteName,
                 template: "v3/dependents",
-                defaults: new { controller = "Search", action = "Dependents" });
+                defaults: new { controller = "Search", action = "DependentsAsync" });
 
             return routes;
         }
 
-        public static IRouteBuilder MapRegistrationRoutes(this IRouteBuilder routes)
+        public static IRouteBuilder MapPackageMetadataRoutes(this IRouteBuilder routes)
         {
             routes.MapRoute(
                name: Routes.RegistrationIndexRouteName,
                template: "v3/registration/{id}/index.json",
-               defaults: new { controller = "RegistrationIndex", action = "Get" });
+               defaults: new { controller = "PackageMetadata", action = "RegistrationIndexAsync" });
 
             routes.MapRoute(
                 name: Routes.RegistrationLeafRouteName,
                 template: "v3/registration/{id}/{version}.json",
-                defaults: new { controller = "RegistrationLeaf", action = "Get" });
+                defaults: new { controller = "PackageMetadata", action = "RegistrationLeafAsync" });
 
             return routes;
         }
@@ -99,22 +99,22 @@ namespace BaGet.Extensions
             routes.MapRoute(
                 name: Routes.PackageVersionsRouteName,
                 template: "v3/package/{id}/index.json",
-                defaults: new { controller = "Package", action = "Versions" });
+                defaults: new { controller = "PackageContent", action = "GetPackageVersionsAsync" });
 
             routes.MapRoute(
                 name: Routes.PackageDownloadRouteName,
                 template: "v3/package/{id}/{version}/{idVersion}.nupkg",
-                defaults: new { controller = "Package", action = "DownloadPackage" });
+                defaults: new { controller = "PackageContent", action = "DownloadPackageAsync" });
 
             routes.MapRoute(
                 name: Routes.PackageDownloadManifestRouteName,
                 template: "v3/package/{id}/{version}/{id2}.nuspec",
-                defaults: new { controller = "Package", action = "DownloadNuspec" });
+                defaults: new { controller = "PackageContent", action = "DownloadNuspecAsync" });
 
             routes.MapRoute(
                 name: Routes.PackageDownloadReadmeRouteName,
                 template: "v3/package/{id}/{version}/readme",
-                defaults: new { controller = "Package", action = "DownloadReadme" });
+                defaults: new { controller = "PackageContent", action = "DownloadReadmeAsync" });
 
             return routes;
         }

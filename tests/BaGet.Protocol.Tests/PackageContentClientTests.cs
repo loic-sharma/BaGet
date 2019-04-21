@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
@@ -11,14 +12,21 @@ namespace BaGet.Protocol.Tests
 
         public PackageContentTests()
         {
-            var httpClient = new HttpClient();
-            _target = new PackageContentClient(httpClient);
+            var httpClient = new HttpClient(new HttpClientHandler
+            {
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+            });
+
+            var serviceIndex = new ServiceIndexClient(httpClient, "https://api.nuget.org/v3/index.json");
+            var urlGeneratorFactory = new UrlGeneratorClientFactory(serviceIndex);
+
+            _target = new PackageContentClient(urlGeneratorFactory, httpClient);
         }
 
         [Fact]
         public async Task GetsPackageVersions()
         {
-            var result = await _target.GetPackageVersionsOrNullAsync("https://api.nuget.org/v3-flatcontainer/newtonsoft.json/index.json");
+            var result = await _target.GetPackageVersionsOrNullAsync("Newtonsoft.Json");
 
             Assert.NotNull(result);
             Assert.NotEmpty(result.Versions);
@@ -27,9 +35,9 @@ namespace BaGet.Protocol.Tests
         [Fact]
         public async Task ReturnsNullIfPackageDoesNotExist()
         {
-            var url = $"https://api.nuget.org/v3-flatcontainer/{Guid.NewGuid()}/index.json";
+            var result = await _target.GetPackageVersionsOrNullAsync(Guid.NewGuid().ToString());
 
-            Assert.Null(await _target.GetPackageVersionsOrNullAsync(url));
+            Assert.Null(result);
         }
     }
 }

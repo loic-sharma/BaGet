@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="NuGet.Versioning" Version="$(NuGetPackageVersion)" />
+    <PackageReference Include="System.Text.Encodings.Web" Version="4.5.0" />
   </ItemGroup>
 
 </Project>

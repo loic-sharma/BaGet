@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
+using BaGet.Core.Extensions;
 using BaGet.Core.Indexing;
-using BaGet.Core.State;
+using BaGet.Core.Metadata;
 using BaGet.Protocol;
 using Microsoft.Extensions.Logging;
 using NuGet.Versioning;
@@ -17,21 +19,21 @@ namespace BaGet.Core.Mirror
     public class MirrorService : IMirrorService
     {
         private readonly IPackageService _localPackages;
-        private readonly IPackageMetadataService _upstreamFeed;
-        private readonly IPackageDownloader _downloader;
+        private readonly IPackageContentService _upstreamContent;
+        private readonly IPackageMetadataService _upstreamMetadata;
         private readonly IPackageIndexingService _indexer;
         private readonly ILogger<MirrorService> _logger;
 
         public MirrorService(
             IPackageService localPackages,
-            IPackageMetadataService upstreamFeed,
-            IPackageDownloader downloader,
+            IPackageContentService upstreamContent,
+            IPackageMetadataService upstreamMetadata,
             IPackageIndexingService indexer,
             ILogger<MirrorService> logger)
         {
             _localPackages = localPackages ?? throw new ArgumentNullException(nameof(localPackages));
-            _upstreamFeed = upstreamFeed ?? throw new ArgumentNullException(nameof(upstreamFeed));
-            _downloader = downloader ?? throw new ArgumentNullException(nameof(downloader));
+            _upstreamContent = upstreamContent ?? throw new ArgumentNullException(nameof(upstreamContent));
+            _upstreamMetadata = upstreamMetadata ?? throw new ArgumentNullException(nameof(upstreamMetadata));
             _indexer = indexer ?? throw new ArgumentNullException(nameof(indexer));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -40,23 +42,22 @@ namespace BaGet.Core.Mirror
             string id,
             CancellationToken cancellationToken)
         {
-            var includeUnlisted = true;
-            var versions = await _upstreamFeed.GetAllVersionsOrNullAsync(id, includeUnlisted, cancellationToken);
-            if (versions == null)
+            var response = await _upstreamContent.GetPackageVersionsOrNullAsync(id, cancellationToken);
+            if (response == null)
             {
                 return null;
             }
 
             // Merge the local package versions into the upstream package versions.
-            var localPackages = await _localPackages.FindAsync(id, includeUnlisted);
+            var localPackages = await _localPackages.FindAsync(id, includeUnlisted: true);
             var localVersions = localPackages.Select(p => p.Version);
 
-            return versions.Concat(localVersions).Distinct().ToList();
+            return response.Versions.Concat(localVersions).Distinct().ToList();
         }
 
         public async Task<IReadOnlyList<Package>> FindPackagesOrNullAsync(string id, CancellationToken cancellationToken)
         {
-            var upstreamPackageMetadata = await _upstreamFeed.GetAllMetadataOrNullAsync(id, cancellationToken);
+            var upstreamPackageMetadata = await FindAllUpstreamMetadataOrNull(id, cancellationToken);
             if (upstreamPackageMetadata == null)
             {
                 return null;
@@ -203,6 +204,49 @@ namespace BaGet.Core.Mirror
             });
         }
 
+        private async Task<IReadOnlyList<PackageMetadata>> FindAllUpstreamMetadataOrNull(string id, CancellationToken cancellationToken)
+        {
+            var packageIndex = await _upstreamMetadata.GetRegistrationIndexOrNullAsync(id, cancellationToken);
+            if (packageIndex == null)
+            {
+                return null;
+            }
+
+            var result = new List<PackageMetadata>();
+
+            foreach (var page in packageIndex.Pages)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                // If the package's registration index is too big, it will be split into registration
+                // pages stored at different URLs. We will need to fetch each page's items individually.
+                // We can detect this case as the registration index will have "null" items.
+                var items = page.ItemsOrNull;
+
+                if (items == null)
+                {
+                    var externalPage = await _upstreamMetadata.GetRegistrationPageOrNullAsync(id, page.Lower, page.Upper, cancellationToken);
+
+                    if (externalPage == null || externalPage.ItemsOrNull == null)
+                    {
+                        // This should never happen...
+                        _logger.LogError(
+                            "Missing or invalid registration page for {PackageId}, versions {Lower} to {Upper}",
+                            id,
+                            page.Lower,
+                            page.Upper);
+                        continue;
+                    }
+
+                    items = externalPage.ItemsOrNull;
+                }
+
+                result.AddRange(items.Select(i => i.PackageMetadata));
+            }
+
+            return result;
+        }
+
         private async Task IndexFromSourceAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -212,11 +256,11 @@ namespace BaGet.Core.Mirror
                 id,
                 version);
 
+            Stream packageStream = null;
+
             try
             {
-                var packageUri = await _upstreamFeed.GetPackageContentUriAsync(id, version);
-
-                using (var stream = await _downloader.DownloadOrNullAsync(packageUri, cancellationToken))
+                using (var stream = await _upstreamContent.GetPackageContentStreamOrNullAsync(id, version, cancellationToken))
                 {
                     if (stream == null)
                     {
@@ -228,18 +272,21 @@ namespace BaGet.Core.Mirror
                         return;
                     }
 
-                    _logger.LogInformation(
-                        "Downloaded package {PackageId} {PackageVersion}, indexing...",
-                        id,
-                        version);
-
-                    var result = await _indexer.IndexAsync(stream, cancellationToken);
-
-                    _logger.LogInformation(
-                        "Finished indexing package {PackageId} {PackageVersion} with result {Result}",
-                        packageUri,
-                        result);
+                    packageStream = await stream.AsTemporaryFileStreamAsync();
                 }
+
+                _logger.LogInformation(
+                    "Downloaded package {PackageId} {PackageVersion}, indexing...",
+                    id,
+                    version);
+
+                var result = await _indexer.IndexAsync(packageStream, cancellationToken);
+
+                _logger.LogInformation(
+                    "Finished indexing package {PackageId} {PackageVersion} with result {Result}",
+                    id,
+                    version,
+                    result);
             }
             catch (Exception e)
             {
@@ -248,6 +295,8 @@ namespace BaGet.Core.Mirror
                     "Failed to mirror package {PackageId} {PackageVersion}",
                     id,
                     version);
+
+                packageStream?.Dispose();
             }
         }
     }

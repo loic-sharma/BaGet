@@ -6,6 +6,6 @@ namespace BaGet.Protocol
     {
         Task<SearchResponse> GetSearchResultsAsync(string searchUrl);
 
-        Task<AutocompleteResult> GetAutocompleteResultsAsync(string searchUrl);
+        Task<AutocompleteResponse> GetAutocompleteResultsAsync(string searchUrl);
     }
 }
