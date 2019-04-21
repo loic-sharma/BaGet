@@ -8,10 +8,12 @@
     <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
 
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
 
     <LangVersion>7.1</LangVersion>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>

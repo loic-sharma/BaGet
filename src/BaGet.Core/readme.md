@@ -6,4 +6,4 @@ Contains BaGet's core logic. The important folders are:
 * State - Used to track indexed packages, usually in a database
 * Storage - Stores the content of packages and symbols
 * Search - Used to search for packages
-* Mirror - Interactactions with an upstream NuGet feed
+* Mirror - Interactions with an upstream NuGet feed
