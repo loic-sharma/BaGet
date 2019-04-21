@@ -1,31 +1,22 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BaGet.Core.Services
+namespace BaGet.Core.Storage
 {
     /// <summary>
-    /// The result of a <see cref="IStorageService.PutAsync(string, Stream, string, CancellationToken)"/> operation.
+    /// A low-level storage abstraction.
     /// </summary>
-    public enum PutResult
-    {
-        /// <summary>
-        /// The given path is already used to store different content.
-        /// </summary>
-        Conflict,
-
-        /// <summary>
-        /// This content is already stored at the given path.
-        /// </summary>
-        AlreadyExists,
-
-        /// <summary>
-        /// The content was sucessfully stored.
-        /// </summary>
-        Success,
-    }
-
+    /// <remarks>
+    /// This is used to store:
+    ///
+    /// * Packages, through <see cref="PackageStorageService"/>
+    /// * Symbols, through <see cref="SymbolStorageService"/>
+    ///
+    /// This storage abstraction has implementations for disk,
+    /// Azure Blob Storage, Amazon Web Services S3, and Google Cloud Storage.
+    /// </remarks>
     public interface IStorageService
     {
         /// <summary>
@@ -51,7 +42,7 @@ namespace BaGet.Core.Services
         /// <param name="contentType">The type of content that is being stored.</param>
         /// <param name="cancellationToken"></param>
         /// <returns>The result of the put operation.</returns>
-        Task<PutResult> PutAsync(
+        Task<StoragePutResult> PutAsync(
             string path,
             Stream content,
             string contentType,
@@ -64,5 +55,26 @@ namespace BaGet.Core.Services
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task DeleteAsync(string path, CancellationToken cancellationToken = default);
+    }
+
+    /// <summary>
+    /// The result of a <see cref="IStorageService.PutAsync(string, Stream, string, CancellationToken)"/> operation.
+    /// </summary>
+    public enum StoragePutResult
+    {
+        /// <summary>
+        /// The given path is already used to store different content.
+        /// </summary>
+        Conflict,
+
+        /// <summary>
+        /// This content is already stored at the given path.
+        /// </summary>
+        AlreadyExists,
+
+        /// <summary>
+        /// The content was sucessfully stored.
+        /// </summary>
+        Success,
     }
 }

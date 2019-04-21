@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NuGet.Frameworks;
 
-namespace BaGet.Core.Services
+namespace BaGet.Core.Indexing
 {
     using static NuGet.Frameworks.FrameworkConstants;
 

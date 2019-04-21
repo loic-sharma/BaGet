@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
 
-namespace BaGet.Core.Services
+namespace BaGet.Core.Search
 {
     /// <summary>
     /// A minimal search service implementation, used for advanced scenarios.

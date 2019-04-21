@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,7 +6,7 @@ using BaGet.Core.Entities;
 using Microsoft.Extensions.Logging;
 using NuGet.Versioning;
 
-namespace BaGet.Core.Services
+namespace BaGet.Core.Storage
 {
     public class PackageStorageService : IPackageStorageService
     {
@@ -54,7 +54,7 @@ namespace BaGet.Core.Services
 
             // Store the package.
             var result = await _storage.PutAsync(packagePath, packageStream, PackageContentType, cancellationToken);
-            if (result == PutResult.Conflict)
+            if (result == StoragePutResult.Conflict)
             {
                 // TODO: This should be returned gracefully with an enum.
                 _logger.LogInformation(
@@ -74,7 +74,7 @@ namespace BaGet.Core.Services
                 nuspecPath);
 
             result = await _storage.PutAsync(nuspecPath, nuspecStream, NuspecContentType, cancellationToken);
-            if (result == PutResult.Conflict)
+            if (result == StoragePutResult.Conflict)
             {
                 // TODO: This should be returned gracefully with an enum.
                 _logger.LogInformation(
@@ -96,7 +96,7 @@ namespace BaGet.Core.Services
                     readmePath);
 
                 result = await _storage.PutAsync(readmePath, readmeStream, ReadmeContentType, cancellationToken);
-                if (result == PutResult.Conflict)
+                if (result == StoragePutResult.Conflict)
                 {
                     // TODO: This should be returned gracefully with an enum.
                     _logger.LogInformation(

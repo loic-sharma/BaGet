@@ -1,27 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
 using NuGet.Versioning;
 
-namespace BaGet.Core.Services
+namespace BaGet.Core.State
 {
-    /// <summary>
-    /// The result of attempting to add the package to the database.
-    /// See <see cref="IPackageService.AddAsync(Package)"/>
-    /// </summary>
-    public enum PackageAddResult
-    {
-        /// <summary>
-        /// Failed to add the package as it already exists.
-        /// </summary>
-        PackageAlreadyExists,
-
-        /// <summary>
-        /// The package was added successfully.
-        /// </summary>
-        Success
-    }
-
     /// <summary>
     /// The "source of truth" for packages' state. Packages' content
     /// are stored by the <see cref="IPackageStorageService"/>.
@@ -91,5 +74,22 @@ namespace BaGet.Core.Services
         /// <param name="version">The version of the pacakge to remove.</param>
         /// <returns>False if the package doesn't exist.</returns>
         Task<bool> HardDeletePackageAsync(string id, NuGetVersion version);
+    }
+
+    /// <summary>
+    /// The result of attempting to add the package to the database.
+    /// See <see cref="IPackageService.AddAsync(Package)"/>
+    /// </summary>
+    public enum PackageAddResult
+    {
+        /// <summary>
+        /// Failed to add the package as it already exists.
+        /// </summary>
+        PackageAlreadyExists,
+
+        /// <summary>
+        /// The package was added successfully.
+        /// </summary>
+        Success
     }
 }

@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using BaGet.Core.Services;
+using BaGet.Core.Search;
 using BaGet.Extensions;
 using BaGet.Protocol;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BaGet.Controllers
 {
     using ProtocolSearchResult = Protocol.SearchResult;
-    using QuerySearchResult = Core.Services.SearchResult;
+    using QuerySearchResult = Core.Search.SearchResult;
 
     public class SearchController : Controller
     {

@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
-using BaGet.Core.Services;
+using BaGet.Core.State;
 using Moq;
 using Xunit;
 

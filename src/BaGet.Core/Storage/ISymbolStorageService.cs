@@ -1,12 +1,11 @@
-﻿using System.IO;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BaGet.Core.Services
+namespace BaGet.Core.Storage
 {
     /// <summary>
-    /// Stores packages' content. Packages' state are stored by the
-    /// <see cref="IPackageService"/>.
+    /// Stores the content of symbols, also known as PDBs.
     /// </summary>
     public interface ISymbolStorageService
     {

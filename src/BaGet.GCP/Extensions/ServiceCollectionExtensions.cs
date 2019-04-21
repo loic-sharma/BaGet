@@ -1,4 +1,3 @@
-using BaGet.Core.Services;
 using BaGet.GCP.Services;
 using Microsoft.Extensions.DependencyInjection;
 

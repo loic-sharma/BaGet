@@ -2,8 +2,9 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using BaGet.Core.Storage;
 
-namespace BaGet.Core.Services
+namespace BaGet.Core.Search
 {
     /// <summary>
     /// A minimal storage implementation, used for advanced scenarios.
@@ -25,13 +26,13 @@ namespace BaGet.Core.Services
             throw new NotImplementedException();
         }
 
-        public Task<PutResult> PutAsync(
+        public Task<StoragePutResult> PutAsync(
             string path,
             Stream content,
             string contentType,
             CancellationToken cancellationToken = default)
         {
-            return Task.FromResult(PutResult.Success);
+            return Task.FromResult(StoragePutResult.Success);
         }
     }
 }

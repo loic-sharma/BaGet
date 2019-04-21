@@ -6,7 +6,7 @@ using BaGet.Core.Configuration;
 using BaGet.Core.Extensions;
 using Microsoft.Extensions.Options;
 
-namespace BaGet.Core.Services
+namespace BaGet.Core.Storage
 {
     /// <summary>
     /// Stores content on disk.
@@ -47,7 +47,7 @@ namespace BaGet.Core.Services
             return Task.FromResult(result);
         }
 
-        public async Task<PutResult> PutAsync(
+        public async Task<StoragePutResult> PutAsync(
             string path,
             Stream content,
             string contentType,
@@ -68,7 +68,7 @@ namespace BaGet.Core.Services
                 using (var fileStream = File.Open(path, FileMode.CreateNew))
                 {
                     await content.CopyToAsync(fileStream, DefaultCopyBufferSize, cancellationToken);
-                    return PutResult.Success;
+                    return StoragePutResult.Success;
                 }
             }
             catch (IOException) when (File.Exists(path))
@@ -77,8 +77,8 @@ namespace BaGet.Core.Services
                 {
                     content.Position = 0;
                     return content.Matches(targetStream)
-                        ? PutResult.AlreadyExists
-                        : PutResult.Conflict;
+                        ? StoragePutResult.AlreadyExists
+                        : StoragePutResult.Conflict;
                 }
             }
         }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
 using BaGet.AWS.Configuration;
-using BaGet.Core.Services;
+using BaGet.Core.Storage;
 using Microsoft.Extensions.Options;
 
 namespace BaGet.AWS
@@ -70,7 +70,7 @@ namespace BaGet.AWS
             return Task.FromResult(new Uri(url));
         }
 
-        public async Task<PutResult> PutAsync(string path, Stream content, string contentType, CancellationToken cancellationToken = default)
+        public async Task<StoragePutResult> PutAsync(string path, Stream content, string contentType, CancellationToken cancellationToken = default)
         {
             // TODO: Uploads should be idempotent. This should fail if and only if the blob
             // already exists but has different content.
@@ -92,7 +92,7 @@ namespace BaGet.AWS
                 }, cancellationToken);
             }
 
-            return PutResult.Success;
+            return StoragePutResult.Success;
         }
 
         public async Task DeleteAsync(string path, CancellationToken cancellationToken = default)

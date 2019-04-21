@@ -6,7 +6,7 @@ using BaGet.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Versioning;
 
-namespace BaGet.Core.Services
+namespace BaGet.Core.State
 {
     public class PackageService : IPackageService
     {
