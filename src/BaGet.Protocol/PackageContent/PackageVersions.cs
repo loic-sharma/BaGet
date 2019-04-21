@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using BaGet.Protocol.Converters;
 using Newtonsoft.Json;
@@ -13,11 +13,18 @@ namespace BaGet.Protocol
     /// </summary>
     public class PackageVersions
     {
+        /// <summary>
+        /// Create list of versions.
+        /// </summary>
+        /// <param name="versions">The versions.</param>
         public PackageVersions(IReadOnlyList<NuGetVersion> versions)
         {
             Versions = versions ?? throw new ArgumentNullException(nameof(versions));
         }
 
+        /// <summary>
+        /// The versions.
+        /// </summary>
         [JsonConverter(typeof(NuGetVersionListConverter))]
         public IReadOnlyList<NuGetVersion> Versions { get; }
     }
