@@ -108,7 +108,7 @@ namespace BaGet.Azure
                 filter = TableQuery.CombineFilters(
                     filter,
                     TableOperators.And,
-                    TableQuery.GenerateFilterCondition(nameof(PackageEntity.Listed), QueryComparisons.Equal, "false"));
+                    TableQuery.GenerateFilterConditionForBool(nameof(PackageEntity.Listed), QueryComparisons.Equal, true));
             }
 
             var query = new TableQuery<PackageEntity>().Where(filter);
