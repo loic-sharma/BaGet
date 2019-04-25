@@ -115,16 +115,21 @@ namespace BaGet.Azure
                     SemVerLevel = (SemVerLevel)SemVerLevel,
                     Summary = Summary,
                     Title = Title,
-                    IconUrl = new Uri(IconUrl),
-                    LicenseUrl = new Uri(LicenseUrl),
-                    ProjectUrl = new Uri(ProjectUrl),
-                    RepositoryUrl = new Uri(RepositoryUrl),
+                    IconUrl = CreateUriFromString(IconUrl),
+                    LicenseUrl = CreateUriFromString(LicenseUrl),
+                    ProjectUrl = CreateUriFromString(ProjectUrl),
+                    RepositoryUrl = CreateUriFromString(RepositoryUrl),
                     RepositoryType = RepositoryType,
                     Tags = JsonConvert.DeserializeObject<string[]>(Tags),
                     Dependencies = DependencyEntity.Parse(Dependencies),
                     PackageTypes = PackageTypeEntity.Parse(PackageTypes),
                     TargetFrameworks = targetFrameworks,
                 };
+            }
+
+            private Uri CreateUriFromString(string uriText)
+            {
+                return string.IsNullOrEmpty(uriText) ? null : new Uri(uriText);
             }
 
             private class DependencyEntity
