@@ -17,7 +17,7 @@ namespace BaGet.Core.State
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public virtual async Task<PackageAddResult> AddAsync(Package package)
+        public async Task<PackageAddResult> AddAsync(Package package)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace BaGet.Core.State
             }
         }
 
-        public virtual Task<bool> ExistsAsync(string id, NuGetVersion version = null)
+        public Task<bool> ExistsAsync(string id, NuGetVersion version = null)
         {
             var query = _context.Packages.Where(p => p.Id == id);
 
@@ -46,7 +46,7 @@ namespace BaGet.Core.State
             return query.AnyAsync();
         }
 
-        public virtual async Task<IReadOnlyList<Package>> FindAsync(string id, bool includeUnlisted = false)
+        public async Task<IReadOnlyList<Package>> FindAsync(string id, bool includeUnlisted = false)
         {
             var query = _context.Packages
                 .Include(p => p.Dependencies)
@@ -62,7 +62,7 @@ namespace BaGet.Core.State
             return (await query.ToListAsync()).AsReadOnly();
         }
 
-        public virtual Task<Package> FindOrNullAsync(string id, NuGetVersion version, bool includeUnlisted = false)
+        public Task<Package> FindOrNullAsync(string id, NuGetVersion version, bool includeUnlisted = false)
         {
             var query = _context.Packages
                 .Include(p => p.Dependencies)
@@ -78,22 +78,22 @@ namespace BaGet.Core.State
             return query.FirstOrDefaultAsync();
         }
 
-        public virtual Task<bool> UnlistPackageAsync(string id, NuGetVersion version)
+        public Task<bool> UnlistPackageAsync(string id, NuGetVersion version)
         {
             return TryUpdatePackageAsync(id, version, p => p.Listed = false);
         }
 
-        public virtual Task<bool> RelistPackageAsync(string id, NuGetVersion version)
+        public Task<bool> RelistPackageAsync(string id, NuGetVersion version)
         {
             return TryUpdatePackageAsync(id, version, p => p.Listed = true);
         }
 
-        public virtual Task<bool> AddDownloadAsync(string id, NuGetVersion version)
+        public Task<bool> AddDownloadAsync(string id, NuGetVersion version)
         {
             return TryUpdatePackageAsync(id, version, p => p.Downloads += 1);
         }
 
-        public virtual async Task<bool> HardDeletePackageAsync(string id, NuGetVersion version)
+        public async Task<bool> HardDeletePackageAsync(string id, NuGetVersion version)
         {
             var package = await _context.Packages
                 .Where(p => p.Id == id)
@@ -113,7 +113,7 @@ namespace BaGet.Core.State
             return true;
         }
 
-        protected virtual async Task<bool> TryUpdatePackageAsync(string id, NuGetVersion version, Action<Package> action)
+        private async Task<bool> TryUpdatePackageAsync(string id, NuGetVersion version, Action<Package> action)
         {
             var package = await _context.Packages
                 .Where(p => p.Id == id)
