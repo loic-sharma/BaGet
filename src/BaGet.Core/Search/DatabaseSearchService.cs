@@ -34,6 +34,8 @@ namespace BaGet.Core.Search
             var frameworks = GetCompatibleFrameworks(framework);
             var packages = await SearchImplAsync(query, skip, take, includePrerelease, includeSemVer2, packageType, frameworks);
 
+            packages = FilterPackages(packages);
+
             foreach (var package in packages)
             {
                 var versions = package.OrderByDescending(p => p.Version).ToList();
@@ -59,6 +61,11 @@ namespace BaGet.Core.Search
             }
 
             return result.AsReadOnly();
+        }
+
+        protected virtual List<IGrouping<string, Package>> FilterPackages(List<IGrouping<string, Package>> packages)
+        {
+            return packages;
         }
 
         private IReadOnlyList<string> GetCompatibleFrameworks(string framework)
