@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using BaGet.Core.Validation;
 
 namespace BaGet.AWS.Configuration
@@ -11,8 +11,11 @@ namespace BaGet.AWS.Configuration
         [RequiredIf(nameof(AccessKey), null, IsInverted = true)]
         public string SecretKey { get; set; }
 
-        [Required]
+        [RequiredIf(nameof(ServiceUrl), null)]
         public string Region { get; set; }
+
+        [RequiredIf(nameof(Region), null)]
+        public string ServiceUrl { get; set; }
 
         [Required]
         public string Bucket { get; set; }
