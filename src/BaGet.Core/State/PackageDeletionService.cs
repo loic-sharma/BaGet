@@ -33,7 +33,7 @@ namespace BaGet.Core.State
         {
             if (!new Regex(_options.DeleteMatch).IsMatch(version.ToNormalizedString()))
             {
-                _logger.LogWarning($"{_options.PackageDeletionBehavior.ToString()} for package {id} {version} is not allowed because the version does not match {_options.HardDeleteMatch}");
+                _logger.LogWarning($"{_options.PackageDeletionBehavior.ToString()} for package {id} {version} is not allowed because the version does not match {_options.DeleteMatch}");
                 return false;
             }
 
