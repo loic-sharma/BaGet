@@ -26,7 +26,7 @@ namespace BaGet.Core.Configuration
         /// </summary>
         public PackageDeletionBehavior PackageDeletionBehavior { get; set; } = PackageDeletionBehavior.Unlist;
 
-        public string HardDeleteMatch { get; set; } = ".*";
+        public string DeleteMatch { get; set; } = ".*";
 
         /// <summary>
         /// If enabled, pushing a package that already exists will replace the

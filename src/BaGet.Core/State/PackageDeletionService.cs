@@ -31,6 +31,12 @@ namespace BaGet.Core.State
 
         public async Task<bool> TryDeletePackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
+            if (!new Regex(_options.DeleteMatch).IsMatch(version.ToNormalizedString()))
+            {
+                _logger.LogWarning($"{_options.PackageDeletionBehavior.ToString()} for package {id} {version} is not allowed because the version does not match {_options.HardDeleteMatch}");
+                return false;
+            }
+
             switch (_options.PackageDeletionBehavior)
             {
                 case PackageDeletionBehavior.Unlist:
@@ -62,12 +68,6 @@ namespace BaGet.Core.State
 
         private async Task<bool> TryHardDeletePackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
-            if (!new Regex(_options.HardDeleteMatch).IsMatch(version.ToNormalizedString()))
-            {
-                _logger.LogWarning($"Hard delete for package {id} {version} is not allowed because the version does not match {_options.HardDeleteMatch}");
-                return false;
-            }
-
             _logger.LogInformation(
                 "Hard deleting package {PackageId} {PackageVersion} from the database...",
                 id,
