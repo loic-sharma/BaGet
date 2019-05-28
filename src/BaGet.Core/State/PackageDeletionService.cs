@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Configuration;
@@ -61,6 +62,12 @@ namespace BaGet.Core.State
 
         private async Task<bool> TryHardDeletePackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
+            if (!new Regex(_options.HardDeleteMatch).IsMatch(version.ToNormalizedString()))
+            {
+                _logger.LogWarning($"Hard delete for package {id} {version} is not allowed because the version does not match {_options.HardDeleteMatch}");
+                return false;
+            }
+
             _logger.LogInformation(
                 "Hard deleting package {PackageId} {PackageVersion} from the database...",
                 id,

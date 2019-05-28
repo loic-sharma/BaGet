@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Configuration;
@@ -76,7 +77,7 @@ namespace BaGet.Core.Indexing
             // The package is well-formed. Ensure this is a new package.
             if (await _packages.ExistsAsync(package.Id, package.Version))
             {
-                if (!_options.Value.AllowPackageOverwrites)
+                if (!_options.Value.AllowPackageOverwrites || !new Regex(_options.Value.OverwriteMatch).IsMatch(package.VersionString))
                 {
                     return PackageIndexingResult.PackageAlreadyExists;
                 }
