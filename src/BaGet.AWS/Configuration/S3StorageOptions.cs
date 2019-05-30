@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using BaGet.Core.Validation;
 
 namespace BaGet.AWS.Configuration
@@ -18,5 +18,7 @@ namespace BaGet.AWS.Configuration
         public string Bucket { get; set; }
 
         public string Prefix { get; set; }
+
+        public string AssumeRoleArn { get; set; }
     }
 }

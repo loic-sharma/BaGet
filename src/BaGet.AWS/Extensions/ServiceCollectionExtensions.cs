@@ -1,7 +1,9 @@
+using System;
 using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
 using BaGet.AWS.Configuration;
+using BaGet.AWS.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -19,6 +21,16 @@ namespace BaGet.AWS.Extensions
                 {
                     RegionEndpoint = RegionEndpoint.GetBySystemName(options.Region)
                 };
+                
+                if (!string.IsNullOrEmpty(options.AssumeRoleArn))
+                {
+                    var credentials = FallbackCredentialsFactory.GetCredentials();
+                    var assumedCredentials = AwsIamHelper
+                        .AssumeRoleAsync(credentials, options.AssumeRoleArn, $"BaGet-Session-{Guid.NewGuid()}").GetAwaiter().GetResult();
+
+                    return new AmazonS3Client(assumedCredentials, config);
+                }
+                    
 
                 if (!string.IsNullOrEmpty(options.AccessKey))
                     return new AmazonS3Client(new BasicAWSCredentials(options.AccessKey, options.SecretKey), config);
