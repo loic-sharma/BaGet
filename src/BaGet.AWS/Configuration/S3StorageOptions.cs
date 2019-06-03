@@ -19,6 +19,8 @@ namespace BaGet.AWS.Configuration
 
         public string Prefix { get; set; }
 
+        public bool UseInstanceProfile { get; set; }
+
         public string AssumeRoleArn { get; set; }
     }
 }

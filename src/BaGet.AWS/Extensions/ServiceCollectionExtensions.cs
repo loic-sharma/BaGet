@@ -21,6 +21,12 @@ namespace BaGet.AWS.Extensions
                 {
                     RegionEndpoint = RegionEndpoint.GetBySystemName(options.Region)
                 };
+
+                if (options.UseInstanceProfile)
+                {
+                    var credentials = FallbackCredentialsFactory.GetCredentials();
+                    return new AmazonS3Client(credentials, config);
+                }
                 
                 if (!string.IsNullOrEmpty(options.AssumeRoleArn))
                 {
