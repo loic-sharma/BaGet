@@ -7,7 +7,7 @@ namespace BaGet.Core.State
 {
     /// <summary>
     /// The "source of truth" for packages' state. Packages' content
-    /// are stored by the <see cref="IPackageStorageService"/>.
+    /// are stored by the <see cref="Storage.IPackageStorageService"/>.
     /// </summary>
     public interface IPackageService
     {

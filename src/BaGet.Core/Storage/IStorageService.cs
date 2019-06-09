@@ -31,6 +31,7 @@ namespace BaGet.Core.Storage
         /// Get a URI that can be used to download the content.
         /// </summary>
         /// <param name="path">The content's path.</param>
+        /// <param name="cancellationToken"></param>
         /// <returns>The content's URI. This may be a local file.</returns>
         Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default);
 
