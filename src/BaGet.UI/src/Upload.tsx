@@ -93,7 +93,7 @@ class Upload extends React.Component<{}, IUploadState> {
 
       case Tab.NuGet:
         name = "NuGet";
-        content = [`nuget -Source ${this.serviceIndexUrl} package.nupkg`];
+        content = [`nuget push -Source ${this.serviceIndexUrl} package.nupkg`];
         documentationUrl = "https://docs.microsoft.com/en-us/nuget/tools/cli-ref-push";
         break;
 
