@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using BaGet.Core.Validation;
 
 namespace BaGet.Core.Configuration
 {
@@ -6,8 +7,11 @@ namespace BaGet.Core.Configuration
     {
         public DatabaseType Type { get; set; }
 
-        [Required]
+        [RequiredIf(nameof(FromEnvironmentVariable), false)]
         public string ConnectionString { get; set; }
+
+        [RequiredIf(nameof(ConnectionString), null)]
+        public bool FromEnvironmentVariable { get; set; }
     }
 
     public enum DatabaseType

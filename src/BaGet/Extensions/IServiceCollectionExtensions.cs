@@ -105,29 +105,29 @@ namespace BaGet.Extensions
             services.AddDbContext<SqliteContext>((provider, options) =>
             {
                 var databaseOptions = provider.GetRequiredService<IOptionsSnapshot<DatabaseOptions>>();
-
-                options.UseSqlite(databaseOptions.Value.ConnectionString);
+                var connectionString = GetConnectionString(databaseOptions);
+                options.UseSqlite(connectionString);
             });
 
             services.AddDbContext<SqlServerContext>((provider, options) =>
             {
                 var databaseOptions = provider.GetRequiredService<IOptionsSnapshot<DatabaseOptions>>();
-
-                options.UseSqlServer(databaseOptions.Value.ConnectionString);
+                var connectionString = GetConnectionString(databaseOptions);
+                options.UseSqlServer(connectionString);
             });
 
             services.AddDbContext<MySqlContext>((provider, options) =>
             {
                 var databaseOptions = provider.GetRequiredService<IOptionsSnapshot<DatabaseOptions>>();
-
-                options.UseMySql(databaseOptions.Value.ConnectionString);
+                var connectionString = GetConnectionString(databaseOptions);
+                options.UseMySql(connectionString);
             });
 
             services.AddDbContext<PostgreSqlContext>((provider, options) =>
             {
                 var databaseOptions = provider.GetRequiredService<IOptionsSnapshot<DatabaseOptions>>();
-
-                options.UseNpgsql(databaseOptions.Value.ConnectionString);
+                var connectionString = GetConnectionString(databaseOptions);
+                options.UseNpgsql(connectionString);
             });
 
             return services;
@@ -302,6 +302,21 @@ namespace BaGet.Extensions
             services.AddTransient<IAuthenticationService, ApiKeyAuthenticationService>();
 
             return services;
+        }
+
+        public static string GetConnectionString(IOptionsSnapshot<DatabaseOptions> databaseOptions)
+        {
+            if (databaseOptions.Value.FromEnvironmentVariable)
+            {
+                var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+                if (string.IsNullOrEmpty(connectionString))
+                {
+                    throw new InvalidOperationException("Cannot find environment variable DbConnectionString");
+                }
+                return connectionString;
+            }
+
+            return databaseOptions.Value.ConnectionString;
         }
     }
 }
