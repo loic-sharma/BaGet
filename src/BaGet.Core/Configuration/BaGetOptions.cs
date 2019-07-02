@@ -27,10 +27,22 @@ namespace BaGet.Core.Configuration
         public PackageDeletionBehavior PackageDeletionBehavior { get; set; } = PackageDeletionBehavior.Unlist;
 
         /// <summary>
+        /// Packages can only be deleted if the name-version string matches this regex.
+        /// Default value allows everything.
+        /// </summary>
+        public string DeleteMatch { get; set; } = ".*";
+
+        /// <summary>
         /// If enabled, pushing a package that already exists will replace the
         /// existing package.
         /// </summary>
         public bool AllowPackageOverwrites { get; set; } = false;
+
+        /// <summary>
+        /// Packages can only be overwritten if the name-version string matches this regex.
+        /// Default value allows everything.
+        /// </summary>
+        public string OverwriteMatch { get; set; } = ".*";
 
         /// <summary>
         /// If true, disables package pushing, deleting, and relisting.
