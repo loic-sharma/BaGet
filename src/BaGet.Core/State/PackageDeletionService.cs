@@ -31,9 +31,9 @@ namespace BaGet.Core.State
 
         public async Task<bool> TryDeletePackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
-            if (!new Regex(_options.DeleteMatch).IsMatch(version.ToNormalizedString()))
+            if (!new Regex(_options.DeleteMatch).IsMatch($"{id} {version.ToNormalizedString()}"))
             {
-                _logger.LogWarning($"{_options.PackageDeletionBehavior.ToString()} for package {id} {version} is not allowed because the version does not match {_options.DeleteMatch}");
+                _logger.LogWarning($"{_options.PackageDeletionBehavior.ToString()} for package {id} {version} is not allowed because the id and version do not match {_options.DeleteMatch}");
                 return false;
             }
 

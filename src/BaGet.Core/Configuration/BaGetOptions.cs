@@ -26,6 +26,10 @@ namespace BaGet.Core.Configuration
         /// </summary>
         public PackageDeletionBehavior PackageDeletionBehavior { get; set; } = PackageDeletionBehavior.Unlist;
 
+        /// <summary>
+        /// Packages can only be deleted if the name-version string matches this regex.
+        /// Default value allows everything.
+        /// </summary>
         public string DeleteMatch { get; set; } = ".*";
 
         /// <summary>
@@ -34,6 +38,10 @@ namespace BaGet.Core.Configuration
         /// </summary>
         public bool AllowPackageOverwrites { get; set; } = false;
 
+        /// <summary>
+        /// Packages can only be overwritten if the name-version string matches this regex.
+        /// Default value allows everything.
+        /// </summary>
         public string OverwriteMatch { get; set; } = ".*";
 
         /// <summary>

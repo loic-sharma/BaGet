@@ -77,7 +77,7 @@ namespace BaGet.Core.Indexing
             // The package is well-formed. Ensure this is a new package.
             if (await _packages.ExistsAsync(package.Id, package.Version))
             {
-                if (!_options.Value.AllowPackageOverwrites || !new Regex(_options.Value.OverwriteMatch).IsMatch(package.VersionString))
+                if (!_options.Value.AllowPackageOverwrites || !new Regex(_options.Value.OverwriteMatch).IsMatch($"{package.Id} {package.VersionString}"))
                 {
                     return PackageIndexingResult.PackageAlreadyExists;
                 }
