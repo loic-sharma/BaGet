@@ -26,6 +26,8 @@ using BaGet.GCP.Configuration;
 using BaGet.GCP.Extensions;
 using BaGet.GCP.Services;
 using BaGet.Protocol;
+using BaGet.Legacy;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -70,6 +72,8 @@ namespace BaGet.Extensions
             services.AddStorageProviders();
             services.AddSearchProviders();
             services.AddAuthenticationProviders();
+
+            services.ConfigureApiV2();
 
             return services;
         }
@@ -300,6 +304,25 @@ namespace BaGet.Extensions
         public static IServiceCollection AddAuthenticationProviders(this IServiceCollection services)
         {
             services.AddTransient<IAuthenticationService, ApiKeyAuthenticationService>();
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureApiV2(this IServiceCollection services)
+        {
+            services.AddSingleton(provider => {
+                var odataModelBuilder = new NuGetWebApiODataModelBuilder();
+                odataModelBuilder.Build();
+                return odataModelBuilder.Model;
+            });
+
+            services.AddTransient<IODataPackageSerializer, ODataPackageSerializer>();
+
+            services.Configure<FormOptions>(x =>
+            {
+                x.ValueLengthLimit = int.MaxValue;
+                x.MultipartBodyLengthLimit = int.MaxValue;
+            });
 
             return services;
         }

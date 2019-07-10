@@ -68,7 +68,8 @@ namespace BaGet
                     .MapSymbolRoutes()
                     .MapSearchRoutes()
                     .MapRegistrationRoutes()
-                    .MapPackageContentRoutes();
+                    .MapPackageContentRoutes()
+                    .MapApiV2Routes();
             });
 
             app.UseSpa(spa =>
