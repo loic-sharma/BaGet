@@ -146,8 +146,13 @@ namespace BaGet.Extensions
 
             routes.MapRoute(
                 name: Routes.PackageDownloadRouteName,
-                template: "v2/Packages(Id='{id}',Version='{version}')",
+                template: "v2/Packages(Id='{id}',Version='{version}')/Download",
                 defaults: new { controller = "PackagesV2", action = "DownloadPackage" });
+
+            routes.MapRoute(
+                name: Routes.PackageDownloadRouteName,
+                template: "v2/Packages(Id='{id}',Version='{version}')",
+                defaults: new { controller = "PackagesV2", action = "DownloadPackageDesc" });
 
             routes.MapRoute(
                 name: Routes.SearchRouteName,

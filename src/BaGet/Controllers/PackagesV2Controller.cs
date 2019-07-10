@@ -6,7 +6,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
-using BaGet.Core.Services;
+using BaGet.Core.State;
+using BaGet.Core.Storage;
 using BaGet.Legacy;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,8 +21,8 @@ namespace BaGet.Controllers
 {
     public class PackagesV2Controller : Controller
     {
-        static readonly string atomXmlContentType = "application/atom+xml";
-        static readonly string basePath = "/v2";
+        private static readonly string atomXmlContentType = "application/atom+xml";
+        private static readonly string basePath = "/v2";
 
         private readonly IODataPackageSerializer _serializer;
         private readonly IPackageService _packageService;
@@ -52,11 +53,11 @@ namespace BaGet.Controllers
 
             if (!await _packageService.AddDownloadAsync(id, nugetVersion))
             {
-                return BadRequest();
+                return NotFound();
             }
 
             var packageStream = await _storage.GetPackageStreamAsync(id, nugetVersion, CancellationToken.None);
-            return File(packageStream, "application/octet-stream");
+            return File(packageStream, "binary/octet-stream");
         }
 
         [HttpGet]
@@ -100,6 +101,26 @@ namespace BaGet.Controllers
             }
         }
 
+        public async Task<IActionResult> DownloadPackageDesc(string id, string version)
+        {
+            if (!NuGetVersion.TryParse(version, out var nugetVersion))
+            {
+                return NotFound();
+            }
+
+            if (!await _packageService.ExistsAsync(id, nugetVersion))
+            {
+                return NotFound();
+            }
+
+            var package = await _packageService.FindOrNullAsync(id, nugetVersion);
+            if (package == null)
+            {
+                return NotFound();
+            }
+            return ToODataStream(package);
+        }
+
         public async Task<IActionResult> QueryPackages()
         {
             try
@@ -112,7 +133,7 @@ namespace BaGet.Controllers
                 {
                     if (path.Count == 2 && path.LastSegment is KeySegment)
                     {
-                        KeySegment queryParams = (KeySegment)path.LastSegment;
+                        var queryParams = (KeySegment)path.LastSegment;
                         var id = queryParams.Keys.First(k => k.Key == "Id").Value as string;
                         var version = queryParams.Keys.First(k => k.Key == "Version").Value as string;
                         _log.LogDebug("Request to find package by id={0} and version={1}", id, version);
@@ -124,26 +145,56 @@ namespace BaGet.Controllers
                         }
                         return ToODataStream(found);
                     }
-                    else // might be Chocolatey, uses url like: /v2/Packages()?$filter=tolower(Id) eq 'package-id'&$orderby=Id  
+                    else // might be Chocolatey
                     {
                         var filter = uriParser.ParseFilter().Expression;
                         var binary = (BinaryOperatorNode)filter;
-                        var leftParam = ((SingleValueFunctionCallNode)binary.Left).Parameters.First();
-                        var convert = (ConvertNode)leftParam;
-                        var prop = (SingleValuePropertyAccessNode)convert.Source;
-                        if (prop.Property.Name == "Id")
+                        switch (binary.Left.Kind)
                         {
-                            var id = ((ConstantNode)binary.Right).Value.ToString();
-                            var packages = await _packageService.FindAsync(id);
-                            var found = packages.OrderBy(x => x.Version).LastOrDefault();
-                            if (found == null)
-                            {
-                                return NotFound();
-                            }
-                            return ToODataStream(found);
+                            case QueryNodeKind.SingleValueFunctionCall:
+                                // URLs like: /v2/Packages()?$filter=(tolower(Id) eq 'package-id'&$orderby=Id)
+                                var leftBinary = (SingleValueFunctionCallNode)binary.Left;
+                                var leftParam = leftBinary.Parameters.First();
+                                var convert = (ConvertNode)leftParam;
+                                var prop = (SingleValuePropertyAccessNode)convert.Source;
+                                if (prop.Property.Name == "Id")
+                                {
+                                    var id = ((ConstantNode)binary.Right).Value.ToString();
+                                    var packages = await _packageService.FindAsync(id);
+                                    var found = packages.OrderBy(x => x.Version).LastOrDefault();
+                                    if (found == null)
+                                    {
+                                        return NotFound();
+                                    }
+                                    return ToODataStream(found);
+                                }
+                                break;
+
+                            case QueryNodeKind.BinaryOperator:
+                                // URLs like: /v2/Packages()?$filter=(tolower(Id) eq 'package-id'&$orderby=Id) And IsLatestVersion
+                                // Assume 'and IsLatestVersion' in the URL
+                                var leftBin = (BinaryOperatorNode)binary.Left;
+                                var leftValue = (SingleValueFunctionCallNode)leftBin.Left;
+                                var leftBinParam = leftValue.Parameters.First();
+                                var conv = (ConvertNode)leftBinParam;
+                                var property = (SingleValuePropertyAccessNode)conv.Source;
+                                if (property.Property.Name == "Id")
+                                {
+                                    var id = ((ConstantNode)leftBin.Right).Value.ToString();
+                                    var packages = await _packageService.FindAsync(id);
+                                    var found = packages.OrderBy(x => x.Version).LastOrDefault();
+                                    if (found == null)
+                                    {
+                                        return NotFound();
+                                    }
+                                    return ToODataStream(found);
+                                }
+                                break;
+
+                            default:
+                                break;
                         }
                     }
-
                     // rest of OData support would go here
                 }
             }
@@ -174,7 +225,7 @@ namespace BaGet.Controllers
             var serviceUrl = GetServiceUrl(request);
             var id = pkg.Id;
             var version = pkg.Version;
-            PackageWithUrls urls = new PackageWithUrls(pkg,
+            var urls = new PackageWithUrls(pkg,
                 $"{serviceUrl}/Packages(Id='{id}',Version='{pkg.Version}')",
                 $"{serviceUrl}/contents/{id.ToLowerInvariant()}/{version.ToNormalizedString()}");
             return urls;

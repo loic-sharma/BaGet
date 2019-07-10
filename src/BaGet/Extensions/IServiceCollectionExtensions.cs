@@ -27,11 +27,7 @@ using BaGet.GCP.Extensions;
 using BaGet.GCP.Services;
 using BaGet.Protocol;
 using BaGet.Legacy;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -311,44 +307,6 @@ namespace BaGet.Extensions
 
             return services;
         }
-<<<<<<< HEAD:src/BaGet/Extensions/IServiceCollectionExtensions.cs
-=======
-
-        public static IServiceCollection ConfigureAndValidateSection<TOptions>(
-            this IServiceCollection services,
-            IConfiguration config,
-            string sectionName)
-          where TOptions : class
-        {
-            services.ConfigureAndValidate<TOptions>(config.GetSection(sectionName), sectionName);
-
-            return services;
-        }
-
-        public static IServiceCollection ConfigureAndValidate<TOptions>(
-            this IServiceCollection services,
-            IConfiguration config,
-            string name = null)
-          where TOptions : class
-        {
-            services.Configure<TOptions>(config);
-            services.PostConfigure<TOptions>(options =>
-            {
-                var context = new ValidationContext(options);
-                var validationResults = new List<ValidationResult>();
-                if (!Validator.TryValidateObject(options, context, validationResults, validateAllProperties: true))
-                {
-                    var message = (name == null)
-                        ? $"Invalid options"
-                        : $"Invalid '{name}' options";
-
-                    throw new InvalidOperationException(
-                        $"{message}: {string.Join('\n', validationResults)}");
-                }
-            });
-
-            return services;
-        }
 
         public static IServiceCollection ConfigureApiV2(this IServiceCollection services)
         {
@@ -359,7 +317,7 @@ namespace BaGet.Extensions
             });
 
             services.AddTransient<IODataPackageSerializer, ODataPackageSerializer>();
-            
+
             services.Configure<FormOptions>(x =>
             {
                 x.ValueLengthLimit = int.MaxValue;
@@ -368,6 +326,5 @@ namespace BaGet.Extensions
 
             return services;
         }
->>>>>>> b82d8f2... Added support for acting like a Chocolatey server.:src/BaGet/Extensions/ServiceCollectionExtensions.cs
     }
 }
