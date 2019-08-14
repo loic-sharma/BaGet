@@ -11,7 +11,7 @@ namespace BaGet.Protocol
     public class SearchResponse
     {
         public SearchResponse(
-            int totalHits,
+            long totalHits,
             IReadOnlyList<SearchResult> data,
             SearchContext context = null)
         {
@@ -26,7 +26,7 @@ namespace BaGet.Protocol
         /// <summary>
         /// The total number of matches, disregarding skip and take.
         /// </summary>
-        public int TotalHits { get; }
+        public long TotalHits { get; }
 
         /// <summary>
         /// The packages that matched the search query.

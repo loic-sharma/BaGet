@@ -11,6 +11,18 @@ namespace BaGet.Protocol.Converters
     /// </summary>
     public class NuGetVersionListConverter : JsonConverter
     {
+        private readonly NuGetVersionConversionFlags _flags;
+
+        public NuGetVersionListConverter()
+            : this(NuGetVersionConversionFlags.Default)
+        {
+        }
+
+        public NuGetVersionListConverter(NuGetVersionConversionFlags flags)
+        {
+            _flags = flags;
+        }
+
         /// <inheritdoc />
         public override bool CanConvert(Type objectType)
         {
@@ -22,7 +34,7 @@ namespace BaGet.Protocol.Converters
         {
             var versions = ((IReadOnlyList<NuGetVersion>)value);
 
-            serializer.Serialize(writer, versions.Select(v => v.ToString()));
+            serializer.Serialize(writer, versions.Select(v => NuGetVersionConverter.ToString(v, _flags)));
         }
 
         /// <inheritdoc />

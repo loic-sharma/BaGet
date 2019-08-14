@@ -1,45 +1,50 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
+using BaGet.Protocol;
 
 namespace BaGet.Core.Search
 {
     /// <summary>
     /// A minimal search service implementation, used for advanced scenarios.
     /// </summary>
-    public class NullSearchService : ISearchService
+    public class NullSearchService : IBaGetSearchService
     {
-        private static readonly Task<IReadOnlyList<string>> EmptyStringListTask
-            = Task.FromResult((IReadOnlyList<string>)new List<string>());
+        private static readonly IReadOnlyList<string> EmptyStringList = new List<string>();
 
-        private static readonly Task<IReadOnlyList<SearchResult>> EmptySearchResultListTask
-            = Task.FromResult((IReadOnlyList<SearchResult>)new List<SearchResult>());
+        private static readonly Task<AutocompleteResponse> EmptyAutocompleteResponseTask =
+            Task.FromResult(new AutocompleteResponse(0, EmptyStringList, AutocompleteContext.Default));
 
-        public Task<IReadOnlyList<string>> AutocompleteAsync(string query, int skip = 0, int take = 20)
+        private static readonly Task<DependentsResponse> EmptyDependentsResponseTask =
+            Task.FromResult(new DependentsResponse(0, EmptyStringList));
+
+        private static readonly Task<SearchResponse> EmptySearchResponseTask =
+            Task.FromResult(new SearchResponse(0, new List<SearchResult>()));
+
+        public Task<AutocompleteResponse> AutocompleteAsync(AutocompleteRequest request, CancellationToken cancellationToken = default)
         {
-            return EmptyStringListTask;
+            return EmptyAutocompleteResponseTask;
         }
 
-        public Task<IReadOnlyList<string>> FindDependentsAsync(string packageId, int skip = 0, int take = 20)
+        public Task<DependentsResponse> FindDependentsAsync(DependentsRequest request, CancellationToken cancellationToken = default)
         {
-            return EmptyStringListTask;
+            return EmptyDependentsResponseTask;
         }
 
-        public Task IndexAsync(Package package)
+        public Task IndexAsync(Package package, CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;
         }
 
-        public Task<IReadOnlyList<SearchResult>> SearchAsync(
-            string query,
-            int skip = 0,
-            int take = 20,
-            bool includePrerelease = true,
-            bool includeSemVer2 = true,
-            string packageType = null,
-            string framework = null)
+        public Task<SearchResponse> SearchAsync(BaGetSearchRequest request, CancellationToken cancellationToken = default)
         {
-            return EmptySearchResultListTask;
+            return EmptySearchResponseTask;
+        }
+
+        public Task<SearchResponse> SearchAsync(SearchRequest request, CancellationToken cancellationToken = default)
+        {
+            return EmptySearchResponseTask;
         }
     }
 }

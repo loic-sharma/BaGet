@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using BaGet.Protocol.Converters;
 using Newtonsoft.Json;
 using NuGet.Versioning;
@@ -17,8 +17,6 @@ namespace BaGet.Protocol
             NuGetVersion version,
             long downloads)
         {
-            if (string.IsNullOrEmpty(registrationLeafUrl)) throw new ArgumentNullException(nameof(registrationLeafUrl));
-
             version = version ?? throw new ArgumentNullException(nameof(version));
 
             RegistrationLeafUrl = registrationLeafUrl;
@@ -29,7 +27,7 @@ namespace BaGet.Protocol
         [JsonProperty(PropertyName = "@id")]
         public string RegistrationLeafUrl { get; }
 
-        [JsonConverter(typeof(NuGetVersionConverter))]
+        [JsonConverter(typeof(NuGetVersionConverter), NuGetVersionConversionFlags.IncludeBuildMetadata)]
         public NuGetVersion Version { get; }
 
         public long Downloads { get; }

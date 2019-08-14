@@ -6,7 +6,7 @@ using System.Reflection.Metadata;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Extensions;
-using BaGet.Core.State;
+using BaGet.Core.Metadata;
 using BaGet.Core.Storage;
 using Microsoft.Extensions.Logging;
 using NuGet.Packaging;

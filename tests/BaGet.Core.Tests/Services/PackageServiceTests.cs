@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
-using BaGet.Core.State;
+using BaGet.Core.Metadata;
 using Moq;
 using Xunit;
 

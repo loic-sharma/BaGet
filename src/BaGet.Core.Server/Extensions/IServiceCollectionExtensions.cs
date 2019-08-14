@@ -15,14 +15,16 @@ namespace BaGet.Core.Server.Extensions
         {
             services
                 .AddMvc()
-                .AddApplicationPart(typeof(BaGet.Controllers.PackageController).Assembly)
+                .AddApplicationPart(typeof(BaGet.Controllers.PackageContentController).Assembly)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddJsonOptions(options =>
                 {
                     options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
                 });
 
+
             services.AddCors();
+            services.AddHttpContextAccessor();
             services.AddSingleton<IConfigureOptions<CorsOptions>, ConfigureCorsOptions>();
             services.AddSingleton<IConfigureOptions<ForwardedHeadersOptions>, ConfigureForwardedHeadersOptions>();
             services.Configure<FormOptions>(options =>

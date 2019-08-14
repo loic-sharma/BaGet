@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 using BaGet.Core.Configuration;
 using BaGet.Core.Entities;
 using BaGet.Core.Extensions;
+using BaGet.Core.Metadata;
 using BaGet.Core.Search;
-using BaGet.Core.State;
 using BaGet.Core.Storage;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -22,14 +22,14 @@ namespace BaGet.Core.Indexing
     {
         private readonly IPackageService _packages;
         private readonly IPackageStorageService _storage;
-        private readonly ISearchService _search;
+        private readonly IBaGetSearchService _search;
         private readonly IOptionsSnapshot<BaGetOptions> _options;
         private readonly ILogger<PackageIndexingService> _logger;
 
         public PackageIndexingService(
             IPackageService packages,
             IPackageStorageService storage,
-            ISearchService search,
+            IBaGetSearchService search,
             IOptionsSnapshot<BaGetOptions> options,
             ILogger<PackageIndexingService> logger)
         {

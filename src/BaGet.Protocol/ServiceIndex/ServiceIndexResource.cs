@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 namespace BaGet.Protocol
 {
     /// <summary>
-    /// A resource in the <see cref="ServiceIndex"/>.
+    /// A resource in the <see cref="ServiceIndexResponse"/>.
     /// See: https://docs.microsoft.com/en-us/nuget/api/service-index#resources
     /// </summary>
     public class ServiceIndexResource

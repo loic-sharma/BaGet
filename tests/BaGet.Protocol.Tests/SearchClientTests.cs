@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using NuGet.Versioning;
 using Xunit;
@@ -11,21 +12,27 @@ namespace BaGet.Protocol.Tests
 
         public SearchClientTests()
         {
-            var httpClient = new HttpClient();
-            _target = new SearchClient(httpClient);
+            var httpClient = new HttpClient(new HttpClientHandler
+            {
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+            });
+
+            var serviceIndex = new ServiceIndexClient(httpClient, "https://api.nuget.org/v3/index.json");
+            var urlGeneratorFactory = new UrlGeneratorClientFactory(serviceIndex);
+
+            _target = new SearchClient(urlGeneratorFactory, httpClient);
         }
 
         [Fact]
         public async Task GetsNewtonsoftJsonSearchResults()
         {
-            var searchQuery = "https://api-v2v3search-0.nuget.org/query?q=newtonsoft";
             var registrationurl = "https://api.nuget.org/v3/registration3/newtonsoft.json/index.json";
 
-            var result = await _target.GetSearchResultsAsync(searchQuery);
+            var result = await _target.SearchAsync(new SearchRequest { Query = "Newtonsoft" });
 
             Assert.True(result.TotalHits > 0);
             Assert.True(result.Data.Count > 0);
-            Assert.Equal(registrationurl, result.Data[0].RegistrationUrl);
+            Assert.Equal(registrationurl, result.Data[0].RegistrationIndexUrl);
             Assert.Equal("Newtonsoft.Json", result.Data[0].Id);
             Assert.Equal(new NuGetVersion("12.0.2"), result.Data[0].Version);
         }
@@ -33,9 +40,7 @@ namespace BaGet.Protocol.Tests
         [Fact]
         public async Task GetsNewtonsoftJsonAutocompleteResults()
         {
-            var query = "https://api-v2v3search-0.nuget.org/autocomplete?q=newt";
-            
-            var result = await _target.GetAutocompleteResultsAsync(query);
+            var result = await _target.AutocompleteAsync(new AutocompleteRequest { Query = "newt" });
 
             Assert.True(result.TotalHits > 0);
             Assert.True(result.Data.Count > 0);

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using BaGet.Core.Authentication;
 using BaGet.Core.Configuration;
 using BaGet.Core.Indexing;
-using BaGet.Core.State;
+using BaGet.Core.Metadata;
 using BaGet.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
