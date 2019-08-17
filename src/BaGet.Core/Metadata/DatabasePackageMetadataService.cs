@@ -102,7 +102,7 @@ namespace BaGet.Core.Metadata
         private RegistrationIndexPageItem ToRegistrationIndexPageItem(Package package) =>
             new RegistrationIndexPageItem(
                 leafUrl: _url.GetRegistrationLeafUrl(package.Id, package.Version),
-                packageMetadata: new PackageMetadata(
+                packageMetadata: new BaGetPackageMetadata(
                     catalogUri: _url.GetRegistrationLeafUrl(package.Id, package.Version),
                     packageId: package.Id,
                     version: package.Version,

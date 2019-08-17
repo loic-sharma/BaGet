@@ -18,18 +18,13 @@ namespace BaGet.Protocol
             NuGetVersion version,
             string authors,
             string description,
-            long downloads,
-            bool hasReadme,
             string iconUrl,
             string language,
             string licenseUrl,
             bool listed,
             string minClientVersion,
             string packageContent,
-            IReadOnlyList<string> packageTypes,
             string projectUrl,
-            string repositoryUrl,
-            string repositoryType,
             DateTime published,
             bool requireLicenseAcceptance,
             string summary,
@@ -43,18 +38,13 @@ namespace BaGet.Protocol
             Version = version;
             Authors = authors;
             Description = description;
-            Downloads = downloads;
-            HasReadme = hasReadme;
             IconUrl = iconUrl;
             Language = language;
             LicenseUrl = licenseUrl;
             Listed = listed;
             MinClientVersion = minClientVersion;
             PackageContent = packageContent;
-            PackageTypes = packageTypes;
             ProjectUrl = projectUrl;
-            RepositoryUrl = repositoryUrl;
-            RepositoryType = repositoryType;
             Published = published;
             RequireLicenseAcceptance = requireLicenseAcceptance;
             Summary = summary;
@@ -77,18 +67,13 @@ namespace BaGet.Protocol
 
         public string Authors { get; }
         public string Description { get; }
-        public long Downloads { get; }
-        public bool HasReadme { get; }
         public string IconUrl { get; }
         public string Language { get; }
         public string LicenseUrl { get; }
         public bool Listed { get; }
         public string MinClientVersion { get; }
         public string PackageContent { get; }
-        public IReadOnlyList<string> PackageTypes { get; }
         public string ProjectUrl { get; }
-        public string RepositoryUrl { get; }
-        public string RepositoryType { get; }
         public DateTime Published { get; }
         public bool RequireLicenseAcceptance { get; }
         public string Summary { get; }

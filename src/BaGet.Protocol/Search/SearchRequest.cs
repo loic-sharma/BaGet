@@ -24,7 +24,7 @@ namespace BaGet.Protocol
         /// <summary>
         /// Whether packages that require SemVer 2.0.0 compatibility should be returned.
         /// </summary>
-        public bool IncludeSemVer2 { get; set; }
+        public bool IncludeSemVer2 { get; set; } = true;
 
         /// <summary>
         /// The search query.

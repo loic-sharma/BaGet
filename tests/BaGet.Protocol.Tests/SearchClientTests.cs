@@ -26,7 +26,7 @@ namespace BaGet.Protocol.Tests
         [Fact]
         public async Task GetsNewtonsoftJsonSearchResults()
         {
-            var registrationurl = "https://api.nuget.org/v3/registration3/newtonsoft.json/index.json";
+            var registrationurl = "https://api.nuget.org/v3/registration3-gz-semver2/newtonsoft.json/index.json";
 
             var result = await _target.SearchAsync(new SearchRequest { Query = "Newtonsoft" });
 
