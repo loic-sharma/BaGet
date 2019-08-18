@@ -6,7 +6,7 @@ using NuGet.Versioning;
 
 namespace BaGet.Protocol
 {
-    public class UrlGeneratorClient : IUrlGenerator
+    internal class UrlGeneratorClient : IUrlGenerator
     {
         private readonly ServiceIndexResponse _serviceIndex;
 
@@ -131,7 +131,7 @@ namespace BaGet.Protocol
         }
     }
 
-    public class UrlGeneratorClientFactory : IUrlGeneratorFactory
+    internal class UrlGeneratorClientFactory : IUrlGeneratorFactory
     {
         private readonly Lazy<Task<UrlGeneratorClient>> _urlTask;
 

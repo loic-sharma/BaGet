@@ -1,6 +1,4 @@
 using System;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -8,19 +6,12 @@ namespace BaGet.Protocol.Tests
 {
     public class PackageContentTests
     {
-        private readonly PackageContentClient _target;
+        private readonly IPackageContentResource _target;
 
         public PackageContentTests()
         {
-            var httpClient = new HttpClient(new HttpClientHandler
-            {
-                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
-            });
-
-            var serviceIndex = new ServiceIndexClient(httpClient, "https://api.nuget.org/v3/index.json");
-            var urlGeneratorFactory = new UrlGeneratorClientFactory(serviceIndex);
-
-            _target = new PackageContentClient(urlGeneratorFactory, httpClient);
+            _target = new NuGetClientFactory("https://api.nuget.org/v3/index.json")
+                .CreatePackageContentClient();
         }
 
         [Fact]

@@ -8,7 +8,7 @@ namespace BaGet.Protocol
     /// <summary>
     /// Fetches the service index from an upstream package source.
     /// </summary>
-    public class ServiceIndexClient : IServiceIndexResource
+    internal class ServiceIndexClient : IServiceIndexResource
     {
         private readonly Lazy<Task<ServiceIndexResponse>> _serviceIndexTask;
 

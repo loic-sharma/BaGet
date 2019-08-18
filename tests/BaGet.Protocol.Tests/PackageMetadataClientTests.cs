@@ -1,5 +1,3 @@
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using NuGet.Versioning;
 using Xunit;
@@ -8,7 +6,7 @@ namespace BaGet.Protocol.Tests
 {
     public class PackageMetadataClientTests
     {
-        private readonly PackageMetadataClient _target;
+        private readonly IPackageMetadataResource _target;
 
         public static readonly NuGetVersion NewtonsoftJsonLowerVersion = NuGetVersion.Parse("3.5.8");
         public static readonly NuGetVersion NewtonsoftJsonUpperVersion = NuGetVersion.Parse("12.0.1-beta2");
@@ -18,15 +16,8 @@ namespace BaGet.Protocol.Tests
 
         public PackageMetadataClientTests()
         {
-            var httpClient = new HttpClient(new HttpClientHandler
-            {
-                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
-            });
-
-            var serviceIndex = new ServiceIndexClient(httpClient, "https://api.nuget.org/v3/index.json");
-            var urlGeneratorFactory = new UrlGeneratorClientFactory(serviceIndex);
-
-            _target = new PackageMetadataClient(urlGeneratorFactory, httpClient);
+            _target = new NuGetClientFactory("https://api.nuget.org/v3/index.json")
+                .CreatePackageMetadataClient();
         }
 
         [Fact]

@@ -1,5 +1,3 @@
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using NuGet.Versioning;
 using Xunit;
@@ -8,19 +6,12 @@ namespace BaGet.Protocol.Tests
 {
     public class SearchClientTests
     {
-        private readonly SearchClient _target;
+        private readonly ISearchResource _target;
 
         public SearchClientTests()
         {
-            var httpClient = new HttpClient(new HttpClientHandler
-            {
-                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
-            });
-
-            var serviceIndex = new ServiceIndexClient(httpClient, "https://api.nuget.org/v3/index.json");
-            var urlGeneratorFactory = new UrlGeneratorClientFactory(serviceIndex);
-
-            _target = new SearchClient(urlGeneratorFactory, httpClient);
+            _target = new NuGetClientFactory("https://api.nuget.org/v3/index.json")
+                .CreateSearchClient();
         }
 
         [Fact]

@@ -11,7 +11,7 @@ namespace BaGet.Protocol
     /// <summary>
     /// The client to interact with an upstream source's Search resource.
     /// </summary>
-    public class SearchClient : ISearchResource
+    internal class SearchClient : ISearchResource
     {
         private readonly IUrlGeneratorFactory _urlGenerator;
         private readonly HttpClient _httpClient;

@@ -10,7 +10,7 @@ namespace BaGet.Protocol
     /// <summary>
     /// The client to interact with an upstream source's Package Metadata resource.
     /// </summary>
-    public class PackageMetadataClient : IPackageMetadataResource
+    internal class PackageMetadataClient : IPackageMetadataResource
     {
         private readonly IUrlGeneratorFactory _urlGenerator;
         private readonly HttpClient _httpClient;
