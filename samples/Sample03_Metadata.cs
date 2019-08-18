@@ -11,7 +11,7 @@ namespace BaGet.Protocol.Samples.Tests
         [Fact]
         public async Task GetSingleVersion()
         {
-            // Find all versions of a package (exlucdes unlisted versions).
+            // Find all versions of a package (excludes unlisted versions).
             var clientFactory = new NuGetClientFactory("https://api.nuget.org/v3/index.json");
             var packageMetadata = clientFactory.CreatePackageMetadataClient();
 

@@ -19,7 +19,6 @@ namespace BaGet.Protocol
         public RegistrationLeafResponse(
             string registrationUri,
             bool listed,
-            long downloads,
             string packageContentUrl,
             DateTimeOffset published,
             string registrationIndexUrl,
@@ -28,7 +27,6 @@ namespace BaGet.Protocol
             RegistrationUri = registrationUri ?? throw new ArgumentNullException(nameof(registrationIndexUrl));
             Listed = listed;
             Published = published;
-            Downloads = downloads;
             PackageContentUrl = packageContentUrl ?? throw new ArgumentNullException(nameof(packageContentUrl));
             RegistrationIndexUrl = registrationIndexUrl ?? throw new ArgumentNullException(nameof(registrationIndexUrl));
             Type = type;
@@ -41,8 +39,6 @@ namespace BaGet.Protocol
         public IReadOnlyList<string> Type { get; }
 
         public bool Listed { get; }
-
-        public long Downloads { get; }
 
         [JsonProperty(PropertyName = "packageContent")]
         public string PackageContentUrl { get; }

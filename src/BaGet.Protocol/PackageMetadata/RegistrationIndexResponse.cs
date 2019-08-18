@@ -19,7 +19,6 @@ namespace BaGet.Protocol
 
         public RegistrationIndexResponse(
             int count,
-            long totalDownloads,
             IReadOnlyList<RegistrationIndexPage> pages,
             IReadOnlyList<string> type = null)
         {
@@ -35,11 +34,6 @@ namespace BaGet.Protocol
         /// The number of registration pages. See <see cref="Pages"/>. 
         /// </summary>
         public int Count { get; }
-
-        /// <summary>
-        /// How many times all versions of this package have been downloaded.
-        /// </summary>
-        public long TotalDownloads { get; }
 
         /// <summary>
         /// The pages that contain all of the versions of the package, ordered

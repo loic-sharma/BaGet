@@ -47,7 +47,7 @@ namespace BaGet.Core.Metadata
             // TODO: Paging of registration items.
             // "Un-paged" example: https://api.nuget.org/v3/registration3/newtonsoft.json/index.json
             // Paged example: https://api.nuget.org/v3/registration3/fake/index.json
-            return new RegistrationIndexResponse(
+            return new BaGetRegistrationIndexResponse(
                 type: RegistrationIndexResponse.DefaultType,
                 count: packages.Count,
                 totalDownloads: packages.Sum(p => p.Downloads),
@@ -76,7 +76,7 @@ namespace BaGet.Core.Metadata
                 return null;
             }
 
-            return new RegistrationLeafResponse(
+            return new BaGetRegistrationLeafResponse(
                 type: RegistrationLeafResponse.DefaultType,
                 registrationUri: _url.GetRegistrationLeafUrl(id, version),
                 listed: package.Listed,
