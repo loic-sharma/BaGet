@@ -9,12 +9,12 @@ namespace BaGet.Protocol
     public static class IPackageMetadataServiceExtensions
     {
         /// <summary>
-        /// TODO DOCUMENT
+        /// Fetch the metadata for all versions of a package.
         /// </summary>
-        /// <param name="packageMetadata"></param>
-        /// <param name="packageId"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <param name="packageMetadata">The client to interact with the NuGet Package Metadata resource.</param>
+        /// <param name="packageId">The desired package ID.</param>
+        /// <param name="cancellationToken">A token to cancel the operation.</param>
+        /// <returns>The metadata for a package, or null if the package could not be found.</returns>
         public static async Task<IReadOnlyList<RegistrationIndexPageItem>> GetRegistrationItemsOrNullAsync(
             this IPackageMetadataService packageMetadata,
             string packageId,
@@ -53,13 +53,13 @@ namespace BaGet.Protocol
         }
 
         /// <summary>
-        /// TODO DOCUMENT
+        /// Fetch the metadata for a single version of a package.
         /// </summary>
-        /// <param name="packageMetadata"></param>
-        /// <param name="packageId"></param>
-        /// <param name="packageVersion"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <param name="packageMetadata">The client to interact with the NuGet Package Metadata resource.</param>
+        /// <param name="packageId">The desired package ID.</param>
+        /// <param name="packageVersion">The desired package version.</param>
+        /// <param name="cancellationToken">A token to cancel the operation.</param>
+        /// <returns>The package's metadata, or null if the package could not be found.</returns>
         public static async Task<RegistrationIndexPageItem> GetRegistrationItemOrNullAsync(
             this IPackageMetadataService packageMetadata,
             string packageId,
