@@ -38,7 +38,7 @@ namespace BaGet.Protocol.Samples.Tests
             foreach (var searchResult in response.Data)
             {
                 Console.WriteLine($"Result #{index}");
-                Console.WriteLine($"Package id: {searchResult.Id}");
+                Console.WriteLine($"Package id: {searchResult.PackageId}");
                 Console.WriteLine($"Package version: {searchResult.Version}");
                 Console.WriteLine($"Package downloads: {searchResult.TotalDownloads}");
                 Console.WriteLine($"Package versions: {searchResult.Versions.Count}");

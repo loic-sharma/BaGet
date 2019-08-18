@@ -82,21 +82,25 @@ namespace BaGet.Protocol
         public IReadOnlyList<DependencyGroupItem> DependencyGroups { get; }
     }
 
+    /// <summary>
+    /// The dependencies of the package for a specific target framework.
+    /// See: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource#package-dependency-group
+    /// </summary>
     public class DependencyGroupItem
     {
         public DependencyGroupItem(
-            string id,
+            string catalogUri,
             string targetFramework,
             IReadOnlyList<DependencyItem> dependencies)
         {
-            Id = id;
+            CatalogUri = catalogUri;
             Type = "PackageDependencyGroup";
             TargetFramework = targetFramework;
             Dependencies = (dependencies?.Count > 0) ? dependencies : null;
         }
 
         [JsonProperty(PropertyName = "@id")]
-        public string Id { get; }
+        public string CatalogUri { get; }
 
         [JsonProperty(PropertyName = "@type")]
         public string Type { get; }

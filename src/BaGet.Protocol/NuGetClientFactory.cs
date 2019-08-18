@@ -8,10 +8,10 @@ namespace BaGet.Protocol
     /// </summary>
     public class NuGetClientFactory : INuGetClientFactory
     {
-        private readonly IServiceIndexResource _serviceIndexClient;
-        private readonly IPackageContentResource _packageContentClient;
-        private readonly IPackageMetadataResource _packageMetadataClient;
-        private readonly ISearchResource _searchClient;
+        private readonly ServiceIndexClient _serviceIndexClient;
+        private readonly PackageContentClient _packageContentClient;
+        private readonly PackageMetadataClient _packageMetadataClient;
+        private readonly SearchClient _searchClient;
 
         /// <summary>
         /// Configure the client factory.
