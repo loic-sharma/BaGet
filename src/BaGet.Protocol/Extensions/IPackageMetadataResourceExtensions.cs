@@ -29,20 +29,21 @@ namespace BaGet.Protocol
             var result = new List<RegistrationIndexPageItem>();
             foreach (var registrationIndexPage in registrationIndex.Pages)
             {
-                // The package's metadata is either on the registration index's page,
-                // or, it is be split into separate registration pages. If split,
-                // "ItemsOrNull" will be null.
+                // If the package's registration index is too big, it will be split into registration
+                // pages stored at different URLs. We will need to fetch each page's items individually.
+                // We can detect this case as the registration index will have "null" items.
                 var items = registrationIndexPage.ItemsOrNull;
                 if (items == null)
                 {
-                    // "ItemsOrNull" is null if this registration index has external pages.
                     var externalRegistrationPage = await packageMetadata.GetRegistrationPageOrNullAsync(
                         packageId,
                         registrationIndexPage.Lower,
                         registrationIndexPage.Upper,
                         cancellationToken);
 
-                    // TODO: Throw if this is null?
+                    // Skip malformed external pages.
+                    if (externalRegistrationPage?.ItemsOrNull == null) continue;
+
                     items = externalRegistrationPage.ItemsOrNull;
                 }
 
@@ -79,20 +80,21 @@ namespace BaGet.Protocol
                 if (registrationIndexPage.Lower > packageVersion) continue;
                 if (registrationIndexPage.Upper < packageVersion) continue;
 
-                // The package's metadata is either on the registration index's page,
-                // or, it is be split into separate registration pages. If split,
-                // "ItemsOrNull" will be null.
+                // If the package's registration index is too big, it will be split into registration
+                // pages stored at different URLs. We will need to fetch each page's items individually.
+                // We can detect this case as the registration index will have "null" items.
                 var items = registrationIndexPage.ItemsOrNull;
                 if (items == null)
                 {
-                    // "ItemsOrNull" is null if this registration index has external pages.
                     var externalRegistrationPage = await packageMetadata.GetRegistrationPageOrNullAsync(
                         packageId,
                         registrationIndexPage.Lower,
                         registrationIndexPage.Upper,
                         cancellationToken);
 
-                    // TODO: Throw if this is null?
+                    // Skip malformed external pages.
+                    if (externalRegistrationPage?.ItemsOrNull == null) continue;
+
                     items = externalRegistrationPage.ItemsOrNull;
                 }
 

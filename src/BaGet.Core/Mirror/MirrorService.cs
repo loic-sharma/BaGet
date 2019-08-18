@@ -57,13 +57,13 @@ namespace BaGet.Core.Mirror
 
         public async Task<IReadOnlyList<Package>> FindPackagesOrNullAsync(string id, CancellationToken cancellationToken)
         {
-            var upstreamPackageMetadata = await FindAllUpstreamMetadataOrNull(id, cancellationToken);
-            if (upstreamPackageMetadata == null)
+            var items = await _upstreamMetadata.GetRegistrationItemsOrNullAsync(id, cancellationToken);
+            if (items == null)
             {
                 return null;
             }
 
-            var upstreamPackages = upstreamPackageMetadata.Select(ToPackage);
+            var upstreamPackages = items.Select(ToPackage);
 
             // Return the upstream packages if there are no local packages matching the package id.
             var localPackages = await _localPackages.FindAsync(id, includeUnlisted: true);
@@ -104,8 +104,10 @@ namespace BaGet.Core.Mirror
                 version);
         }
 
-        private Package ToPackage(PackageMetadata metadata)
+        private Package ToPackage(RegistrationIndexPageItem item)
         {
+            var metadata = item.PackageMetadata;
+
             return new Package
             {
                 Id = metadata.PackageId,
@@ -190,49 +192,6 @@ namespace BaGet.Core.Mirror
                 VersionRange = d.Range,
                 TargetFramework = group.TargetFramework
             });
-        }
-
-        private async Task<IReadOnlyList<PackageMetadata>> FindAllUpstreamMetadataOrNull(string id, CancellationToken cancellationToken)
-        {
-            var packageIndex = await _upstreamMetadata.GetRegistrationIndexOrNullAsync(id, cancellationToken);
-            if (packageIndex == null)
-            {
-                return null;
-            }
-
-            var result = new List<PackageMetadata>();
-
-            foreach (var page in packageIndex.Pages)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                // If the package's registration index is too big, it will be split into registration
-                // pages stored at different URLs. We will need to fetch each page's items individually.
-                // We can detect this case as the registration index will have "null" items.
-                var items = page.ItemsOrNull;
-
-                if (items == null)
-                {
-                    var externalPage = await _upstreamMetadata.GetRegistrationPageOrNullAsync(id, page.Lower, page.Upper, cancellationToken);
-
-                    if (externalPage == null || externalPage.ItemsOrNull == null)
-                    {
-                        // This should never happen...
-                        _logger.LogError(
-                            "Missing or invalid registration page for {PackageId}, versions {Lower} to {Upper}",
-                            id,
-                            page.Lower,
-                            page.Upper);
-                        continue;
-                    }
-
-                    items = externalPage.ItemsOrNull;
-                }
-
-                result.AddRange(items.Select(i => i.PackageMetadata));
-            }
-
-            return result;
         }
 
         private async Task IndexFromSourceAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
