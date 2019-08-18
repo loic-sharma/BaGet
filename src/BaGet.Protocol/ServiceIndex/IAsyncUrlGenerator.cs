@@ -14,7 +14,7 @@ namespace BaGet.Protocol
         Task<string> GetAutocompleteResourceUrlAsync(CancellationToken cancellationToken = default);
 
         Task<string> GetRegistrationIndexUrlAsync(string id, CancellationToken cancellationToken = default);
-        Task<string> GetRegistrationPageUrlAsync(string id, NuGetVersion lower, NuGetVersion upper, CancellationToken cancellationToken = default;
+        Task<string> GetRegistrationPageUrlAsync(string id, NuGetVersion lower, NuGetVersion upper, CancellationToken cancellationToken = default);
         Task<string> GetRegistrationLeafUrlAsync(string id, NuGetVersion version, CancellationToken cancellationToken = default);
 
         Task<string> GetPackageVersionsUrlAsync(string id, CancellationToken cancellationToken = default);
