@@ -1,6 +1,6 @@
 # BaGet.Protocol
 
-BaGet's SDK to interact with a NuGet server.
+BaGet's SDK to interact with the [NuGet protocol](https://docs.microsoft.com/en-us/nuget/api/overview).
 
 [Package (NuGet)](https://www.nuget.org/packages/BaGet.Protocol) | Documentation | [Samples](https://github.com/loic-sharma/BaGet/tree/master/samples)
 
