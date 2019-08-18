@@ -36,7 +36,7 @@ namespace BaGet.Protocol
 
             _serviceIndexClient = new ServiceIndexClient(httpClient, serviceIndexUrl);
 
-            var urlGeneratorFactory = new UrlGeneratorClientFactory(_serviceIndexClient);
+            var urlGeneratorFactory = new AsyncUrlGenerator(_serviceIndexClient);
 
             _packageContentClient = new PackageContentClient(urlGeneratorFactory, httpClient);
             _packageMetadataClient = new PackageMetadataClient(urlGeneratorFactory, httpClient);

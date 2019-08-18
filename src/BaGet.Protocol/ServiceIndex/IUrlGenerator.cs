@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using NuGet.Versioning;
 
 namespace BaGet.Protocol
@@ -89,10 +88,5 @@ namespace BaGet.Protocol
         /// <param name="id">The package's ID</param>
         /// <param name="version">The package's version</param>
         string GetPackageManifestDownloadUrl(string id, NuGetVersion version);
-    }
-
-    public interface IUrlGeneratorFactory
-    {
-        Task<IUrlGenerator> CreateAsync();
     }
 }

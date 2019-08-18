@@ -13,7 +13,7 @@ namespace BaGet.Protocol
     /// </summary>
     internal class PackageContentClient : IPackageContentResource
     {
-        private readonly IUrlGeneratorFactory _urlGenerator;
+        private readonly IAsyncUrlGenerator _urlGenerator;
         private readonly HttpClient _httpClient;
 
         /// <summary>
@@ -21,7 +21,7 @@ namespace BaGet.Protocol
         /// </summary>
         /// <param name="urlGenerator">The service to generate URLs to upstream resources.</param>
         /// <param name="httpClient">The HTTP client used to send requests.</param>
-        public PackageContentClient(IUrlGeneratorFactory urlGenerator, HttpClient httpClient)
+        public PackageContentClient(IAsyncUrlGenerator urlGenerator, HttpClient httpClient)
         {
             _urlGenerator = urlGenerator ?? throw new ArgumentNullException(nameof(urlGenerator));
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
@@ -30,8 +30,7 @@ namespace BaGet.Protocol
         /// <inheritdoc />
         public async Task<PackageVersionsResponse> GetPackageVersionsOrNullAsync(string id, CancellationToken cancellationToken = default)
         {
-            var urlGenerator = await _urlGenerator.CreateAsync();
-            var url = urlGenerator.GetPackageVersionsUrl(id);
+            var url = await _urlGenerator.GetPackageVersionsUrlAsync(id, cancellationToken);
             var response = await _httpClient.DeserializeUrlAsync<PackageVersionsResponse>(url, cancellationToken);
 
             if (response.StatusCode == HttpStatusCode.NotFound)
@@ -45,8 +44,7 @@ namespace BaGet.Protocol
         /// <inheritdoc />
         public async Task<Stream> GetPackageContentStreamOrNullAsync(string id, NuGetVersion version, CancellationToken cancellationToken = default)
         {
-            var urlGenerator = await _urlGenerator.CreateAsync();
-            var url = urlGenerator.GetPackageDownloadUrl(id, version);
+            var url = await _urlGenerator.GetPackageDownloadUrlAsync(id, version, cancellationToken);
             var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
             if (response.StatusCode == HttpStatusCode.NotFound)
@@ -60,8 +58,7 @@ namespace BaGet.Protocol
         /// <inheritdoc />
         public async Task<Stream> GetPackageManifestStreamOrNullAsync(string id, NuGetVersion version, CancellationToken cancellationToken = default)
         {
-            var urlGenerator = await _urlGenerator.CreateAsync();
-            var url = urlGenerator.GetPackageManifestDownloadUrl(id, version);
+            var url = await _urlGenerator.GetPackageManifestDownloadUrlAsync(id, version, cancellationToken);
             var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
             if (response.StatusCode == HttpStatusCode.NotFound)

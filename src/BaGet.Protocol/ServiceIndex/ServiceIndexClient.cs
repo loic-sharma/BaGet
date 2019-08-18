@@ -10,7 +10,8 @@ namespace BaGet.Protocol
     /// </summary>
     internal class ServiceIndexClient : IServiceIndexResource
     {
-        private readonly Lazy<Task<ServiceIndexResponse>> _serviceIndexTask;
+        private readonly HttpClient _httpClient;
+        private readonly string _indexUrl;
 
         /// <summary>
         /// Create a service index for the upstream source.
@@ -19,19 +20,16 @@ namespace BaGet.Protocol
         /// <param name="indexUrl">The upstream source's service index URL.</param>
         public ServiceIndexClient(HttpClient httpClient, string indexUrl)
         {
-            _serviceIndexTask = new Lazy<Task<ServiceIndexResponse>>(async () =>
-            {
-                var response = await httpClient.DeserializeUrlAsync<ServiceIndexResponse>(indexUrl);
-
-                return response.GetResultOrThrow();
-            });
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            _indexUrl = indexUrl ?? throw new ArgumentNullException(nameof(indexUrl));
         }
 
         /// <inheritdoc />
         public async Task<ServiceIndexResponse> GetAsync(CancellationToken cancellationToken = default)
         {
-            // TODO: Observe the cancellationToken.
-            return await _serviceIndexTask.Value;
+            var response = await _httpClient.DeserializeUrlAsync<ServiceIndexResponse>(_indexUrl, cancellationToken);
+
+            return response.GetResultOrThrow();
         }
     }
 }

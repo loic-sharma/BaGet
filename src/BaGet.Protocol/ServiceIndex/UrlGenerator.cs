@@ -30,14 +30,9 @@ namespace BaGet.Protocol
         private static readonly string[] RepositorySignatures = { "RepositorySignatures" + Version490, "RepositorySignatures" + Version470 };
         private static readonly string[] SymbolPackagePublish = { "SymbolPackagePublish" + Version490 };
 
-        private UrlGeneratorClient(ServiceIndexResponse serviceIndex)
+        public UrlGeneratorClient(ServiceIndexResponse serviceIndex)
         {
             _serviceIndex = serviceIndex ?? throw new ArgumentNullException(nameof(serviceIndex));
-        }
-
-        public static async Task<UrlGeneratorClient> CreateAsync(IServiceIndexResource serviceIndex, CancellationToken cancellationToken = default)
-        {
-            return new UrlGeneratorClient(await serviceIndex.GetAsync(cancellationToken));
         }
 
         public string GetPackageContentResourceUrl()
@@ -128,24 +123,6 @@ namespace BaGet.Protocol
             var resource = types.SelectMany(t => _serviceIndex.Resources.Where(r => r.Type == t)).FirstOrDefault();
 
             return resource?.Url.Trim('/');
-        }
-    }
-
-    internal class UrlGeneratorClientFactory : IUrlGeneratorFactory
-    {
-        private readonly Lazy<Task<UrlGeneratorClient>> _urlTask;
-
-        public UrlGeneratorClientFactory(IServiceIndexResource serviceIndex)
-        {
-            _urlTask = new Lazy<Task<UrlGeneratorClient>>(async () =>
-            {
-                return await UrlGeneratorClient.CreateAsync(serviceIndex);
-            });
-        }
-
-        public async Task<IUrlGenerator> CreateAsync()
-        {
-            return await _urlTask.Value;
         }
     }
 }

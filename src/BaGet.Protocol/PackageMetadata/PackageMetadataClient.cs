@@ -12,7 +12,7 @@ namespace BaGet.Protocol
     /// </summary>
     internal class PackageMetadataClient : IPackageMetadataResource
     {
-        private readonly IUrlGeneratorFactory _urlGenerator;
+        private readonly IAsyncUrlGenerator _urlGenerator;
         private readonly HttpClient _httpClient;
 
         /// <summary>
@@ -20,7 +20,7 @@ namespace BaGet.Protocol
         /// </summary>
         /// <param name="urlGenerator">The service to generate URLs to upstream resources.</param>
         /// <param name="httpClient">The HTTP client used to send requests.</param>
-        public PackageMetadataClient(IUrlGeneratorFactory urlGenerator, HttpClient httpClient)
+        public PackageMetadataClient(IAsyncUrlGenerator urlGenerator, HttpClient httpClient)
         {
             _urlGenerator = urlGenerator ?? throw new ArgumentNullException(nameof(urlGenerator));
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
@@ -29,8 +29,7 @@ namespace BaGet.Protocol
         /// <inheritdoc />
         public async Task<RegistrationIndexResponse> GetRegistrationIndexOrNullAsync(string id, CancellationToken cancellationToken = default)
         {
-            var urlGenerator = await _urlGenerator.CreateAsync();
-            var url = urlGenerator.GetRegistrationIndexUrl(id);
+            var url = await _urlGenerator.GetRegistrationIndexUrlAsync(id, cancellationToken);
             var response = await _httpClient.DeserializeUrlAsync<RegistrationIndexResponse>(url, cancellationToken);
 
             if (response.StatusCode == HttpStatusCode.NotFound)
@@ -48,8 +47,7 @@ namespace BaGet.Protocol
             NuGetVersion upper,
             CancellationToken cancellationToken = default)
         {
-            var urlGenerator = await _urlGenerator.CreateAsync();
-            var url = urlGenerator.GetRegistrationPageUrl(id, lower, upper);
+            var url = await _urlGenerator.GetRegistrationPageUrlAsync(id, lower, upper, cancellationToken);
             var response = await _httpClient.DeserializeUrlAsync<RegistrationPageResponse>(url, cancellationToken);
 
             if (response.StatusCode == HttpStatusCode.NotFound)
@@ -66,8 +64,7 @@ namespace BaGet.Protocol
             NuGetVersion version,
             CancellationToken cancellationToken = default)
         {
-            var urlGenerator = await _urlGenerator.CreateAsync();
-            var url = urlGenerator.GetRegistrationLeafUrl(id, version);
+            var url = await _urlGenerator.GetRegistrationLeafUrlAsync(id, version, cancellationToken);
             var response = await _httpClient.DeserializeUrlAsync<RegistrationLeafResponse>(url, cancellationToken);
 
             if (response.StatusCode == HttpStatusCode.NotFound)
