@@ -261,18 +261,28 @@ namespace BaGet.Extensions
                 }
             });
 
-            services.AddTransient<IPackageContentResource, PackageContentClient>();
-            services.AddTransient<IPackageMetadataResource, PackageMetadataClient>();
-            services.AddTransient<IUrlGeneratorFactory, UrlGeneratorClientFactory>();
-
-            services.AddSingleton<IServiceIndexResource>(provider =>
+            services.AddSingleton<INuGetClientFactory>(provider =>
             {
                 var httpClient = provider.GetRequiredService<HttpClient>();
                 var options = provider.GetRequiredService<IOptions<MirrorOptions>>();
 
-                return new ServiceIndexClient(
+                return new NuGetClientFactory(
                     httpClient,
                     options.Value.PackageSource.ToString());
+            });
+
+            services.AddTransient(provider =>
+            {
+                return provider
+                    .GetRequiredService<INuGetClientFactory>()
+                    .CreatePackageContentClient();
+            });
+
+            services.AddTransient(provider =>
+            {
+                return provider
+                    .GetRequiredService<INuGetClientFactory>()
+                    .CreatePackageMetadataClient();
             });
 
             services.AddTransient<IPackageDownloader, PackageDownloader>();
