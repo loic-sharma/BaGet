@@ -4,7 +4,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using NuGet.Versioning;
 
-namespace BaGet.Protocol.Converters
+namespace BaGet.Protocol.Internal
 {
     /// <summary>
     /// Converts a list of strings into a <see cref="IReadOnlyList{NuGetVersion}"/>.

@@ -53,8 +53,8 @@ namespace BaGet.Core.Tests.Mirror
         public class FactsBase
         {
             private readonly Mock<IPackageService> _packages;
-            private readonly Mock<IPackageContentService> _content;
-            private readonly Mock<IPackageMetadataService> _metadata;
+            private readonly Mock<IPackageContentResource> _content;
+            private readonly Mock<IPackageMetadataResource> _metadata;
             private readonly Mock<IPackageIndexingService> _indexer;
 
             private readonly MirrorService _target;
@@ -62,8 +62,8 @@ namespace BaGet.Core.Tests.Mirror
             public FactsBase()
             {
                 _packages = new Mock<IPackageService>();
-                _content = new Mock<IPackageContentService>();
-                _metadata = new Mock<IPackageMetadataService>();
+                _content = new Mock<IPackageContentResource>();
+                _metadata = new Mock<IPackageMetadataResource>();
                 _indexer = new Mock<IPackageIndexingService>();
 
                 _target = new MirrorService(

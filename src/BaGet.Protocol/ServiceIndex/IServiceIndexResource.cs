@@ -7,7 +7,7 @@ namespace BaGet.Protocol
     /// The NuGet Service Index resource, used to discover other resources.
     /// See: https://docs.microsoft.com/en-us/nuget/api/service-index
     /// </summary>
-    public interface IServiceIndex
+    public interface IServiceIndexResource
     {
         /// <summary>
         /// Get the resources available on this package feed.

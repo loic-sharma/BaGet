@@ -1,4 +1,4 @@
-namespace BaGet.Protocol
+namespace BaGet.Core.Search
 {
     /// <summary>
     /// The request to find the packages that depend on a given package.

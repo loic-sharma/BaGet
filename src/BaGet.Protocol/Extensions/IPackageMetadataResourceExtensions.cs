@@ -6,7 +6,7 @@ using NuGet.Versioning;
 
 namespace BaGet.Protocol
 {
-    public static class IPackageMetadataServiceExtensions
+    public static class IPackageMetadataResourceExtensions
     {
         /// <summary>
         /// Fetch the metadata for all versions of a package.
@@ -16,7 +16,7 @@ namespace BaGet.Protocol
         /// <param name="cancellationToken">A token to cancel the operation.</param>
         /// <returns>The metadata for a package, or null if the package could not be found.</returns>
         public static async Task<IReadOnlyList<RegistrationIndexPageItem>> GetRegistrationItemsOrNullAsync(
-            this IPackageMetadataService packageMetadata,
+            this IPackageMetadataResource packageMetadata,
             string packageId,
             CancellationToken cancellationToken = default)
         {
@@ -61,7 +61,7 @@ namespace BaGet.Protocol
         /// <param name="cancellationToken">A token to cancel the operation.</param>
         /// <returns>The package's metadata, or null if the package could not be found.</returns>
         public static async Task<RegistrationIndexPageItem> GetRegistrationItemOrNullAsync(
-            this IPackageMetadataService packageMetadata,
+            this IPackageMetadataResource packageMetadata,
             string packageId,
             NuGetVersion packageVersion,
             CancellationToken cancellationToken = default)

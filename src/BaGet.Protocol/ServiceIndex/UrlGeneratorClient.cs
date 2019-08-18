@@ -35,7 +35,7 @@ namespace BaGet.Protocol
             _serviceIndex = serviceIndex ?? throw new ArgumentNullException(nameof(serviceIndex));
         }
 
-        public static async Task<UrlGeneratorClient> CreateAsync(IServiceIndex serviceIndex, CancellationToken cancellationToken = default)
+        public static async Task<UrlGeneratorClient> CreateAsync(IServiceIndexResource serviceIndex, CancellationToken cancellationToken = default)
         {
             return new UrlGeneratorClient(await serviceIndex.GetAsync(cancellationToken));
         }
@@ -135,7 +135,7 @@ namespace BaGet.Protocol
     {
         private readonly Lazy<Task<UrlGeneratorClient>> _urlTask;
 
-        public UrlGeneratorClientFactory(IServiceIndex serviceIndex)
+        public UrlGeneratorClientFactory(IServiceIndexResource serviceIndex)
         {
             _urlTask = new Lazy<Task<UrlGeneratorClient>>(async () =>
             {

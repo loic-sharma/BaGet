@@ -8,7 +8,7 @@ namespace BaGet.Protocol
     /// The Package Metadata resource, used to fetch packages' metadata.
     /// See: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
     /// </summary>
-    public interface IPackageMetadataService
+    public interface IPackageMetadataResource
     {
         /// <summary>
         /// Attempt to get a package's registration index, if it exists.

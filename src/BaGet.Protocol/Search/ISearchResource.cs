@@ -7,7 +7,7 @@ namespace BaGet.Protocol
     /// The resource used to search for packages.
     /// See: https://docs.microsoft.com/en-us/nuget/api/search-query-service-resource
     /// </summary>
-    public interface ISearchService
+    public interface ISearchResource
     {
         /// <summary>
         /// Perform a search query.

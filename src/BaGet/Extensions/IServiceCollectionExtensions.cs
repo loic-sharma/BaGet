@@ -210,7 +210,7 @@ namespace BaGet.Extensions
 
         public static IServiceCollection AddSearchProviders(this IServiceCollection services)
         {
-            services.AddTransient<IBaGetSearchService>(provider =>
+            services.AddTransient<IBaGetSearchResource>(provider =>
             {
                 var options = provider.GetRequiredService<IOptionsSnapshot<SearchOptions>>();
 
@@ -261,11 +261,11 @@ namespace BaGet.Extensions
                 }
             });
 
-            services.AddTransient<IPackageContentService, PackageContentClient>();
-            services.AddTransient<IPackageMetadataService, PackageMetadataClient>();
+            services.AddTransient<IPackageContentResource, PackageContentClient>();
+            services.AddTransient<IPackageMetadataResource, PackageMetadataClient>();
             services.AddTransient<IUrlGeneratorFactory, UrlGeneratorClientFactory>();
 
-            services.AddSingleton<IServiceIndex>(provider =>
+            services.AddSingleton<IServiceIndexResource>(provider =>
             {
                 var httpClient = provider.GetRequiredService<HttpClient>();
                 var options = provider.GetRequiredService<IOptions<MirrorOptions>>();

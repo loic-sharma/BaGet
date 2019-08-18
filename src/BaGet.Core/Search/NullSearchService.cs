@@ -9,7 +9,7 @@ namespace BaGet.Core.Search
     /// <summary>
     /// A minimal search service implementation, used for advanced scenarios.
     /// </summary>
-    public class NullSearchService : IBaGetSearchService
+    public class NullSearchService : IBaGetSearchResource
     {
         private static readonly IReadOnlyList<string> EmptyStringList = new List<string>();
 

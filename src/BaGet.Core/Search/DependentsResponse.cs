@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace BaGet.Protocol
+namespace BaGet.Core.Search
 {
     /// <summary>
     /// The package ids that depend on the queried package.

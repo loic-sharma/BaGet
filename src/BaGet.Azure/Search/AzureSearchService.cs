@@ -16,7 +16,7 @@ namespace BaGet.Azure.Search
     using QueryType = Microsoft.Azure.Search.Models.QueryType;
     using SearchParameters = Microsoft.Azure.Search.Models.SearchParameters;
 
-    public class AzureSearchService : IBaGetSearchService
+    public class AzureSearchService : IBaGetSearchResource
     {
         private readonly BatchIndexer _indexer;
         private readonly SearchIndexClient _searchClient;

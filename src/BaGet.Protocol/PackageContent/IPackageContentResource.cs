@@ -9,7 +9,7 @@ namespace BaGet.Protocol
     /// The Package Content resource, used to download NuGet packages and to fetch other metadata.
     /// See: https://docs.microsoft.com/en-us/nuget/api/package-base-address-resource
     /// </summary>
-    public interface IPackageContentService
+    public interface IPackageContentResource
     {
         /// <summary>
         /// Get a package's versions, or null if the package does not exist.

@@ -8,10 +8,10 @@ namespace BaGet.Protocol
     /// </summary>
     public class NuGetClientFactory
     {
-        private readonly IServiceIndex _serviceIndexClient;
-        private readonly IPackageContentService _packageContentClient;
-        private readonly IPackageMetadataService _packageMetadataClient;
-        private readonly ISearchService _searchClient;
+        private readonly IServiceIndexResource _serviceIndexClient;
+        private readonly IPackageContentResource _packageContentClient;
+        private readonly IPackageMetadataResource _packageMetadataClient;
+        private readonly ISearchResource _searchClient;
 
         /// <summary>
         /// Configure the client factory.
@@ -39,7 +39,7 @@ namespace BaGet.Protocol
         /// See: https://docs.microsoft.com/en-us/nuget/api/service-index
         /// </summary>
         /// <returns>A client to interact with the NuGet Service Index resource.</returns>
-        public IServiceIndex CreateServiceIndexClient()
+        public IServiceIndexResource CreateServiceIndexClient()
             => _serviceIndexClient;
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace BaGet.Protocol
         /// See: https://docs.microsoft.com/en-us/nuget/api/package-base-address-resource
         /// </summary>
         /// <returns>A client to interact with the NuGet Package Content resource.</returns>
-        public IPackageContentService CreatePackageContentClient()
+        public IPackageContentResource CreatePackageContentClient()
             => _packageContentClient;
 
         /// <summary>
@@ -55,14 +55,14 @@ namespace BaGet.Protocol
         /// See: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
         /// </summary>
         /// <returns>A client to interact with the NuGet Package Metadata resource.</returns>
-        public IPackageMetadataService CreatePackageMetadataClient()
+        public IPackageMetadataResource CreatePackageMetadataClient()
             => _packageMetadataClient;
 
         /// <summary>
         /// Create a client to interact with the NuGet Search resource.
         /// </summary>
         /// <returns>A client to interact with the NuGet Search resource.</returns>
-        public ISearchService CreateSearchClient()
+        public ISearchResource CreateSearchClient()
             => _searchClient;
     }
 }

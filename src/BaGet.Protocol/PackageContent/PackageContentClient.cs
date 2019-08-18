@@ -11,7 +11,7 @@ namespace BaGet.Protocol
     /// <summary>
     /// The client to interact with an upstream source's Package Content resource.
     /// </summary>
-    public class PackageContentClient : IPackageContentService
+    public class PackageContentClient : IPackageContentResource
     {
         private readonly IUrlGeneratorFactory _urlGenerator;
         private readonly HttpClient _httpClient;

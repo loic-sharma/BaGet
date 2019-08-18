@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Newtonsoft.Json;
 
 namespace BaGet.Protocol
@@ -7,9 +7,9 @@ namespace BaGet.Protocol
     /// A resource in the <see cref="ServiceIndexResponse"/>.
     /// See: https://docs.microsoft.com/en-us/nuget/api/service-index#resources
     /// </summary>
-    public class ServiceIndexResource
+    public class ServiceIndexItem
     {
-        public ServiceIndexResource(string type, string url, string comment = null)
+        public ServiceIndexItem(string type, string url, string comment = null)
         {
             Url = url ?? throw new ArgumentNullException(nameof(url));
             Type = type ?? throw new ArgumentNullException(nameof(type));

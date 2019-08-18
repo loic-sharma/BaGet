@@ -1,6 +1,6 @@
 using System;
 
-namespace BaGet.Protocol.Converters
+namespace BaGet.Protocol.Internal
 {
     /// <summary>
     /// Flags to control the behavior of <see cref="NuGetVersionConverter"/>

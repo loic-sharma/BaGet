@@ -1,5 +1,5 @@
 using System;
-using BaGet.Protocol.Converters;
+using BaGet.Protocol.Internal;
 using Newtonsoft.Json;
 using NuGet.Versioning;
 

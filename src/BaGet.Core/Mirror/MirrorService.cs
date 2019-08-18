@@ -19,15 +19,15 @@ namespace BaGet.Core.Mirror
     public class MirrorService : IMirrorService
     {
         private readonly IPackageService _localPackages;
-        private readonly IPackageContentService _upstreamContent;
-        private readonly IPackageMetadataService _upstreamMetadata;
+        private readonly IPackageContentResource _upstreamContent;
+        private readonly IPackageMetadataResource _upstreamMetadata;
         private readonly IPackageIndexingService _indexer;
         private readonly ILogger<MirrorService> _logger;
 
         public MirrorService(
             IPackageService localPackages,
-            IPackageContentService upstreamContent,
-            IPackageMetadataService upstreamMetadata,
+            IPackageContentResource upstreamContent,
+            IPackageMetadataResource upstreamMetadata,
             IPackageIndexingService indexer,
             ILogger<MirrorService> logger)
         {

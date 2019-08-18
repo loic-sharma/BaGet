@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BaGet.Core.Search
 {
-    public class DatabaseSearchService : IBaGetSearchService
+    public class DatabaseSearchService : IBaGetSearchResource
     {
         private readonly IContext _context;
         private readonly IFrameworkCompatibilityService _frameworks;
