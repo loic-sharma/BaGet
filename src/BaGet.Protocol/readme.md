@@ -20,20 +20,13 @@ dotnet add package BaGet.Protocol
 using BaGet.Protocol;
 using NuGet.Versioning;
 
-var clientFactory = new NuGetClientFactory("https://api.nuget.org/v3/index.json");
-var contentClient = clientFactory.CreatePackageContentClient();
+var client = new NuGetClient("https://api.nuget.org/v3/index.json");
 
 var packageId = "Newtonsoft.Json";
 var packageVersion = new NuGetVersion("12.0.1");
 
-using (var packageStream = await contentClient.GetPackageContentStreamOrNullAsync(packageId, packageVersion))
+using (var packageStream = await client.GetPackageStreamAsync(packageId, packageVersion))
 {
-    if (packageStream == null)
-    {
-        Console.WriteLine($"Package {packageId} {packageVersion} does not exist");
-        return;
-    }
-
     Console.WriteLine($"Downloaded package {packageId} {packageVersion}");
 }
 ```
@@ -42,16 +35,10 @@ using (var packageStream = await contentClient.GetPackageContentStreamOrNullAsyn
 
 ```csharp
 // Searches for "json" packages, including prerelease packages.
-var clientFactory = new NuGetClientFactory("https://api.nuget.org/v3/index.json");
-var searchClient = clientFactory.CreateSearchClient();
+var client = new NuGetClient("https://api.nuget.org/v3/index.json");
+var response = await client.SearchAsync("json");
 
-var response = await searchClient.SearchAsync(new SearchRequest
-{
-    Query = "json",
-    IncludePrerelease = true,
-});
-
-Console.WriteLine($"Found {response.TotalHits} total results for query {searchRequest.Query}");
+Console.WriteLine($"Found {response.TotalHits} total results");
 
 foreach (var searchResult in response.Data)
 {
