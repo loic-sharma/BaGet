@@ -9,7 +9,7 @@ namespace BaGet.Protocol.Tests
 
         public ServiceIndexClientTests()
         {
-            _target = new NuGetClientFactory("https://api.nuget.org/v3/index.json")
+            _target = new NuGetClient("https://api.nuget.org/v3/index.json")
                 .CreateServiceIndexClient();
         }
 

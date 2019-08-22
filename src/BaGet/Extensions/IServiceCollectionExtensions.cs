@@ -261,12 +261,12 @@ namespace BaGet.Extensions
                 }
             });
 
-            services.AddSingleton<INuGetClientFactory>(provider =>
+            services.AddSingleton<INuGetClient>(provider =>
             {
                 var httpClient = provider.GetRequiredService<HttpClient>();
                 var options = provider.GetRequiredService<IOptions<MirrorOptions>>();
 
-                return new NuGetClientFactory(
+                return new NuGetClient(
                     httpClient,
                     options.Value.PackageSource.ToString());
             });
@@ -274,14 +274,14 @@ namespace BaGet.Extensions
             services.AddTransient(provider =>
             {
                 return provider
-                    .GetRequiredService<INuGetClientFactory>()
+                    .GetRequiredService<INuGetClient>()
                     .CreatePackageContentClient();
             });
 
             services.AddTransient(provider =>
             {
                 return provider
-                    .GetRequiredService<INuGetClientFactory>()
+                    .GetRequiredService<INuGetClient>()
                     .CreatePackageMetadataClient();
             });
 

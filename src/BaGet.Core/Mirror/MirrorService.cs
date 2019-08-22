@@ -19,21 +19,18 @@ namespace BaGet.Core.Mirror
     public class MirrorService : IMirrorService
     {
         private readonly IPackageService _localPackages;
-        private readonly IPackageContentResource _upstreamContent;
-        private readonly IPackageMetadataResource _upstreamMetadata;
+        private readonly INuGetClient _upstream;
         private readonly IPackageIndexingService _indexer;
         private readonly ILogger<MirrorService> _logger;
 
         public MirrorService(
             IPackageService localPackages,
-            IPackageContentResource upstreamContent,
-            IPackageMetadataResource upstreamMetadata,
+            INuGetClient upstream,
             IPackageIndexingService indexer,
             ILogger<MirrorService> logger)
         {
             _localPackages = localPackages ?? throw new ArgumentNullException(nameof(localPackages));
-            _upstreamContent = upstreamContent ?? throw new ArgumentNullException(nameof(upstreamContent));
-            _upstreamMetadata = upstreamMetadata ?? throw new ArgumentNullException(nameof(upstreamMetadata));
+            _upstream = upstream ?? throw new ArgumentNullException(nameof(upstream));
             _indexer = indexer ?? throw new ArgumentNullException(nameof(indexer));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -42,8 +39,8 @@ namespace BaGet.Core.Mirror
             string id,
             CancellationToken cancellationToken)
         {
-            var response = await _upstreamContent.GetPackageVersionsOrNullAsync(id, cancellationToken);
-            if (response == null)
+            var upstreamVersions = await _upstream.ListPackageVersions(id, includeUnlisted: true, cancellationToken);
+            if (!upstreamVersions.Any())
             {
                 return null;
             }
@@ -52,13 +49,13 @@ namespace BaGet.Core.Mirror
             var localPackages = await _localPackages.FindAsync(id, includeUnlisted: true);
             var localVersions = localPackages.Select(p => p.Version);
 
-            return response.Versions.Concat(localVersions).Distinct().ToList();
+            return upstreamVersions.Concat(localVersions).Distinct().ToList();
         }
 
         public async Task<IReadOnlyList<Package>> FindPackagesOrNullAsync(string id, CancellationToken cancellationToken)
         {
-            var items = await _upstreamMetadata.GetRegistrationItemsOrNullAsync(id, cancellationToken);
-            if (items == null)
+            var items = await _upstream.GetPackageMetadataAsync(id, cancellationToken);
+            if (!items.Any())
             {
                 return null;
             }
@@ -207,7 +204,8 @@ namespace BaGet.Core.Mirror
 
             try
             {
-                using (var stream = await _upstreamContent.GetPackageContentStreamOrNullAsync(id, version, cancellationToken))
+                var contentClient = _upstream.CreatePackageContentClient();
+                using (var stream = await contentClient.GetPackageContentStreamOrNullAsync(id, version, cancellationToken))
                 {
                     if (stream == null)
                     {

@@ -1,5 +1,4 @@
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -10,29 +9,11 @@ namespace BaGet.Protocol.Samples.Tests
         [Fact]
         public async Task Search()
         {
-            // Searches for "json" packages, including prerelease packages.
-            var clientFactory = new NuGetClientFactory("https://api.nuget.org/v3/index.json");
-            var searchClient = clientFactory.CreateSearchClient();
+            // Search for "json" packages.
+            var client = new NuGetClient("https://api.nuget.org/v3/index.json");
+            var response = await client.SearchAsync("json");
 
-            var cancellationToken = CancellationToken.None;
-            var searchRequest = new SearchRequest
-            {
-                Query = "json",
-                IncludePrerelease = true,
-
-                // You can exclude packages that use semver2 versioning
-                // IncludeSemVer2 = false,
-
-                // You can skip results
-                // Skip = 10,
-
-                // You can limit the number of returned results
-                // Take = 1,
-            };
-
-            var response = await searchClient.SearchAsync(searchRequest, cancellationToken);
-
-            Console.WriteLine($"Found {response.TotalHits} results for query {searchRequest.Query}");
+            Console.WriteLine($"Found {response.TotalHits} results");
 
             var index = 1;
             foreach (var searchResult in response.Data)
@@ -51,30 +32,11 @@ namespace BaGet.Protocol.Samples.Tests
         [Fact]
         public async Task Autocomplete()
         {
-            // Searches for packages whose name start with "Newt", including prerelease packages.
-            var clientFactory = new NuGetClientFactory("https://api.nuget.org/v3/index.json");
-            var searchClient = clientFactory.CreateSearchClient();
+            // Search for packages whose name start with "Newt".
+            var client = new NuGetClient("https://api.nuget.org/v3/index.json");
+            var response = await client.AutocompleteAsync("Newt");
 
-            var cancellationToken = CancellationToken.None;
-            var autocompleteRequest = new AutocompleteRequest
-            {
-                Query = "Newt",
-                IncludePrerelease = true
-
-                // You can exclude packages that use semver2 versioning
-                // IncludeSemVer2 = false,
-
-                // You can skip results
-                // Skip = 10,
-
-                // You can limit the number of returned results
-                // Take = 1,
-            };
-
-            // TODO: Split autocomplete and search clients.
-            var response = await searchClient.AutocompleteAsync(autocompleteRequest, cancellationToken);
-
-            Console.WriteLine($"Found {response.TotalHits} results for query {autocompleteRequest.Query}");
+            Console.WriteLine($"Found {response.TotalHits} results");
 
             var index = 1;
             foreach (var searchResult in response.Data)

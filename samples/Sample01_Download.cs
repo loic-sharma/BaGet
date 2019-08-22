@@ -1,5 +1,4 @@
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using NuGet.Versioning;
 using Xunit;
@@ -12,22 +11,21 @@ namespace BaGet.Protocol.Samples.Tests
         public async Task DownloadPackage()
         {
             // Downloads a package file (.nupkg)
-            var clientFactory = new NuGetClientFactory("https://api.nuget.org/v3/index.json");
-            var packageContent = clientFactory.CreatePackageContentClient();
+            var client = new NuGetClient("https://api.nuget.org/v3/index.json");
 
             var packageId = "Newtonsoft.Json";
             var packageVersion = new NuGetVersion("12.0.1");
-            var cancellationToken = CancellationToken.None;
 
-            using (var packageStream = await packageContent.GetPackageContentStreamOrNullAsync(packageId, packageVersion, cancellationToken))
+            try
             {
-                if (packageStream == null)
+                using (var packageStream = await client.GetPackageStreamAsync(packageId, packageVersion))
                 {
-                    Console.WriteLine($"Package {packageId} {packageVersion} does not exist");
-                    return;
+                    Console.WriteLine($"Downloaded package {packageId} {packageVersion}");
                 }
-
-                Console.WriteLine($"Downloaded package {packageId} {packageVersion}");
+            }
+            catch (PackageNotFoundException)
+            {
+                Console.WriteLine($"Package '{packageId}' version '{packageVersion}' does not exist");
             }
         }
 
@@ -35,22 +33,21 @@ namespace BaGet.Protocol.Samples.Tests
         public async Task DownloadPackageManifest()
         {
             // Downloads a package manifest (.nuspec)
-            var clientFactory = new NuGetClientFactory("https://api.nuget.org/v3/index.json");
-            var packageContent = clientFactory.CreatePackageContentClient();
+            var client = new NuGetClient("https://api.nuget.org/v3/index.json");
 
             var packageId = "Newtonsoft.Json";
             var packageVersion = new NuGetVersion("12.0.1");
-            var cancellationToken = CancellationToken.None;
 
-            using (var manifestStream = await packageContent.GetPackageManifestStreamOrNullAsync(packageId, packageVersion, cancellationToken))
+            try
             {
-                if (manifestStream == null)
+                using (var manifestStream = await client.GetPackageManifestStreamAsync(packageId, packageVersion))
                 {
-                    Console.WriteLine($"Package {packageId} {packageVersion} does not exist");
-                    return;
+                    Console.WriteLine($"Downloaded package {packageId} {packageVersion}'s nuspec");
                 }
-
-                Console.WriteLine($"Downloaded package {packageId} {packageVersion}'s nuspec");
+            }
+            catch (PackageNotFoundException)
+            {
+                Console.WriteLine($"Package '{packageId}' version '{packageVersion}' does not exist");
             }
         }
     }
