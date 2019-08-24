@@ -6,12 +6,12 @@ using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Storage;
-using BaGet.GCP.Configuration;
+using BaGet.Gcp.Configuration;
 using Google;
 using Google.Cloud.Storage.V1;
 using Microsoft.Extensions.Options;
 
-namespace BaGet.GCP.Services
+namespace BaGet.Gcp.Services
 {
     public class GoogleCloudStorageService : IStorageService
     {

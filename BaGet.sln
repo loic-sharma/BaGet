@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Protocol", "src\BaGet
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Protocol.Tests", "tests\BaGet.Protocol.Tests\BaGet.Protocol.Tests.csproj", "{AC764A9A-9EAF-422B-9223-D3290C3CFD79}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.AWS", "src\BaGet.AWS\BaGet.AWS.csproj", "{D067D82E-D515-44D1-A832-C79F29418DFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Aws", "src\BaGet.Aws\BaGet.Aws.csproj", "{D067D82E-D515-44D1-A832-C79F29418DFC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0B44364D-952B-497A-82E0-C9AAE94E0369}"
 	ProjectSection(SolutionItems) = preProject
@@ -40,7 +40,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Database.MySql", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Database.PostgreSql", "src\BaGet.Database.PostgreSql\BaGet.Database.PostgreSql.csproj", "{F48F201A-4DEE-4D5B-9C0B-59490FE942FA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.GCP", "src\BaGet.GCP\BaGet.GCP.csproj", "{D7D60BA0-FF7F-4B37-815C-74D487C5176E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Gcp", "src\BaGet.Gcp\BaGet.Gcp.csproj", "{D7D60BA0-FF7F-4B37-815C-74D487C5176E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{DDEC0736-8169-4834-815E-B78E7CE612A4}"
 EndProject

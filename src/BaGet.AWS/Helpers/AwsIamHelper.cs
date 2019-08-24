@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Amazon.Runtime;
 
-namespace BaGet.AWS.Helpers
+namespace BaGet.Aws.Helpers
 {
     public static class AwsIamHelper
     {

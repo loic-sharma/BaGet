@@ -3,7 +3,8 @@
   <PropertyGroup>
     <Product>BaGet</Product>
     <PackageProjectUrl>https://loic-sharma.github.io/BaGet/</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/loic-sharma/BaGet/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIconUrl>https://raw.githubusercontent.com/NuGet/Media/master/Images/MainLogo/256x256/nuget_256.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/loic-sharma/BaGet</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>

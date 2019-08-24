@@ -2,12 +2,12 @@ using System;
 using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
-using BaGet.AWS.Configuration;
-using BaGet.AWS.Helpers;
+using BaGet.Aws.Configuration;
+using BaGet.Aws.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace BaGet.AWS.Extensions
+namespace BaGet.Aws.Extensions
 {
     public static class ServiceCollectionExtensions
     {

@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using BaGet.Core.Validation;
 
-namespace BaGet.AWS.Configuration
+namespace BaGet.Aws.Configuration
 {
     public class S3StorageOptions
     {

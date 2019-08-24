@@ -4,11 +4,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
-using BaGet.AWS.Configuration;
+using BaGet.Aws.Configuration;
 using BaGet.Core.Storage;
 using Microsoft.Extensions.Options;
 
-namespace BaGet.AWS
+namespace BaGet.Aws
 {
     public class S3StorageService : IStorageService
     {
