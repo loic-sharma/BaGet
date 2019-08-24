@@ -18,18 +18,11 @@ namespace BaGet.Protocol.Samples.Tests
             var packageId = "Newtonsoft.Json";
             var packageVersion = new NuGetVersion("12.0.1");
 
-            try
-            {
-                var registrationItem = await client.GetPackageMetadataAsync(packageId, packageVersion);
+            var registrationItem = await client.GetPackageMetadataAsync(packageId, packageVersion);
 
-                Console.WriteLine($"Listed: {registrationItem.PackageMetadata.Listed}");
-                Console.WriteLine($"Tags: {registrationItem.PackageMetadata.Tags}");
-                Console.WriteLine($"Description: {registrationItem.PackageMetadata.Description}");
-            }
-            catch (PackageNotFoundException)
-            {
-                Console.WriteLine($"Package '{packageId}' version '{packageVersion}' does not exist");
-            }
+            Console.WriteLine($"Listed: {registrationItem.PackageMetadata.Listed}");
+            Console.WriteLine($"Tags: {registrationItem.PackageMetadata.Tags}");
+            Console.WriteLine($"Description: {registrationItem.PackageMetadata.Description}");
         }
 
         [Fact]
