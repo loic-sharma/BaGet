@@ -9,7 +9,7 @@ namespace BaGet.Protocol.Samples.Tests
         [Fact]
         public async Task Search()
         {
-            // Search for "json" packages.
+            // Search for packages that are relevant to "json".
             var client = new NuGetClient("https://api.nuget.org/v3/index.json");
             var response = await client.SearchAsync("json");
 
@@ -32,7 +32,7 @@ namespace BaGet.Protocol.Samples.Tests
         [Fact]
         public async Task Autocomplete()
         {
-            // Search for packages whose name start with "Newt".
+            // Search for packages whose names' start with "Newt".
             var client = new NuGetClient("https://api.nuget.org/v3/index.json");
             var response = await client.AutocompleteAsync("Newt");
 
