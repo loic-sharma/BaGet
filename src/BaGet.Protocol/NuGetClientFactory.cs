@@ -7,6 +7,10 @@ using BaGet.Protocol.Internal;
 
 namespace BaGet.Protocol
 {
+    /// <summary>
+    /// Creates clients to interact with a NuGet server. Use this for advanced scenarios.
+    /// For most common scenarios, consider using <see cref="NuGetClient"/> instead.
+    /// </summary>
     public class NuGetClientFactory : INuGetClientFactory
     {
         // See: https://github.com/NuGet/NuGet.Client/blob/dev/src/NuGet.Core/NuGet.Protocol/Constants.cs
@@ -44,23 +48,46 @@ namespace BaGet.Protocol
             _mutex = new SemaphoreSlim(1, 1);
             _clients = null;
         }
+
+        /// <summary>
+        /// Create a low level client to interact with the NuGet Service Index resource.
+        /// See: https://docs.microsoft.com/en-us/nuget/api/service-index
+        /// </summary>
+        /// <returns>A client to interact with the NuGet Service Index resource.</returns>
         public Task<IServiceIndexResource> CreateServiceIndexClientAsync(CancellationToken cancellationToken = default)
         {
             return GetClientAsync(c => c.ServiceIndexClient, cancellationToken);
         }
 
+        /// <summary>
+        /// Create a low level client to interact with the NuGet Package Content resource.
+        /// See: https://docs.microsoft.com/en-us/nuget/api/package-base-address-resource
+        /// </summary>
+        /// <returns>A client to interact with the NuGet Package Content resource.</returns>
         public Task<IPackageContentResource> CreatePackageContentClientAsync(CancellationToken cancellationToken = default)
         {
             return GetClientAsync(c => c.PackageContentClient, cancellationToken);
         }
 
+        /// <summary>
+        /// Create a low level client to interact with the NuGet Package Metadata resource.
+        /// See: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
+        /// </summary>
+        /// <returns>A client to interact with the NuGet Package Metadata resource.</returns>
         public Task<IPackageMetadataResource> CreatePackageMetadataClientAsync(CancellationToken cancellationToken = default)
         {
             return GetClientAsync(c => c.PackageMetadataClient, cancellationToken);
         }
 
+        /// <summary>
+        /// Create a low level client to interact with the NuGet Search resource.
+        /// See: https://docs.microsoft.com/en-us/nuget/api/search-query-service-resource
+        /// </summary>
+        /// <returns>A client to interact with the NuGet Search resource.</returns>
         public Task<ISearchResource> CreateSearchClientAsync(CancellationToken cancellationToken = default)
         {
+            // TODO: There are multiple search endpoints to support high read availability.
+            // This factory should create a search client that uses all these endpoints.
             return GetClientAsync(c => c.SearchClient, cancellationToken);
         }
 
