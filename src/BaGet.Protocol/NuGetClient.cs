@@ -94,28 +94,13 @@ namespace BaGet.Protocol
         /// <returns>The package's listed versions, if any.</returns>
         public async Task<IReadOnlyList<NuGetVersion>> ListPackageVersions(string packageId, CancellationToken cancellationToken)
         {
-            // TODO: If server does not have autocomplete, fall back to registration.
-            var request = new AutocompleteRequest
-            {
-                Query = packageId,
-                Type = AutocompleteRequestType.PackageVersions
-            };
+            // TODO: Use the Autocomplete's enumerate versions endpoint if this is not Sleet.
+            var packages = await GetPackageMetadataAsync(packageId, cancellationToken);
 
-            var results = new List<NuGetVersion>();
-            var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
-            var response = await client.AutocompleteAsync(request, cancellationToken);
-
-            foreach (var versionString in response.Data)
-            {
-                if (!NuGetVersion.TryParse(versionString, out var version))
-                {
-                    continue;
-                }
-
-                results.Add(version);
-            }
-
-            return results;
+            return packages
+                .Where(p => p.PackageMetadata.Listed)
+                .Select(p => p.PackageMetadata.Version)
+                .ToList();
         }
 
         /// <summary>
