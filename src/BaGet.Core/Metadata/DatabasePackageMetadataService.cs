@@ -16,9 +16,9 @@ namespace BaGet.Core.Metadata
     {
         private readonly IMirrorService _mirror;
         private readonly IPackageService _packages;
-        private readonly IBaGetUrlGenerator _url;
+        private readonly IUrlGenerator _url;
 
-        public DatabasePackageMetadataService(IMirrorService mirror, IPackageService packages, IBaGetUrlGenerator url)
+        public DatabasePackageMetadataService(IMirrorService mirror, IPackageService packages, IUrlGenerator url)
         {
             _mirror = mirror ?? throw new ArgumentNullException(nameof(mirror));
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));

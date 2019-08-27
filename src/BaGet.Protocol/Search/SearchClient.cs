@@ -6,33 +6,35 @@ using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BaGet.Protocol
+namespace BaGet.Protocol.Internal
 {
     /// <summary>
     /// The client to interact with an upstream source's Search resource.
     /// </summary>
-    internal class SearchClient : ISearchResource
+    public class SearchClient : ISearchResource
     {
-        private readonly IAsyncUrlGenerator _urlGenerator;
         private readonly HttpClient _httpClient;
+        private readonly string _searchUrl;
+        private readonly string _autocompleteUrl;
 
         /// <summary>
         /// Create a new Search client.
         /// </summary>
-        /// <param name="urlGenerator">The service to generate URLs to upstream resources.</param>
         /// <param name="httpClient">The HTTP client used to send requests.</param>
-        public SearchClient(IAsyncUrlGenerator urlGenerator, HttpClient httpClient)
+        /// <param name="searchUrl">The NuGet server's search URL.</param>
+        /// <param name="autocompleteUrl">The NuGet server's autocomplete URL.</param>
+        public SearchClient(HttpClient httpClient, string searchUrl, string autocompleteUrl)
         {
-            _urlGenerator = urlGenerator ?? throw new ArgumentNullException(nameof(urlGenerator));
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            _searchUrl = searchUrl ?? throw new ArgumentNullException(nameof(searchUrl));
+            _autocompleteUrl = autocompleteUrl ?? throw new ArgumentNullException(nameof(autocompleteUrl));
         }
 
         /// <inheritdoc />
         public async Task<AutocompleteResponse> AutocompleteAsync(AutocompleteRequest request, CancellationToken cancellationToken = default)
         {
-            var autocompleteUrl = await _urlGenerator.GetAutocompleteResourceUrlAsync(cancellationToken);
             var param = (request.Type == AutocompleteRequestType.PackageIds) ? "q" : "id";
-            var url = AddSearchQueryString(autocompleteUrl, request, param);
+            var url = AddSearchQueryString(_autocompleteUrl, request, param);
 
             var response = await _httpClient.DeserializeUrlAsync<AutocompleteResponse>(url, cancellationToken);
 
@@ -42,8 +44,7 @@ namespace BaGet.Protocol
         /// <inheritdoc />
         public async Task<SearchResponse> SearchAsync(SearchRequest request, CancellationToken cancellationToken = default)
         {
-            var autocompleteUrl = await _urlGenerator.GetSearchResourceUrlAsync(cancellationToken);
-            var url = AddSearchQueryString(autocompleteUrl, request, "q");
+            var url = AddSearchQueryString(_searchUrl, request, "q");
 
             var response = await _httpClient.DeserializeUrlAsync<SearchResponse>(url, cancellationToken);
 

@@ -1,5 +1,5 @@
 using System;
-using BaGet.Core.ServiceIndex;
+using BaGet.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using NuGet.Versioning;
@@ -7,7 +7,7 @@ using NuGet.Versioning;
 namespace BaGet
 {
     // TODO: This should validate the "Host" header against known valid values
-    public class BaGetUrlGenerator : IBaGetUrlGenerator
+    public class BaGetUrlGenerator : IUrlGenerator
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly LinkGenerator _linkGenerator;

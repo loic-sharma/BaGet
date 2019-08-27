@@ -9,9 +9,9 @@ namespace BaGet.Core.ServiceIndex
 {
     public class BaGetServiceIndex : IBaGetServiceIndex
     {
-        private readonly IBaGetUrlGenerator _url;
+        private readonly IUrlGenerator _url;
 
-        public BaGetServiceIndex(IBaGetUrlGenerator url)
+        public BaGetServiceIndex(IUrlGenerator url)
         {
             _url = url ?? throw new ArgumentNullException(nameof(url));
         }

@@ -1,17 +1,17 @@
 using System;
 using System.Threading.Tasks;
+using BaGet.Protocol.Internal;
 using Xunit;
 
 namespace BaGet.Protocol.Tests
 {
-    public class PackageContentTests
+    public class PackageContentTests : IClassFixture<ProtocolFixture>
     {
-        private readonly IPackageContentResource _target;
+        private readonly PackageContentClient _target;
 
-        public PackageContentTests()
+        public PackageContentTests(ProtocolFixture fixture)
         {
-            _target = new NuGetClient("https://api.nuget.org/v3/index.json")
-                .CreatePackageContentClient();
+            _target = fixture.ContentClient;
         }
 
         [Fact]

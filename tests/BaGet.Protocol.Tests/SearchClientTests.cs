@@ -1,17 +1,17 @@
 using System.Threading.Tasks;
+using BaGet.Protocol.Internal;
 using NuGet.Versioning;
 using Xunit;
 
 namespace BaGet.Protocol.Tests
 {
-    public class SearchClientTests
+    public class SearchClientTests : IClassFixture<ProtocolFixture>
     {
-        private readonly ISearchResource _target;
+        private readonly SearchClient _target;
 
-        public SearchClientTests()
+        public SearchClientTests(ProtocolFixture fixture)
         {
-            _target = new NuGetClient("https://api.nuget.org/v3/index.json")
-                .CreateSearchClient();
+            _target = fixture.SearchClient;
         }
 
         [Fact]

@@ -9,7 +9,7 @@ namespace BaGet.Protocol
     /// <summary>
     /// A NuGet client that interact with a NuGet server.
     /// </summary>
-    public interface INuGetClient : INuGetClientFactory
+    public interface INuGetClient
     {
         /// <summary>
         /// Download a package (.nupkg), or throws if the package does not exist.

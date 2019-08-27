@@ -8,6 +8,7 @@ using BaGet.Aws.Extensions;
 using BaGet.Azure.Configuration;
 using BaGet.Azure.Extensions;
 using BaGet.Azure.Search;
+using BaGet.Core;
 using BaGet.Core.Authentication;
 using BaGet.Core.Configuration;
 using BaGet.Core.Content;
@@ -62,6 +63,7 @@ namespace BaGet.Extensions
 
             services.AddBaGetContext();
 
+            services.AddTransient<IUrlGenerator, BaGetUrlGenerator>();
             services.AddTransient<IPackageService, PackageService>();
             services.AddTransient<IPackageIndexingService, PackageIndexingService>();
             services.AddTransient<IPackageDeletionService, PackageDeletionService>();
@@ -69,7 +71,6 @@ namespace BaGet.Extensions
             services.AddTransient<IBaGetServiceIndex, BaGetServiceIndex>();
             services.AddTransient<IBaGetPackageContentService, DatabasePackageContentService>();
             services.AddTransient<IBaGetPackageMetadataService, DatabasePackageMetadataService>();
-            services.AddTransient<IBaGetUrlGenerator, BaGetUrlGenerator>();
             services.AddSingleton<IFrameworkCompatibilityService, FrameworkCompatibilityService>();
             services.AddMirrorServices();
 
@@ -261,28 +262,15 @@ namespace BaGet.Extensions
                 }
             });
 
-            services.AddSingleton<INuGetClient>(provider =>
+            services.AddSingleton<INuGetClient, NuGetClient>();
+            services.AddSingleton<INuGetClientFactory>(provider =>
             {
                 var httpClient = provider.GetRequiredService<HttpClient>();
                 var options = provider.GetRequiredService<IOptions<MirrorOptions>>();
 
-                return new NuGetClient(
+                return new NuGetClientFactory(
                     httpClient,
                     options.Value.PackageSource.ToString());
-            });
-
-            services.AddTransient(provider =>
-            {
-                return provider
-                    .GetRequiredService<INuGetClient>()
-                    .CreatePackageContentClient();
-            });
-
-            services.AddTransient(provider =>
-            {
-                return provider
-                    .GetRequiredService<INuGetClient>()
-                    .CreatePackageMetadataClient();
             });
 
             services.AddTransient<IPackageDownloader, PackageDownloader>();

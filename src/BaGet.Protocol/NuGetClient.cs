@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,44 +15,36 @@ namespace BaGet.Protocol
     /// </summary>
     public class NuGetClient : INuGetClient
     {
-        private readonly ServiceIndexClient _serviceIndexClient;
-        private readonly PackageContentClient _packageContentClient;
-        private readonly PackageMetadataClient _packageMetadataClient;
-        private readonly SearchClient _searchClient;
+        private readonly INuGetClientFactory _clientFactory;
 
         /// <summary>
         /// Configure the NuGet client.
         /// </summary>
-        /// <param name="serviceIndexUrl">The NuGet Service Index resource.</param>
+        /// <param name="serviceIndexUrl">The NuGet Service Index resource URL.</param>
         public NuGetClient(string serviceIndexUrl)
-            : this(httpClient: null, serviceIndexUrl: serviceIndexUrl)
         {
-        }
-
-        /// <summary>
-        /// Configure the NuGet client.
-        /// </summary>
-        /// <param name="httpClient">The HTTP client used to create NuGet clients.</param>
-        /// <param name="serviceIndexUrl">The NuGet Service Index resource.</param>
-        public NuGetClient(HttpClient httpClient, string serviceIndexUrl)
-        {
-            httpClient = httpClient ?? new HttpClient(new HttpClientHandler
+            var httpClient = new HttpClient(new HttpClientHandler
             {
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
             });
 
-            var serviceIndexClient = new ServiceIndexClient(httpClient, serviceIndexUrl);
-            var urlGeneratorFactory = new AsyncUrlGenerator(serviceIndexClient);
+            _clientFactory = new NuGetClientFactory(httpClient, serviceIndexUrl);
+        }
 
-            _serviceIndexClient = serviceIndexClient;
-            _packageContentClient = new PackageContentClient(urlGeneratorFactory, httpClient);
-            _packageMetadataClient = new PackageMetadataClient(urlGeneratorFactory, httpClient);
-            _searchClient = new SearchClient(urlGeneratorFactory, httpClient);
+        /// <summary>
+        /// Configure the NuGet client.
+        /// </summary>
+        /// <param name="clientFactory">The factory to create NuGet clients.</param>
+        public NuGetClient(INuGetClientFactory clientFactory)
+        {
+            _clientFactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
         }
 
         public async Task<Stream> GetPackageStreamAsync(string packageId, NuGetVersion packageVersion, CancellationToken cancellationToken = default)
         {
-            var stream = await _packageContentClient.GetPackageContentStreamOrNullAsync(packageId, packageVersion, cancellationToken);
+            var client = await _clientFactory.CreatePackageContentClientAsync(cancellationToken);
+            var stream = await client.GetPackageContentStreamOrNullAsync(packageId, packageVersion, cancellationToken);
+
             if (stream == null)
             {
                 throw new PackageNotFoundException(packageId, packageVersion);
@@ -62,7 +55,9 @@ namespace BaGet.Protocol
 
         public async Task<Stream> GetPackageManifestStreamAsync(string packageId, NuGetVersion packageVersion, CancellationToken cancellationToken = default)
         {
-            var stream = await _packageContentClient.GetPackageManifestStreamOrNullAsync(packageId, packageVersion, cancellationToken);
+            var client = await _clientFactory.CreatePackageContentClientAsync(cancellationToken);
+            var stream = await client.GetPackageManifestStreamOrNullAsync(packageId, packageVersion, cancellationToken);
+
             if (stream == null)
             {
                 throw new PackageNotFoundException(packageId, packageVersion);
@@ -81,7 +76,8 @@ namespace BaGet.Protocol
             };
 
             var results = new List<NuGetVersion>();
-            var response = await _searchClient.AutocompleteAsync(request, cancellationToken);
+            var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
+            var response = await client.AutocompleteAsync(request, cancellationToken);
 
             foreach (var versionString in response.Data)
             {
@@ -103,7 +99,9 @@ namespace BaGet.Protocol
                 return await ListPackageVersions(packageId, cancellationToken);
             }
 
-            var response = await _packageContentClient.GetPackageVersionsOrNullAsync(packageId, cancellationToken);
+            var client = await _clientFactory.CreatePackageContentClientAsync(cancellationToken);
+            var response = await client.GetPackageVersionsOrNullAsync(packageId, cancellationToken);
+
             if (response == null)
             {
                 return new List<NuGetVersion>();
@@ -116,7 +114,9 @@ namespace BaGet.Protocol
         {
             var result = new List<RegistrationIndexPageItem>();
 
-            var registrationIndex = await _packageMetadataClient.GetRegistrationIndexOrNullAsync(packageId, cancellationToken);
+            var client = await _clientFactory.CreatePackageMetadataClientAsync(cancellationToken);
+            var registrationIndex = await client.GetRegistrationIndexOrNullAsync(packageId, cancellationToken);
+
             if (registrationIndex == null)
             {
                 return result;
@@ -130,7 +130,7 @@ namespace BaGet.Protocol
                 var items = registrationIndexPage.ItemsOrNull;
                 if (items == null)
                 {
-                    var externalRegistrationPage = await _packageMetadataClient.GetRegistrationPageOrNullAsync(
+                    var externalRegistrationPage = await client.GetRegistrationPageOrNullAsync(
                         packageId,
                         registrationIndexPage.Lower,
                         registrationIndexPage.Upper,
@@ -150,7 +150,9 @@ namespace BaGet.Protocol
 
         public async Task<RegistrationIndexPageItem> GetPackageMetadataAsync(string packageId, NuGetVersion packageVersion, CancellationToken cancellationToken = default)
         {
-            var registrationIndex = await _packageMetadataClient.GetRegistrationIndexOrNullAsync(packageId, cancellationToken);
+            var client = await _clientFactory.CreatePackageMetadataClientAsync(cancellationToken);
+            var registrationIndex = await client.GetRegistrationIndexOrNullAsync(packageId, cancellationToken);
+
             if (registrationIndex == null)
             {
                 throw new PackageNotFoundException(packageId, packageVersion);
@@ -169,7 +171,7 @@ namespace BaGet.Protocol
                 var items = registrationIndexPage.ItemsOrNull;
                 if (items == null)
                 {
-                    var externalRegistrationPage = await _packageMetadataClient.GetRegistrationPageOrNullAsync(
+                    var externalRegistrationPage = await client.GetRegistrationPageOrNullAsync(
                         packageId,
                         registrationIndexPage.Lower,
                         registrationIndexPage.Upper,
@@ -199,7 +201,9 @@ namespace BaGet.Protocol
                 IncludeSemVer2 = true,
             };
 
-            return await _searchClient.SearchAsync(request, cancellationToken);
+            var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
+
+            return await client.SearchAsync(request, cancellationToken);
         }
 
         public async Task<SearchResponse> SearchAsync(string query, bool includePrerelease, CancellationToken cancellationToken = default)
@@ -213,7 +217,9 @@ namespace BaGet.Protocol
                 IncludeSemVer2 = true,
             };
 
-            return await _searchClient.SearchAsync(request, cancellationToken);
+            var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
+
+            return await client.SearchAsync(request, cancellationToken);
         }
 
         public async Task<SearchResponse> SearchAsync(string query, int skip, int take, CancellationToken cancellationToken = default)
@@ -227,7 +233,9 @@ namespace BaGet.Protocol
                 IncludeSemVer2 = true,
             };
 
-            return await _searchClient.SearchAsync(request, cancellationToken);
+            var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
+
+            return await client.SearchAsync(request, cancellationToken);
         }
 
         public async Task<SearchResponse> SearchAsync(string query, bool includePrerelease, int skip, int take, CancellationToken cancellationToken = default)
@@ -241,7 +249,9 @@ namespace BaGet.Protocol
                 IncludeSemVer2 = true,
             };
 
-            return await _searchClient.SearchAsync(request, cancellationToken);
+            var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
+
+            return await client.SearchAsync(request, cancellationToken);
         }
 
         public async Task<AutocompleteResponse> AutocompleteAsync(string query, CancellationToken cancellationToken = default)
@@ -255,7 +265,9 @@ namespace BaGet.Protocol
                 IncludeSemVer2 = true,
             };
 
-            return await _searchClient.AutocompleteAsync(request, cancellationToken);
+            var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
+
+            return await client.AutocompleteAsync(request, cancellationToken);
         }
 
         public async Task<AutocompleteResponse> AutocompleteAsync(string query, int skip, int take, CancellationToken cancellationToken = default)
@@ -269,38 +281,9 @@ namespace BaGet.Protocol
                 IncludeSemVer2 = true,
             };
 
-            return await _searchClient.AutocompleteAsync(request, cancellationToken);
+            var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
+
+            return await client.AutocompleteAsync(request, cancellationToken);
         }
-
-        /// <summary>
-        /// Create a client to interact with the NuGet Service Index resource.
-        /// See: https://docs.microsoft.com/en-us/nuget/api/service-index
-        /// </summary>
-        /// <returns>A client to interact with the NuGet Service Index resource.</returns>
-        public IServiceIndexResource CreateServiceIndexClient()
-            => _serviceIndexClient;
-
-        /// <summary>
-        /// Create a client to interact with the NuGet Package Content resource.
-        /// See: https://docs.microsoft.com/en-us/nuget/api/package-base-address-resource
-        /// </summary>
-        /// <returns>A client to interact with the NuGet Package Content resource.</returns>
-        public IPackageContentResource CreatePackageContentClient()
-            => _packageContentClient;
-
-        /// <summary>
-        /// Create a client to interact with the NuGet Package Metadata resource.
-        /// See: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
-        /// </summary>
-        /// <returns>A client to interact with the NuGet Package Metadata resource.</returns>
-        public IPackageMetadataResource CreatePackageMetadataClient()
-            => _packageMetadataClient;
-
-        /// <summary>
-        /// Create a client to interact with the NuGet Search resource.
-        /// </summary>
-        /// <returns>A client to interact with the NuGet Search resource.</returns>
-        public ISearchResource CreateSearchClient()
-            => _searchClient;
     }
 }

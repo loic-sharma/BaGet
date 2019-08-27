@@ -1,23 +1,23 @@
 using System.Threading.Tasks;
+using BaGet.Protocol.Internal;
 using NuGet.Versioning;
 using Xunit;
 
 namespace BaGet.Protocol.Tests
 {
-    public class PackageMetadataClientTests
+    public class PackageMetadataClientTests : IClassFixture<ProtocolFixture>
     {
-        private readonly IPackageMetadataResource _target;
-
         public static readonly NuGetVersion NewtonsoftJsonLowerVersion = NuGetVersion.Parse("3.5.8");
         public static readonly NuGetVersion NewtonsoftJsonUpperVersion = NuGetVersion.Parse("12.0.1-beta2");
 
         public static readonly NuGetVersion FakePage1LowerVersion = NuGetVersion.Parse("1.0.0-alpha-10");
         public static readonly NuGetVersion FakePage1UpperVersion = NuGetVersion.Parse("1.66.1");
 
-        public PackageMetadataClientTests()
+        private readonly PackageMetadataClient _target;
+
+        public PackageMetadataClientTests(ProtocolFixture fixture)
         {
-            _target = new NuGetClient("https://api.nuget.org/v3/index.json")
-                .CreatePackageMetadataClient();
+            _target = fixture.MetadataClient;
         }
 
         [Fact]

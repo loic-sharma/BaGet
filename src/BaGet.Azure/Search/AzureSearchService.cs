@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BaGet.Core;
 using BaGet.Core.Entities;
 using BaGet.Core.Indexing;
 using BaGet.Core.Search;
@@ -20,13 +21,13 @@ namespace BaGet.Azure.Search
     {
         private readonly BatchIndexer _indexer;
         private readonly SearchIndexClient _searchClient;
-        private readonly IBaGetUrlGenerator _url;
+        private readonly IUrlGenerator _url;
         private readonly IFrameworkCompatibilityService _frameworks;
 
         public AzureSearchService(
             BatchIndexer indexer,
             SearchIndexClient searchClient,
-            IBaGetUrlGenerator url,
+            IUrlGenerator url,
             IFrameworkCompatibilityService frameworks)
         {
             _indexer = indexer ?? throw new ArgumentNullException(nameof(indexer));

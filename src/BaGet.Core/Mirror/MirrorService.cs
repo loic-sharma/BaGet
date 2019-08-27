@@ -19,18 +19,18 @@ namespace BaGet.Core.Mirror
     public class MirrorService : IMirrorService
     {
         private readonly IPackageService _localPackages;
-        private readonly INuGetClient _upstream;
+        private readonly INuGetClient _upstreamClient;
         private readonly IPackageIndexingService _indexer;
         private readonly ILogger<MirrorService> _logger;
 
         public MirrorService(
             IPackageService localPackages,
-            INuGetClient upstream,
+            INuGetClient upstreamClient,
             IPackageIndexingService indexer,
             ILogger<MirrorService> logger)
         {
             _localPackages = localPackages ?? throw new ArgumentNullException(nameof(localPackages));
-            _upstream = upstream ?? throw new ArgumentNullException(nameof(upstream));
+            _upstreamClient = upstreamClient ?? throw new ArgumentNullException(nameof(upstreamClient));
             _indexer = indexer ?? throw new ArgumentNullException(nameof(indexer));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -39,7 +39,7 @@ namespace BaGet.Core.Mirror
             string id,
             CancellationToken cancellationToken)
         {
-            var upstreamVersions = await _upstream.ListPackageVersions(id, includeUnlisted: true, cancellationToken);
+            var upstreamVersions = await _upstreamClient.ListPackageVersions(id, includeUnlisted: true, cancellationToken);
             if (!upstreamVersions.Any())
             {
                 return null;
@@ -54,7 +54,7 @@ namespace BaGet.Core.Mirror
 
         public async Task<IReadOnlyList<Package>> FindPackagesOrNullAsync(string id, CancellationToken cancellationToken)
         {
-            var items = await _upstream.GetPackageMetadataAsync(id, cancellationToken);
+            var items = await _upstreamClient.GetPackageMetadataAsync(id, cancellationToken);
             if (!items.Any())
             {
                 return null;
@@ -204,19 +204,8 @@ namespace BaGet.Core.Mirror
 
             try
             {
-                var contentClient = _upstream.CreatePackageContentClient();
-                using (var stream = await contentClient.GetPackageContentStreamOrNullAsync(id, version, cancellationToken))
+                using (var stream = await _upstreamClient.GetPackageStreamAsync(id, version, cancellationToken))
                 {
-                    if (stream == null)
-                    {
-                        _logger.LogWarning(
-                            "Failed to download package {PackageId} {PackageVersion}",
-                            id,
-                            version);
-
-                        return;
-                    }
-
                     packageStream = await stream.AsTemporaryFileStreamAsync();
                 }
 
@@ -233,6 +222,15 @@ namespace BaGet.Core.Mirror
                     version,
                     result);
             }
+            catch (PackageNotFoundException)
+            {
+                _logger.LogWarning(
+                    "Failed to download package {PackageId} {PackageVersion}",
+                    id,
+                    version);
+
+                return;
+            }
             catch (Exception e)
             {
                 _logger.LogError(
@@ -240,7 +238,9 @@ namespace BaGet.Core.Mirror
                     "Failed to mirror package {PackageId} {PackageVersion}",
                     id,
                     version);
-
+            }
+            finally
+            {
                 packageStream?.Dispose();
             }
         }

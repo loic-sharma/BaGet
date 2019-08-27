@@ -15,9 +15,9 @@ namespace BaGet.Core.Search
     {
         private readonly IContext _context;
         private readonly IFrameworkCompatibilityService _frameworks;
-        private readonly IBaGetUrlGenerator _url;
+        private readonly IUrlGenerator _url;
 
-        public DatabaseSearchService(IContext context, IFrameworkCompatibilityService frameworks, IBaGetUrlGenerator url)
+        public DatabaseSearchService(IContext context, IFrameworkCompatibilityService frameworks, IUrlGenerator url)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _frameworks = frameworks ?? throw new ArgumentNullException(nameof(frameworks));

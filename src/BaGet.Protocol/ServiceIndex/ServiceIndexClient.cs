@@ -3,31 +3,33 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BaGet.Protocol
+namespace BaGet.Protocol.Internal
 {
     /// <summary>
     /// Fetches the service index from an upstream package source.
     /// </summary>
-    internal class ServiceIndexClient : IServiceIndexResource
+    public class ServiceIndexClient : IServiceIndexResource
     {
         private readonly HttpClient _httpClient;
-        private readonly string _indexUrl;
+        private readonly string _serviceIndexUrl;
 
         /// <summary>
         /// Create a service index for the upstream source.
         /// </summary>
         /// <param name="httpClient">The HTTP client used to send requests.</param>
-        /// <param name="indexUrl">The upstream source's service index URL.</param>
-        public ServiceIndexClient(HttpClient httpClient, string indexUrl)
+        /// <param name="serviceIndexUrl">The NuGet server's service index URL.</param>
+        public ServiceIndexClient(HttpClient httpClient, string serviceIndexUrl)
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-            _indexUrl = indexUrl ?? throw new ArgumentNullException(nameof(indexUrl));
+            _serviceIndexUrl = serviceIndexUrl ?? throw new ArgumentNullException(nameof(serviceIndexUrl));
         }
 
         /// <inheritdoc />
         public async Task<ServiceIndexResponse> GetAsync(CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.DeserializeUrlAsync<ServiceIndexResponse>(_indexUrl, cancellationToken);
+            var response = await _httpClient.DeserializeUrlAsync<ServiceIndexResponse>(
+                _serviceIndexUrl,
+                cancellationToken);
 
             return response.GetResultOrThrow();
         }

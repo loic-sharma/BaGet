@@ -1,16 +1,16 @@
 using System.Threading.Tasks;
+using BaGet.Protocol.Internal;
 using Xunit;
 
 namespace BaGet.Protocol.Tests
 {
-    public class ServiceIndexClientTests
+    public class ServiceIndexClientTests : IClassFixture<ProtocolFixture>
     {
-        private readonly IServiceIndexResource _target;
+        private readonly ServiceIndexClient _target;
 
-        public ServiceIndexClientTests()
+        public ServiceIndexClientTests(ProtocolFixture fixture)
         {
-            _target = new NuGetClient("https://api.nuget.org/v3/index.json")
-                .CreateServiceIndexClient();
+            _target = fixture.ServiceIndexClient;
         }
 
         [Fact]

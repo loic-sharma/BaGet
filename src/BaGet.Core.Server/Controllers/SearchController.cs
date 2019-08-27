@@ -11,7 +11,7 @@ namespace BaGet.Controllers
     {
         private readonly IBaGetSearchResource _searchService;
 
-        public SearchController(IBaGetSearchResource searchService, IBaGetUrlGenerator url)
+        public SearchController(IBaGetSearchResource searchService)
         {
             _searchService = searchService ?? throw new ArgumentNullException(nameof(searchService));
         }
