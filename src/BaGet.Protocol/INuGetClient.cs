@@ -7,7 +7,7 @@ using NuGet.Versioning;
 namespace BaGet.Protocol
 {
     /// <summary>
-    /// A NuGet client that interact with a NuGet server.
+    /// A NuGet client that interacts with a NuGet server.
     /// </summary>
     public interface INuGetClient
     {
@@ -15,7 +15,7 @@ namespace BaGet.Protocol
         /// Download a package (.nupkg), or throws if the package does not exist.
         /// </summary>
         /// <param name="packageId">The package ID.</param>
-        /// <param name="packageVersion">The package's version.</param>
+        /// <param name="packageVersion">The package version.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The package's content stream. The stream may not be seekable.</returns>
         /// <exception cref="PackageNotFoundException">
@@ -30,7 +30,7 @@ namespace BaGet.Protocol
         /// Download a package's manifest (.nuspec), or throws if the package does not exist.
         /// </summary>
         /// <param name="packageId">The package ID.</param>
-        /// <param name="packageVersion">The package's version.</param>
+        /// <param name="packageVersion">The package version.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The package's manifest stream. The stream may not be seekable.</returns>
         /// <exception cref="PackageNotFoundException">
@@ -46,7 +46,7 @@ namespace BaGet.Protocol
         /// </summary>
         /// <param name="packageId">The package ID.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
-        /// <returns>The package's listed versions, or an empty list if the package does not exist.</returns>
+        /// <returns>The package's listed versions, if any.</returns>
         Task<IReadOnlyList<NuGetVersion>> ListPackageVersions(
             string packageId,
             CancellationToken cancellationToken);
