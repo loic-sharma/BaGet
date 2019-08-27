@@ -90,8 +90,8 @@ namespace BaGet.Protocol
                         {
                             ServiceIndexClient = serviceIndexClient,
                             PackageContentClient = contentClient,
-                            PackageMetadataClient = null,
-                            SearchClient = null,
+                            PackageMetadataClient = metadataClient,
+                            SearchClient = searchClient,
                         };
                     }
                 }
