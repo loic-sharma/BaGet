@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core;
 using BaGet.Core.Entities;
 using BaGet.Core.Indexing;
 using BaGet.Core.Search;
-using BaGet.Core.ServiceIndex;
 using BaGet.Protocol;
 using Microsoft.Azure.Search;
 using NuGet.Versioning;
@@ -41,25 +41,47 @@ namespace BaGet.Azure.Search
             await _indexer.IndexAsync(package.Id);
         }
 
-        public async Task<SearchResponse> SearchAsync(SearchRequest request, CancellationToken cancellationToken = default)
+        public async Task<SearchResponse> SearchAsync(
+            string query,
+            int skip = 0,
+            int take = 20,
+            bool includePrerelease = true,
+            bool includeSemVer2 = true,
+            CancellationToken cancellationToken = default)
         {
-            return await SearchAsync(BaGetSearchRequest.FromSearchRequest(request), cancellationToken);
+            return await SearchAsync(
+                query,
+                skip,
+                take,
+                includePrerelease,
+                includeSemVer2,
+                packageType: null,
+                framework: null,
+                cancellationToken);
         }
 
-        public async Task<SearchResponse> SearchAsync(BaGetSearchRequest request, CancellationToken cancellationToken = default)
+        public async Task<SearchResponse> SearchAsync(
+            string query,
+            int skip = 0,
+            int take = 20,
+            bool includePrerelease = true,
+            bool includeSemVer2 = true,
+            string packageType = null,
+            string framework = null,
+            CancellationToken cancellationToken = default)
         {
-            var query = BuildSeachQuery(request);
-            var filter = BuildSearchFilter(request);
+            var searchText = BuildSeachQuery(query, packageType, framework);
+            var filter = BuildSearchFilter(includePrerelease, includeSemVer2);
             var parameters = new SearchParameters
             {
                 IncludeTotalResultCount = true,
                 QueryType = QueryType.Full,
-                Skip = request.Skip,
-                Top = request.Take,
+                Skip = skip,
+                Top = take,
                 Filter = filter
             };
 
-            var response = await _searchClient.Documents.SearchAsync<PackageDocument>(query, parameters, cancellationToken: cancellationToken);
+            var response = await _searchClient.Documents.SearchAsync<PackageDocument>(searchText, parameters, cancellationToken: cancellationToken);
 
             var results = new List<SearchResult>();
 
@@ -104,19 +126,27 @@ namespace BaGet.Azure.Search
                 SearchContext.Default(_url.GetPackageMetadataResourceUrl()));
         }
 
-        public async Task<AutocompleteResponse> AutocompleteAsync(AutocompleteRequest request, CancellationToken cancellationToken = default)
+        public async Task<AutocompleteResponse> AutocompleteAsync(
+            string query,
+            AutocompleteType type = AutocompleteType.PackageIds,
+            int skip = 0,
+            int take = 20,
+            bool includePrerelease = true,
+            bool includeSemVer2 = true,
+            CancellationToken cancellationToken = default)
         {
             // TODO: Do a prefix search on the package id field.
             // TODO: Support versions autocomplete.
+            // TODO: Support prerelease and semver2 filters.
             // See: https://github.com/loic-sharma/BaGet/issues/291
             var parameters = new SearchParameters
             {
                 IncludeTotalResultCount = true,
-                Skip = request.Skip,
-                Top = request.Take,
+                Skip = skip,
+                Top = take,
             };
 
-            var response = await _searchClient.Documents.SearchAsync<PackageDocument>(request.Query, parameters, cancellationToken: cancellationToken);
+            var response = await _searchClient.Documents.SearchAsync<PackageDocument>(query, parameters, cancellationToken: cancellationToken);
             var results = response.Results
                 .Select(r => r.Document.Id)
                 .ToList()
@@ -125,16 +155,20 @@ namespace BaGet.Azure.Search
             return new AutocompleteResponse(response.Count.Value, results, AutocompleteContext.Default);
         }
 
-        public async Task<DependentsResponse> FindDependentsAsync(DependentsRequest request, CancellationToken cancellationToken = default)
+        public async Task<DependentsResponse> FindDependentsAsync(
+            string packageId,
+            int skip = 0,
+            int take = 20,
+            CancellationToken cancellationToken = default)
         {
             // TODO: Escape packageId.
-            var query = $"dependencies:{request.PackageId.ToLowerInvariant()}";
+            var query = $"dependencies:{packageId.ToLowerInvariant()}";
             var parameters = new SearchParameters
             {
                 IncludeTotalResultCount = true,
                 QueryType = QueryType.Full,
-                Skip = request.Skip,
-                Top = request.Take,
+                Skip = skip,
+                Top = take,
             };
 
             var response = await _searchClient.Documents.SearchAsync<PackageDocument>(query, parameters, cancellationToken: cancellationToken);
@@ -146,39 +180,44 @@ namespace BaGet.Azure.Search
             return new DependentsResponse(response.Count.Value, results);
         }
 
-        private string BuildSeachQuery(BaGetSearchRequest request)
+        private string BuildSeachQuery(string query, string packageType, string framework)
         {
-            var query = string.Empty;
-            if (!string.IsNullOrEmpty(request.Query))
+            var queryBuilder = new StringBuilder();
+
+            if (!string.IsNullOrEmpty(query))
             {
-                query = request.Query.TrimEnd().TrimEnd('*') + '*';
+                queryBuilder.Append(query.TrimEnd().TrimEnd('*'));
+                queryBuilder.Append('*');
             }
 
-            if (!string.IsNullOrEmpty(request.PackageType))
+            if (!string.IsNullOrEmpty(packageType))
             {
-                query = $"+packageTypes:{request.PackageType} {query}";
+                queryBuilder.Append(" +packageTypes:");
+                queryBuilder.Append(packageType);
             }
 
-            if (!string.IsNullOrEmpty(request.Framework))
+            if (!string.IsNullOrEmpty(framework))
             {
-                var frameworks = _frameworks.FindAllCompatibleFrameworks(request.Framework);
+                var frameworks = _frameworks.FindAllCompatibleFrameworks(framework);
 
-                query = $"+frameworks:({string.Join(" ", frameworks)}) {query}";
+                queryBuilder.Append(" +frameworks:(");
+                queryBuilder.Append(string.Join(" ", frameworks));
+                queryBuilder.Append(')');
             }
 
-            return query;
+            return queryBuilder.ToString();
         }
 
-        private string BuildSearchFilter(BaGetSearchRequest request)
+        private string BuildSearchFilter(bool includePrerelease, bool includeSemVer2)
         {
             var searchFilters = SearchFilters.Default;
 
-            if (request.IncludePrerelease)
+            if (includePrerelease)
             {
                 searchFilters |= SearchFilters.IncludePrerelease;
             }
 
-            if (request.IncludeSemVer2)
+            if (includeSemVer2)
             {
                 searchFilters |= SearchFilters.IncludeSemVer2;
             }

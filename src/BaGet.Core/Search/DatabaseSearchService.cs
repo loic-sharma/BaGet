@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
 using BaGet.Core.Indexing;
-using BaGet.Core.ServiceIndex;
 using BaGet.Protocol;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,15 +28,45 @@ namespace BaGet.Core.Search
             return Task.CompletedTask;
         }
 
-        public async Task<SearchResponse> SearchAsync(SearchRequest request, CancellationToken cancellationToken)
+        public async Task<SearchResponse> SearchAsync(
+            string query,
+            int skip = 0,
+            int take = 20,
+            bool includePrerelease = true,
+            bool includeSemVer2 = true,
+            CancellationToken cancellationToken = default)
         {
-            return await SearchAsync(BaGetSearchRequest.FromSearchRequest(request), cancellationToken);
+            return await SearchAsync(
+                query,
+                skip,
+                take,
+                includePrerelease,
+                includeSemVer2,
+                packageType: null,
+                framework: null,
+                cancellationToken: cancellationToken);
         }
 
-        public async Task<SearchResponse> SearchAsync(BaGetSearchRequest request, CancellationToken cancellationToken)
+        public async Task<SearchResponse> SearchAsync(
+            string query,
+            int skip = 0,
+            int take = 20,
+            bool includePrerelease = true,
+            bool includeSemVer2 = true,
+            string packageType = null,
+            string framework = null,
+            CancellationToken cancellationToken = default)
         {
             var result = new List<SearchResult>();
-            var packages = await SearchImplAsync(request, cancellationToken);
+            var packages = await SearchImplAsync(
+                query,
+                skip,
+                take,
+                includePrerelease,
+                includeSemVer2,
+                packageType,
+                framework,
+                cancellationToken);
 
             foreach (var package in packages)
             {
@@ -71,22 +100,31 @@ namespace BaGet.Core.Search
                 SearchContext.Default(_url.GetPackageMetadataResourceUrl()));
         }
 
-        public async Task<AutocompleteResponse> AutocompleteAsync(AutocompleteRequest request, CancellationToken cancellationToken)
+        public async Task<AutocompleteResponse> AutocompleteAsync(
+            string query,
+            AutocompleteType type = AutocompleteType.PackageIds,
+            int skip = 0,
+            int take = 20,
+            bool includePrerelease = true,
+            bool includeSemVer2 = true,
+            CancellationToken cancellationToken = default)
         {
             // TODO: Support versions autocomplete.
             // See: https://github.com/loic-sharma/BaGet/issues/291
+            if (type != AutocompleteType.PackageIds) throw new NotImplementedException();
+
             IQueryable<Package> search = _context.Packages;
 
-            if (!string.IsNullOrEmpty(request.Query))
+            if (!string.IsNullOrEmpty(query))
             {
-                var query = request.Query.ToLower();
+                query = query.ToLower();
                 search = search.Where(p => p.Id.ToLower().Contains(query));
             }
 
             var results = await search.Where(p => p.Listed)
                 .OrderByDescending(p => p.Downloads)
-                .Skip(request.Skip)
-                .Take(request.Take)
+                .Skip(skip)
+                .Take(take)
                 .Select(p => p.Id)
                 .Distinct()
                 .ToListAsync(cancellationToken);
@@ -97,15 +135,19 @@ namespace BaGet.Core.Search
                 AutocompleteContext.Default);
         }
 
-        public async Task<DependentsResponse> FindDependentsAsync(DependentsRequest request, CancellationToken cancellationToken)
+        public async Task<DependentsResponse> FindDependentsAsync(
+            string packageId,
+            int skip = 0,
+            int take = 20,
+            CancellationToken cancellationToken = default)
         {
             var results = await _context
                 .Packages
                 .Where(p => p.Listed)
                 .OrderByDescending(p => p.Downloads)
-                .Where(p => p.Dependencies.Any(d => d.Id == request.PackageId))
-                .Skip(request.Skip)
-                .Take(request.Take)
+                .Where(p => p.Dependencies.Any(d => d.Id == packageId))
+                .Skip(skip)
+                .Take(take)
                 .Select(p => p.Id)
                 .Distinct()
                 .ToListAsync(cancellationToken);
@@ -114,31 +156,37 @@ namespace BaGet.Core.Search
         }
 
         private async Task<List<IGrouping<string, Package>>> SearchImplAsync(
-            BaGetSearchRequest request,
+            string query,
+            int skip,
+            int take,
+            bool includePrerelease,
+            bool includeSemVer2,
+            string packageType,
+            string framework,
             CancellationToken cancellationToken)
         {
-            var frameworks = GetCompatibleFrameworksOrNull(request.Framework);
+            var frameworks = GetCompatibleFrameworksOrNull(framework);
             var search = (IQueryable<Package>)_context.Packages.Where(p => p.Listed);
 
-            if (!string.IsNullOrEmpty(request.Query))
+            if (!string.IsNullOrEmpty(query))
             {
-                var query = request.Query.ToLower();
+                query = query.ToLower();
                 search = search.Where(p => p.Id.ToLower().Contains(query));
             }
 
-            if (!request.IncludePrerelease)
+            if (!includePrerelease)
             {
                 search = search.Where(p => !p.IsPrerelease);
             }
 
-            if (!request.IncludeSemVer2)
+            if (!includeSemVer2)
             {
                 search = search.Where(p => p.SemVerLevel != SemVerLevel.SemVer2);
             }
 
-            if (!string.IsNullOrEmpty(request.PackageType))
+            if (!string.IsNullOrEmpty(packageType))
             {
-                search = search.Where(p => p.PackageTypes.Any(t => t.Name == request.PackageType));
+                search = search.Where(p => p.PackageTypes.Any(t => t.Name == packageType));
             }
 
             if (frameworks != null)
@@ -149,8 +197,8 @@ namespace BaGet.Core.Search
             var packageIds = search.Select(p => p.Id)
                 .OrderBy(id => id)
                 .Distinct()
-                .Skip(request.Skip)
-                .Take(request.Take);
+                .Skip(skip)
+                .Take(take);
 
             // This query MUST fetch all versions for each package that matches the search,
             // otherwise the results for a package's latest version may be incorrect.

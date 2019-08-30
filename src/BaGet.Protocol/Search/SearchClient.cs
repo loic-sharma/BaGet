@@ -31,10 +31,17 @@ namespace BaGet.Protocol.Internal
         }
 
         /// <inheritdoc />
-        public async Task<AutocompleteResponse> AutocompleteAsync(AutocompleteRequest request, CancellationToken cancellationToken = default)
+        public async Task<AutocompleteResponse> AutocompleteAsync(
+            string query,
+            AutocompleteType type = AutocompleteType.PackageIds,
+            int skip = 0,
+            int take = 20,
+            bool includePrerelease = true,
+            bool includeSemVer2 = true,
+            CancellationToken cancellationToken = default)
         {
-            var param = (request.Type == AutocompleteRequestType.PackageIds) ? "q" : "id";
-            var url = AddSearchQueryString(_autocompleteUrl, request, param);
+            var param = (type == AutocompleteType.PackageIds) ? "q" : "id";
+            var url = AddSearchQueryString(_autocompleteUrl, query, skip, take, includePrerelease, includeSemVer2, param);
 
             var response = await _httpClient.DeserializeUrlAsync<AutocompleteResponse>(url, cancellationToken);
 
@@ -42,27 +49,40 @@ namespace BaGet.Protocol.Internal
         }
 
         /// <inheritdoc />
-        public async Task<SearchResponse> SearchAsync(SearchRequest request, CancellationToken cancellationToken = default)
+        public async Task<SearchResponse> SearchAsync(
+            string query,
+            int skip = 0,
+            int take = 20,
+            bool includePrerelease = true,
+            bool includeSemVer2 = true,
+            CancellationToken cancellationToken = default)
         {
-            var url = AddSearchQueryString(_searchUrl, request, "q");
+            var url = AddSearchQueryString(_searchUrl, query, skip, take, includePrerelease, includeSemVer2, "q");
 
             var response = await _httpClient.DeserializeUrlAsync<SearchResponse>(url, cancellationToken);
 
             return response.GetResultOrThrow();
         }
 
-        private string AddSearchQueryString(string uri, SearchRequest request, string queryParamName)
+        private string AddSearchQueryString(
+            string uri,
+            string query,
+            int skip,
+            int take,
+            bool includePrerelease,
+            bool includeSemVer2,
+            string queryParamName)
         {
             var queryString = new Dictionary<string, string>();
 
-            if (request.Skip != 0) queryString["skip"] = request.Skip.ToString();
-            if (request.Take != 0) queryString["take"] = request.Take.ToString();
-            if (request.IncludePrerelease) queryString["prerelease"] = true.ToString();
-            if (request.IncludeSemVer2) queryString["semVerLevel"] = "2.0.0";
+            if (skip != 0) queryString["skip"] = skip.ToString();
+            if (take != 0) queryString["take"] = take.ToString();
+            if (includePrerelease) queryString["prerelease"] = true.ToString();
+            if (includeSemVer2) queryString["semVerLevel"] = "2.0.0";
 
-            if (!string.IsNullOrEmpty(request.Query))
+            if (!string.IsNullOrEmpty(query))
             {
-                queryString[queryParamName] = request.Query;
+                queryString[queryParamName] = query;
             }
 
             return AddQueryString(uri, queryString);
