@@ -22,12 +22,23 @@ namespace BaGet.Core.Search
         private static readonly Task<SearchResponse> EmptySearchResponseTask =
             Task.FromResult(new SearchResponse(0, new List<SearchResult>()));
 
-        public Task<AutocompleteResponse> AutocompleteAsync(AutocompleteRequest request, CancellationToken cancellationToken = default)
+        public Task<AutocompleteResponse> AutocompleteAsync(
+            string query,
+            AutocompleteType type = AutocompleteType.PackageIds,
+            int skip = 0,
+            int take = 20,
+            bool includePrerelease = true,
+            bool includeSemVer2 = true,
+            CancellationToken cancellationToken = default)
         {
             return EmptyAutocompleteResponseTask;
         }
 
-        public Task<DependentsResponse> FindDependentsAsync(DependentsRequest request, CancellationToken cancellationToken = default)
+        public Task<DependentsResponse> FindDependentsAsync(
+            string packageId,
+            int skip = 0,
+            int take = 20,
+            CancellationToken cancellationToken = default)
         {
             return EmptyDependentsResponseTask;
         }
@@ -37,12 +48,26 @@ namespace BaGet.Core.Search
             return Task.CompletedTask;
         }
 
-        public Task<SearchResponse> SearchAsync(BaGetSearchRequest request, CancellationToken cancellationToken = default)
+        public Task<SearchResponse> SearchAsync(
+            string query,
+            int skip = 0,
+            int take = 20,
+            bool includePrerelease = true,
+            bool includeSemVer2 = true,
+            string packageType = null,
+            string framework = null,
+            CancellationToken cancellationToken = default)
         {
             return EmptySearchResponseTask;
         }
 
-        public Task<SearchResponse> SearchAsync(SearchRequest request, CancellationToken cancellationToken = default)
+        public Task<SearchResponse> SearchAsync(
+            string query,
+            int skip = 0,
+            int take = 20,
+            bool includePrerelease = true,
+            bool includeSemVer2 = true,
+            CancellationToken cancellationToken = default)
         {
             return EmptySearchResponseTask;
         }

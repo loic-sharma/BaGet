@@ -163,7 +163,5 @@ namespace BaGet.Protocol
             int skip,
             int take,
             CancellationToken cancellationToken = default);
-
-
     }
 }
