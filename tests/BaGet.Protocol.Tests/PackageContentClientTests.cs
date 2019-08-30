@@ -1,26 +1,17 @@
 using System;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
+using BaGet.Protocol.Internal;
 using Xunit;
 
 namespace BaGet.Protocol.Tests
 {
-    public class PackageContentTests
+    public class PackageContentTests : IClassFixture<ProtocolFixture>
     {
         private readonly PackageContentClient _target;
 
-        public PackageContentTests()
+        public PackageContentTests(ProtocolFixture fixture)
         {
-            var httpClient = new HttpClient(new HttpClientHandler
-            {
-                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
-            });
-
-            var serviceIndex = new ServiceIndexClient(httpClient, "https://api.nuget.org/v3/index.json");
-            var urlGeneratorFactory = new UrlGeneratorClientFactory(serviceIndex);
-
-            _target = new PackageContentClient(urlGeneratorFactory, httpClient);
+            _target = fixture.ContentClient;
         }
 
         [Fact]

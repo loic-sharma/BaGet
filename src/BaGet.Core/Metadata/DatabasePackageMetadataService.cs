@@ -16,9 +16,9 @@ namespace BaGet.Core.Metadata
     {
         private readonly IMirrorService _mirror;
         private readonly IPackageService _packages;
-        private readonly IBaGetUrlGenerator _url;
+        private readonly IUrlGenerator _url;
 
-        public DatabasePackageMetadataService(IMirrorService mirror, IPackageService packages, IBaGetUrlGenerator url)
+        public DatabasePackageMetadataService(IMirrorService mirror, IPackageService packages, IUrlGenerator url)
         {
             _mirror = mirror ?? throw new ArgumentNullException(nameof(mirror));
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));
@@ -47,7 +47,7 @@ namespace BaGet.Core.Metadata
             // TODO: Paging of registration items.
             // "Un-paged" example: https://api.nuget.org/v3/registration3/newtonsoft.json/index.json
             // Paged example: https://api.nuget.org/v3/registration3/fake/index.json
-            return new RegistrationIndexResponse(
+            return new BaGetRegistrationIndexResponse(
                 type: RegistrationIndexResponse.DefaultType,
                 count: packages.Count,
                 totalDownloads: packages.Sum(p => p.Downloads),
@@ -76,7 +76,7 @@ namespace BaGet.Core.Metadata
                 return null;
             }
 
-            return new RegistrationLeafResponse(
+            return new BaGetRegistrationLeafResponse(
                 type: RegistrationLeafResponse.DefaultType,
                 registrationUri: _url.GetRegistrationLeafUrl(id, version),
                 listed: package.Listed,
@@ -102,7 +102,7 @@ namespace BaGet.Core.Metadata
         private RegistrationIndexPageItem ToRegistrationIndexPageItem(Package package) =>
             new RegistrationIndexPageItem(
                 leafUrl: _url.GetRegistrationLeafUrl(package.Id, package.Version),
-                packageMetadata: new PackageMetadata(
+                packageMetadata: new BaGetPackageMetadata(
                     catalogUri: _url.GetRegistrationLeafUrl(package.Id, package.Version),
                     packageId: package.Id,
                     version: package.Version,

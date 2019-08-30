@@ -15,14 +15,14 @@ namespace BaGet.Core.Tests.Services
     {
         private readonly Mock<IPackageService> _packages;
         private readonly Mock<IPackageStorageService> _storage;
-        private readonly Mock<IBaGetSearchService> _search;
+        private readonly Mock<IBaGetSearchResource> _search;
         private readonly PackageIndexingService _target;
 
         public PackageIndexingServiceTests()
         {
             _packages = new Mock<IPackageService>();
             _storage = new Mock<IPackageStorageService>();
-            _search = new Mock<IBaGetSearchService>();
+            _search = new Mock<IBaGetSearchResource>();
 
             _target = new PackageIndexingService(
                 _packages.Object,

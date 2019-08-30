@@ -2,12 +2,13 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
-using BaGet.AWS;
-using BaGet.AWS.Configuration;
-using BaGet.AWS.Extensions;
+using BaGet.Aws;
+using BaGet.Aws.Configuration;
+using BaGet.Aws.Extensions;
 using BaGet.Azure.Configuration;
 using BaGet.Azure.Extensions;
 using BaGet.Azure.Search;
+using BaGet.Core;
 using BaGet.Core.Authentication;
 using BaGet.Core.Configuration;
 using BaGet.Core.Content;
@@ -24,9 +25,9 @@ using BaGet.Database.MySql;
 using BaGet.Database.PostgreSql;
 using BaGet.Database.Sqlite;
 using BaGet.Database.SqlServer;
-using BaGet.GCP.Configuration;
-using BaGet.GCP.Extensions;
-using BaGet.GCP.Services;
+using BaGet.Gcp.Configuration;
+using BaGet.Gcp.Extensions;
+using BaGet.Gcp.Services;
 using BaGet.Protocol;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -62,6 +63,7 @@ namespace BaGet.Extensions
 
             services.AddBaGetContext();
 
+            services.AddTransient<IUrlGenerator, BaGetUrlGenerator>();
             services.AddTransient<IPackageService, PackageService>();
             services.AddTransient<IPackageIndexingService, PackageIndexingService>();
             services.AddTransient<IPackageDeletionService, PackageDeletionService>();
@@ -69,7 +71,6 @@ namespace BaGet.Extensions
             services.AddTransient<IBaGetServiceIndex, BaGetServiceIndex>();
             services.AddTransient<IBaGetPackageContentService, DatabasePackageContentService>();
             services.AddTransient<IBaGetPackageMetadataService, DatabasePackageMetadataService>();
-            services.AddTransient<IBaGetUrlGenerator, BaGetUrlGenerator>();
             services.AddSingleton<IFrameworkCompatibilityService, FrameworkCompatibilityService>();
             services.AddMirrorServices();
 
@@ -210,7 +211,7 @@ namespace BaGet.Extensions
 
         public static IServiceCollection AddSearchProviders(this IServiceCollection services)
         {
-            services.AddTransient<IBaGetSearchService>(provider =>
+            services.AddTransient<IBaGetSearchResource>(provider =>
             {
                 var options = provider.GetRequiredService<IOptionsSnapshot<SearchOptions>>();
 
@@ -261,16 +262,13 @@ namespace BaGet.Extensions
                 }
             });
 
-            services.AddTransient<IPackageContentService, PackageContentClient>();
-            services.AddTransient<IPackageMetadataService, PackageMetadataClient>();
-            services.AddTransient<IUrlGeneratorFactory, UrlGeneratorClientFactory>();
-
-            services.AddSingleton<IServiceIndex>(provider =>
+            services.AddSingleton<INuGetClient, NuGetClient>();
+            services.AddSingleton<INuGetClientFactory>(provider =>
             {
                 var httpClient = provider.GetRequiredService<HttpClient>();
                 var options = provider.GetRequiredService<IOptions<MirrorOptions>>();
 
-                return new ServiceIndexClient(
+                return new NuGetClientFactory(
                     httpClient,
                     options.Value.PackageSource.ToString());
             });

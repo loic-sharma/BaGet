@@ -5,32 +5,34 @@ using System.Threading;
 using System.Threading.Tasks;
 using NuGet.Versioning;
 
-namespace BaGet.Protocol
+namespace BaGet.Protocol.Internal
 {
     /// <summary>
     /// The client to interact with an upstream source's Package Metadata resource.
     /// </summary>
-    public class PackageMetadataClient : IPackageMetadataService
+    public class PackageMetadataClient : IPackageMetadataResource
     {
-        private readonly IUrlGeneratorFactory _urlGenerator;
         private readonly HttpClient _httpClient;
+        private readonly string _packageMetadataUrl;
 
         /// <summary>
         /// Create a new Package Metadata client.
         /// </summary>
-        /// <param name="urlGenerator">The service to generate URLs to upstream resources.</param>
         /// <param name="httpClient">The HTTP client used to send requests.</param>
-        public PackageMetadataClient(IUrlGeneratorFactory urlGenerator, HttpClient httpClient)
+        /// <param name="registrationBaseUrl">The NuGet server's registration resource URL.</param>
+        public PackageMetadataClient(HttpClient httpClient, string registrationBaseUrl)
         {
-            _urlGenerator = urlGenerator ?? throw new ArgumentNullException(nameof(urlGenerator));
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            _packageMetadataUrl = registrationBaseUrl.TrimEnd('/')
+                ?? throw new ArgumentNullException(nameof(registrationBaseUrl));
         }
 
         /// <inheritdoc />
-        public async Task<RegistrationIndexResponse> GetRegistrationIndexOrNullAsync(string id, CancellationToken cancellationToken = default)
+        public async Task<RegistrationIndexResponse> GetRegistrationIndexOrNullAsync(
+            string packageId,
+            CancellationToken cancellationToken = default)
         {
-            var urlGenerator = await _urlGenerator.CreateAsync();
-            var url = urlGenerator.GetRegistrationIndexUrl(id);
+            var url = $"{_packageMetadataUrl}/{packageId.ToLowerInvariant()}/index.json";
             var response = await _httpClient.DeserializeUrlAsync<RegistrationIndexResponse>(url, cancellationToken);
 
             if (response.StatusCode == HttpStatusCode.NotFound)
@@ -43,13 +45,16 @@ namespace BaGet.Protocol
 
         /// <inheritdoc />
         public async Task<RegistrationPageResponse> GetRegistrationPageOrNullAsync(
-            string id,
+            string packageId,
             NuGetVersion lower,
             NuGetVersion upper,
             CancellationToken cancellationToken = default)
         {
-            var urlGenerator = await _urlGenerator.CreateAsync();
-            var url = urlGenerator.GetRegistrationPageUrl(id, lower, upper);
+            var id = packageId.ToLowerInvariant();
+            var lowerVersion = lower.ToNormalizedString().ToLowerInvariant();
+            var upperVersion = upper.ToNormalizedString().ToLowerInvariant();
+
+            var url = $"{_packageMetadataUrl}/{id}/page/{lowerVersion}/{upperVersion}.json";
             var response = await _httpClient.DeserializeUrlAsync<RegistrationPageResponse>(url, cancellationToken);
 
             if (response.StatusCode == HttpStatusCode.NotFound)
@@ -62,12 +67,14 @@ namespace BaGet.Protocol
 
         /// <inheritdoc />
         public async Task<RegistrationLeafResponse> GetRegistrationLeafOrNullAsync(
-            string id,
-            NuGetVersion version,
+            string packageId,
+            NuGetVersion packageVersion,
             CancellationToken cancellationToken = default)
         {
-            var urlGenerator = await _urlGenerator.CreateAsync();
-            var url = urlGenerator.GetRegistrationLeafUrl(id, version);
+            var id = packageId.ToLowerInvariant();
+            var version = packageVersion.ToNormalizedString().ToLowerInvariant();
+
+            var url = $"{_packageMetadataUrl}/{id}/{version}.json";
             var response = await _httpClient.DeserializeUrlAsync<RegistrationLeafResponse>(url, cancellationToken);
 
             if (response.StatusCode == HttpStatusCode.NotFound)

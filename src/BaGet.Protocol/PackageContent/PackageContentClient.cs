@@ -6,32 +6,36 @@ using System.Threading;
 using System.Threading.Tasks;
 using NuGet.Versioning;
 
-namespace BaGet.Protocol
+namespace BaGet.Protocol.Internal
 {
     /// <summary>
     /// The client to interact with an upstream source's Package Content resource.
     /// </summary>
-    public class PackageContentClient : IPackageContentService
+    public class PackageContentClient : IPackageContentResource
     {
-        private readonly IUrlGeneratorFactory _urlGenerator;
         private readonly HttpClient _httpClient;
+        private readonly string _packageContentUrl;
 
         /// <summary>
         /// Create a new Package Content client.
         /// </summary>
-        /// <param name="urlGenerator">The service to generate URLs to upstream resources.</param>
         /// <param name="httpClient">The HTTP client used to send requests.</param>
-        public PackageContentClient(IUrlGeneratorFactory urlGenerator, HttpClient httpClient)
+        /// <param name="packageContentUrl">The NuGet Server's package content URL.</param>
+        public PackageContentClient(HttpClient httpClient, string packageContentUrl)
         {
-            _urlGenerator = urlGenerator ?? throw new ArgumentNullException(nameof(urlGenerator));
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            _packageContentUrl = packageContentUrl?.TrimEnd('/')
+                ?? throw new ArgumentNullException(nameof(packageContentUrl));
         }
 
         /// <inheritdoc />
-        public async Task<PackageVersionsResponse> GetPackageVersionsOrNullAsync(string id, CancellationToken cancellationToken = default)
+        public async Task<PackageVersionsResponse> GetPackageVersionsOrNullAsync(
+            string packageId,
+            CancellationToken cancellationToken = default)
         {
-            var urlGenerator = await _urlGenerator.CreateAsync();
-            var url = urlGenerator.GetPackageVersionsUrl(id);
+            var id = packageId.ToLowerInvariant();
+
+            var url = $"{_packageContentUrl}/{id}/index.json";
             var response = await _httpClient.DeserializeUrlAsync<PackageVersionsResponse>(url, cancellationToken);
 
             if (response.StatusCode == HttpStatusCode.NotFound)
@@ -43,10 +47,15 @@ namespace BaGet.Protocol
         }
 
         /// <inheritdoc />
-        public async Task<Stream> GetPackageContentStreamOrNullAsync(string id, NuGetVersion version, CancellationToken cancellationToken = default)
+        public async Task<Stream> GetPackageContentStreamOrNullAsync(
+            string packageId,
+            NuGetVersion packageVersion,
+            CancellationToken cancellationToken = default)
         {
-            var urlGenerator = await _urlGenerator.CreateAsync();
-            var url = urlGenerator.GetPackageDownloadUrl(id, version);
+            var id = packageId.ToLowerInvariant();
+            var version = packageVersion.ToNormalizedString().ToLowerInvariant();
+
+            var url = $"{_packageContentUrl}/{id}/{version}/{id}.{version}.nupkg";
             var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
             if (response.StatusCode == HttpStatusCode.NotFound)
@@ -58,10 +67,15 @@ namespace BaGet.Protocol
         }
 
         /// <inheritdoc />
-        public async Task<Stream> GetPackageManifestStreamOrNullAsync(string id, NuGetVersion version, CancellationToken cancellationToken = default)
+        public async Task<Stream> GetPackageManifestStreamOrNullAsync(
+            string packageId,
+            NuGetVersion packageVersion,
+            CancellationToken cancellationToken = default)
         {
-            var urlGenerator = await _urlGenerator.CreateAsync();
-            var url = urlGenerator.GetPackageManifestDownloadUrl(id, version);
+            var id = packageId.ToLowerInvariant();
+            var version = packageVersion.ToNormalizedString().ToLowerInvariant();
+
+            var url = $"{_packageContentUrl}/{id}/{version}/{id}.nuspec";
             var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
             if (response.StatusCode == HttpStatusCode.NotFound)

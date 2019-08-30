@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using BaGet.Protocol.Converters;
+using BaGet.Protocol.Internal;
 using Newtonsoft.Json;
 using NuGet.Versioning;
 
@@ -13,7 +13,7 @@ namespace BaGet.Protocol
     /// </summary>
     public class ServiceIndexResponse
     {
-        public ServiceIndexResponse(NuGetVersion version, IReadOnlyList<ServiceIndexResource> resources)
+        public ServiceIndexResponse(NuGetVersion version, IReadOnlyList<ServiceIndexItem> resources)
         {
             Version = version ?? throw new ArgumentNullException(nameof(version));
             Resources = resources ?? throw new ArgumentNullException(nameof(resources));
@@ -26,8 +26,8 @@ namespace BaGet.Protocol
         public NuGetVersion Version { get; }
 
         /// <summary>
-        /// The resource contained by this service index.
+        /// The resources declared by this service index.
         /// </summary>
-        public IReadOnlyList<ServiceIndexResource> Resources { get; }
+        public IReadOnlyList<ServiceIndexItem> Resources { get; }
     }
 }

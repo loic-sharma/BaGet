@@ -9,13 +9,11 @@ namespace BaGet.Controllers
 {
     public class SearchController : Controller
     {
-        private readonly IBaGetSearchService _searchService;
-        private readonly IBaGetUrlGenerator _url;
+        private readonly IBaGetSearchResource _searchService;
 
-        public SearchController(IBaGetSearchService searchService, IBaGetUrlGenerator url)
+        public SearchController(IBaGetSearchResource searchService)
         {
             _searchService = searchService ?? throw new ArgumentNullException(nameof(searchService));
-            _url = url ?? throw new ArgumentNullException(nameof(url));
         }
 
         public async Task<ActionResult<SearchResponse>> SearchAsync(

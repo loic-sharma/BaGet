@@ -16,5 +16,6 @@ These folders contain database-specific components of BaGet:
 
 These folders contain cloud-specific components of BaGet:
 
-* `BaGet.AWS` - the AWS implementation of BaGet
-* `BaGet.Azure` - the Azure implementation of BaGet
+* `BaGet.Azure` - BaGet's Azure provider
+* `BaGet.Aws` - BaGet's Amazon Web Services provider
+* `BaGet.Gcp` - BaGet's Google Cloud Platform provider

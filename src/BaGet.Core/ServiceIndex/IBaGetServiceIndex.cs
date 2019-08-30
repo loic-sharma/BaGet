@@ -6,7 +6,7 @@ namespace BaGet.Core.ServiceIndex
     /// BaGet's extensions to the NuGet Service Index resource. These additions
     /// are not part of the official protocol.
     /// </summary>
-    public interface IBaGetServiceIndex : IServiceIndex
+    public interface IBaGetServiceIndex : IServiceIndexResource
     {
     }
 }

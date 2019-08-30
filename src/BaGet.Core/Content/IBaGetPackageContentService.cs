@@ -10,7 +10,7 @@ namespace BaGet.Core.Content
     /// BaGet's extensions to the NuGet Package Content resource. These additions
     /// are not part of the official protocol.
     /// </summary>
-    public interface IBaGetPackageContentService : IPackageContentService
+    public interface IBaGetPackageContentService : IPackageContentResource
     {
         /// <summary>
         /// Download a package's readme, or null if the package or readme does not exist.

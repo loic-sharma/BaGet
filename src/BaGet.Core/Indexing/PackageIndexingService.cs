@@ -22,14 +22,14 @@ namespace BaGet.Core.Indexing
     {
         private readonly IPackageService _packages;
         private readonly IPackageStorageService _storage;
-        private readonly IBaGetSearchService _search;
+        private readonly IBaGetSearchResource _search;
         private readonly IOptionsSnapshot<BaGetOptions> _options;
         private readonly ILogger<PackageIndexingService> _logger;
 
         public PackageIndexingService(
             IPackageService packages,
             IPackageStorageService storage,
-            IBaGetSearchService search,
+            IBaGetSearchResource search,
             IOptionsSnapshot<BaGetOptions> options,
             ILogger<PackageIndexingService> logger)
         {

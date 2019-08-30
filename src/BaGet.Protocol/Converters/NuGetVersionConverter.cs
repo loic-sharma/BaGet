@@ -2,7 +2,7 @@ using System;
 using Newtonsoft.Json;
 using NuGet.Versioning;
 
-namespace BaGet.Protocol.Converters
+namespace BaGet.Protocol.Internal
 {
     /// <summary>
     /// Converts a string into a <see cref="NuGetVersion"/>.

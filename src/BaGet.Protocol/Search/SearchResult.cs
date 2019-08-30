@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using BaGet.Protocol.Converters;
+using BaGet.Protocol.Internal;
 using Newtonsoft.Json;
 using NuGet.Versioning;
 
@@ -13,7 +13,7 @@ namespace BaGet.Protocol
     public class SearchResult
     {
         public SearchResult(
-            string id,
+            string packageId,
             NuGetVersion version,
             string description,
             IReadOnlyList<string> authors,
@@ -27,15 +27,15 @@ namespace BaGet.Protocol
             long totalDownloads,
             IReadOnlyList<SearchResultVersion> versions)
         {
-            if (string.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(packageId))
             {
-                throw new ArgumentException(nameof(id));
+                throw new ArgumentException(nameof(packageId));
             }
 
             version = version ?? throw new ArgumentNullException(nameof(version));
             versions = versions ?? throw new ArgumentNullException(nameof(versions));
 
-            Id = id;
+            PackageId = packageId;
             Version = version;
             Description = description;
             Authors = authors;
@@ -51,7 +51,8 @@ namespace BaGet.Protocol
             Versions = versions;
         }
 
-        public string Id { get; }
+        [JsonProperty(PropertyName = "id")]
+        public string PackageId { get; }
 
         [JsonConverter(typeof(NuGetVersionConverter), NuGetVersionConversionFlags.IncludeBuildMetadata)]
         public NuGetVersion Version { get; }

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using BaGet.Protocol.Converters;
+using BaGet.Protocol.Internal;
 using Newtonsoft.Json;
 using NuGet.Versioning;
 
@@ -18,18 +18,13 @@ namespace BaGet.Protocol
             NuGetVersion version,
             string authors,
             string description,
-            long downloads,
-            bool hasReadme,
             string iconUrl,
             string language,
             string licenseUrl,
             bool listed,
             string minClientVersion,
             string packageContent,
-            IReadOnlyList<string> packageTypes,
             string projectUrl,
-            string repositoryUrl,
-            string repositoryType,
             DateTime published,
             bool requireLicenseAcceptance,
             string summary,
@@ -43,18 +38,13 @@ namespace BaGet.Protocol
             Version = version;
             Authors = authors;
             Description = description;
-            Downloads = downloads;
-            HasReadme = hasReadme;
             IconUrl = iconUrl;
             Language = language;
             LicenseUrl = licenseUrl;
             Listed = listed;
             MinClientVersion = minClientVersion;
             PackageContent = packageContent;
-            PackageTypes = packageTypes;
             ProjectUrl = projectUrl;
-            RepositoryUrl = repositoryUrl;
-            RepositoryType = repositoryType;
             Published = published;
             RequireLicenseAcceptance = requireLicenseAcceptance;
             Summary = summary;
@@ -77,18 +67,13 @@ namespace BaGet.Protocol
 
         public string Authors { get; }
         public string Description { get; }
-        public long Downloads { get; }
-        public bool HasReadme { get; }
         public string IconUrl { get; }
         public string Language { get; }
         public string LicenseUrl { get; }
         public bool Listed { get; }
         public string MinClientVersion { get; }
         public string PackageContent { get; }
-        public IReadOnlyList<string> PackageTypes { get; }
         public string ProjectUrl { get; }
-        public string RepositoryUrl { get; }
-        public string RepositoryType { get; }
         public DateTime Published { get; }
         public bool RequireLicenseAcceptance { get; }
         public string Summary { get; }
@@ -97,21 +82,25 @@ namespace BaGet.Protocol
         public IReadOnlyList<DependencyGroupItem> DependencyGroups { get; }
     }
 
+    /// <summary>
+    /// The dependencies of the package for a specific target framework.
+    /// See: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource#package-dependency-group
+    /// </summary>
     public class DependencyGroupItem
     {
         public DependencyGroupItem(
-            string id,
+            string catalogUri,
             string targetFramework,
             IReadOnlyList<DependencyItem> dependencies)
         {
-            Id = id;
+            CatalogUri = catalogUri;
             Type = "PackageDependencyGroup";
             TargetFramework = targetFramework;
             Dependencies = (dependencies?.Count > 0) ? dependencies : null;
         }
 
         [JsonProperty(PropertyName = "@id")]
-        public string Id { get; }
+        public string CatalogUri { get; }
 
         [JsonProperty(PropertyName = "@type")]
         public string Type { get; }

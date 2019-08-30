@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace BaGet.Protocol.Converters
+namespace BaGet.Protocol.Internal
 {
     /// <summary>
     /// Converts a single value or a list of values into the desired type or <see cref="List{T}"/>.

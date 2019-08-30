@@ -9,26 +9,26 @@ namespace BaGet.Core.ServiceIndex
 {
     public class BaGetServiceIndex : IBaGetServiceIndex
     {
-        private readonly IBaGetUrlGenerator _url;
+        private readonly IUrlGenerator _url;
 
-        public BaGetServiceIndex(IBaGetUrlGenerator url)
+        public BaGetServiceIndex(IUrlGenerator url)
         {
             _url = url ?? throw new ArgumentNullException(nameof(url));
         }
 
-        private IEnumerable<ServiceIndexResource> BuildResource(string name, string url, params string[] versions)
+        private IEnumerable<ServiceIndexItem> BuildResource(string name, string url, params string[] versions)
         {
             foreach (var version in versions)
             {
                 var type = string.IsNullOrEmpty(version) ? name : $"{name}/{version}";
 
-                yield return new ServiceIndexResource(type, url);
+                yield return new ServiceIndexItem(type, url);
             }
         }
 
         public Task<ServiceIndexResponse> GetAsync(CancellationToken cancellationToken = default)
         {
-            var resources = new List<ServiceIndexResource>();
+            var resources = new List<ServiceIndexItem>();
 
             resources.AddRange(BuildResource("PackagePublish", _url.GetPackagePublishResourceUrl(), "2.0.0"));
             resources.AddRange(BuildResource("SymbolPackagePublish", _url.GetSymbolPublishResourceUrl(), "4.9.0"));
