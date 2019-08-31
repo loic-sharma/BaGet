@@ -36,5 +36,12 @@ namespace BaGet.Protocol
         /// </summary>
         /// <returns>A client to interact with the NuGet Search resource.</returns>
         Task<ISearchResource> CreateSearchClientAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Create a low level client to interact with the NuGet catalog resource.
+        /// See: https://docs.microsoft.com/en-us/nuget/api/catalog-resource
+        /// </summary>
+        /// <returns>A client to interact with the Catalog resource.</returns>
+        Task<ICatalogResource> CreateCatalogClientAsync(CancellationToken cancellationToken = default);
     }
 }
