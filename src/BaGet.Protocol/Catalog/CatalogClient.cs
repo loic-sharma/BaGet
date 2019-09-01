@@ -32,16 +32,36 @@ namespace BaGet.Protocol.Internal
 
         public async Task<PackageDeleteCatalogLeaf> GetPackageDeleteLeafAsync(string leafUrl, CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.DeserializeUrlAsync<PackageDeleteCatalogLeaf>(_catalogUrl, cancellationToken);
-
-            return response.GetResultOrThrow();
+            return await GetAndValidateLeafAsync<PackageDeleteCatalogLeaf>(
+                CatalogLeafType.PackageDelete,
+                leafUrl,
+                cancellationToken);
         }
 
         public async Task<PackageDetailsCatalogLeaf> GetPackageDetailsLeafAsync(string leafUrl, CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.DeserializeUrlAsync<PackageDetailsCatalogLeaf>(_catalogUrl, cancellationToken);
+            return await GetAndValidateLeafAsync<PackageDetailsCatalogLeaf>(
+                CatalogLeafType.PackageDetails,
+                leafUrl,
+                cancellationToken);
+        }
 
-            return response.GetResultOrThrow();
+        private async Task<T> GetAndValidateLeafAsync<T>(
+            CatalogLeafType type,
+            string leafUrl,
+            CancellationToken cancellationToken) where T : CatalogLeaf
+        {
+            var result = await _httpClient.DeserializeUrlAsync<T>(leafUrl, cancellationToken);
+            var leaf = result.GetResultOrThrow();
+
+            if (leaf.Type != type)
+            {
+                throw new ArgumentException(
+                    $"The leaf type found in the document does not match the expected '{type}' type.",
+                    nameof(type));
+            }
+
+            return leaf;
         }
     }
 }

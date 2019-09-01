@@ -4,6 +4,11 @@ using Newtonsoft.Json;
 
 namespace BaGet.Protocol
 {
+    /// <summary>
+    /// A catalog leaf. Represents a single package event.
+    /// Leafs can be discovered from a <see cref="CatalogPage"/>.
+    /// See: https://docs.microsoft.com/en-us/nuget/api/catalog-resource#catalog-leaf
+    /// </summary>
     public class CatalogLeaf : ICatalogLeafItem
     {
         [JsonProperty("@id")]
