@@ -78,3 +78,24 @@ to overwrite the already existing package by setting `AllowPackageOverwrites`:
     ...
 }
 ```
+
+##  Configure multiple endpoints including the URLs
+
+Normally, BaGet will listen on http://localhost:5000. In case you want to to change the port to 80 and the server should listen on any url / ip you can add this to you config. 
+
+```json
+{
+    ...
+
+    "Kestrel": {
+        "EndPoints": {
+            "Http": {
+                "Url": "http://*:80"
+            }
+        }
+    },
+    ...
+}
+```
+Host names, *, and +, aren't special. Anything not recognized as a valid IP address or localhost binds to all IPv4 and IPv6 IPs. 
+Further endpoint configuration options can be found in the [ASP.NET Core Kestrel documentation](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel?view=aspnetcore-2.2#endpoint-configuration)
