@@ -25,7 +25,7 @@ namespace BaGet.Protocol
         public DateTimeOffset LastEdited { get; set; }
 
         [JsonProperty("dependencyGroups")]
-        public List<PackageDependencyGroup> DependencyGroups { get; set; }
+        public List<DependencyGroupItem> DependencyGroups { get; set; }
 
         [JsonProperty("description")]
         public string Description { get; set; }

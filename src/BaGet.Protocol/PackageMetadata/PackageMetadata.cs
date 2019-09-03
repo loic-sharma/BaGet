@@ -30,7 +30,7 @@ namespace BaGet.Protocol
             string summary,
             IReadOnlyList<string> tags,
             string title,
-            IReadOnlyList<PackageDependencyGroup> dependencyGroups)
+            IReadOnlyList<DependencyGroupItem> dependencyGroups)
         {
             CatalogUri = catalogUri ?? throw new ArgumentNullException(nameof(catalogUri));
 
@@ -79,6 +79,6 @@ namespace BaGet.Protocol
         public string Summary { get; }
         public IReadOnlyList<string> Tags { get; }
         public string Title { get; }
-        public IReadOnlyList<PackageDependencyGroup> DependencyGroups { get; }
+        public IReadOnlyList<DependencyGroupItem> DependencyGroups { get; }
     }
 }

@@ -5,15 +5,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
 using BaGet.Core.Mirror;
-using BaGet.Core.ServiceIndex;
 using BaGet.Protocol;
 using NuGet.Versioning;
 
 namespace BaGet.Core.Metadata
 {
-    using PackageDependencyModel = BaGet.Protocol.PackageDependency;
-    using PackageDependencyEntity = BaGet.Core.Entities.PackageDependency;
-
     /// <inheritdoc />
     public class DatabasePackageMetadataService : IBaGetPackageMetadataService
     {
@@ -131,9 +127,9 @@ namespace BaGet.Core.Metadata
                     dependencyGroups: ToDependencyGroups(package)),
                 packageContent: _url.GetPackageDownloadUrl(package.Id, package.Version));
 
-        private IReadOnlyList<PackageDependencyGroup> ToDependencyGroups(Package package)
+        private IReadOnlyList<DependencyGroupItem> ToDependencyGroups(Package package)
         {
-            var groups = new List<PackageDependencyGroup>();
+            var groups = new List<DependencyGroupItem>();
 
             var targetFrameworks = package.Dependencies.Select(d => d.TargetFramework).Distinct();
 
@@ -142,13 +138,13 @@ namespace BaGet.Core.Metadata
                 // A package that supports a target framework but does not have dependencies while on
                 // that target framework is represented by a fake dependency with a null "Id" and "VersionRange".
                 // This fake dependency should not be included in the output.
-                groups.Add(new PackageDependencyGroup
+                groups.Add(new DependencyGroupItem
                 {
                     TargetFramework = targetFramework,
                     Dependencies = package.Dependencies
                         .Where(d => d.TargetFramework == targetFramework)
                         .Where(d => d.Id != null && d.VersionRange != null)
-                        .Select(d => new PackageDependencyModel
+                        .Select(d => new DependencyItem
                         {
                             Id = d.Id,
                             Range = d.VersionRange

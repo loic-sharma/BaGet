@@ -34,7 +34,7 @@ namespace BaGet.Core.Metadata
             string summary,
             IReadOnlyList<string> tags,
             string title,
-            IReadOnlyList<PackageDependencyGroup> dependencyGroups)
+            IReadOnlyList<DependencyGroupItem> dependencyGroups)
           : base(
                 catalogUri,
                 packageId,

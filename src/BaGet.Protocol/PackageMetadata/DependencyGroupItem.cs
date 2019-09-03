@@ -7,12 +7,12 @@ namespace BaGet.Protocol
     /// The dependencies of the package for a specific target framework.
     /// See: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource#package-dependency-group
     /// </summary>
-    public class PackageDependencyGroup
+    public class DependencyGroupItem
     {
         [JsonProperty("targetFramework")]
         public string TargetFramework { get; set; }
 
         [JsonProperty("dependencies", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public List<PackageDependency> Dependencies { get; set; }
+        public List<DependencyItem> Dependencies { get; set; }
     }
 }

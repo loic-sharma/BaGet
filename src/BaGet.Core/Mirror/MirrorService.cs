@@ -15,7 +15,6 @@ using NuGet.Versioning;
 namespace BaGet.Core.Mirror
 {
     using PackageIdentity = NuGet.Packaging.Core.PackageIdentity;
-    using PackageDependencyEntity = BaGet.Core.Entities.PackageDependency;
 
     public class MirrorService : IMirrorService
     {
@@ -155,11 +154,11 @@ namespace BaGet.Core.Mirror
                 .ToArray();
         }
 
-        private List<PackageDependencyEntity> FindDependencies(PackageMetadata package)
+        private List<PackageDependency> FindDependencies(PackageMetadata package)
         {
             if ((package.DependencyGroups?.Count ?? 0) == 0)
             {
-                return new List<PackageDependencyEntity>();
+                return new List<PackageDependency>();
             }
 
             return package.DependencyGroups
@@ -167,7 +166,7 @@ namespace BaGet.Core.Mirror
                 .ToList();
         }
 
-        private IEnumerable<PackageDependencyEntity> FindDependenciesFromDependencyGroup(PackageDependencyGroup group)
+        private IEnumerable<PackageDependency> FindDependenciesFromDependencyGroup(DependencyGroupItem group)
         {
             // BaGet stores a dependency group with no dependencies as a package dependency
             // with no package id nor package version.
@@ -175,7 +174,7 @@ namespace BaGet.Core.Mirror
             {
                 return new[]
                 {
-                    new PackageDependencyEntity
+                    new PackageDependency
                     {
                         Id = null,
                         VersionRange = null,
@@ -184,7 +183,7 @@ namespace BaGet.Core.Mirror
                 };
             }
 
-            return group.Dependencies.Select(d => new PackageDependencyEntity
+            return group.Dependencies.Select(d => new PackageDependency
             {
                 Id = d.Id,
                 VersionRange = d.Range,
