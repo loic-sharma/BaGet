@@ -129,31 +129,25 @@ namespace BaGet.Core.Metadata
 
         private IReadOnlyList<DependencyGroupItem> ToDependencyGroups(Package package)
         {
-            var groups = new List<DependencyGroupItem>();
-
-            var targetFrameworks = package.Dependencies.Select(d => d.TargetFramework).Distinct();
-
-            foreach (var targetFramework in targetFrameworks)
-            {
-                // A package that supports a target framework but does not have dependencies while on
-                // that target framework is represented by a fake dependency with a null "Id" and "VersionRange".
-                // This fake dependency should not be included in the output.
-                groups.Add(new DependencyGroupItem
+            return package.Dependencies
+                .GroupBy(d => d.TargetFramework)
+                .Select(group => new DependencyGroupItem
                 {
-                    TargetFramework = targetFramework,
-                    Dependencies = package.Dependencies
-                        .Where(d => d.TargetFramework == targetFramework)
+                    TargetFramework = group.Key,
+
+                    // A package that supports a target framework but does not have dependencies while on
+                    // that target framework is represented by a fake dependency with a null "Id" and "VersionRange".
+                    // This fake dependency should not be included in the output.
+                    Dependencies = group
                         .Where(d => d.Id != null && d.VersionRange != null)
                         .Select(d => new DependencyItem
                         {
                             Id = d.Id,
                             Range = d.VersionRange
                         })
-                        .ToList(),
-                });
-            }
-
-            return groups;
+                        .ToList()
+                })
+                .ToList();
         }
     }
 }
