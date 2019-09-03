@@ -3,6 +3,10 @@ using Newtonsoft.Json;
 
 namespace BaGet.Protocol
 {
+    /// <summary>
+    /// Represents a package dependency.
+    /// See: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource#package-dependency
+    /// </summary>
     public class PackageDependency
     {
         [JsonProperty("id")]
