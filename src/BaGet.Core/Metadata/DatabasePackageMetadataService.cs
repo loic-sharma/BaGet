@@ -11,6 +11,9 @@ using NuGet.Versioning;
 
 namespace BaGet.Core.Metadata
 {
+    using PackageDependencyModel = BaGet.Protocol.PackageDependency;
+    using PackageDependencyEntity = BaGet.Core.Entities.PackageDependency;
+
     /// <inheritdoc />
     public class DatabasePackageMetadataService : IBaGetPackageMetadataService
     {
@@ -128,24 +131,30 @@ namespace BaGet.Core.Metadata
                     dependencyGroups: ToDependencyGroups(package)),
                 packageContent: _url.GetPackageDownloadUrl(package.Id, package.Version));
 
-        private IReadOnlyList<DependencyGroupItem> ToDependencyGroups(Package package)
+        private IReadOnlyList<PackageDependencyGroup> ToDependencyGroups(Package package)
         {
-            var groups = new List<DependencyGroupItem>();
+            var groups = new List<PackageDependencyGroup>();
 
             var targetFrameworks = package.Dependencies.Select(d => d.TargetFramework).Distinct();
 
-            foreach (var target in targetFrameworks)
+            foreach (var targetFramework in targetFrameworks)
             {
-                // A package may have no dependencies for a target framework. This is represented
-                // by a single dependency item with a null "Id" and "VersionRange".
-                var groupId = $"https://api.nuget.org/v3/catalog0/data/2015.02.01.06.24.15/{package.Id}.{package.Version}.json#dependencygroup/{target}";
-                var dependencyItems = package.Dependencies
-                    .Where(d => d.TargetFramework == target)
-                    .Where(d => d.Id != null && d.VersionRange != null)
-                    .Select(d => new DependencyItem($"{groupId}/{d.Id}", d.Id, d.VersionRange))
-                    .ToList();
-
-                groups.Add(new DependencyGroupItem(groupId, target, dependencyItems));
+                // A package that supports a target framework but does not have dependencies while on
+                // that target framework is represented by a fake dependency with a null "Id" and "VersionRange".
+                // This fake dependency should not be included in the output.
+                groups.Add(new PackageDependencyGroup
+                {
+                    TargetFramework = targetFramework,
+                    Dependencies = package.Dependencies
+                        .Where(d => d.TargetFramework == targetFramework)
+                        .Where(d => d.Id != null && d.VersionRange != null)
+                        .Select(d => new PackageDependencyModel
+                        {
+                            Id = d.Id,
+                            Range = d.VersionRange
+                        })
+                        .ToList(),
+                });
             }
 
             return groups;

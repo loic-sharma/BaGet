@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace BaGet.Protocol
 {
-    public class CatalogPackageDependency
+    public class PackageDependency
     {
         [JsonProperty("id")]
         public string Id { get; set; }

@@ -4,6 +4,10 @@ using Newtonsoft.Json;
 
 namespace BaGet.Protocol
 {
+    /// <summary>
+    /// An item in a <see cref="CatalogPage"/> that references a <see cref="CatalogLeaf"/>.
+    /// See: https://docs.microsoft.com/en-us/nuget/api/catalog-resource#catalog-item-object-in-a-page
+    /// </summary>
     public class CatalogLeafItem : ICatalogLeafItem
     {
         [JsonProperty("@id")]

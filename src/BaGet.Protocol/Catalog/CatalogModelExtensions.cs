@@ -102,7 +102,7 @@ namespace BaGet.Protocol
         /// </summary>
         /// <param name="packageDependencyGroup">The package dependency group.</param>
         /// <returns>The framework.</returns>
-        public static NuGetFramework ParseTargetFramework(this CatalogPackageDependencyGroup packageDependencyGroup)
+        public static NuGetFramework ParseTargetFramework(this PackageDependencyGroup packageDependencyGroup)
         {
             if (string.IsNullOrEmpty(packageDependencyGroup.TargetFramework))
             {
@@ -117,7 +117,7 @@ namespace BaGet.Protocol
         /// </summary>
         /// <param name="packageDependency">The package dependency.</param>
         /// <returns>The version range.</returns>
-        public static VersionRange ParseRange(this CatalogPackageDependency packageDependency)
+        public static VersionRange ParseRange(this PackageDependency packageDependency)
         {
             // Server side treats invalid version ranges as empty strings.
             // Source: https://github.com/NuGet/NuGet.Services.Metadata/blob/382c214c60993edfd7158bc6d223fafeebbc920c/src/Catalog/Helpers/NuGetVersionUtility.cs#L25-L34
