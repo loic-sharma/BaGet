@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Protocol.Internal;
@@ -27,27 +26,30 @@ namespace BaGet.Protocol.Tests
         }
 
         [Fact]
-        public async Task GetsCatalogPages()
+        public async Task GetsCatalogLeaf()
         {
-            // TODO: Replace with a single page test.
             var index = await _target.GetIndexAsync();
+            var pageItem = index.Items.First();
 
-            var work = new ConcurrentBag<CatalogPageItem>(index.Items);
-            var results = new ConcurrentBag<CatalogPage>();
+            var page = await _target.GetPageAsync(pageItem.Url);
+            var leafItem = page.Items.First();
 
-            var tasks = Enumerable
-                .Repeat(0, 32)
-                .Select(async _ =>
-                {
-                    while (work.TryTake(out var pageItem))
-                    {
-                        var page = await _target.GetPageAsync(pageItem.Url);
+            CatalogLeaf result;
+            switch (leafItem.Type)
+            {
+                case CatalogLeafType.PackageDelete:
+                    result = await _target.GetPackageDeleteLeafAsync(leafItem.Url);
+                    break;
 
-                        results.Add(page);
-                    }
-                });
+                case CatalogLeafType.PackageDetails:
+                    result = await _target.GetPackageDetailsLeafAsync(leafItem.Url);
+                    break;
 
-            await Task.WhenAll(tasks);
+                default:
+                    throw new NotSupportedException($"Unknown leaf type '{leafItem.Type}'");
+            }
+
+            Assert.NotNull(result.PackageId);
         }
     }
 }
