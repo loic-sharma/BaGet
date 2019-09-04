@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
 using BaGet.Core.Mirror;
-using BaGet.Core.ServiceIndex;
 using BaGet.Protocol;
 using NuGet.Versioning;
 
@@ -130,25 +129,25 @@ namespace BaGet.Core.Metadata
 
         private IReadOnlyList<DependencyGroupItem> ToDependencyGroups(Package package)
         {
-            var groups = new List<DependencyGroupItem>();
+            return package.Dependencies
+                .GroupBy(d => d.TargetFramework)
+                .Select(group => new DependencyGroupItem
+                {
+                    TargetFramework = group.Key,
 
-            var targetFrameworks = package.Dependencies.Select(d => d.TargetFramework).Distinct();
-
-            foreach (var target in targetFrameworks)
-            {
-                // A package may have no dependencies for a target framework. This is represented
-                // by a single dependency item with a null "Id" and "VersionRange".
-                var groupId = $"https://api.nuget.org/v3/catalog0/data/2015.02.01.06.24.15/{package.Id}.{package.Version}.json#dependencygroup/{target}";
-                var dependencyItems = package.Dependencies
-                    .Where(d => d.TargetFramework == target)
-                    .Where(d => d.Id != null && d.VersionRange != null)
-                    .Select(d => new DependencyItem($"{groupId}/{d.Id}", d.Id, d.VersionRange))
-                    .ToList();
-
-                groups.Add(new DependencyGroupItem(groupId, target, dependencyItems));
-            }
-
-            return groups;
+                    // A package that supports a target framework but does not have dependencies while on
+                    // that target framework is represented by a fake dependency with a null "Id" and "VersionRange".
+                    // This fake dependency should not be included in the output.
+                    Dependencies = group
+                        .Where(d => d.Id != null && d.VersionRange != null)
+                        .Select(d => new DependencyItem
+                        {
+                            Id = d.Id,
+                            Range = d.VersionRange
+                        })
+                        .ToList()
+                })
+                .ToList();
         }
     }
 }

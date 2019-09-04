@@ -23,6 +23,7 @@ namespace BaGet.Protocol
         private static readonly string Version470 = "/4.7.0";
         private static readonly string Version490 = "/4.9.0";
 
+        private static readonly string[] Catalog = { "Catalog" + Version300 };
         private static readonly string[] SearchQueryService = { "SearchQueryService" + Versioned, "SearchQueryService" + Version340, "SearchQueryService" + Version300beta };
         private static readonly string[] RegistrationsBaseUrl = { "RegistrationsBaseUrl" + Versioned, "RegistrationsBaseUrl" + Version360, "RegistrationsBaseUrl" + Version340, "RegistrationsBaseUrl" + Version300beta };
         private static readonly string[] SearchAutocompleteService = { "SearchAutocompleteService" + Versioned, "SearchAutocompleteService" + Version300beta };
@@ -41,7 +42,6 @@ namespace BaGet.Protocol
 
         public NuGetClientFactory(HttpClient httpClient, string serviceIndexUrl)
         {
-            // TODO: Integrate with HttpClientFactory?
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             _serviceIndexUrl = serviceIndexUrl ?? throw new ArgumentNullException(nameof(serviceIndexUrl));
 
@@ -91,6 +91,18 @@ namespace BaGet.Protocol
             return GetClientAsync(c => c.SearchClient, cancellationToken);
         }
 
+        /// <summary>
+        /// Create a low level client to interact with the NuGet catalog resource.
+        /// See: https://docs.microsoft.com/en-us/nuget/api/catalog-resource
+        /// </summary>
+        /// <returns>A client to interact with the Catalog resource.</returns>
+        public Task<ICatalogResource> CreateCatalogClientAsync(CancellationToken cancellationToken = default)
+        {
+            // TODO: There are multiple search endpoints to support high read availability.
+            // This factory should create a search client that uses all these endpoints.
+            return GetClientAsync(c => c.CatalogClient, cancellationToken);
+        }
+
         private async Task<T> GetClientAsync<T>(Func<NuGetClients, T> clientFactory, CancellationToken cancellationToken)
         {
             // TODO: This should periodically refresh the service index response.
@@ -108,6 +120,7 @@ namespace BaGet.Protocol
 
                         var contentClient = new PackageContentClient(_httpClient, GetResourceUrl(serviceIndex, PackageBaseAddress));
                         var metadataClient = new PackageMetadataClient(_httpClient, GetResourceUrl(serviceIndex, RegistrationsBaseUrl));
+                        var catalogClient = new CatalogClient(_httpClient, GetResourceUrl(serviceIndex, Catalog));
                         var searchClient = new SearchClient(
                             _httpClient,
                             GetResourceUrl(serviceIndex, SearchQueryService),
@@ -119,6 +132,7 @@ namespace BaGet.Protocol
                             PackageContentClient = contentClient,
                             PackageMetadataClient = metadataClient,
                             SearchClient = searchClient,
+                            CatalogClient = catalogClient,
                         };
                     }
                 }
@@ -144,6 +158,7 @@ namespace BaGet.Protocol
             public IPackageContentResource PackageContentClient { get; set; }
             public IPackageMetadataResource PackageMetadataClient { get; set; }
             public ISearchResource SearchClient { get; set; }
+            public ICatalogResource CatalogClient { get; set; }
         }
     }
 }

@@ -16,6 +16,7 @@ namespace BaGet.Protocol.Tests
             ServiceIndexClient = new ServiceIndexClient(httpClient, "https://api.nuget.org/v3/index.json");
             ContentClient = new PackageContentClient(httpClient, "https://api.nuget.org/v3-flatcontainer");
             MetadataClient = new PackageMetadataClient(httpClient, "https://api.nuget.org/v3/registration3-gz-semver2");
+            CatalogClient = new CatalogClient(httpClient, "https://api.nuget.org/v3/catalog0/index.json");
             SearchClient = new SearchClient(
                 httpClient,
                 "https://azuresearch-usnc.nuget.org/query",
@@ -26,5 +27,6 @@ namespace BaGet.Protocol.Tests
         public PackageContentClient ContentClient { get; }
         public PackageMetadataClient MetadataClient { get; }
         public SearchClient SearchClient { get; }
+        public CatalogClient CatalogClient { get; }
     }
 }
