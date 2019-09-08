@@ -1,4 +1,4 @@
-# Run BaGet using Docker
+# Run BaGet on Docker
 
 ## Configure BaGet
 
