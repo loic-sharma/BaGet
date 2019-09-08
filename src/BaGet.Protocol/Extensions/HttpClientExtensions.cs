@@ -9,9 +9,9 @@ namespace BaGet.Protocol
 {
     internal static class HttpClientExtensions
     {
-        private static readonly JsonSerializer Serializer = JsonSerializer.Create(Settings);
+        internal static readonly JsonSerializer Serializer = JsonSerializer.Create(JsonSettings);
 
-        private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
+        internal static readonly JsonSerializerSettings JsonSettings = new JsonSerializerSettings
         {
             DateTimeZoneHandling = DateTimeZoneHandling.Utc,
             DateParseHandling = DateParseHandling.DateTimeOffset,
