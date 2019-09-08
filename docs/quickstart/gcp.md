@@ -1,4 +1,4 @@
-# Running BaGet on Google Cloud
+# Run BaGet on Google Cloud Platform
 
 !!! warning
     This page is a work in progress!
@@ -7,7 +7,7 @@ We're open source and accept contributions!
 [Fork us on GitHub](https://github.com/loic-sharma/BaGet).
 
 Before you begin, you should decide [which AppEngine region](https://cloud.google.com/appengine/docs/locations)
-you're going to use. For best performance, Cloud Storage and Cloud SQL should be located
+you will use. For best performance, Cloud Storage and Cloud SQL should be located
 in the same region as your AppEngine deployment.
 
 ## Google Cloud Storage
@@ -24,7 +24,7 @@ Follow the instructions in [Using Cloud Storage](https://cloud.google.com/appeng
 
 Set up a service account and download credentials. Set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable to the path to the JSON file you downloaded.
 
-Configure BaGet to use GCS by updating the [`appsettings.json`](https://github.com/loic-sharma/BaGet/blob/master/src/BaGet/appsettings.json) file:
+Configure BaGet to use Google Cloud Storage by updating the `appsettings.json` file:
 
 ```json
 {
