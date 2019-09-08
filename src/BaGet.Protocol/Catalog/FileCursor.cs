@@ -10,10 +10,12 @@ namespace BaGet.Protocol.Catalog
     /// <summary>
     /// A cursor implementation which stores the cursor in local file. The cursor value is written to the file as
     /// a JSON object.
+    /// Based off: https://github.com/NuGet/NuGet.Services.Metadata/blob/3a468fe534a03dcced897eb5992209fdd3c4b6c9/src/NuGet.Protocol.Catalog/FileCursor.cs
     /// </summary>
     public class FileCursor : ICursor
     {
         private static readonly JsonSerializerSettings Settings = HttpClientExtensions.JsonSettings;
+
         private readonly string _path;
         private readonly ILogger<FileCursor> _logger;
 

@@ -7,6 +7,7 @@ namespace BaGet.Protocol.Catalog
     /// <summary>
     /// An interface which allows reading and writing a cursor value. The value is up to what point in the catalog
     /// has been successfully processed. The value is a catalog commit timestamp.
+    /// Based off: https://github.com/NuGet/NuGet.Services.Metadata/blob/3a468fe534a03dcced897eb5992209fdd3c4b6c9/src/NuGet.Protocol.Catalog/ICursor.cs
     /// </summary>
     public interface ICursor
     {

@@ -5,6 +5,10 @@ using Microsoft.Extensions.Logging;
 
 namespace BaGet.Protocol.Catalog
 {
+    /// <summary>
+    /// Processes catalog leafs.
+    /// See: https://docs.microsoft.com/en-us/nuget/api/catalog-resource
+    /// Based off: https://github.com/NuGet/NuGet.Services.Metadata/blob/3a468fe534a03dcced897eb5992209fdd3c4b6c9/src/NuGet.Protocol.Catalog/CatalogProcessor.cs    /// </summary>
     public class CatalogProcessor
     {
         private readonly ICatalogLeafProcessor _leafProcessor;
