@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 namespace BaGet.Protocol.Catalog
 {
     /// <summary>
-    /// Processes catalog leafs.
+    /// Processes catalog leafs in chronological order.
     /// See: https://docs.microsoft.com/en-us/nuget/api/catalog-resource
     /// Based off: https://github.com/NuGet/NuGet.Services.Metadata/blob/3a468fe534a03dcced897eb5992209fdd3c4b6c9/src/NuGet.Protocol.Catalog/CatalogProcessor.cs
     /// </summary>
@@ -18,6 +18,15 @@ namespace BaGet.Protocol.Catalog
         private readonly CatalogProcessorOptions _options;
         private readonly ILogger<CatalogProcessor> _logger;
 
+        /// <summary>
+        /// Create a processor to discover and download catalog leafs. Leafs are processed
+        /// by the <see cref="ICatalogLeafProcessor"/>.
+        /// </summary>
+        /// <param name="cursor">Cursor to track succesfully processed leafs. Leafs before the cursor are skipped.</param>
+        /// <param name="client">The client to interact with the catalog resource.</param>
+        /// <param name="leafProcessor">The leaf processor.</param>
+        /// <param name="options">The options to configure catalog processing.</param>
+        /// <param name="logger">The logger used for telemetry.</param>
         public CatalogProcessor(
             ICursor cursor,
             ICatalogResource client,
