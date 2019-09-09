@@ -2,7 +2,7 @@
     "docs": [
         {
             "location": "/", 
-            "text": "BaGet\n\n\nBaGet (pronounced \"baguette\") is a lightweight NuGet and symbol server. It is \nopen source\n, cross-platform, and cloud ready!\n\n\nRun BaGet\n\n\nYou can run BaGet on your preferred platform:\n\n\n\n\nOn your computer\n\n\nDocker\n\n\nAzure\n\n\nAWS\n\n\nGoogle Cloud\n\n\n\n\nBaGet SDK\n\n\nYou can also use the \nBaGet.Protocol\n package to interact with a NuGet server. For more information, please refer to the \nBaGet SDK\n guide.", 
+            "text": "BaGet\n\n\nBaGet (pronounced \"baguette\") is a lightweight NuGet and symbol server. It is \nopen source\n, cross-platform, and cloud ready!\n\n\n\n  \n\n\n\n\n\nRun BaGet\n\n\nYou can run BaGet on your preferred platform:\n\n\n\n\nOn your computer\n\n\nDocker\n\n\nAzure\n\n\nAWS\n\n\nGoogle Cloud\n\n\n\n\nBaGet SDK\n\n\nYou can also use the \nBaGet.Protocol\n package to interact with a NuGet server. For more information, please refer to the \nBaGet SDK\n guide.", 
             "title": "Overview"
         }, 
         {
