@@ -33,20 +33,21 @@ markdown_extensions:
       permalink: true
 
 pages:
-  - BaGet: index.md
+  - Overview: index.md
+  - Getting Started:
+    - On your computer: quickstart/local.md
+    - Docker: quickstart/docker.md
+    - Azure: quickstart/azure.md
+    - AWS: quickstart/aws.md
+    - Google Cloud: quickstart/gcp.md
+    - Windows IIS Proxy: quickstart/iis-proxy.md
   - Configuration: configuration.md
-  - Private Feeds: private-feeds.md
-  - Running in the Cloud:
-    - Azure: cloud/azure.md
-    - Google Cloud: cloud/gcp.md
-    - AWS: cloud/aws.md
-  - Windows IIS Proxy: windows/iis-proxy.md
   - Tools:
     - Mirroring: tools/mirroring.md
-  - BaGet vs. Other Software:
+  - BaGet vs. Other:
     - nuget.org: vs/nugetorg.md
     - NuGet.Server: vs/nugetserver.md
-    - VSTS: vs/vsts.md
+    - Azure Artifacts: vs/azure-artifacts.md
     - MyGet: vs/myget.md
     - LiGet: vs/liget.md
     - Artifactory: vs/artifactory.md
