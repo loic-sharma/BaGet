@@ -11,3 +11,7 @@ You can run BaGet on your preferred platform:
 * [Azure](quickstart/azure.md)
 * [AWS](quickstart/aws.md)
 * [Google Cloud](quickstart/gcp.md)
+
+## BaGet SDK
+
+You can also use the [`BaGet.Protocol`](https://www.nuget.org/packages/BaGet.Protocol) package to interact with a NuGet server. For more information, please refer to the [BaGet SDK](tools/sdk.md) guide.

@@ -47,7 +47,7 @@ namespace BaGet.Protocol
         /// <param name="packageId">The package ID.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The package's listed versions, if any.</returns>
-        Task<IReadOnlyList<NuGetVersion>> ListPackageVersions(
+        Task<IReadOnlyList<NuGetVersion>> ListPackageVersionsAsync(
             string packageId,
             CancellationToken cancellationToken);
 
@@ -58,7 +58,7 @@ namespace BaGet.Protocol
         /// <param name="includeUnlisted">Whether to include unlisted versions.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The package's versions, or an empty list if the package does not exist.</returns>
-        Task<IReadOnlyList<NuGetVersion>> ListPackageVersions(
+        Task<IReadOnlyList<NuGetVersion>> ListPackageVersionsAsync(
             string packageId,
             bool includeUnlisted,
             CancellationToken cancellationToken = default);
@@ -69,7 +69,7 @@ namespace BaGet.Protocol
         /// <param name="packageId">The package ID.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The package's metadata, or an empty list if the package does not exist.</returns>
-        Task<IReadOnlyList<RegistrationIndexPageItem>> GetPackageMetadataAsync(
+        Task<IReadOnlyList<PackageMetadata>> GetPackageMetadataAsync(
             string packageId,
             CancellationToken cancellationToken = default);
 
@@ -83,7 +83,7 @@ namespace BaGet.Protocol
         /// <exception cref="PackageNotFoundException">
         ///     The package could not be found.
         /// </exception>
-        Task<RegistrationIndexPageItem> GetPackageMetadataAsync(
+        Task<PackageMetadata> GetPackageMetadataAsync(
             string packageId,
             NuGetVersion packageVersion,
             CancellationToken cancellationToken = default);

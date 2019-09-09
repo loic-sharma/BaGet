@@ -39,7 +39,7 @@ namespace BaGet.Core.Mirror
             string id,
             CancellationToken cancellationToken)
         {
-            var upstreamVersions = await _upstreamClient.ListPackageVersions(id, includeUnlisted: true, cancellationToken);
+            var upstreamVersions = await _upstreamClient.ListPackageVersionsAsync(id, includeUnlisted: true, cancellationToken);
             if (!upstreamVersions.Any())
             {
                 return null;
@@ -101,10 +101,8 @@ namespace BaGet.Core.Mirror
                 version);
         }
 
-        private Package ToPackage(RegistrationIndexPageItem item)
+        private Package ToPackage(PackageMetadata metadata)
         {
-            var metadata = item.PackageMetadata;
-
             return new Package
             {
                 Id = metadata.PackageId,

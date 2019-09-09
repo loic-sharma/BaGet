@@ -44,6 +44,7 @@ pages:
   - Configuration: configuration.md
   - Tools:
     - Mirroring: tools/mirroring.md
+    - BaGet SDK: tools/sdk.md
   - BaGet vs. Other:
     - nuget.org: vs/nugetorg.md
     - NuGet.Server: vs/nugetserver.md

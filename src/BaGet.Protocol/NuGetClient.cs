@@ -92,14 +92,14 @@ namespace BaGet.Protocol
         /// <param name="packageId">The package ID.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The package's listed versions, if any.</returns>
-        public async Task<IReadOnlyList<NuGetVersion>> ListPackageVersions(string packageId, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<NuGetVersion>> ListPackageVersionsAsync(string packageId, CancellationToken cancellationToken)
         {
             // TODO: Use the Autocomplete's enumerate versions endpoint if this is not Sleet.
             var packages = await GetPackageMetadataAsync(packageId, cancellationToken);
 
             return packages
-                .Where(p => p.PackageMetadata.Listed)
-                .Select(p => p.PackageMetadata.Version)
+                .Where(p => p.Listed)
+                .Select(p => p.Version)
                 .ToList();
         }
 
@@ -110,11 +110,11 @@ namespace BaGet.Protocol
         /// <param name="includeUnlisted">Whether to include unlisted versions.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The package's versions, or an empty list if the package does not exist.</returns>
-        public async Task<IReadOnlyList<NuGetVersion>> ListPackageVersions(string packageId, bool includeUnlisted, CancellationToken cancellationToken = default)
+        public async Task<IReadOnlyList<NuGetVersion>> ListPackageVersionsAsync(string packageId, bool includeUnlisted, CancellationToken cancellationToken = default)
         {
             if (!includeUnlisted)
             {
-                return await ListPackageVersions(packageId, cancellationToken);
+                return await ListPackageVersionsAsync(packageId, cancellationToken);
             }
 
             var client = await _clientFactory.CreatePackageContentClientAsync(cancellationToken);
@@ -134,9 +134,9 @@ namespace BaGet.Protocol
         /// <param name="packageId">The package ID.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The package's metadata, or an empty list if the package does not exist.</returns>
-        public async Task<IReadOnlyList<RegistrationIndexPageItem>> GetPackageMetadataAsync(string packageId, CancellationToken cancellationToken = default)
+        public async Task<IReadOnlyList<PackageMetadata>> GetPackageMetadataAsync(string packageId, CancellationToken cancellationToken = default)
         {
-            var result = new List<RegistrationIndexPageItem>();
+            var result = new List<PackageMetadata>();
 
             var client = await _clientFactory.CreatePackageMetadataClientAsync(cancellationToken);
             var registrationIndex = await client.GetRegistrationIndexOrNullAsync(packageId, cancellationToken);
@@ -166,7 +166,7 @@ namespace BaGet.Protocol
                     items = externalRegistrationPage.ItemsOrNull;
                 }
 
-                result.AddRange(items);
+                result.AddRange(items.Select(i => i.PackageMetadata));
             }
 
             return result;
@@ -182,7 +182,7 @@ namespace BaGet.Protocol
         /// <exception cref="PackageNotFoundException">
         ///     The package could not be found.
         /// </exception>
-        public async Task<RegistrationIndexPageItem> GetPackageMetadataAsync(string packageId, NuGetVersion packageVersion, CancellationToken cancellationToken = default)
+        public async Task<PackageMetadata> GetPackageMetadataAsync(string packageId, NuGetVersion packageVersion, CancellationToken cancellationToken = default)
         {
             var client = await _clientFactory.CreatePackageMetadataClientAsync(cancellationToken);
             var registrationIndex = await client.GetRegistrationIndexOrNullAsync(packageId, cancellationToken);
@@ -192,7 +192,6 @@ namespace BaGet.Protocol
                 throw new PackageNotFoundException(packageId, packageVersion);
             }
 
-            var result = new List<RegistrationIndexPageItem>();
             foreach (var registrationIndexPage in registrationIndex.Pages)
             {
                 // Skip pages that do not contain the desired package version.
@@ -217,7 +216,14 @@ namespace BaGet.Protocol
                     items = externalRegistrationPage.ItemsOrNull;
                 }
 
-                return items.SingleOrDefault(i => i.PackageMetadata.Version == packageVersion);
+                // We've found the registration items that should cover the desired package.
+                var result = items.SingleOrDefault(i => i.PackageMetadata.Version == packageVersion);
+                if (result == null)
+                {
+                    break;
+                }
+
+                return result.PackageMetadata;
             }
 
             // No registration pages contained the desired version.

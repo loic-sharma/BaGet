@@ -10,13 +10,13 @@ namespace BaGet.Protocol.Samples.Tests
         public async Task Search()
         {
             // Search for packages that are relevant to "json".
-            var client = new NuGetClient("https://api.nuget.org/v3/index.json");
-            var response = await client.SearchAsync("json");
+            NuGetClient client = new NuGetClient("https://api.nuget.org/v3/index.json");
+            SearchResponse response = await client.SearchAsync("json");
 
             Console.WriteLine($"Found {response.TotalHits} results");
 
             var index = 1;
-            foreach (var searchResult in response.Data)
+            foreach (SearchResult searchResult in response.Data)
             {
                 Console.WriteLine($"Result #{index}");
                 Console.WriteLine($"Package id: {searchResult.PackageId}");
@@ -33,15 +33,15 @@ namespace BaGet.Protocol.Samples.Tests
         public async Task Autocomplete()
         {
             // Search for packages whose names' start with "Newt".
-            var client = new NuGetClient("https://api.nuget.org/v3/index.json");
-            var response = await client.AutocompleteAsync("Newt");
+            NuGetClient client = new NuGetClient("https://api.nuget.org/v3/index.json");
+            AutocompleteResponse response = await client.AutocompleteAsync("Newt");
 
             Console.WriteLine($"Found {response.TotalHits} results");
 
             var index = 1;
-            foreach (var searchResult in response.Data)
+            foreach (string packageId in response.Data)
             {
-                Console.WriteLine($"Result #{index}: '{searchResult}'");
+                Console.WriteLine($"Found package ID #{index}: '{packageId}'");
                 index++;
             }
         }
