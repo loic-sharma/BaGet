@@ -45,6 +45,7 @@ pages:
   - Tools:
     - Mirroring: tools/mirroring.md
     - BaGet SDK: tools/sdk.md
+    - Migrate from NuGet.Server: tools/migrate.md
   - BaGet vs. Other:
     - nuget.org: vs/nugetorg.md
     - NuGet.Server: vs/nugetserver.md

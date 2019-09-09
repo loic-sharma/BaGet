@@ -16,6 +16,6 @@
     * Cross-platform
     * Supports NuGet v3 APIs
 
-## Upgrade Guide
+## Migration Guide
 
-TODO
+You can use the [NuGet.Server migration](../tools/migrate.md) guide to import your NuGet.Server packages into BaGet.
