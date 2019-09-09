@@ -5,7 +5,7 @@
 !!! info
     Please refer to the [BaGet vs NuGet.Server](../vs/nugetserver.md) page for reasons to upgrade to BaGet.
 
-# Steps
+## Steps
 
 Make sure that you've installed [nuget.exe](https://www.nuget.org/downloads). In PowerShell, run:
 
