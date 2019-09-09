@@ -13,7 +13,7 @@
         <meta name="description" content="A lightweight NuGet service implementation">
       
       
-        <link rel="canonical" href="https://loic-sharma.github.io/BaGet/vs/artifactory/">
+        <link rel="canonical" href="https://loic-sharma.github.io/BaGet/tools/sdk/">
       
       
         <meta name="author" content="Loic Sharma">
@@ -42,7 +42,7 @@
     
     
       
-        <title>Artifactory - BaGet</title>
+        <title>BaGet SDK - BaGet</title>
       
     
     
@@ -104,7 +104,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#artifactory" tabindex="1" class="md-skip">
+      <a href="#baget-sdk" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -130,7 +130,7 @@
                 BaGet
               </span>
               <span class="md-header-nav__topic">
-                Artifactory
+                BaGet SDK
               </span>
             
           
@@ -365,10 +365,12 @@
       
       
 
+  
 
-  <li class="md-nav__item md-nav__item--nested">
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
     
     <label class="md-nav__link" for="nav-4">
       Tools
@@ -386,106 +388,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../tools/mirroring/" title="Mirroring" class="md-nav__link">
+    <a href="../mirroring/" title="Mirroring" class="md-nav__link">
       Mirroring
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../../tools/sdk/" title="BaGet SDK" class="md-nav__link">
-      BaGet SDK
-    </a>
-  </li>
-
-        
-      </ul>
-    </nav>
-  </li>
-
-    
-      
-      
-      
-
-  
-
-
-  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-    
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" checked>
-    
-    <label class="md-nav__link" for="nav-5">
-      BaGet vs. Other
-    </label>
-    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-5">
-        BaGet vs. Other
-      </label>
-      <ul class="md-nav__list" data-md-scrollfix>
-        
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../nugetorg/" title="nuget.org" class="md-nav__link">
-      nuget.org
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../nugetserver/" title="NuGet.Server" class="md-nav__link">
-      NuGet.Server
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../azure-artifacts/" title="Azure Artifacts" class="md-nav__link">
-      Azure Artifacts
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../myget/" title="MyGet" class="md-nav__link">
-      MyGet
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../liget/" title="LiGet" class="md-nav__link">
-      LiGet
     </a>
   </li>
 
@@ -504,10 +408,103 @@
       
     
     
-    <a href="./" title="Artifactory" class="md-nav__link md-nav__link--active">
-      Artifactory
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        BaGet SDK
+      </label>
+    
+    <a href="./" title="BaGet SDK" class="md-nav__link md-nav__link--active">
+      BaGet SDK
     </a>
     
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#getting-started" title="Getting Started" class="md-nav__link">
+    Getting Started
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#list-package-versions" title="List Package Versions" class="md-nav__link">
+    List Package Versions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#download-a-package" title="Download a package" class="md-nav__link">
+    Download a package
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#find-package-metadata" title="Find Package Metadata" class="md-nav__link">
+    Find Package Metadata
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#search-for-packages" title="Search for packages" class="md-nav__link">
+    Search for packages
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      BaGet vs. Other
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        BaGet vs. Other
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../vs/nugetorg/" title="nuget.org" class="md-nav__link">
+      nuget.org
+    </a>
   </li>
 
         
@@ -517,7 +514,67 @@
 
 
   <li class="md-nav__item">
-    <a href="../nexus/" title="Nexus" class="md-nav__link">
+    <a href="../../vs/nugetserver/" title="NuGet.Server" class="md-nav__link">
+      NuGet.Server
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../vs/azure-artifacts/" title="Azure Artifacts" class="md-nav__link">
+      Azure Artifacts
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../vs/myget/" title="MyGet" class="md-nav__link">
+      MyGet
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../vs/liget/" title="LiGet" class="md-nav__link">
+      LiGet
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../vs/artifactory/" title="Artifactory" class="md-nav__link">
+      Artifactory
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../vs/nexus/" title="Nexus" class="md-nav__link">
       Nexus
     </a>
   </li>
@@ -529,7 +586,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../teamcity/" title="TeamCity" class="md-nav__link">
+    <a href="../../vs/teamcity/" title="TeamCity" class="md-nav__link">
       TeamCity
     </a>
   </li>
@@ -557,6 +614,50 @@
     
   
   
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#getting-started" title="Getting Started" class="md-nav__link">
+    Getting Started
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#list-package-versions" title="List Package Versions" class="md-nav__link">
+    List Package Versions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#download-a-package" title="Download a package" class="md-nav__link">
+    Download a package
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#find-package-metadata" title="Find Package Metadata" class="md-nav__link">
+    Find Package Metadata
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#search-for-packages" title="Search for packages" class="md-nav__link">
+    Search for packages
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -567,14 +668,86 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/loic-sharma/BaGet/edit/master/docs/vs/artifactory.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                  <a href="https://github.com/loic-sharma/BaGet/edit/master/docs/tools/sdk.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                <h1 id="artifactory">Artifactory<a class="headerlink" href="#artifactory" title="Permanent link">&para;</a></h1>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This page is a work in progress!</p>
-</div>
+                <h1 id="baget-sdk">BaGet SDK<a class="headerlink" href="#baget-sdk" title="Permanent link">&para;</a></h1>
+<p>You can use BaGet's <a href="https://www.nuget.org/packages/BaGet.Protocol"><code>BaGet.Protocol</code></a> package to interact with a NuGet server.</p>
+<h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h2>
+<p>Install the <a href="https://www.nuget.org/packages/BaGet.Protocol"><code>BaGet.Protocol</code></a> package:</p>
+<div class="codehilite"><pre><span></span>dotnet add package BaGet.Protocol
+</pre></div>
+
+
+<h2 id="list-package-versions">List Package Versions<a class="headerlink" href="#list-package-versions" title="Permanent link">&para;</a></h2>
+<p>Find all versions of the <code>Newtonsoft.Json</code> package:</p>
+<div class="codehilite"><pre><span></span><span class="n">NuGetClient</span> <span class="n">client</span> <span class="p">=</span> <span class="k">new</span> <span class="n">NuGetClient</span><span class="p">(</span><span class="s">&quot;https://api.nuget.org/v3/index.json&quot;</span><span class="p">);</span>
+
+<span class="n">IReadOnlyList</span><span class="p">&lt;</span><span class="n">NuGetVersion</span><span class="p">&gt;&gt;</span> <span class="n">versions</span> <span class="p">=</span> <span class="k">await</span> <span class="n">client</span><span class="p">.</span><span class="n">ListPackageVersionsAsync</span><span class="p">(</span><span class="s">&quot;Newtonsoft.Json&quot;</span><span class="p">);</span>
+
+<span class="k">foreach</span> <span class="p">(</span><span class="n">NuGetVersion</span> <span class="n">version</span> <span class="k">in</span> <span class="n">versions</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Found version: {version}&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2 id="download-a-package">Download a package<a class="headerlink" href="#download-a-package" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><span class="n">NuGetClient</span> <span class="n">client</span> <span class="p">=</span> <span class="k">new</span> <span class="n">NuGetClient</span><span class="p">(</span><span class="s">&quot;https://api.nuget.org/v3/index.json&quot;</span><span class="p">);</span>
+
+<span class="kt">string</span> <span class="n">packageId</span> <span class="p">=</span> <span class="s">&quot;Newtonsoft.Json&quot;</span><span class="p">;</span>
+<span class="n">NuGetVersion</span> <span class="n">packageVersion</span> <span class="p">=</span> <span class="k">new</span> <span class="n">NuGetVersion</span><span class="p">(</span><span class="s">&quot;12.0.1&quot;</span><span class="p">);</span>
+
+<span class="k">using</span> <span class="p">(</span><span class="n">Stream</span> <span class="n">packageStream</span> <span class="p">=</span> <span class="k">await</span> <span class="n">client</span><span class="p">.</span><span class="n">GetPackageStreamAsync</span><span class="p">(</span><span class="n">packageId</span><span class="p">,</span> <span class="n">packageVersion</span><span class="p">))</span>
+<span class="p">{</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Downloaded package {packageId} {packageVersion}&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2 id="find-package-metadata">Find Package Metadata<a class="headerlink" href="#find-package-metadata" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><span class="n">NuGetClient</span> <span class="n">client</span> <span class="p">=</span> <span class="k">new</span> <span class="n">NuGetClient</span><span class="p">(</span><span class="s">&quot;https://api.nuget.org/v3/index.json&quot;</span><span class="p">);</span>
+
+<span class="c1">// Find the metadata for all versions of a package.</span>
+<span class="n">IReadOnlyList</span><span class="p">&lt;</span><span class="n">PackageMetadata</span><span class="p">&gt;</span> <span class="n">items</span> <span class="p">=</span> <span class="k">await</span> <span class="n">client</span><span class="p">.</span><span class="n">GetPackageMetadataAsync</span><span class="p">(</span><span class="s">&quot;Newtonsoft.Json&quot;</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(!</span><span class="n">items</span><span class="p">.</span><span class="n">Any</span><span class="p">())</span>
+<span class="p">{</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Package &#39;Newtonsoft.Json&#39; does not exist&quot;</span><span class="p">);</span>
+    <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">foreach</span> <span class="p">(</span><span class="kt">var</span> <span class="n">metadata</span> <span class="k">in</span> <span class="n">items</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Version: {metadata.Version}&quot;</span><span class="p">);</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Listed: {metadata.Listed}&quot;</span><span class="p">);</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Tags: {metadata.Tags}&quot;</span><span class="p">);</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Description: {metadata.Description}&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// Or, find the metadata for a single version of a package.</span>
+<span class="kt">string</span> <span class="n">packageId</span> <span class="p">=</span> <span class="s">&quot;Newtonsoft.Json&quot;</span>
+<span class="n">NuGetVersion</span> <span class="n">packageVersion</span> <span class="p">=</span> <span class="k">new</span> <span class="n">NuGetVersion</span><span class="p">(</span><span class="s">&quot;12.0.1&quot;</span><span class="p">);</span>
+
+<span class="n">PackageMetadata</span> <span class="n">metadata</span> <span class="p">=</span> <span class="k">await</span> <span class="n">client</span><span class="p">.</span><span class="n">GetPackageMetadataAsync</span><span class="p">(</span><span class="n">packageId</span><span class="p">,</span> <span class="n">packageVersion</span><span class="p">);</span>
+
+<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Listed: {metadata.Listed}&quot;</span><span class="p">);</span>
+<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Tags: {metadata.Tags}&quot;</span><span class="p">);</span>
+<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Description: {metadata.Description}&quot;</span><span class="p">);</span>
+</pre></div>
+
+
+<h2 id="search-for-packages">Search for packages<a class="headerlink" href="#search-for-packages" title="Permanent link">&para;</a></h2>
+<p>Search for "json" packages:</p>
+<div class="codehilite"><pre><span></span><span class="n">NuGetClient</span> <span class="n">client</span> <span class="p">=</span> <span class="k">new</span> <span class="n">NuGetClient</span><span class="p">(</span><span class="s">&quot;https://api.nuget.org/v3/index.json&quot;</span><span class="p">);</span>
+<span class="n">SearchResponse</span> <span class="n">response</span> <span class="p">=</span> <span class="k">await</span> <span class="n">client</span><span class="p">.</span><span class="n">SearchAsync</span><span class="p">(</span><span class="s">&quot;json&quot;</span><span class="p">);</span>
+
+<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Found {response.TotalHits} total results&quot;</span><span class="p">);</span>
+
+<span class="k">foreach</span> <span class="p">(</span><span class="n">SearchResult</span> <span class="n">searchResult</span> <span class="k">in</span> <span class="n">response</span><span class="p">.</span><span class="n">Data</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Found package {searchResult.Id} {searchResult.Version}&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
                 
                   
                 
@@ -595,7 +768,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../liget/" title="LiGet" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../mirroring/" title="Mirroring" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -604,19 +777,19 @@
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                LiGet
+                Mirroring
               </span>
             </div>
           </a>
         
         
-          <a href="../nexus/" title="Nexus" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../../vs/nugetorg/" title="nuget.org" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Nexus
+                nuget.org
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">

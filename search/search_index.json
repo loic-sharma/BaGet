@@ -2,7 +2,7 @@
     "docs": [
         {
             "location": "/", 
-            "text": "BaGet\n\n\nBaGet (pronounced \"baguette\") is a lightweight NuGet and symbol server. It is \nopen source\n, cross-platform, and cloud ready!\n\n\nRun BaGet\n\n\nYou can run BaGet on your preferred platform:\n\n\n\n\nOn your computer\n\n\nDocker\n\n\nAzure\n\n\nAWS\n\n\nGoogle Cloud", 
+            "text": "BaGet\n\n\nBaGet (pronounced \"baguette\") is a lightweight NuGet and symbol server. It is \nopen source\n, cross-platform, and cloud ready!\n\n\nRun BaGet\n\n\nYou can run BaGet on your preferred platform:\n\n\n\n\nOn your computer\n\n\nDocker\n\n\nAzure\n\n\nAWS\n\n\nGoogle Cloud\n\n\n\n\nBaGet SDK\n\n\nYou can also use the \nBaGet.Protocol\n package to interact with a NuGet server. For more information, please refer to the \nBaGet SDK\n guide.", 
             "title": "Overview"
         }, 
         {
@@ -14,6 +14,11 @@
             "location": "/#run-baget", 
             "text": "You can run BaGet on your preferred platform:   On your computer  Docker  Azure  AWS  Google Cloud", 
             "title": "Run BaGet"
+        }, 
+        {
+            "location": "/#baget-sdk", 
+            "text": "You can also use the  BaGet.Protocol  package to interact with a NuGet server. For more information, please refer to the  BaGet SDK  guide.", 
+            "title": "BaGet SDK"
         }, 
         {
             "location": "/quickstart/local/", 
@@ -294,6 +299,41 @@
             "location": "/tools/mirroring/#indexing-nugetorg", 
             "text": "TODO Check-in code  Explain scaling  Rebuild indexes at end  Importing downloads from nuget.org", 
             "title": "Indexing nuget.org"
+        }, 
+        {
+            "location": "/tools/sdk/", 
+            "text": "BaGet SDK\n\n\nYou can use BaGet's \nBaGet.Protocol\n package to interact with a NuGet server.\n\n\nGetting Started\n\n\nInstall the \nBaGet.Protocol\n package:\n\n\ndotnet add package BaGet.Protocol\n\n\n\n\n\nList Package Versions\n\n\nFind all versions of the \nNewtonsoft.Json\n package:\n\n\nNuGetClient\n \nclient\n \n=\n \nnew\n \nNuGetClient\n(\nhttps://api.nuget.org/v3/index.json\n);\n\n\n\nIReadOnlyList\nNuGetVersion\n \nversions\n \n=\n \nawait\n \nclient\n.\nListPackageVersionsAsync\n(\nNewtonsoft.Json\n);\n\n\n\nforeach\n \n(\nNuGetVersion\n \nversion\n \nin\n \nversions\n)\n\n\n{\n\n    \nConsole\n.\nWriteLine\n(\n$\nFound version: {version}\n);\n\n\n}\n\n\n\n\n\n\nDownload a package\n\n\nNuGetClient\n \nclient\n \n=\n \nnew\n \nNuGetClient\n(\nhttps://api.nuget.org/v3/index.json\n);\n\n\n\nstring\n \npackageId\n \n=\n \nNewtonsoft.Json\n;\n\n\nNuGetVersion\n \npackageVersion\n \n=\n \nnew\n \nNuGetVersion\n(\n12.0.1\n);\n\n\n\nusing\n \n(\nStream\n \npackageStream\n \n=\n \nawait\n \nclient\n.\nGetPackageStreamAsync\n(\npackageId\n,\n \npackageVersion\n))\n\n\n{\n\n    \nConsole\n.\nWriteLine\n(\n$\nDownloaded package {packageId} {packageVersion}\n);\n\n\n}\n\n\n\n\n\n\nFind Package Metadata\n\n\nNuGetClient\n \nclient\n \n=\n \nnew\n \nNuGetClient\n(\nhttps://api.nuget.org/v3/index.json\n);\n\n\n\n// Find the metadata for all versions of a package.\n\n\nIReadOnlyList\nPackageMetadata\n \nitems\n \n=\n \nawait\n \nclient\n.\nGetPackageMetadataAsync\n(\nNewtonsoft.Json\n);\n\n\nif\n \n(!\nitems\n.\nAny\n())\n\n\n{\n\n    \nConsole\n.\nWriteLine\n(\n$\nPackage \nNewtonsoft.Json\n does not exist\n);\n\n    \nreturn\n;\n\n\n}\n\n\n\nforeach\n \n(\nvar\n \nmetadata\n \nin\n \nitems\n)\n\n\n{\n\n    \nConsole\n.\nWriteLine\n(\n$\nVersion: {metadata.Version}\n);\n\n    \nConsole\n.\nWriteLine\n(\n$\nListed: {metadata.Listed}\n);\n\n    \nConsole\n.\nWriteLine\n(\n$\nTags: {metadata.Tags}\n);\n\n    \nConsole\n.\nWriteLine\n(\n$\nDescription: {metadata.Description}\n);\n\n\n}\n\n\n\n// Or, find the metadata for a single version of a package.\n\n\nstring\n \npackageId\n \n=\n \nNewtonsoft.Json\n\n\nNuGetVersion\n \npackageVersion\n \n=\n \nnew\n \nNuGetVersion\n(\n12.0.1\n);\n\n\n\nPackageMetadata\n \nmetadata\n \n=\n \nawait\n \nclient\n.\nGetPackageMetadataAsync\n(\npackageId\n,\n \npackageVersion\n);\n\n\n\nConsole\n.\nWriteLine\n(\n$\nListed: {metadata.Listed}\n);\n\n\nConsole\n.\nWriteLine\n(\n$\nTags: {metadata.Tags}\n);\n\n\nConsole\n.\nWriteLine\n(\n$\nDescription: {metadata.Description}\n);\n\n\n\n\n\n\nSearch for packages\n\n\nSearch for \"json\" packages:\n\n\nNuGetClient\n \nclient\n \n=\n \nnew\n \nNuGetClient\n(\nhttps://api.nuget.org/v3/index.json\n);\n\n\nSearchResponse\n \nresponse\n \n=\n \nawait\n \nclient\n.\nSearchAsync\n(\njson\n);\n\n\n\nConsole\n.\nWriteLine\n(\n$\nFound {response.TotalHits} total results\n);\n\n\n\nforeach\n \n(\nSearchResult\n \nsearchResult\n \nin\n \nresponse\n.\nData\n)\n\n\n{\n\n    \nConsole\n.\nWriteLine\n(\n$\nFound package {searchResult.Id} {searchResult.Version}\n);\n\n\n}", 
+            "title": "BaGet SDK"
+        }, 
+        {
+            "location": "/tools/sdk/#baget-sdk", 
+            "text": "You can use BaGet's  BaGet.Protocol  package to interact with a NuGet server.", 
+            "title": "BaGet SDK"
+        }, 
+        {
+            "location": "/tools/sdk/#getting-started", 
+            "text": "Install the  BaGet.Protocol  package:  dotnet add package BaGet.Protocol", 
+            "title": "Getting Started"
+        }, 
+        {
+            "location": "/tools/sdk/#list-package-versions", 
+            "text": "Find all versions of the  Newtonsoft.Json  package:  NuGetClient   client   =   new   NuGetClient ( https://api.nuget.org/v3/index.json );  IReadOnlyList NuGetVersion   versions   =   await   client . ListPackageVersionsAsync ( Newtonsoft.Json );  foreach   ( NuGetVersion   version   in   versions )  { \n     Console . WriteLine ( $ Found version: {version} );  }", 
+            "title": "List Package Versions"
+        }, 
+        {
+            "location": "/tools/sdk/#download-a-package", 
+            "text": "NuGetClient   client   =   new   NuGetClient ( https://api.nuget.org/v3/index.json );  string   packageId   =   Newtonsoft.Json ;  NuGetVersion   packageVersion   =   new   NuGetVersion ( 12.0.1 );  using   ( Stream   packageStream   =   await   client . GetPackageStreamAsync ( packageId ,   packageVersion ))  { \n     Console . WriteLine ( $ Downloaded package {packageId} {packageVersion} );  }", 
+            "title": "Download a package"
+        }, 
+        {
+            "location": "/tools/sdk/#find-package-metadata", 
+            "text": "NuGetClient   client   =   new   NuGetClient ( https://api.nuget.org/v3/index.json );  // Find the metadata for all versions of a package.  IReadOnlyList PackageMetadata   items   =   await   client . GetPackageMetadataAsync ( Newtonsoft.Json );  if   (! items . Any ())  { \n     Console . WriteLine ( $ Package  Newtonsoft.Json  does not exist ); \n     return ;  }  foreach   ( var   metadata   in   items )  { \n     Console . WriteLine ( $ Version: {metadata.Version} ); \n     Console . WriteLine ( $ Listed: {metadata.Listed} ); \n     Console . WriteLine ( $ Tags: {metadata.Tags} ); \n     Console . WriteLine ( $ Description: {metadata.Description} );  }  // Or, find the metadata for a single version of a package.  string   packageId   =   Newtonsoft.Json  NuGetVersion   packageVersion   =   new   NuGetVersion ( 12.0.1 );  PackageMetadata   metadata   =   await   client . GetPackageMetadataAsync ( packageId ,   packageVersion );  Console . WriteLine ( $ Listed: {metadata.Listed} );  Console . WriteLine ( $ Tags: {metadata.Tags} );  Console . WriteLine ( $ Description: {metadata.Description} );", 
+            "title": "Find Package Metadata"
+        }, 
+        {
+            "location": "/tools/sdk/#search-for-packages", 
+            "text": "Search for \"json\" packages:  NuGetClient   client   =   new   NuGetClient ( https://api.nuget.org/v3/index.json );  SearchResponse   response   =   await   client . SearchAsync ( json );  Console . WriteLine ( $ Found {response.TotalHits} total results );  foreach   ( SearchResult   searchResult   in   response . Data )  { \n     Console . WriteLine ( $ Found package {searchResult.Id} {searchResult.Version} );  }", 
+            "title": "Search for packages"
         }, 
         {
             "location": "/vs/nugetorg/", 
