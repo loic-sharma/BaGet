@@ -13,7 +13,7 @@
         <meta name="description" content="A lightweight NuGet service implementation">
       
       
-        <link rel="canonical" href="https://loic-sharma.github.io/BaGet/cloud/aws/">
+        <link rel="canonical" href="https://loic-sharma.github.io/BaGet/quickstart/iis-proxy/">
       
       
         <meta name="author" content="Loic Sharma">
@@ -42,7 +42,7 @@
     
     
       
-        <title>AWS - BaGet</title>
+        <title>Windows IIS Proxy - BaGet</title>
       
     
     
@@ -104,7 +104,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#running-baget-on-aws" tabindex="1" class="md-skip">
+      <a href="#windows-iis-proxy" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -130,7 +130,7 @@
                 BaGet
               </span>
               <span class="md-header-nav__topic">
-                AWS
+                Windows IIS Proxy
               </span>
             
           
@@ -247,32 +247,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../.." title="BaGet" class="md-nav__link">
-      BaGet
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../../configuration/" title="Configuration" class="md-nav__link">
-      Configuration
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../../private-feeds/" title="Private Feeds" class="md-nav__link">
-      Private Feeds
+    <a href="../.." title="Overview" class="md-nav__link">
+      Overview
     </a>
   </li>
 
@@ -286,14 +262,14 @@
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
     
-    <label class="md-nav__link" for="nav-4">
-      Running in the Cloud
+    <label class="md-nav__link" for="nav-2">
+      Getting Started
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-4">
-        Running in the Cloud
+      <label class="md-nav__title" for="nav-2">
+        Getting Started
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
@@ -304,8 +280,44 @@
 
 
   <li class="md-nav__item">
+    <a href="../local/" title="On your computer" class="md-nav__link">
+      On your computer
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../docker/" title="Docker" class="md-nav__link">
+      Docker
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../azure/" title="Azure" class="md-nav__link">
       Azure
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../aws/" title="AWS" class="md-nav__link">
+      AWS
     </a>
   </li>
 
@@ -337,11 +349,11 @@
     
     
       <label class="md-nav__link md-nav__link--active" for="__toc">
-        AWS
+        Windows IIS Proxy
       </label>
     
-    <a href="./" title="AWS" class="md-nav__link md-nav__link--active">
-      AWS
+    <a href="./" title="Windows IIS Proxy" class="md-nav__link md-nav__link--active">
+      Windows IIS Proxy
     </a>
     
       
@@ -355,8 +367,22 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#amazon-s3" title="Amazon S3" class="md-nav__link">
-    Amazon S3
+  <a href="#iis-setup" title="IIS Setup" class="md-nav__link">
+    IIS Setup
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#baget-folder-permissions" title="BaGet Folder Permissions" class="md-nav__link">
+    BaGet Folder Permissions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alternative-storage-path" title="Alternative Storage Path" class="md-nav__link">
+    Alternative Storage Path
   </a>
   
 </li>
@@ -383,8 +409,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../windows/iis-proxy/" title="Windows IIS Proxy" class="md-nav__link">
-      Windows IIS Proxy
+    <a href="../../configuration/" title="Configuration" class="md-nav__link">
+      Configuration
     </a>
   </li>
 
@@ -396,13 +422,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
     
-    <label class="md-nav__link" for="nav-6">
+    <label class="md-nav__link" for="nav-4">
       Tools
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-6">
+      <label class="md-nav__title" for="nav-4">
         Tools
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -432,14 +458,14 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
     
-    <label class="md-nav__link" for="nav-7">
-      BaGet vs. Other Software
+    <label class="md-nav__link" for="nav-5">
+      BaGet vs. Other
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-7">
-        BaGet vs. Other Software
+      <label class="md-nav__title" for="nav-5">
+        BaGet vs. Other
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
@@ -474,8 +500,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../vs/vsts/" title="VSTS" class="md-nav__link">
-      VSTS
+    <a href="../../vs/azure-artifacts/" title="Azure Artifacts" class="md-nav__link">
+      Azure Artifacts
     </a>
   </li>
 
@@ -566,8 +592,22 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#amazon-s3" title="Amazon S3" class="md-nav__link">
-    Amazon S3
+  <a href="#iis-setup" title="IIS Setup" class="md-nav__link">
+    IIS Setup
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#baget-folder-permissions" title="BaGet Folder Permissions" class="md-nav__link">
+    BaGet Folder Permissions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alternative-storage-path" title="Alternative Storage Path" class="md-nav__link">
+    Alternative Storage Path
   </a>
   
 </li>
@@ -588,31 +628,55 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/loic-sharma/BaGet/edit/master/docs/cloud/aws.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                  <a href="https://github.com/loic-sharma/BaGet/edit/master/docs/quickstart/iis-proxy.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                <h1 id="running-baget-on-aws">Running BaGet on AWS<a class="headerlink" href="#running-baget-on-aws" title="Permanent link">&para;</a></h1>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This page is a work in progress!</p>
+                <h1 id="windows-iis-proxy">Windows IIS Proxy<a class="headerlink" href="#windows-iis-proxy" title="Permanent link">&para;</a></h1>
+<p>With a few extra steps you can run BaGet behind a Windows IIS proxy. This has many benefits, including automatic restarts on reboots.</p>
+<h2 id="iis-setup">IIS Setup<a class="headerlink" href="#iis-setup" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Install the <a href="https://dotnet.microsoft.com/download">.NET Core Runtime</a> on the web server.</li>
+<li>Copy the BaGet directory over to your hosting area such as <code>C:\Inetpub\wwwroot\BaGet</code></li>
+<li>
+<p>Using IIS Manager, create a new Application Pool:</p>
+<ul>
+<li>Name = <code>BaGetAppPool</code> (can be whatever you want)</li>
+<li>.NET CLR version = No Managed Code</li>
+<li>Managed Pipeline Mode = Integrated</li>
+<li>Start application pool immediately = checked</li>
+</ul>
+</li>
+<li>
+<p>Using IIS Manager, create a new web site:</p>
+<ul>
+<li>Choose your site name and physical path</li>
+<li>Choose <code>BaGetAppPool</code> as the application pool</li>
+<li>In the Binding area, enter the default BaGet port of 5000</li>
+</ul>
+</li>
+</ol>
+<h2 id="baget-folder-permissions">BaGet Folder Permissions<a class="headerlink" href="#baget-folder-permissions" title="Permanent link">&para;</a></h2>
+<p>You <strong>may</strong> need to give special permissions to the top-level BaGet folder so that the app can persist its state. This is necessary as the Application Pools' identity is a virtual account that isn't recognized by the Windows User Management Console. For more information, please refer to ASP.NET Core's documentation:</p>
+<ul>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/?view=aspnetcore-2.2#application-pools">Application Pools</a></li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/?view=aspnetcore-2.2#application-pool-identity">Application Pool Identity</a></li>
+</ul>
+<h2 id="alternative-storage-path">Alternative Storage Path<a class="headerlink" href="#alternative-storage-path" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>Virtual Directories do not work with IIS and Kestrel. For more information, please refer to <a href="https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/?view=aspnetcore-2.2#virtual-directories">ASP.NET Core's documentation</a>.</p>
 </div>
-<h2 id="amazon-s3">Amazon S3<a class="headerlink" href="#amazon-s3" title="Permanent link">&para;</a></h2>
-<p>You can configure BaGet to store uploaded packages on <a href="https://aws.amazon.com/s3/">Amazon S3</a>
-by updating the <a href="https://github.com/loic-sharma/BaGet/blob/master/src/BaGet/appsettings.json"><code>appsettings.json</code></a> file:</p>
-<div class="codehilite"><pre><span></span><span class="p">{</span>
-    <span class="err">...</span>
-
-    <span class="nt">&quot;Storage&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;AwsS3&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;Region&quot;</span><span class="p">:</span> <span class="s2">&quot;us-west-1&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;Bucket&quot;</span><span class="p">:</span> <span class="s2">&quot;foo&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;AccessKey&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;SecretKey&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span>
-    <span class="p">},</span>
-
-    <span class="err">...</span>
-<span class="p">}</span>
+<p>Ensure that the configuration's storage <code>Path</code> has the appropriate forward slashes:</p>
+<div class="codehilite"><pre><span></span><span class="p">...</span>
+  <span class="s2">&quot;Storage&quot;</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s2">&quot;Type&quot;</span><span class="o">:</span> <span class="s2">&quot;FileSystem&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Path&quot;</span><span class="o">:</span> <span class="s2">&quot;C://AnotherFolder/Packages&quot;</span>
+  <span class="p">},</span>
+<span class="p">...</span>
 </pre></div>
+
+
+<p>Note that you will need to adjust folder permissions if the <code>Path</code> is created outside of the BaGet top-level directory. See the <a href="#baget-folder-permissions">BaGet Folder Permissions</a>.</p>
                 
                   
                 
@@ -648,13 +712,13 @@ by updating the <a href="https://github.com/loic-sharma/BaGet/blob/master/src/Ba
           </a>
         
         
-          <a href="../../windows/iis-proxy/" title="Windows IIS Proxy" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../../configuration/" title="Configuration" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Windows IIS Proxy
+                Configuration
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">

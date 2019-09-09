@@ -13,7 +13,7 @@
         <meta name="description" content="A lightweight NuGet service implementation">
       
       
-        <link rel="canonical" href="https://loic-sharma.github.io/BaGet/cloud/azure/">
+        <link rel="canonical" href="https://loic-sharma.github.io/BaGet/quickstart/aws/">
       
       
         <meta name="author" content="Loic Sharma">
@@ -42,7 +42,7 @@
     
     
       
-        <title>Azure - BaGet</title>
+        <title>AWS - BaGet</title>
       
     
     
@@ -104,7 +104,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#running-baget-on-azure" tabindex="1" class="md-skip">
+      <a href="#run-baget-on-aws" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -130,7 +130,7 @@
                 BaGet
               </span>
               <span class="md-header-nav__topic">
-                Azure
+                AWS
               </span>
             
           
@@ -247,32 +247,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../.." title="BaGet" class="md-nav__link">
-      BaGet
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../../configuration/" title="Configuration" class="md-nav__link">
-      Configuration
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../../private-feeds/" title="Private Feeds" class="md-nav__link">
-      Private Feeds
+    <a href="../.." title="Overview" class="md-nav__link">
+      Overview
     </a>
   </li>
 
@@ -286,17 +262,53 @@
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
     
-    <label class="md-nav__link" for="nav-4">
-      Running in the Cloud
+    <label class="md-nav__link" for="nav-2">
+      Getting Started
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-4">
-        Running in the Cloud
+      <label class="md-nav__title" for="nav-2">
+        Getting Started
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../local/" title="On your computer" class="md-nav__link">
+      On your computer
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../docker/" title="Docker" class="md-nav__link">
+      Docker
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../azure/" title="Azure" class="md-nav__link">
+      Azure
+    </a>
+  </li>
+
         
           
           
@@ -313,11 +325,11 @@
     
     
       <label class="md-nav__link md-nav__link--active" for="__toc">
-        Azure
+        AWS
       </label>
     
-    <a href="./" title="Azure" class="md-nav__link md-nav__link--active">
-      Azure
+    <a href="./" title="AWS" class="md-nav__link md-nav__link--active">
+      AWS
     </a>
     
       
@@ -331,29 +343,49 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#azure-sql-database" title="Azure SQL Database" class="md-nav__link">
-    Azure SQL Database
+  <a href="#configure-baget" title="Configure BaGet" class="md-nav__link">
+    Configure BaGet
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#amazon-s3" title="Amazon S3" class="md-nav__link">
+    Amazon S3
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#amazon-rds" title="Amazon RDS" class="md-nav__link">
+    Amazon RDS
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#publish-packages" title="Publish Packages" class="md-nav__link">
+    Publish Packages
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#azure-blob-storage" title="Azure Blob Storage" class="md-nav__link">
-    Azure Blob Storage
+  <a href="#restore-packages" title="Restore Packages" class="md-nav__link">
+    Restore Packages
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#azure-search" title="Azure Search" class="md-nav__link">
-    Azure Search
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#todo" title="TODO" class="md-nav__link">
-    TODO
+  <a href="#symbol-server" title="Symbol Server" class="md-nav__link">
+    Symbol Server
   </a>
   
 </li>
@@ -387,8 +419,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../aws/" title="AWS" class="md-nav__link">
-      AWS
+    <a href="../iis-proxy/" title="Windows IIS Proxy" class="md-nav__link">
+      Windows IIS Proxy
     </a>
   </li>
 
@@ -404,8 +436,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../windows/iis-proxy/" title="Windows IIS Proxy" class="md-nav__link">
-      Windows IIS Proxy
+    <a href="../../configuration/" title="Configuration" class="md-nav__link">
+      Configuration
     </a>
   </li>
 
@@ -417,13 +449,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
     
-    <label class="md-nav__link" for="nav-6">
+    <label class="md-nav__link" for="nav-4">
       Tools
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-6">
+      <label class="md-nav__title" for="nav-4">
         Tools
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -453,14 +485,14 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
     
-    <label class="md-nav__link" for="nav-7">
-      BaGet vs. Other Software
+    <label class="md-nav__link" for="nav-5">
+      BaGet vs. Other
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-7">
-        BaGet vs. Other Software
+      <label class="md-nav__title" for="nav-5">
+        BaGet vs. Other
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
@@ -495,8 +527,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../vs/vsts/" title="VSTS" class="md-nav__link">
-      VSTS
+    <a href="../../vs/azure-artifacts/" title="Azure Artifacts" class="md-nav__link">
+      Azure Artifacts
     </a>
   </li>
 
@@ -587,29 +619,49 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#azure-sql-database" title="Azure SQL Database" class="md-nav__link">
-    Azure SQL Database
+  <a href="#configure-baget" title="Configure BaGet" class="md-nav__link">
+    Configure BaGet
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#amazon-s3" title="Amazon S3" class="md-nav__link">
+    Amazon S3
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#amazon-rds" title="Amazon RDS" class="md-nav__link">
+    Amazon RDS
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#publish-packages" title="Publish Packages" class="md-nav__link">
+    Publish Packages
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#azure-blob-storage" title="Azure Blob Storage" class="md-nav__link">
-    Azure Blob Storage
+  <a href="#restore-packages" title="Restore Packages" class="md-nav__link">
+    Restore Packages
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#azure-search" title="Azure Search" class="md-nav__link">
-    Azure Search
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#todo" title="TODO" class="md-nav__link">
-    TODO
+  <a href="#symbol-server" title="Symbol Server" class="md-nav__link">
+    Symbol Server
   </a>
   
 </li>
@@ -630,22 +682,42 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/loic-sharma/BaGet/edit/master/docs/cloud/azure.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                  <a href="https://github.com/loic-sharma/BaGet/edit/master/docs/quickstart/aws.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                <h1 id="running-baget-on-azure">Running BaGet on Azure<a class="headerlink" href="#running-baget-on-azure" title="Permanent link">&para;</a></h1>
+                <h1 id="run-baget-on-aws">Run BaGet on AWS<a class="headerlink" href="#run-baget-on-aws" title="Permanent link">&para;</a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This page is a work in progress!</p>
 </div>
-<p>Use Azure to scale BaGet to nuget.org scale. You can configure BaGet to store metadata on <a href="https://azure.microsoft.com/en-us/services/sql-database/">Azure SQL Database</a>, upload packages to <a href="https://azure.microsoft.com/en-us/services/storage/blobs/">Azure Blob Storage</a>, and provide powerful search using <a href="https://azure.microsoft.com/en-us/services/search/">Azure Search</a>.</p>
-<h2 id="azure-sql-database">Azure SQL Database<a class="headerlink" href="#azure-sql-database" title="Permanent link">&para;</a></h2>
-<p>Update the <a href="https://github.com/loic-sharma/BaGet/blob/master/src/BaGet/appsettings.json"><code>appsettings.json</code></a> file:</p>
+<p>Use Amazon Web Services to scale BaGet. You can store metadata on <a href="https://aws.amazon.com/rds/postgresql/">Amazon RDS</a> and upload packages to <a href="https://aws.amazon.com/s3/">Amazon S3</a>.</p>
+<h2 id="configure-baget">Configure BaGet<a class="headerlink" href="#configure-baget" title="Permanent link">&para;</a></h2>
+<p>You can modify BaGet's configurations by editing the <code>appsettings.json</code> file. For the full list of configurations, please refer to <a href="../../configuration/">BaGet's configuration</a> guide.</p>
+<h3 id="amazon-s3">Amazon S3<a class="headerlink" href="#amazon-s3" title="Permanent link">&para;</a></h3>
+<p>Update the <code>appsettings.json</code> file:</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+    <span class="err">...</span>
+
+    <span class="nt">&quot;Storage&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;AwsS3&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;Region&quot;</span><span class="p">:</span> <span class="s2">&quot;us-west-1&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;Bucket&quot;</span><span class="p">:</span> <span class="s2">&quot;foo&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;AccessKey&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;SecretKey&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span>
+    <span class="p">},</span>
+
+    <span class="err">...</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h3 id="amazon-rds">Amazon RDS<a class="headerlink" href="#amazon-rds" title="Permanent link">&para;</a></h3>
+<p>To use PostgreSQL, update the <code>appsettings.json</code> file:</p>
 <div class="codehilite"><pre><span></span><span class="p">{</span>
     <span class="err">...</span>
 
     <span class="nt">&quot;Database&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;SqlServer&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;PostgreSql&quot;</span><span class="p">,</span>
         <span class="nt">&quot;ConnectionString&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
     <span class="p">},</span>
 
@@ -654,16 +726,13 @@
 </pre></div>
 
 
-<h2 id="azure-blob-storage">Azure Blob Storage<a class="headerlink" href="#azure-blob-storage" title="Permanent link">&para;</a></h2>
-<p>Update the <a href="https://github.com/loic-sharma/BaGet/blob/master/src/BaGet/appsettings.json"><code>appsettings.json</code></a> file:</p>
+<p>To use MySQL, update the <code>appsettings.json</code> file:</p>
 <div class="codehilite"><pre><span></span><span class="p">{</span>
     <span class="err">...</span>
 
-    <span class="nt">&quot;Storage&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;AzureBlobStorage&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;AccountName&quot;</span><span class="p">:</span> <span class="s2">&quot;my-account&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;Container&quot;</span><span class="p">:</span> <span class="s2">&quot;my-container&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;AccessKey&quot;</span><span class="p">:</span> <span class="s2">&quot;abcd1234&quot;</span>
+    <span class="nt">&quot;Database&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;MySql&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;ConnectionString&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
     <span class="p">},</span>
 
     <span class="err">...</span>
@@ -671,27 +740,33 @@
 </pre></div>
 
 
-<h2 id="azure-search">Azure Search<a class="headerlink" href="#azure-search" title="Permanent link">&para;</a></h2>
-<p>Update the <a href="https://github.com/loic-sharma/BaGet/blob/master/src/BaGet/appsettings.json"><code>appsettings.json</code></a> file:</p>
-<div class="codehilite"><pre><span></span><span class="p">{</span>
-    <span class="err">...</span>
-
-    <span class="nt">&quot;Search&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;Azure&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;AccountName&quot;</span><span class="p">:</span> <span class="s2">&quot;my-account&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;ApiKey&quot;</span><span class="p">:</span> <span class="s2">&quot;ABCD1234&quot;</span>
-    <span class="p">},</span>
-
-    <span class="err">...</span>
-<span class="p">}</span>
+<h2 id="publish-packages">Publish Packages<a class="headerlink" href="#publish-packages" title="Permanent link">&para;</a></h2>
+<p>Publish your first package with:</p>
+<div class="codehilite"><pre><span></span>dotnet nuget push -s http://localhost:5000/v3/index.json package.1.0.0.nupkg
 </pre></div>
 
 
-<h2 id="todo">TODO<a class="headerlink" href="#todo" title="Permanent link">&para;</a></h2>
+<p>Publish your first <a href="https://docs.microsoft.com/en-us/nuget/create-packages/symbol-packages-snupkg">symbol package</a> with:</p>
+<div class="codehilite"><pre><span></span>dotnet nuget push -s http://localhost:5000/v3/index.json symbol.package.1.0.0.snupkg
+</pre></div>
+
+
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>You should secure your server by requiring an API Key to publish packages. For more information, please refer to the <a href="../../configuration/#require-an-api-key">Require an API Key</a> guide.</p>
+</div>
+<h2 id="restore-packages">Restore Packages<a class="headerlink" href="#restore-packages" title="Permanent link">&para;</a></h2>
+<p>You can restore packages by using the following package source:</p>
+<p><code>http://localhost:5000/v3/index.json</code></p>
+<p>Some helpful guides:</p>
 <ul>
-<li>App Service</li>
-<li>High availibility setup</li>
+<li><a href="https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio#package-sources">Visual Studio</a></li>
+<li><a href="https://docs.microsoft.com/en-us/nuget/reference/nuget-config-file#package-source-sections">NuGet.config</a></li>
 </ul>
+<h2 id="symbol-server">Symbol Server<a class="headerlink" href="#symbol-server" title="Permanent link">&para;</a></h2>
+<p>You can load symbols by using the following symbol location:</p>
+<p><code>http://localhost:5000/api/download/symbols</code></p>
+<p>For Visual Studio, please refer to the <a href="https://docs.microsoft.com/en-us/visualstudio/debugger/specify-symbol-dot-pdb-and-source-files-in-the-visual-studio-debugger?view=vs-2017#configure-symbol-locations-and-loading-options">Configure Debugging</a> guide.</p>
                 
                   
                 
@@ -712,7 +787,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../../private-feeds/" title="Private Feeds" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../azure/" title="Azure" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -721,7 +796,7 @@
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Private Feeds
+                Azure
               </span>
             </div>
           </a>
