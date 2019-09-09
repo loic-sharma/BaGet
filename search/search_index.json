@@ -336,6 +336,21 @@
             "title": "Search for packages"
         }, 
         {
+            "location": "/tools/migrate/", 
+            "text": "Migrate from NuGet.Server\n\n\nNuGet.Server\n is a lightweight standalone NuGet server. It is strongly recommended that you upgrade to BaGet if you use NuGet.Server. Feel free to open a \nGitHub issue\n if you need help migrating.\n\n\n\n\nInfo\n\n\nPlease refer to the \nBaGet vs NuGet.Server\n page for reasons to upgrade to BaGet.\n\n\n\n\nSteps\n\n\nMake sure that you've installed \nnuget.exe\n. In PowerShell, run:\n\n\n$source\n \n=\n \nNuGet.Server package source\n\n\n$destination\n \n=\n \nBaGet package source\n\n\n\n\n\n\nIf you've \nconfigured BaGet to require an API Key\n, set it using \nthe \nsetapikey\n command\n:\n\n\n \nnuget\n.\nexe\n \nsetapikey\n \nNUGET-SERVER-API-KEY\n \n-Source\n \n$destination\n\n\n\n\n\n\nNow run the following PowerShell script:\n\n\nif\n \n(!(\nTest-Path\n \nWeb.config\n))\n \n{\n\n  \nthrow\n \nPlease run this script in the same directory as NuGet.Server\ns Web.config file\n\n\n}\n\n\n\n(\n \nnuget\n.\nexe\n \nlist\n \n-AllVersions\n \n-Source\n \n$source\n).\nSplit\n(\n[Environment]\n::\nNewLine\n)\n \n|\n \n%\n \n{\n\n  \n$id\n \n=\n \n$_\n.\nSplit\n(\n \n)[\n0\n].\nTrim\n()\n\n  \n$version\n \n=\n \n$_\n.\nSplit\n(\n \n)[\n1\n].\nTrim\n()\n\n\n  \n$path\n \n=\n \n[IO.Path]\n::\nCombine\n(\nPackages\n,\n \n$id\n,\n \n$version\n,\n \n${id}.${version}.nupkg\n)\n\n\n  \nWrite-Host\n \nnuget.exe push -Source $destination \n$path\n\n  \n \nnuget\n.\nexe\n \npush\n \n-Source\n \n$destination\n \n$path\n\n\n}", 
+            "title": "Migrate from NuGet.Server"
+        }, 
+        {
+            "location": "/tools/migrate/#migrate-from-nugetserver", 
+            "text": "NuGet.Server  is a lightweight standalone NuGet server. It is strongly recommended that you upgrade to BaGet if you use NuGet.Server. Feel free to open a  GitHub issue  if you need help migrating.   Info  Please refer to the  BaGet vs NuGet.Server  page for reasons to upgrade to BaGet.", 
+            "title": "Migrate from NuGet.Server"
+        }, 
+        {
+            "location": "/tools/migrate/#steps", 
+            "text": "Make sure that you've installed  nuget.exe . In PowerShell, run:  $source   =   NuGet.Server package source  $destination   =   BaGet package source   If you've  configured BaGet to require an API Key , set it using  the  setapikey  command :    nuget . exe   setapikey   NUGET-SERVER-API-KEY   -Source   $destination   Now run the following PowerShell script:  if   (!( Test-Path   Web.config ))   { \n   throw   Please run this script in the same directory as NuGet.Server s Web.config file  }  (   nuget . exe   list   -AllVersions   -Source   $source ). Split ( [Environment] :: NewLine )   |   %   { \n   $id   =   $_ . Split (   )[ 0 ]. Trim () \n   $version   =   $_ . Split (   )[ 1 ]. Trim () \n\n   $path   =   [IO.Path] :: Combine ( Packages ,   $id ,   $version ,   ${id}.${version}.nupkg ) \n\n   Write-Host   nuget.exe push -Source $destination  $path \n     nuget . exe   push   -Source   $destination   $path  }", 
+            "title": "Steps"
+        }, 
+        {
             "location": "/vs/nugetorg/", 
             "text": "nuget.org\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nnuget.org\n, also known as the \"Gallery\", is the defacto feed to host open\nsource packages. You should publish NuGet packages for your open-source projects here.\n\n\nThe Gallery is battle-tested and proven to scale well. You can find a guide on how to host\nyour own Gallery instance on \nthe Gallery's wiki\n.\nYou can find the Gallery's code on GitHub:\n\n\n\n\nNuGet/NuGetGallery\n - the \nnuget.org\n\nwebsite and v2 APIs\n\n\nNuGet/NuGet.Jobs\n - the Gallery's jobs for things like validation and package statistics.\n\n\nNuGet/NuGet.Services.Metadata\n - NuGet's v3 implementation\n\n\nNuGet/ServerCommon\n - common libraries used across NuGet's services\n\n\n\n\nAs you can tell, nuget.org is a complex beast. Hosting your own instance of the Gallery is not for the faint of heart.\n\n\nBaGet vs nuget.org\n\n\nTODO. See \nthis issue\n for a deep-dive.\n\n\n\n\nBaGet only competes with \nNuGet/NuGet.Services.Metadata\n\n\nnuget.org's v3 implementation is static\n\n\nRuns only on Windows\n\n\nHighly tied to Azure\n\n\nScales reads to near infinity\n\n\nDoesn't scale well for writes\n\n\nStatic JSON files are hosted on Azure Blob Storage\n\n\nServed by a Content Delivery Network\n\n\nFiles are updated by \nfeed2catalog\n, \ncatalog2registration\n, \ncatalog2dnx\n, and \ncatalog2lucene\n jobs\n\n\n\n\n\n\nBaGet's v3 implementation is dynamic\n\n\nCross-platform implementation\n\n\nRequests are served by a service that queries a database\n\n\nSimpler architecture, which makes it easier to deploy and run small feeds\n\n\nEasier to scale for writes\n\n\nHarder to scale for reads\n\n\nEasier to add new features\n\n\nHarder to make as reliable", 
             "title": "nuget.org"
@@ -352,7 +367,7 @@
         }, 
         {
             "location": "/vs/nugetserver/", 
-            "text": "NuGet.Server\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nNuGet.Server\n is a lightweight standalone NuGet server. It is strongly recommended that you upgrade to BaGet if you use NuGet.Server. Feel free to open \nGitHub issues\n if you need help migrating.\n\n\n\n\nNuGet.Server\n\n\nOnly runs on Windows\n\n\nSupports NuGet v2 APIs (missing verified packages, signed packages, etc...)\n\n\nDoesn't support NuGet's v3 APIs\n\n\nDoes not scale well\n\n\nNot well documented\n\n\nNot well maintained\n\n\n\n\n\n\nBaGet\n\n\nCross-platform\n\n\nSupports NuGet v3 APIs\n\n\n\n\n\n\n\n\nUpgrade Guide\n\n\nTODO", 
+            "text": "NuGet.Server\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nNuGet.Server\n is a lightweight standalone NuGet server. It is strongly recommended that you upgrade to BaGet if you use NuGet.Server. Feel free to open \nGitHub issues\n if you need help migrating.\n\n\n\n\nNuGet.Server\n\n\nOnly runs on Windows\n\n\nSupports NuGet v2 APIs (missing verified packages, signed packages, etc...)\n\n\nDoesn't support NuGet's v3 APIs\n\n\nDoes not scale well\n\n\nNot well documented\n\n\nNot well maintained\n\n\n\n\n\n\nBaGet\n\n\nCross-platform\n\n\nSupports NuGet v3 APIs\n\n\n\n\n\n\n\n\nMigration Guide\n\n\nYou can use the \nNuGet.Server migration\n guide to import your NuGet.Server packages into BaGet.", 
             "title": "NuGet.Server"
         }, 
         {
@@ -361,9 +376,9 @@
             "title": "NuGet.Server"
         }, 
         {
-            "location": "/vs/nugetserver/#upgrade-guide", 
-            "text": "TODO", 
-            "title": "Upgrade Guide"
+            "location": "/vs/nugetserver/#migration-guide", 
+            "text": "You can use the  NuGet.Server migration  guide to import your NuGet.Server packages into BaGet.", 
+            "title": "Migration Guide"
         }, 
         {
             "location": "/vs/azure-artifacts/", 

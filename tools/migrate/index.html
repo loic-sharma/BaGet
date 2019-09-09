@@ -13,7 +13,7 @@
         <meta name="description" content="A lightweight NuGet service implementation">
       
       
-        <link rel="canonical" href="https://loic-sharma.github.io/BaGet/">
+        <link rel="canonical" href="https://loic-sharma.github.io/BaGet/tools/migrate/">
       
       
         <meta name="author" content="Loic Sharma">
@@ -37,18 +37,18 @@
       
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
-      <link rel="shortcut icon" href="./assets/images/favicon.png">
+      <link rel="shortcut icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-0.17.3, mkdocs-material-2.9.4">
     
     
       
-        <title>BaGet</title>
+        <title>Migrate from NuGet.Server - BaGet</title>
       
     
     
-      <link rel="stylesheet" href="./assets/stylesheets/application.451f80e5.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/application.451f80e5.css">
       
-        <link rel="stylesheet" href="./assets/stylesheets/application-palette.22915126.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/application-palette.22915126.css">
       
       
         
@@ -57,7 +57,7 @@
       
     
     
-      <script src="./assets/javascripts/modernizr.1aa3b519.js"></script>
+      <script src="../../assets/javascripts/modernizr.1aa3b519.js"></script>
     
     
       <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
@@ -66,7 +66,7 @@
         <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
       
     
-    <link rel="stylesheet" href="./assets/fonts/material-icons.css">
+    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
     
     
   </head>
@@ -104,7 +104,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#baget" tabindex="1" class="md-skip">
+      <a href="#migrate-from-nugetserver" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -130,7 +130,7 @@
                 BaGet
               </span>
               <span class="md-header-nav__topic">
-                Overview
+                Migrate from NuGet.Server
               </span>
             
           
@@ -245,56 +245,11 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Overview
-      </label>
-    
-    <a href="." title="Overview" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../.." title="Overview" class="md-nav__link">
       Overview
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#run-baget" title="Run BaGet" class="md-nav__link">
-    Run BaGet
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#baget-sdk" title="BaGet SDK" class="md-nav__link">
-    BaGet SDK
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
     
@@ -323,7 +278,7 @@
 
 
   <li class="md-nav__item">
-    <a href="quickstart/local/" title="On your computer" class="md-nav__link">
+    <a href="../../quickstart/local/" title="On your computer" class="md-nav__link">
       On your computer
     </a>
   </li>
@@ -335,7 +290,7 @@
 
 
   <li class="md-nav__item">
-    <a href="quickstart/docker/" title="Docker" class="md-nav__link">
+    <a href="../../quickstart/docker/" title="Docker" class="md-nav__link">
       Docker
     </a>
   </li>
@@ -347,7 +302,7 @@
 
 
   <li class="md-nav__item">
-    <a href="quickstart/azure/" title="Azure" class="md-nav__link">
+    <a href="../../quickstart/azure/" title="Azure" class="md-nav__link">
       Azure
     </a>
   </li>
@@ -359,7 +314,7 @@
 
 
   <li class="md-nav__item">
-    <a href="quickstart/aws/" title="AWS" class="md-nav__link">
+    <a href="../../quickstart/aws/" title="AWS" class="md-nav__link">
       AWS
     </a>
   </li>
@@ -371,7 +326,7 @@
 
 
   <li class="md-nav__item">
-    <a href="quickstart/gcp/" title="Google Cloud" class="md-nav__link">
+    <a href="../../quickstart/gcp/" title="Google Cloud" class="md-nav__link">
       Google Cloud
     </a>
   </li>
@@ -383,7 +338,7 @@
 
 
   <li class="md-nav__item">
-    <a href="quickstart/iis-proxy/" title="Windows IIS Proxy" class="md-nav__link">
+    <a href="../../quickstart/iis-proxy/" title="Windows IIS Proxy" class="md-nav__link">
       Windows IIS Proxy
     </a>
   </li>
@@ -400,7 +355,7 @@
 
 
   <li class="md-nav__item">
-    <a href="configuration/" title="Configuration" class="md-nav__link">
+    <a href="../../configuration/" title="Configuration" class="md-nav__link">
       Configuration
     </a>
   </li>
@@ -410,10 +365,12 @@
       
       
 
+  
 
-  <li class="md-nav__item md-nav__item--nested">
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
     
     <label class="md-nav__link" for="nav-4">
       Tools
@@ -431,7 +388,7 @@
 
 
   <li class="md-nav__item">
-    <a href="tools/mirroring/" title="Mirroring" class="md-nav__link">
+    <a href="../mirroring/" title="Mirroring" class="md-nav__link">
       Mirroring
     </a>
   </li>
@@ -443,7 +400,7 @@
 
 
   <li class="md-nav__item">
-    <a href="tools/sdk/" title="BaGet SDK" class="md-nav__link">
+    <a href="../sdk/" title="BaGet SDK" class="md-nav__link">
       BaGet SDK
     </a>
   </li>
@@ -453,11 +410,20 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="tools/migrate/" title="Migrate from NuGet.Server" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+    <a href="./" title="Migrate from NuGet.Server" class="md-nav__link md-nav__link--active">
       Migrate from NuGet.Server
     </a>
+    
   </li>
 
         
@@ -491,7 +457,7 @@
 
 
   <li class="md-nav__item">
-    <a href="vs/nugetorg/" title="nuget.org" class="md-nav__link">
+    <a href="../../vs/nugetorg/" title="nuget.org" class="md-nav__link">
       nuget.org
     </a>
   </li>
@@ -503,7 +469,7 @@
 
 
   <li class="md-nav__item">
-    <a href="vs/nugetserver/" title="NuGet.Server" class="md-nav__link">
+    <a href="../../vs/nugetserver/" title="NuGet.Server" class="md-nav__link">
       NuGet.Server
     </a>
   </li>
@@ -515,7 +481,7 @@
 
 
   <li class="md-nav__item">
-    <a href="vs/azure-artifacts/" title="Azure Artifacts" class="md-nav__link">
+    <a href="../../vs/azure-artifacts/" title="Azure Artifacts" class="md-nav__link">
       Azure Artifacts
     </a>
   </li>
@@ -527,7 +493,7 @@
 
 
   <li class="md-nav__item">
-    <a href="vs/myget/" title="MyGet" class="md-nav__link">
+    <a href="../../vs/myget/" title="MyGet" class="md-nav__link">
       MyGet
     </a>
   </li>
@@ -539,7 +505,7 @@
 
 
   <li class="md-nav__item">
-    <a href="vs/liget/" title="LiGet" class="md-nav__link">
+    <a href="../../vs/liget/" title="LiGet" class="md-nav__link">
       LiGet
     </a>
   </li>
@@ -551,7 +517,7 @@
 
 
   <li class="md-nav__item">
-    <a href="vs/artifactory/" title="Artifactory" class="md-nav__link">
+    <a href="../../vs/artifactory/" title="Artifactory" class="md-nav__link">
       Artifactory
     </a>
   </li>
@@ -563,7 +529,7 @@
 
 
   <li class="md-nav__item">
-    <a href="vs/nexus/" title="Nexus" class="md-nav__link">
+    <a href="../../vs/nexus/" title="Nexus" class="md-nav__link">
       Nexus
     </a>
   </li>
@@ -575,7 +541,7 @@
 
 
   <li class="md-nav__item">
-    <a href="vs/teamcity/" title="TeamCity" class="md-nav__link">
+    <a href="../../vs/teamcity/" title="TeamCity" class="md-nav__link">
       TeamCity
     </a>
   </li>
@@ -603,29 +569,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#run-baget" title="Run BaGet" class="md-nav__link">
-    Run BaGet
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#baget-sdk" title="BaGet SDK" class="md-nav__link">
-    BaGet SDK
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -636,22 +579,42 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/loic-sharma/BaGet/edit/master/docs/index.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                  <a href="https://github.com/loic-sharma/BaGet/edit/master/docs/tools/migrate.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                <h1 id="baget">BaGet<a class="headerlink" href="#baget" title="Permanent link">&para;</a></h1>
-<p>BaGet (pronounced "baguette") is a lightweight NuGet and symbol server. It is <a href="https://github.com/loic-sharma/BaGet">open source</a>, cross-platform, and cloud ready!</p>
-<h2 id="run-baget">Run BaGet<a class="headerlink" href="#run-baget" title="Permanent link">&para;</a></h2>
-<p>You can run BaGet on your preferred platform:</p>
-<ul>
-<li><a href="quickstart/local/">On your computer</a></li>
-<li><a href="quickstart/docker/">Docker</a></li>
-<li><a href="quickstart/azure/">Azure</a></li>
-<li><a href="quickstart/aws/">AWS</a></li>
-<li><a href="quickstart/gcp/">Google Cloud</a></li>
-</ul>
-<h2 id="baget-sdk">BaGet SDK<a class="headerlink" href="#baget-sdk" title="Permanent link">&para;</a></h2>
-<p>You can also use the <a href="https://www.nuget.org/packages/BaGet.Protocol"><code>BaGet.Protocol</code></a> package to interact with a NuGet server. For more information, please refer to the <a href="tools/sdk/">BaGet SDK</a> guide.</p>
+                <h1 id="migrate-from-nugetserver">Migrate from NuGet.Server<a class="headerlink" href="#migrate-from-nugetserver" title="Permanent link">&para;</a></h1>
+<p><a href="https://github.com/NuGet/NuGet.Server">NuGet.Server</a> is a lightweight standalone NuGet server. It is strongly recommended that you upgrade to BaGet if you use NuGet.Server. Feel free to open a <a href="https://github.com/loic-sharma/BaGet/issues">GitHub issue</a> if you need help migrating.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>Please refer to the <a href="../../vs/nugetserver/">BaGet vs NuGet.Server</a> page for reasons to upgrade to BaGet.</p>
+</div>
+<h1 id="steps">Steps<a class="headerlink" href="#steps" title="Permanent link">&para;</a></h1>
+<p>Make sure that you've installed <a href="https://www.nuget.org/downloads">nuget.exe</a>. In PowerShell, run:</p>
+<div class="codehilite"><pre><span></span><span class="nv">$source</span> <span class="p">=</span> <span class="s2">&quot;&lt;NuGet.Server package source&gt;&quot;</span>
+<span class="nv">$destination</span> <span class="p">=</span> <span class="s2">&quot;&lt;BaGet package source&gt;&quot;</span>
+</pre></div>
+
+
+<p>If you've <a href="https://loic-sharma.github.io/BaGet/configuration/#requiring-an-api-key">configured BaGet to require an API Key</a>, set it using <a href="https://docs.microsoft.com/en-us/nuget/reference/cli-reference/cli-ref-setapikey">the <code>setapikey</code> command</a>:</p>
+<div class="codehilite"><pre><span></span><span class="p">&amp;</span> <span class="n">nuget</span><span class="p">.</span><span class="n">exe</span> <span class="n">setapikey</span> <span class="s2">&quot;NUGET-SERVER-API-KEY&quot;</span> <span class="n">-Source</span> <span class="nv">$destination</span>
+</pre></div>
+
+
+<p>Now run the following PowerShell script:</p>
+<div class="codehilite"><pre><span></span><span class="k">if</span> <span class="p">(!(</span><span class="nb">Test-Path</span> <span class="s2">&quot;Web.config&quot;</span><span class="p">))</span> <span class="p">{</span>
+  <span class="k">throw</span> <span class="s2">&quot;Please run this script in the same directory as NuGet.Server&#39;s Web.config file&quot;</span>
+<span class="p">}</span>
+
+<span class="p">(&amp;</span> <span class="n">nuget</span><span class="p">.</span><span class="n">exe</span> <span class="n">list</span> <span class="n">-AllVersions</span> <span class="n">-Source</span> <span class="nv">$source</span><span class="p">).</span><span class="n">Split</span><span class="p">(</span><span class="no">[Environment]</span><span class="p">::</span><span class="n">NewLine</span><span class="p">)</span> <span class="p">|</span> <span class="p">%</span> <span class="p">{</span>
+  <span class="nv">$id</span> <span class="p">=</span> <span class="nv">$_</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="n">0</span><span class="p">].</span><span class="n">Trim</span><span class="p">()</span>
+  <span class="nv">$version</span> <span class="p">=</span> <span class="nv">$_</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="n">1</span><span class="p">].</span><span class="n">Trim</span><span class="p">()</span>
+
+  <span class="nv">$path</span> <span class="p">=</span> <span class="no">[IO.Path]</span><span class="p">::</span><span class="n">Combine</span><span class="p">(</span><span class="s2">&quot;Packages&quot;</span><span class="p">,</span> <span class="nv">$id</span><span class="p">,</span> <span class="nv">$version</span><span class="p">,</span> <span class="s2">&quot;${id}.${version}.nupkg&quot;</span><span class="p">)</span>
+
+  <span class="nb">Write-Host</span> <span class="s2">&quot;nuget.exe push -Source $destination &quot;&quot;$path&quot;&quot;&quot;</span>
+  <span class="p">&amp;</span> <span class="n">nuget</span><span class="p">.</span><span class="n">exe</span> <span class="n">push</span> <span class="n">-Source</span> <span class="nv">$destination</span> <span class="nv">$path</span>
+<span class="p">}</span>
+</pre></div>
                 
                   
                 
@@ -672,14 +635,28 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
+          <a href="../sdk/" title="BaGet SDK" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                BaGet SDK
+              </span>
+            </div>
+          </a>
         
-          <a href="quickstart/local/" title="On your computer" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+        
+          <a href="../../vs/nugetorg/" title="nuget.org" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                On your computer
+                nuget.org
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">
@@ -707,7 +684,7 @@
       
         
   <div class="md-footer-social">
-    <link rel="stylesheet" href="./assets/fonts/font-awesome.css">
+    <link rel="stylesheet" href="../../assets/fonts/font-awesome.css">
     
       <a href="https://github.com/loic-sharma" class="md-footer-social__link fa fa-github-alt"></a>
     
@@ -722,9 +699,9 @@
       
     </div>
     
-      <script src="./assets/javascripts/application.30f6b8b1.js"></script>
+      <script src="../../assets/javascripts/application.30f6b8b1.js"></script>
       
-      <script>app.initialize({version:"0.17.3",url:{base:"."}})</script>
+      <script>app.initialize({version:"0.17.3",url:{base:"../.."}})</script>
       
     
     
