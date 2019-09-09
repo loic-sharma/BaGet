@@ -1,20 +1,16 @@
-# BaGet.Protocol
+# BaGet SDK
 
-BaGet's SDK to interact with the [NuGet protocol](https://docs.microsoft.com/en-us/nuget/api/overview).
+You can use BaGet's [`BaGet.Protocol`](https://www.nuget.org/packages/BaGet.Protocol) package to interact with a NuGet server.
 
-[Package (NuGet)](https://www.nuget.org/packages/BaGet.Protocol) | [Documentation](https://loic-sharma.github.io/BaGet/tools/sdk/) | [Samples](https://github.com/loic-sharma/BaGet/tree/master/samples)
+## Getting Started
 
-## Getting started
+Install the [`BaGet.Protocol`](https://www.nuget.org/packages/BaGet.Protocol) package:
 
-### Install the package
-
-```powershell
+```
 dotnet add package BaGet.Protocol
 ```
 
-## Examples
-
-### List Package Versions
+## List Package Versions
 
 Find all versions of the `Newtonsoft.Json` package:
 
@@ -29,7 +25,7 @@ foreach (NuGetVersion version in versions)
 }
 ```
 
-### Download a package
+## Download a package
 
 ```csharp
 NuGetClient client = new NuGetClient("https://api.nuget.org/v3/index.json");
@@ -43,7 +39,7 @@ using (Stream packageStream = await client.GetPackageStreamAsync(packageId, pack
 }
 ```
 
-### Find Package Metadata
+## Find Package Metadata
 
 ```csharp
 NuGetClient client = new NuGetClient("https://api.nuget.org/v3/index.json");
@@ -75,7 +71,7 @@ Console.WriteLine($"Tags: {metadata.Tags}");
 Console.WriteLine($"Description: {metadata.Description}");
 ```
 
-### Search for packages
+## Search for packages
 
 Search for "json" packages:
 
