@@ -12,66 +12,27 @@ namespace BaGet.Protocol
     /// </summary>
     public class SearchResult
     {
-        public SearchResult(
-            string packageId,
-            NuGetVersion version,
-            string description,
-            IReadOnlyList<string> authors,
-            string iconUrl,
-            string licenseUrl,
-            string projectUrl,
-            string registrationIndexUrl,
-            string summary,
-            IReadOnlyList<string> tags,
-            string title,
-            long totalDownloads,
-            IReadOnlyList<SearchResultVersion> versions)
-        {
-            if (string.IsNullOrEmpty(packageId))
-            {
-                throw new ArgumentException(nameof(packageId));
-            }
-
-            version = version ?? throw new ArgumentNullException(nameof(version));
-            versions = versions ?? throw new ArgumentNullException(nameof(versions));
-
-            PackageId = packageId;
-            Version = version;
-            Description = description;
-            Authors = authors;
-            IconUrl = iconUrl;
-            LicenseUrl = licenseUrl;
-            ProjectUrl = projectUrl;
-            RegistrationIndexUrl = registrationIndexUrl;
-            Summary = summary;
-            Tags = tags;
-            Title = title;
-            TotalDownloads = totalDownloads;
-
-            Versions = versions;
-        }
-
         [JsonProperty(PropertyName = "id")]
-        public string PackageId { get; }
+        public string PackageId { get; set; }
 
         [JsonConverter(typeof(NuGetVersionConverter), NuGetVersionConversionFlags.IncludeBuildMetadata)]
-        public NuGetVersion Version { get; }
+        public NuGetVersion Version { get; set; }
 
-        public string Description { get; }
+        public string Description { get; set; }
 
         [JsonConverter(typeof(SingleOrListConverter<string>))]
-        public IReadOnlyList<string> Authors { get; }
-        public string IconUrl { get; }
-        public string LicenseUrl { get; }
-        public string ProjectUrl { get; }
+        public IReadOnlyList<string> Authors { get; set; }
+        public string IconUrl { get; set; }
+        public string LicenseUrl { get; set; }
+        public string ProjectUrl { get; set; }
 
         [JsonProperty(PropertyName = "registration")]
-        public string RegistrationIndexUrl { get; }
-        public string Summary { get; }
-        public IReadOnlyList<string> Tags { get; }
-        public string Title { get; }
-        public long TotalDownloads { get; }
+        public string RegistrationIndexUrl { get; set; }
+        public string Summary { get; set; }
+        public IReadOnlyList<string> Tags { get; set; }
+        public string Title { get; set; }
+        public long TotalDownloads { get; set; }
 
-        public IReadOnlyList<SearchResultVersion> Versions { get; }
+        public IReadOnlyList<SearchResultVersion> Versions { get; set; }
     }
 }

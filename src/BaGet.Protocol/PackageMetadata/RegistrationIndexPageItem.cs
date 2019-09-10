@@ -9,21 +9,13 @@ namespace BaGet.Protocol
     /// </summary>
     public class RegistrationIndexPageItem
     {
-        public RegistrationIndexPageItem(string leafUrl, PackageMetadata packageMetadata, string packageContent)
-        {
-            if (string.IsNullOrEmpty(leafUrl)) throw new ArgumentNullException(nameof(leafUrl));
-
-            LeafUrl = leafUrl;
-            PackageMetadata = packageMetadata ?? throw new ArgumentNullException(nameof(packageMetadata));
-            PackageContent = packageContent ?? throw new ArgumentNullException(nameof(packageContent));
-        }
-
         [JsonProperty(PropertyName = "@id")]
-        public string LeafUrl { get; }
+        public string LeafUrl { get; set; }
 
         [JsonProperty(PropertyName = "catalogEntry")]
-        public PackageMetadata PackageMetadata { get; }
+        public PackageMetadata PackageMetadata { get; set; }
 
-        public string PackageContent { get; }
+        [JsonProperty(PropertyName = "packageContent")]
+        public string PackageContentUrl { get; set; }
     }
 }

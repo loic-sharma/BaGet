@@ -9,15 +9,5 @@ namespace BaGet.Protocol
     /// </summary>
     public class RegistrationPageResponse : RegistrationIndexPage
     {
-        /// <inheritdoc />
-        public RegistrationPageResponse(
-            string pageUrl,
-            int count,
-            IReadOnlyList<RegistrationIndexPageItem> itemsOrNull,
-            NuGetVersion lower,
-            NuGetVersion upper)
-            : base (pageUrl, count, itemsOrNull, lower, upper)
-        {
-        }
     }
 }

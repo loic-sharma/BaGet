@@ -16,36 +16,20 @@ namespace BaGet.Protocol
             "http://schema.nuget.org/catalog#Permalink"
         };
 
-        public RegistrationLeafResponse(
-            string registrationUri,
-            bool listed,
-            string packageContentUrl,
-            DateTimeOffset published,
-            string registrationIndexUrl,
-            IReadOnlyList<string> type = null)
-        {
-            RegistrationUri = registrationUri ?? throw new ArgumentNullException(nameof(registrationIndexUrl));
-            Listed = listed;
-            Published = published;
-            PackageContentUrl = packageContentUrl ?? throw new ArgumentNullException(nameof(packageContentUrl));
-            RegistrationIndexUrl = registrationIndexUrl ?? throw new ArgumentNullException(nameof(registrationIndexUrl));
-            Type = type;
-        }
-
         [JsonProperty(PropertyName = "@id")]
-        public string RegistrationUri { get; }
+        public string RegistrationLeafUrl { get; set; }
 
         [JsonProperty(PropertyName = "@type")]
-        public IReadOnlyList<string> Type { get; }
+        public IReadOnlyList<string> Type { get; set; }
 
-        public bool Listed { get; }
+        public bool Listed { get; set; }
 
         [JsonProperty(PropertyName = "packageContent")]
-        public string PackageContentUrl { get; }
+        public string PackageContentUrl { get; set; }
 
-        public DateTimeOffset Published { get; }
+        public DateTimeOffset Published { get; set; }
 
         [JsonProperty(PropertyName = "registration")]
-        public string RegistrationIndexUrl { get; }
+        public string RegistrationIndexUrl { get; set; }
     }
 }

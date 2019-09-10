@@ -9,20 +9,14 @@ namespace BaGet.Core.Search
     /// </summary>
     public class DependentsResponse
     {
-        public DependentsResponse(long totalHits, IReadOnlyList<string> data)
-        {
-            TotalHits = totalHits;
-            Data = data ?? throw new ArgumentNullException(nameof(data));
-        }
-
         /// <summary>
         /// The total number of matches, disregarding skip and take.
         /// </summary>
-        public long TotalHits { get; }
+        public long TotalHits { get; set; }
 
         /// <summary>
         /// The package IDs matched by the dependent query.
         /// </summary>
-        public IReadOnlyList<string> Data { get; }
+        public IReadOnlyList<string> Data { get; set; }
     }
 }

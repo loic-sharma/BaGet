@@ -73,31 +73,37 @@ namespace BaGet.Core.Search
                 var versions = package.OrderByDescending(p => p.Version).ToList();
                 var latest = versions.First();
 
-                var versionResults = versions.Select(p => new SearchResultVersion(
-                    registrationLeafUrl: _url.GetRegistrationLeafUrl(p.Id, p.Version),
-                    p.Version,
-                    p.Downloads));
-
-                result.Add(new SearchResult(
-                    latest.Id,
-                    latest.Version,
-                    latest.Description,
-                    latest.Authors,
-                    latest.IconUrlString,
-                    latest.LicenseUrlString,
-                    latest.ProjectUrlString,
-                    registrationIndexUrl: _url.GetRegistrationIndexUrl(latest.Id),
-                    latest.Summary,
-                    latest.Tags,
-                    latest.Title,
-                    versions.Sum(p => p.Downloads),
-                    versionResults.ToList()));
+                result.Add(new SearchResult
+                {
+                    PackageId = latest.Id,
+                    Version = latest.Version,
+                    Description = latest.Description,
+                    Authors = latest.Authors,
+                    IconUrl = latest.IconUrlString,
+                    LicenseUrl = latest.LicenseUrlString,
+                    ProjectUrl = latest.ProjectUrlString,
+                    RegistrationIndexUrl = _url.GetRegistrationIndexUrl(latest.Id),
+                    Summary = latest.Summary,
+                    Tags = latest.Tags,
+                    Title = latest.Title,
+                    TotalDownloads = versions.Sum(p => p.Downloads),
+                    Versions = versions
+                        .Select(p => new SearchResultVersion
+                        {
+                            RegistrationLeafUrl = _url.GetRegistrationLeafUrl(p.Id, p.Version),
+                            Version = p.Version,
+                            Downloads = p.Downloads,
+                        })
+                        .ToList()
+                });
             }
 
-            return new SearchResponse(
-                result.Count,
-                result,
-                SearchContext.Default(_url.GetPackageMetadataResourceUrl()));
+            return new SearchResponse
+            {
+                TotalHits = result.Count,
+                Data = result,
+                Context = SearchContext.Default(_url.GetPackageMetadataResourceUrl())
+            };
         }
 
         public async Task<AutocompleteResponse> AutocompleteAsync(
@@ -129,10 +135,12 @@ namespace BaGet.Core.Search
                 .Distinct()
                 .ToListAsync(cancellationToken);
 
-            return new AutocompleteResponse(
-                results.Count,
-                results,
-                AutocompleteContext.Default);
+            return new AutocompleteResponse
+            {
+                TotalHits = results.Count,
+                Data = results,
+                Context = AutocompleteContext.Default
+            };
         }
 
         public async Task<DependentsResponse> FindDependentsAsync(
@@ -152,7 +160,11 @@ namespace BaGet.Core.Search
                 .Distinct()
                 .ToListAsync(cancellationToken);
 
-            return new DependentsResponse(results.Count, results);
+            return new DependentsResponse
+            {
+                TotalHits = results.Count,
+                Data = results
+            };
         }
 
         private async Task<List<IGrouping<string, Package>>> SearchImplAsync(

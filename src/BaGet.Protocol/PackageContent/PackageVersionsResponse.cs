@@ -14,18 +14,9 @@ namespace BaGet.Protocol
     public class PackageVersionsResponse
     {
         /// <summary>
-        /// Create list of versions.
-        /// </summary>
-        /// <param name="versions">The versions.</param>
-        public PackageVersionsResponse(IReadOnlyList<NuGetVersion> versions)
-        {
-            Versions = versions ?? throw new ArgumentNullException(nameof(versions));
-        }
-
-        /// <summary>
         /// The versions lowercased and normalized.
         /// </summary>
         [JsonConverter(typeof(NuGetVersionListConverter))]
-        public IReadOnlyList<NuGetVersion> Versions { get; }
+        public IReadOnlyList<NuGetVersion> Versions { get; set; }
     }
 }

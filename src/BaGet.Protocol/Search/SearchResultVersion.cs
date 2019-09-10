@@ -12,24 +12,12 @@ namespace BaGet.Protocol
     /// </summary>
     public class SearchResultVersion
     {
-        public SearchResultVersion(
-            string registrationLeafUrl,
-            NuGetVersion version,
-            long downloads)
-        {
-            version = version ?? throw new ArgumentNullException(nameof(version));
-
-            RegistrationLeafUrl = registrationLeafUrl;
-            Version = version;
-            Downloads = downloads;
-        }
-
         [JsonProperty(PropertyName = "@id")]
-        public string RegistrationLeafUrl { get; }
+        public string RegistrationLeafUrl { get; set; }
 
         [JsonConverter(typeof(NuGetVersionConverter), NuGetVersionConversionFlags.IncludeBuildMetadata)]
-        public NuGetVersion Version { get; }
+        public NuGetVersion Version { get; set; }
 
-        public long Downloads { get; }
+        public long Downloads { get; set; }
     }
 }

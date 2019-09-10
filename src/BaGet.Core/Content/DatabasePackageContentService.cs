@@ -47,7 +47,10 @@ namespace BaGet.Core.Content
                 versions = packages.Select(p => p.Version).ToList();
             }
 
-            return new PackageVersionsResponse(versions);
+            return new PackageVersionsResponse
+            {
+                Versions = versions
+            };
         }
 
         public async Task<Stream> GetPackageContentStreamOrNullAsync(

@@ -46,19 +46,23 @@ namespace BaGet.Core.Metadata
             // TODO: Paging of registration items.
             // "Un-paged" example: https://api.nuget.org/v3/registration3/newtonsoft.json/index.json
             // Paged example: https://api.nuget.org/v3/registration3/fake/index.json
-            return new BaGetRegistrationIndexResponse(
-                type: RegistrationIndexResponse.DefaultType,
-                count: packages.Count,
-                totalDownloads: packages.Sum(p => p.Downloads),
-                pages: new[]
+            return new BaGetRegistrationIndexResponse
+            {
+                Type = RegistrationIndexResponse.DefaultType,
+                Count = packages.Count,
+                TotalDownloads = packages.Sum(p => p.Downloads),
+                Pages = new[]
                 {
-                    new RegistrationIndexPage(
-                        pageUrl: _url.GetRegistrationIndexUrl(packages.First().Id),
-                        count: packages.Count(),
-                        itemsOrNull: packages.Select(ToRegistrationIndexPageItem).ToList(),
-                        lower: versions.Min(),
-                        upper: versions.Max())
-                });
+                    new RegistrationIndexPage
+                    {
+                        PageUrl = _url.GetRegistrationIndexUrl(packages.First().Id),
+                        Count = packages.Count(),
+                        ItemsOrNull = packages.Select(ToRegistrationIndexPageItem).ToList(),
+                        Lower = versions.Min(),
+                        Upper = versions.Max()
+                    }
+                }
+            };
         }
 
         public async Task<RegistrationLeafResponse> GetRegistrationLeafOrNullAsync(
@@ -75,14 +79,16 @@ namespace BaGet.Core.Metadata
                 return null;
             }
 
-            return new BaGetRegistrationLeafResponse(
-                type: RegistrationLeafResponse.DefaultType,
-                registrationUri: _url.GetRegistrationLeafUrl(id, version),
-                listed: package.Listed,
-                downloads: package.Downloads,
-                packageContentUrl: _url.GetPackageDownloadUrl(id, version),
-                published: package.Published,
-                registrationIndexUrl: _url.GetRegistrationIndexUrl(id));
+            return new BaGetRegistrationLeafResponse
+            {
+                Type = RegistrationLeafResponse.DefaultType,
+                RegistrationLeafUrl = _url.GetRegistrationLeafUrl(id, version),
+                Listed = package.Listed,
+                Downloads = package.Downloads,
+                PackageContentUrl = _url.GetPackageDownloadUrl(id, version),
+                Published = package.Published,
+                RegistrationIndexUrl = _url.GetRegistrationIndexUrl(id)
+            };
         }
 
         public Task<RegistrationPageResponse> GetRegistrationPageOrNullAsync(
@@ -99,33 +105,37 @@ namespace BaGet.Core.Metadata
         }
 
         private RegistrationIndexPageItem ToRegistrationIndexPageItem(Package package) =>
-            new RegistrationIndexPageItem(
-                leafUrl: _url.GetRegistrationLeafUrl(package.Id, package.Version),
-                packageMetadata: new BaGetPackageMetadata(
-                    catalogUri: _url.GetRegistrationLeafUrl(package.Id, package.Version),
-                    packageId: package.Id,
-                    version: package.Version,
-                    authors: string.Join(", ", package.Authors),
-                    description: package.Description,
-                    downloads: package.Downloads,
-                    hasReadme: package.HasReadme,
-                    iconUrl: package.IconUrlString,
-                    language: package.Language,
-                    licenseUrl: package.LicenseUrlString,
-                    listed: package.Listed,
-                    minClientVersion: package.MinClientVersion,
-                    packageContent: _url.GetPackageDownloadUrl(package.Id, package.Version),
-                    packageTypes: package.PackageTypes.Select(t => t.Name).ToList(),
-                    projectUrl: package.ProjectUrlString,
-                    repositoryUrl: package.RepositoryUrlString,
-                    repositoryType: package.RepositoryType,
-                    published: package.Published,
-                    requireLicenseAcceptance: package.RequireLicenseAcceptance,
-                    summary: package.Summary,
-                    tags: package.Tags,
-                    title: package.Title,
-                    dependencyGroups: ToDependencyGroups(package)),
-                packageContent: _url.GetPackageDownloadUrl(package.Id, package.Version));
+            new RegistrationIndexPageItem
+            {
+                LeafUrl = _url.GetRegistrationLeafUrl(package.Id, package.Version),
+                PackageContentUrl = _url.GetPackageDownloadUrl(package.Id, package.Version),
+                PackageMetadata = new BaGetPackageMetadata
+                {
+                    CatalogUrl = _url.GetRegistrationLeafUrl(package.Id, package.Version),
+                    PackageId = package.Id,
+                    Version = package.Version,
+                    Authors = string.Join(", ", package.Authors),
+                    Description = package.Description,
+                    Downloads = package.Downloads,
+                    HasReadme = package.HasReadme,
+                    IconUrl = package.IconUrlString,
+                    Language = package.Language,
+                    LicenseUrl = package.LicenseUrlString,
+                    Listed = package.Listed,
+                    MinClientVersion = package.MinClientVersion,
+                    PackageContentUrl = _url.GetPackageDownloadUrl(package.Id, package.Version),
+                    PackageTypes = package.PackageTypes.Select(t => t.Name).ToList(),
+                    ProjectUrl = package.ProjectUrlString,
+                    RepositoryUrl = package.RepositoryUrlString,
+                    RepositoryType = package.RepositoryType,
+                    Published = package.Published,
+                    RequireLicenseAcceptance = package.RequireLicenseAcceptance,
+                    Summary = package.Summary,
+                    Tags = package.Tags,
+                    Title = package.Title,
+                    DependencyGroups = ToDependencyGroups(package)
+                },
+            };
 
         private IReadOnlyList<DependencyGroupItem> ToDependencyGroups(Package package)
         {

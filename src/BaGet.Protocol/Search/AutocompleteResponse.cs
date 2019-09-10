@@ -9,26 +9,16 @@ namespace BaGet.Protocol
     /// </summary>
     public class AutocompleteResponse
     {
-        public AutocompleteResponse(
-            long totalHits,
-            IReadOnlyList<string> data,
-            AutocompleteContext context = null)
-        {
-            TotalHits = totalHits;
-            Data = data ?? throw new ArgumentNullException(nameof(data));
-            Context = context;
-        }
-
-        public AutocompleteContext Context { get; }
+        public AutocompleteContext Context { get; set; }
 
         /// <summary>
         /// The total number of matches, disregarding skip and take.
         /// </summary>
-        public long TotalHits { get; }
+        public long TotalHits { get; set; }
 
         /// <summary>
         /// The package IDs matched by the autocomplete query.
         /// </summary>
-        public IReadOnlyList<string> Data { get; }
+        public IReadOnlyList<string> Data { get; set; }
     }
 }

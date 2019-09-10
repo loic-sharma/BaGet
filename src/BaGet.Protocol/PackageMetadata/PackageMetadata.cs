@@ -12,73 +12,35 @@ namespace BaGet.Protocol
     /// </summary>
     public class PackageMetadata
     {
-        public PackageMetadata(
-            string catalogUri,
-            string packageId,
-            NuGetVersion version,
-            string authors,
-            string description,
-            string iconUrl,
-            string language,
-            string licenseUrl,
-            bool listed,
-            string minClientVersion,
-            string packageContent,
-            string projectUrl,
-            DateTime published,
-            bool requireLicenseAcceptance,
-            string summary,
-            IReadOnlyList<string> tags,
-            string title,
-            IReadOnlyList<DependencyGroupItem> dependencyGroups)
-        {
-            CatalogUri = catalogUri ?? throw new ArgumentNullException(nameof(catalogUri));
-
-            PackageId = packageId;
-            Version = version;
-            Authors = authors;
-            Description = description;
-            IconUrl = iconUrl;
-            Language = language;
-            LicenseUrl = licenseUrl;
-            Listed = listed;
-            MinClientVersion = minClientVersion;
-            PackageContent = packageContent;
-            ProjectUrl = projectUrl;
-            Published = published;
-            RequireLicenseAcceptance = requireLicenseAcceptance;
-            Summary = summary;
-            Tags = tags;
-            Title = title;
-            DependencyGroups = dependencyGroups;
-        }
-
         [JsonProperty(PropertyName = "@id")]
-        public string CatalogUri { get; }
+        public string CatalogUrl { get; set; }
 
         [JsonProperty(PropertyName = "id")]
-        public string PackageId { get; }
+        public string PackageId { get; set; }
 
         /// <summary>
         /// The full NuGet version after normalization, including any semver2 build metadata.
         /// </summary>
         [JsonConverter(typeof(NuGetVersionConverter), NuGetVersionConversionFlags.IncludeBuildMetadata)]
-        public NuGetVersion Version { get; }
+        public NuGetVersion Version { get; set; }
 
-        public string Authors { get; }
-        public string Description { get; }
-        public string IconUrl { get; }
-        public string Language { get; }
-        public string LicenseUrl { get; }
-        public bool Listed { get; }
-        public string MinClientVersion { get; }
-        public string PackageContent { get; }
-        public string ProjectUrl { get; }
-        public DateTime Published { get; }
-        public bool RequireLicenseAcceptance { get; }
-        public string Summary { get; }
-        public IReadOnlyList<string> Tags { get; }
-        public string Title { get; }
-        public IReadOnlyList<DependencyGroupItem> DependencyGroups { get; }
+        public string Authors { get; set; }
+        public string Description { get; set; }
+        public string IconUrl { get; set; }
+        public string Language { get; set; }
+        public string LicenseUrl { get; set; }
+        public bool Listed { get; set; }
+        public string MinClientVersion { get; set; }
+
+        [JsonProperty(PropertyName = "packageContent")]
+        public string PackageContentUrl { get; set; }
+
+        public string ProjectUrl { get; set; }
+        public DateTime Published { get; set; }
+        public bool RequireLicenseAcceptance { get; set; }
+        public string Summary { get; set; }
+        public IReadOnlyList<string> Tags { get; set; }
+        public string Title { get; set; }
+        public IReadOnlyList<DependencyGroupItem> DependencyGroups { get; set; }
     }
 }

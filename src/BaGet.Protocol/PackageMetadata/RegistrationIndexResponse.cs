@@ -17,29 +17,19 @@ namespace BaGet.Protocol
             "catalog:Permalink"
         };
 
-        public RegistrationIndexResponse(
-            int count,
-            IReadOnlyList<RegistrationIndexPage> pages,
-            IReadOnlyList<string> type = null)
-        {
-            Count = count;
-            Pages = pages ?? throw new ArgumentNullException(nameof(pages));
-            Type = type;
-        }
-
         [JsonProperty(PropertyName = "@type")]
-        public IReadOnlyList<string> Type { get; }
+        public IReadOnlyList<string> Type { get; set; }
 
         /// <summary>
         /// The number of registration pages. See <see cref="Pages"/>. 
         /// </summary>
-        public int Count { get; }
+        public int Count { get; set; }
 
         /// <summary>
         /// The pages that contain all of the versions of the package, ordered
         /// by the package's version.
         /// </summary>
         [JsonProperty(PropertyName = "items")]
-        public IReadOnlyList<RegistrationIndexPage> Pages { get; }
+        public IReadOnlyList<RegistrationIndexPage> Pages { get; set; }
     }
 }
