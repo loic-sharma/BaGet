@@ -12,12 +12,14 @@ namespace BaGet.Protocol
     /// </summary>
     public class SearchResultVersion
     {
-        [JsonProperty(PropertyName = "@id")]
+        [JsonProperty("@id")]
         public string RegistrationLeafUrl { get; set; }
 
+        [JsonProperty("version")]
         [JsonConverter(typeof(NuGetVersionConverter), NuGetVersionConversionFlags.IncludeBuildMetadata)]
         public NuGetVersion Version { get; set; }
 
+        [JsonProperty("downloads")]
         public long Downloads { get; set; }
     }
 }

@@ -55,7 +55,7 @@ namespace BaGet.Core.Metadata
                 {
                     new RegistrationIndexPage
                     {
-                        PageUrl = _url.GetRegistrationIndexUrl(packages.First().Id),
+                        RegistrationPageUrl = _url.GetRegistrationIndexUrl(packages.First().Id),
                         Count = packages.Count(),
                         ItemsOrNull = packages.Select(ToRegistrationIndexPageItem).ToList(),
                         Lower = versions.Min(),

@@ -9,13 +9,13 @@ namespace BaGet.Protocol
     /// </summary>
     public class RegistrationIndexPageItem
     {
-        [JsonProperty(PropertyName = "@id")]
+        [JsonProperty("@id")]
         public string LeafUrl { get; set; }
 
-        [JsonProperty(PropertyName = "catalogEntry")]
+        [JsonProperty("catalogEntry")]
         public PackageMetadata PackageMetadata { get; set; }
 
-        [JsonProperty(PropertyName = "packageContent")]
+        [JsonProperty("packageContent")]
         public string PackageContentUrl { get; set; }
     }
 }

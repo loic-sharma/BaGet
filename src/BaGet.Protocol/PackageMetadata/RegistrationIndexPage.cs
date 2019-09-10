@@ -12,27 +12,30 @@ namespace BaGet.Protocol
     /// </summary>
     public class RegistrationIndexPage
     {
-        [JsonProperty(PropertyName = "@id")]
-        public string PageUrl { get; set; }
+        [JsonProperty("@id")]
+        public string RegistrationPageUrl { get; set; }
 
+        [JsonProperty("count")]
         public int Count { get; set; }
 
         /// <summary>
         /// Null if this package's registration is paged. The items can be found
-        /// by following the page's <see cref="PageUrl"/>.
+        /// by following the page's <see cref="RegistrationPageUrl"/>.
         /// </summary>
-        [JsonProperty(PropertyName = "items")]
+        [JsonProperty("items")]
         public IReadOnlyList<RegistrationIndexPageItem> ItemsOrNull { get; set; }
 
         /// <summary>
         /// This page's lowest package version.
         /// </summary>
+        [JsonProperty("lower")]
         [JsonConverter(typeof(NuGetVersionConverter))]
         public NuGetVersion Lower { get; set; }
 
         /// <summary>
         /// This page's highest package version.
         /// </summary>
+        [JsonProperty("upper")]
         [JsonConverter(typeof(NuGetVersionConverter))]
         public NuGetVersion Upper { get; set; }
     }

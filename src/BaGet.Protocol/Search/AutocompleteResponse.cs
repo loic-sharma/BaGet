@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace BaGet.Protocol
 {
@@ -14,11 +15,13 @@ namespace BaGet.Protocol
         /// <summary>
         /// The total number of matches, disregarding skip and take.
         /// </summary>
+        [JsonProperty("totalHits")]
         public long TotalHits { get; set; }
 
         /// <summary>
         /// The package IDs matched by the autocomplete query.
         /// </summary>
+        [JsonProperty("data")]
         public IReadOnlyList<string> Data { get; set; }
     }
 }

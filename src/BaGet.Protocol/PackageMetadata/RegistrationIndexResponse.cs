@@ -17,19 +17,20 @@ namespace BaGet.Protocol
             "catalog:Permalink"
         };
 
-        [JsonProperty(PropertyName = "@type")]
+        [JsonProperty("@type")]
         public IReadOnlyList<string> Type { get; set; }
 
         /// <summary>
         /// The number of registration pages. See <see cref="Pages"/>. 
         /// </summary>
+        [JsonProperty("count")]
         public int Count { get; set; }
 
         /// <summary>
         /// The pages that contain all of the versions of the package, ordered
         /// by the package's version.
         /// </summary>
-        [JsonProperty(PropertyName = "items")]
+        [JsonProperty("items")]
         public IReadOnlyList<RegistrationIndexPage> Pages { get; set; }
     }
 }

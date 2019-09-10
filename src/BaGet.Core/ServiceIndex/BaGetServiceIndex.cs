@@ -22,7 +22,11 @@ namespace BaGet.Core.ServiceIndex
             {
                 var type = string.IsNullOrEmpty(version) ? name : $"{name}/{version}";
 
-                yield return new ServiceIndexItem(type, url);
+                yield return new ServiceIndexItem
+                {
+                    ResourceUrl = url,
+                    Type = type,
+                };
             }
         }
 
@@ -37,7 +41,11 @@ namespace BaGet.Core.ServiceIndex
             resources.AddRange(BuildResource("PackageBaseAddress", _url.GetPackageContentResourceUrl(), "3.0.0"));
             resources.AddRange(BuildResource("SearchAutocompleteService", _url.GetAutocompleteResourceUrl(), "", "3.0.0-rc", "3.0.0-beta"));
 
-            var result = new ServiceIndexResponse(new NuGetVersion("3.0.0"), resources);
+            var result = new ServiceIndexResponse
+            {
+                Version = new NuGetVersion("3.0.0"),
+                Resources = resources,
+            };
 
             return Task.FromResult(result);
         }

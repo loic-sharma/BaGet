@@ -16,20 +16,22 @@ namespace BaGet.Protocol
             "http://schema.nuget.org/catalog#Permalink"
         };
 
-        [JsonProperty(PropertyName = "@id")]
+        [JsonProperty("@id")]
         public string RegistrationLeafUrl { get; set; }
 
-        [JsonProperty(PropertyName = "@type")]
+        [JsonProperty("@type")]
         public IReadOnlyList<string> Type { get; set; }
 
+        [JsonProperty("listed")]
         public bool Listed { get; set; }
 
-        [JsonProperty(PropertyName = "packageContent")]
+        [JsonProperty("packageContent")]
         public string PackageContentUrl { get; set; }
 
+        [JsonProperty("published")]
         public DateTimeOffset Published { get; set; }
 
-        [JsonProperty(PropertyName = "registration")]
+        [JsonProperty("registration")]
         public string RegistrationIndexUrl { get; set; }
     }
 }
