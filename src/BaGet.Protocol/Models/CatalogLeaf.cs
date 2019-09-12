@@ -13,7 +13,7 @@ namespace BaGet.Protocol
     public class CatalogLeaf : ICatalogLeafItem
     {
         [JsonProperty("@id")]
-        public string Url { get; set; }
+        public string CatalogLeafUrl { get; set; }
 
         [JsonProperty("@type")]
         [JsonConverter(typeof(CatalogLeafTypeConverter))]

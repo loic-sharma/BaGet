@@ -146,11 +146,11 @@ namespace BaGet.Protocol.Catalog
                 switch (leafItem.Type)
                 {
                     case CatalogLeafType.PackageDelete:
-                        var packageDelete = await _client.GetPackageDeleteLeafAsync(leafItem.Url);
+                        var packageDelete = await _client.GetPackageDeleteLeafAsync(leafItem.CatalogLeafUrl);
                         success = await _leafProcessor.ProcessPackageDeleteAsync(packageDelete, cancellationToken);
                         break;
                     case CatalogLeafType.PackageDetails:
-                        var packageDetails = await _client.GetPackageDetailsLeafAsync(leafItem.Url);
+                        var packageDetails = await _client.GetPackageDetailsLeafAsync(leafItem.CatalogLeafUrl);
                         success = await _leafProcessor.ProcessPackageDetailsAsync(packageDetails, cancellationToken);
                         break;
                     default:
@@ -163,7 +163,7 @@ namespace BaGet.Protocol.Catalog
                     0,
                     exception,
                     "An exception was thrown while processing leaf {leafUrl}.",
-                    leafItem.Url);
+                    leafItem.CatalogLeafUrl);
                 success = false;
             }
 
@@ -171,7 +171,7 @@ namespace BaGet.Protocol.Catalog
             {
                 _logger.LogWarning(
                     "Failed to process leaf {leafUrl} ({packageId} {packageVersion}, {leafType}).",
-                    leafItem.Url,
+                    leafItem.CatalogLeafUrl,
                     leafItem.PackageId,
                     leafItem.PackageVersion,
                     leafItem.Type);

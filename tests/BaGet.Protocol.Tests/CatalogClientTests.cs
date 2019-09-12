@@ -38,11 +38,11 @@ namespace BaGet.Protocol.Tests
             switch (leafItem.Type)
             {
                 case CatalogLeafType.PackageDelete:
-                    result = await _target.GetPackageDeleteLeafAsync(leafItem.Url);
+                    result = await _target.GetPackageDeleteLeafAsync(leafItem.CatalogLeafUrl);
                     break;
 
                 case CatalogLeafType.PackageDetails:
-                    result = await _target.GetPackageDetailsLeafAsync(leafItem.Url);
+                    result = await _target.GetPackageDetailsLeafAsync(leafItem.CatalogLeafUrl);
                     break;
 
                 default:
