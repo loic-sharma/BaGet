@@ -2,6 +2,9 @@ using NuGet.Versioning;
 
 namespace BaGet.Protocol
 {
+    /// <summary>
+    /// These are documented interpretations of values returned by the Search resource.
+    /// </summary>
     public static class SearchModelExtensions
     {
         /// <summary>

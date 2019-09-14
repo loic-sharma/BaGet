@@ -4,6 +4,9 @@ using NuGet.Versioning;
 
 namespace BaGet.Protocol
 {
+    /// <summary>
+    /// These are documented interpretations of values returned by the Package Content resource.
+    /// </summary>
     public static class PackageContentModelExtensions
     {
         /// <summary>
