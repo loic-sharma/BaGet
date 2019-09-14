@@ -15,9 +15,11 @@ namespace BaGet.Protocol
         [JsonProperty("@id")]
         public string RegistrationLeafUrl { get; set; }
 
+        /// <summary>
+        /// The full NuGet version after normalization, including any SemVer 2.0.0 build metadata.
+        /// </summary>
         [JsonProperty("version")]
-        [JsonConverter(typeof(NuGetVersionConverter), NuGetVersionConversionFlags.IncludeBuildMetadata)]
-        public NuGetVersion Version { get; set; }
+        public string Version { get; set; }
 
         [JsonProperty("downloads")]
         public long Downloads { get; set; }

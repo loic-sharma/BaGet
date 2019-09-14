@@ -26,11 +26,7 @@ namespace BaGet.Protocol.Tests
             Assert.True(result.Data.Count > 0);
             Assert.Equal(registrationurl, result.Data[0].RegistrationIndexUrl);
             Assert.Equal("Newtonsoft.Json", result.Data[0].PackageId);
-
-            var expectedVersion = new NuGetVersion("12.0.2");
-            var expectedResult = result.Data[0].Versions.SingleOrDefault(v => v.Version == expectedVersion);
-
-            Assert.NotNull(expectedResult);
+            Assert.Contains("12.0.2", result.Data[0].Versions.Select(v => v.Version));
         }
 
         [Fact]

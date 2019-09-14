@@ -30,15 +30,13 @@ namespace BaGet.Protocol
         /// and the SemVer 2.0.0 build metadata removed, if any.
         /// </summary>
         [JsonProperty("lower")]
-        [JsonConverter(typeof(NuGetVersionConverter))]
-        public NuGetVersion Lower { get; set; }
+        public string Lower { get; set; }
 
         /// <summary>
         /// This page's highest package version. The version should be lowercased, normalized,
         /// and the SemVer 2.0.0 build metadata removed, if any.
         /// </summary>
         [JsonProperty("upper")]
-        [JsonConverter(typeof(NuGetVersionConverter))]
-        public NuGetVersion Upper { get; set; }
+        public string Upper { get; set; }
     }
 }

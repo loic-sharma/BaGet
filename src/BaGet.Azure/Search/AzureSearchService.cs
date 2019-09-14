@@ -102,7 +102,7 @@ namespace BaGet.Azure.Search
                     versions.Add(new SearchResultVersion
                     {
                         RegistrationLeafUrl = _url.GetRegistrationLeafUrl(document.Id, version),
-                        Version = version,
+                        Version = document.Versions[i],
                         Downloads = long.Parse(document.VersionDownloads[i]),
                     });
                 }
@@ -110,7 +110,7 @@ namespace BaGet.Azure.Search
                 results.Add(new SearchResult
                 {
                     PackageId =  document.Id,
-                    Version = NuGetVersion.Parse(document.Version),
+                    Version = document.Version,
                     Description = document.Description,
                     Authors = document.Authors,
                     IconUrl = document.IconUrl,

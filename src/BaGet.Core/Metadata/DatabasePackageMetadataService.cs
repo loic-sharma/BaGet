@@ -58,8 +58,8 @@ namespace BaGet.Core.Metadata
                     {
                         RegistrationPageUrl = _url.GetRegistrationIndexUrl(packages.First().Id),
                         Count = packages.Count(),
-                        Lower = versions.Min(),
-                        Upper = versions.Max(),
+                        Lower = versions.Min().ToNormalizedString().ToLowerInvariant(),
+                        Upper = versions.Max().ToNormalizedString().ToLowerInvariant(),
                         ItemsOrNull = packages.Select(ToRegistrationIndexPageItem).ToList(),
                     }
                 }
@@ -113,7 +113,7 @@ namespace BaGet.Core.Metadata
                 PackageMetadata = new BaGetPackageMetadata
                 {
                     PackageId = package.Id,
-                    Version = package.Version,
+                    Version = package.Version.ToFullString(),
                     Authors = string.Join(", ", package.Authors),
                     Description = package.Description,
                     Downloads = package.Downloads,

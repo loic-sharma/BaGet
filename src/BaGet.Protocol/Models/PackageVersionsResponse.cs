@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
-using BaGet.Protocol.Internal;
 using Newtonsoft.Json;
-using NuGet.Versioning;
 
 namespace BaGet.Protocol
 {
@@ -14,10 +11,9 @@ namespace BaGet.Protocol
     public class PackageVersionsResponse
     {
         /// <summary>
-        /// The versions lowercased and normalized.
+        /// The versions, lowercased and normalized.
         /// </summary>
         [JsonProperty("versions")]
-        [JsonConverter(typeof(NuGetVersionListConverter))]
-        public IReadOnlyList<NuGetVersion> Versions { get; set; }
+        public IReadOnlyList<string> Versions { get; set; }
     }
 }
