@@ -11,22 +11,16 @@ namespace BaGet.Core.Entities
 
         public string Id { get; set; }
 
-        private NuGetVersion _version;
         public NuGetVersion Version
         {
             get
             {
-                if (_version == null)
-                {
-                    // Favor the original version string as it contains more information.
-                    // Packages uploaded with older versions of BaGet may not have the original version string.
-                    _version = NuGetVersion.Parse(
-                        OriginalVersionString != null
-                            ? OriginalVersionString
-                            : NormalizedVersionString);
-                }
-        
-                return _version;
+                // Favor the original version string as it contains more information.
+                // Packages uploaded with older versions of BaGet may not have the original version string.
+                return NuGetVersion.Parse(
+                    OriginalVersionString != null
+                        ? OriginalVersionString
+                        : NormalizedVersionString);
             }
 
             set
