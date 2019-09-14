@@ -13,7 +13,7 @@ namespace BaGet.Protocol
     public class PackageMetadata
     {
         [JsonProperty("@id")]
-        public string CatalogUrl { get; set; }
+        public string CatalogLeafUrl { get; set; }
 
         [JsonProperty("id")]
         public string PackageId { get; set; }
@@ -53,7 +53,7 @@ namespace BaGet.Protocol
         public string ProjectUrl { get; set; }
 
         [JsonProperty("published")]
-        public DateTime Published { get; set; }
+        public DateTimeOffset Published { get; set; }
 
         [JsonProperty("requireLicenseAcceptance")]
         public bool RequireLicenseAcceptance { get; set; }

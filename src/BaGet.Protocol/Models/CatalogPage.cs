@@ -21,7 +21,10 @@ namespace BaGet.Protocol
         [JsonProperty("items")]
         public List<CatalogLeafItem> Items { get; set; }
 
+        /// <summary>
+        /// The URL to the Catalog Index.
+        /// </summary>
         [JsonProperty("parent")]
-        public string Parent { get; set; }
+        public string CatalogIndexUrl { get; set; }
     }
 }

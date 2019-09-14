@@ -94,7 +94,7 @@ namespace BaGet.Protocol.Catalog
             CatalogPageItem pageItem,
             CancellationToken cancellationToken)
         {
-            var page = await _client.GetPageAsync(pageItem.Url, cancellationToken);
+            var page = await _client.GetPageAsync(pageItem.CatalogPageUrl, cancellationToken);
 
             var leafItems = page.GetLeavesInBounds(
                 minCommitTimestamp,
@@ -102,7 +102,7 @@ namespace BaGet.Protocol.Catalog
                 _options.ExcludeRedundantLeaves);
             _logger.LogInformation(
                 "On page {page}, {leaves} out of {totalLeaves} were in the time bounds.",
-                pageItem.Url,
+                pageItem.CatalogPageUrl,
                 leafItems.Count,
                 page.Items.Count);
 

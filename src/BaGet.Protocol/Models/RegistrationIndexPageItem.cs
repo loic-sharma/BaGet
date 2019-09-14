@@ -10,7 +10,7 @@ namespace BaGet.Protocol
     public class RegistrationIndexPageItem
     {
         [JsonProperty("@id")]
-        public string LeafUrl { get; set; }
+        public string RegistrationLeafUrl { get; set; }
 
         [JsonProperty("catalogEntry")]
         public PackageMetadata PackageMetadata { get; set; }

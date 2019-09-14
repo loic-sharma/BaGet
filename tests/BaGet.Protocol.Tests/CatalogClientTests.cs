@@ -31,7 +31,7 @@ namespace BaGet.Protocol.Tests
             var index = await _target.GetIndexAsync();
             var pageItem = index.Items.First();
 
-            var page = await _target.GetPageAsync(pageItem.Url);
+            var page = await _target.GetPageAsync(pageItem.CatalogPageUrl);
             var leafItem = page.Items.First();
 
             CatalogLeaf result;

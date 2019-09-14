@@ -26,14 +26,16 @@ namespace BaGet.Protocol
         public IReadOnlyList<RegistrationIndexPageItem> ItemsOrNull { get; set; }
 
         /// <summary>
-        /// This page's lowest package version.
+        /// This page's lowest package version. The version should be lowercased, normalized,
+        /// and the SemVer 2.0.0 build metadata removed, if any.
         /// </summary>
         [JsonProperty("lower")]
         [JsonConverter(typeof(NuGetVersionConverter))]
         public NuGetVersion Lower { get; set; }
 
         /// <summary>
-        /// This page's highest package version.
+        /// This page's highest package version. The version should be lowercased, normalized,
+        /// and the SemVer 2.0.0 build metadata removed, if any.
         /// </summary>
         [JsonProperty("upper")]
         [JsonConverter(typeof(NuGetVersionConverter))]

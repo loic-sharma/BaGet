@@ -10,8 +10,11 @@ namespace BaGet.Protocol
     /// </summary>
     public class CatalogPageItem
     {
+        /// <summary>
+        /// The URL to this item's corresponding <see cref="CatalogPage"/>.
+        /// </summary>
         [JsonProperty("@id")]
-        public string Url { get; set; }
+        public string CatalogPageUrl { get; set; }
 
         [JsonProperty("commitTimeStamp")]
         public DateTimeOffset CommitTimestamp { get; set; }

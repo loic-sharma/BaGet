@@ -57,9 +57,9 @@ namespace BaGet.Core.Metadata
                     {
                         RegistrationPageUrl = _url.GetRegistrationIndexUrl(packages.First().Id),
                         Count = packages.Count(),
-                        ItemsOrNull = packages.Select(ToRegistrationIndexPageItem).ToList(),
                         Lower = versions.Min(),
-                        Upper = versions.Max()
+                        Upper = versions.Max(),
+                        ItemsOrNull = packages.Select(ToRegistrationIndexPageItem).ToList(),
                     }
                 }
             };
@@ -82,11 +82,11 @@ namespace BaGet.Core.Metadata
             return new BaGetRegistrationLeafResponse
             {
                 Type = RegistrationLeafResponse.DefaultType,
-                RegistrationLeafUrl = _url.GetRegistrationLeafUrl(id, version),
                 Listed = package.Listed,
                 Downloads = package.Downloads,
-                PackageContentUrl = _url.GetPackageDownloadUrl(id, version),
                 Published = package.Published,
+                RegistrationLeafUrl = _url.GetRegistrationLeafUrl(id, version),
+                PackageContentUrl = _url.GetPackageDownloadUrl(id, version),
                 RegistrationIndexUrl = _url.GetRegistrationIndexUrl(id)
             };
         }
@@ -107,11 +107,10 @@ namespace BaGet.Core.Metadata
         private RegistrationIndexPageItem ToRegistrationIndexPageItem(Package package) =>
             new RegistrationIndexPageItem
             {
-                LeafUrl = _url.GetRegistrationLeafUrl(package.Id, package.Version),
+                RegistrationLeafUrl = _url.GetRegistrationLeafUrl(package.Id, package.Version),
                 PackageContentUrl = _url.GetPackageDownloadUrl(package.Id, package.Version),
                 PackageMetadata = new BaGetPackageMetadata
                 {
-                    CatalogUrl = _url.GetRegistrationLeafUrl(package.Id, package.Version),
                     PackageId = package.Id,
                     Version = package.Version,
                     Authors = string.Join(", ", package.Authors),
