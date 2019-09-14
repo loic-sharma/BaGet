@@ -114,7 +114,7 @@ namespace BaGet.Core.Mirror
                 Language = metadata.Language,
                 Listed = metadata.Listed,
                 MinClientVersion = metadata.MinClientVersion,
-                Published = metadata.Published,
+                Published = metadata.Published.UtcDateTime,
                 RequireLicenseAcceptance = metadata.RequireLicenseAcceptance,
                 Summary = metadata.Summary,
                 Title = metadata.Title,

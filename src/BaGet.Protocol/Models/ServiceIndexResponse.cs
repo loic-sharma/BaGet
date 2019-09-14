@@ -13,21 +13,17 @@ namespace BaGet.Protocol
     /// </summary>
     public class ServiceIndexResponse
     {
-        public ServiceIndexResponse(NuGetVersion version, IReadOnlyList<ServiceIndexItem> resources)
-        {
-            Version = version ?? throw new ArgumentNullException(nameof(version));
-            Resources = resources ?? throw new ArgumentNullException(nameof(resources));
-        }
-
         /// <summary>
         /// The service index's version.
         /// </summary>
+        [JsonProperty("version")]
         [JsonConverter(typeof(NuGetVersionConverter))]
-        public NuGetVersion Version { get; }
+        public NuGetVersion Version { get; set; }
 
         /// <summary>
         /// The resources declared by this service index.
         /// </summary>
-        public IReadOnlyList<ServiceIndexItem> Resources { get; }
+        [JsonProperty("resources")]
+        public IReadOnlyList<ServiceIndexItem> Resources { get; set; }
     }
 }

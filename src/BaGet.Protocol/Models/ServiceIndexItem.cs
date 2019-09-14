@@ -9,28 +9,22 @@ namespace BaGet.Protocol
     /// </summary>
     public class ServiceIndexItem
     {
-        public ServiceIndexItem(string type, string url, string comment = null)
-        {
-            Url = url ?? throw new ArgumentNullException(nameof(url));
-            Type = type ?? throw new ArgumentNullException(nameof(type));
-            Comment = comment ?? string.Empty;
-        }
-
         /// <summary>
         /// The resource's base URL.
         /// </summary>
-        [JsonProperty(PropertyName = "@id")]
-        public string Url { get; }
+        [JsonProperty("@id")]
+        public string ResourceUrl { get; set; }
 
         /// <summary>
         /// The resource's type.
         /// </summary>
-        [JsonProperty(PropertyName = "@type")]
-        public string Type { get; }
+        [JsonProperty("@type")]
+        public string Type { get; set; }
 
         /// <summary>
         /// Human readable comments about the resource.
         /// </summary>
-        public string Comment { get; }
+        [JsonProperty("comment")]
+        public string Comment { get; set; }
     }
 }

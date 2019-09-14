@@ -31,18 +31,18 @@ namespace BaGet.Protocol.Tests
             var index = await _target.GetIndexAsync();
             var pageItem = index.Items.First();
 
-            var page = await _target.GetPageAsync(pageItem.Url);
+            var page = await _target.GetPageAsync(pageItem.CatalogPageUrl);
             var leafItem = page.Items.First();
 
             CatalogLeaf result;
             switch (leafItem.Type)
             {
                 case CatalogLeafType.PackageDelete:
-                    result = await _target.GetPackageDeleteLeafAsync(leafItem.Url);
+                    result = await _target.GetPackageDeleteLeafAsync(leafItem.CatalogLeafUrl);
                     break;
 
                 case CatalogLeafType.PackageDetails:
-                    result = await _target.GetPackageDetailsLeafAsync(leafItem.Url);
+                    result = await _target.GetPackageDetailsLeafAsync(leafItem.CatalogLeafUrl);
                     break;
 
                 default:

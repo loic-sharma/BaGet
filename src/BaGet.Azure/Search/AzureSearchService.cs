@@ -97,33 +97,40 @@ namespace BaGet.Azure.Search
 
                 for (var i = 0; i < document.Versions.Length; i++)
                 {
-                    var downloads = long.Parse(document.VersionDownloads[i]);
                     var version = NuGetVersion.Parse(document.Versions[i]);
-                    var url = _url.GetRegistrationLeafUrl(document.Id, version);
 
-                    versions.Add(new SearchResultVersion(url, version, downloads));
+                    versions.Add(new SearchResultVersion
+                    {
+                        RegistrationLeafUrl = _url.GetRegistrationLeafUrl(document.Id, version),
+                        Version = version,
+                        Downloads = long.Parse(document.VersionDownloads[i]),
+                    });
                 }
 
-                results.Add(new SearchResult(
-                    document.Id,
-                    NuGetVersion.Parse(document.Version),
-                    document.Description,
-                    document.Authors,
-                    document.IconUrl,
-                    document.LicenseUrl,
-                    document.ProjectUrl,
-                    _url.GetRegistrationIndexUrl(document.Id),
-                    document.Summary,
-                    document.Tags,
-                    document.Title,
-                    document.TotalDownloads,
-                    versions));
+                results.Add(new SearchResult
+                {
+                    PackageId =  document.Id,
+                    Version = NuGetVersion.Parse(document.Version),
+                    Description = document.Description,
+                    Authors = document.Authors,
+                    IconUrl = document.IconUrl,
+                    LicenseUrl = document.LicenseUrl,
+                    ProjectUrl = document.ProjectUrl,
+                    RegistrationIndexUrl = _url.GetRegistrationIndexUrl(document.Id),
+                    Summary = document.Summary,
+                    Tags = document.Tags,
+                    Title = document.Title,
+                    TotalDownloads = document.TotalDownloads,
+                    Versions = versions
+                });
             }
 
-            return new SearchResponse(
-                response.Count.Value,
-                results,
-                SearchContext.Default(_url.GetPackageMetadataResourceUrl()));
+            return new SearchResponse
+            {
+                TotalHits = response.Count.Value,
+                Data = results,
+                Context = SearchContext.Default(_url.GetPackageMetadataResourceUrl())
+            };
         }
 
         public async Task<AutocompleteResponse> AutocompleteAsync(
@@ -152,7 +159,12 @@ namespace BaGet.Azure.Search
                 .ToList()
                 .AsReadOnly();
 
-            return new AutocompleteResponse(response.Count.Value, results, AutocompleteContext.Default);
+            return new AutocompleteResponse
+            {
+                TotalHits = response.Count.Value,
+                Data = results,
+                Context = AutocompleteContext.Default
+            };
         }
 
         public async Task<DependentsResponse> FindDependentsAsync(
@@ -177,7 +189,11 @@ namespace BaGet.Azure.Search
                 .ToList()
                 .AsReadOnly();
 
-            return new DependentsResponse(response.Count.Value, results);
+            return new DependentsResponse
+            {
+                TotalHits = response.Count.Value,
+                Data = results
+            };
         }
 
         private string BuildSeachQuery(string query, string packageType, string framework)

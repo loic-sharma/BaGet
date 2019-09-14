@@ -7,7 +7,7 @@ namespace BaGet.Protocol.Internal
     /// and <see cref="NuGetVersionListConverter"/>.
     /// </summary>
     [Flags]
-    public enum NuGetVersionConversionFlags
+    internal enum NuGetVersionConversionFlags
     {
         /// <summary>
         /// Normalize, lowercase, and trim any SemVer 2.0.0 build metadata

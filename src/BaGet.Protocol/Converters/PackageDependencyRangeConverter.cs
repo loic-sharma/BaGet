@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace BaGet.Protocol.Internal
 {
-    public class PackageDependencyRangeConverter : JsonConverter
+    internal class PackageDependencyRangeConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {

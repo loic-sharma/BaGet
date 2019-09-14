@@ -149,7 +149,7 @@ namespace BaGet.Protocol
         {
             var resource = types.SelectMany(t => serviceIndex.Resources.Where(r => r.Type == t)).FirstOrDefault();
 
-            return resource?.Url.Trim('/');
+            return resource?.ResourceUrl.Trim('/');
         }
 
         private class NuGetClients

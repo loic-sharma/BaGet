@@ -10,27 +10,19 @@ namespace BaGet.Protocol
     /// </summary>
     public class SearchResponse
     {
-        public SearchResponse(
-            long totalHits,
-            IReadOnlyList<SearchResult> data,
-            SearchContext context = null)
-        {
-            TotalHits = totalHits;
-            Data = data ?? throw new ArgumentNullException(nameof(data));
-            Context = context;
-        }
-
         [JsonProperty("@context")]
-        public SearchContext Context { get; }
+        public SearchContext Context { get; set; }
 
         /// <summary>
         /// The total number of matches, disregarding skip and take.
         /// </summary>
-        public long TotalHits { get; }
+        [JsonProperty("totalHits")]
+        public long TotalHits { get; set; }
 
         /// <summary>
         /// The packages that matched the search query.
         /// </summary>
-        public IReadOnlyList<SearchResult> Data { get; }
+        [JsonProperty("data")]
+        public IReadOnlyList<SearchResult> Data { get; set; }
     }
 }

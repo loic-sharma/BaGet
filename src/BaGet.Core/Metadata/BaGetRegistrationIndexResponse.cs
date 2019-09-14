@@ -9,19 +9,9 @@ namespace BaGet.Core.Metadata
     /// </summary>
     public class BaGetRegistrationIndexResponse : RegistrationIndexResponse
     {
-        public BaGetRegistrationIndexResponse(
-            int count,
-            long totalDownloads,
-            IReadOnlyList<RegistrationIndexPage> pages,
-            IReadOnlyList<string> type = null)
-          : base (count, pages, type)
-        {
-            TotalDownloads = totalDownloads;
-        }
-
         /// <summary>
         /// How many times all versions of this package have been downloaded.
         /// </summary>
-        public long TotalDownloads { get; }
+        public long TotalDownloads { get; set; }
     }
 }

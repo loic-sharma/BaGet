@@ -14,13 +14,26 @@ namespace BaGet.Core.Search
         private static readonly IReadOnlyList<string> EmptyStringList = new List<string>();
 
         private static readonly Task<AutocompleteResponse> EmptyAutocompleteResponseTask =
-            Task.FromResult(new AutocompleteResponse(0, EmptyStringList, AutocompleteContext.Default));
+            Task.FromResult(new AutocompleteResponse
+            {
+                TotalHits = 0,
+                Data = EmptyStringList,
+                Context = AutocompleteContext.Default
+            });
 
         private static readonly Task<DependentsResponse> EmptyDependentsResponseTask =
-            Task.FromResult(new DependentsResponse(0, EmptyStringList));
+            Task.FromResult(new DependentsResponse
+            {
+                TotalHits = 0,
+                Data = EmptyStringList
+            });
 
         private static readonly Task<SearchResponse> EmptySearchResponseTask =
-            Task.FromResult(new SearchResponse(0, new List<SearchResult>()));
+            Task.FromResult(new SearchResponse
+            {
+                TotalHits = 0,
+                Data = new List<SearchResult>()
+            });
 
         public Task<AutocompleteResponse> AutocompleteAsync(
             string query,

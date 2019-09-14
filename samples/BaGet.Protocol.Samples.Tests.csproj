@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
 
     <IsPackable>false</IsPackable>
+    <NoWarn>IDE0007</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
