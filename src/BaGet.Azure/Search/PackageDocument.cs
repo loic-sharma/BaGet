@@ -17,6 +17,9 @@ namespace BaGet.Azure.Search
         [IsSearchable, IsFilterable, IsSortable]
         public string Id { get; set; }
 
+        /// <summary>
+        /// The package's full versions after normalization, including any SemVer 2.0.0 build metadata.
+        /// </summary>
         [IsSearchable, IsFilterable, IsSortable]
         public string Version { get; set; }
 
@@ -43,6 +46,9 @@ namespace BaGet.Azure.Search
         [IsFilterable, IsSortable]
         public int DownloadsMagnitude { get; set; }
 
+        /// <summary>
+        /// The package's full versions after normalization, including any SemVer 2.0.0 build metadata.
+        /// </summary>
         public string[] Versions { get; set;  }
         public string[] VersionDownloads { get; set; }
 
