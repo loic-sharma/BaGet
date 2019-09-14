@@ -14,7 +14,7 @@ namespace BaGet.Database.Sqlite.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.2-servicing-10034");
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
 
             modelBuilder.Entity("BaGet.Core.Entities.Package", b =>
                 {
@@ -52,6 +52,15 @@ namespace BaGet.Database.Sqlite.Migrations
                     b.Property<string>("MinClientVersion")
                         .HasMaxLength(44);
 
+                    b.Property<string>("NormalizedVersionString")
+                        .IsRequired()
+                        .HasColumnName("Version")
+                        .HasMaxLength(64);
+
+                    b.Property<string>("OriginalVersionString")
+                        .HasColumnName("OriginalVersion")
+                        .HasMaxLength(64);
+
                     b.Property<string>("ProjectUrl")
                         .HasMaxLength(4000);
 
@@ -80,16 +89,11 @@ namespace BaGet.Database.Sqlite.Migrations
                     b.Property<string>("Title")
                         .HasMaxLength(256);
 
-                    b.Property<string>("VersionString")
-                        .IsRequired()
-                        .HasColumnName("Version")
-                        .HasMaxLength(64);
-
                     b.HasKey("Key");
 
                     b.HasIndex("Id");
 
-                    b.HasIndex("Id", "VersionString")
+                    b.HasIndex("Id", "NormalizedVersionString")
                         .IsUnique();
 
                     b.ToTable("Packages");

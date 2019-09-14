@@ -90,7 +90,7 @@ namespace BaGet.Core.Indexing
             _logger.LogInformation(
                 "Validated package {PackageId} {PackageVersion}, persisting content to storage...",
                 package.Id,
-                package.VersionString);
+                package.NormalizedVersionString);
 
             try
             {
@@ -112,7 +112,7 @@ namespace BaGet.Core.Indexing
                     e,
                     "Failed to persist package {PackageId} {PackageVersion} content to storage",
                     package.Id,
-                    package.VersionString);
+                    package.NormalizedVersionString);
 
                 throw;
             }
@@ -120,7 +120,7 @@ namespace BaGet.Core.Indexing
             _logger.LogInformation(
                 "Persisted package {Id} {Version} content to storage, saving metadata to database...",
                 package.Id,
-                package.VersionString);
+                package.NormalizedVersionString);
 
             var result = await _packages.AddAsync(package);
             if (result == PackageAddResult.PackageAlreadyExists)
@@ -128,7 +128,7 @@ namespace BaGet.Core.Indexing
                 _logger.LogWarning(
                     "Package {Id} {Version} metadata already exists in database",
                     package.Id,
-                    package.VersionString);
+                    package.NormalizedVersionString);
 
                 return PackageIndexingResult.PackageAlreadyExists;
             }
@@ -143,14 +143,14 @@ namespace BaGet.Core.Indexing
             _logger.LogInformation(
                 "Successfully persisted package {Id} {Version} metadata to database. Indexing in search...",
                 package.Id,
-                package.VersionString);
+                package.NormalizedVersionString);
 
             await _search.IndexAsync(package);
 
             _logger.LogInformation(
                 "Successfully indexed package {Id} {Version} in search",
                 package.Id,
-                package.VersionString);
+                package.NormalizedVersionString);
 
             return PackageIndexingResult.Success;
         }
