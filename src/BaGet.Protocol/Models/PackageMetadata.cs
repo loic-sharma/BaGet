@@ -19,11 +19,10 @@ namespace BaGet.Protocol
         public string PackageId { get; set; }
 
         /// <summary>
-        /// The full NuGet version after normalization, including any semver2 build metadata.
+        /// The full NuGet version after normalization, including any SemVer 2.0.0 build metadata.
         /// </summary>
         [JsonProperty("version")]
-        [JsonConverter(typeof(NuGetVersionConverter), NuGetVersionConversionFlags.IncludeBuildMetadata)]
-        public NuGetVersion Version { get; set; }
+        public string Version { get; set; }
 
         [JsonProperty("authors")]
         public string Authors { get; set; }

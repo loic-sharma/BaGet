@@ -76,7 +76,7 @@ namespace BaGet.Core.Search
                 result.Add(new SearchResult
                 {
                     PackageId = latest.Id,
-                    Version = latest.Version,
+                    Version = latest.Version.ToFullString(),
                     Description = latest.Description,
                     Authors = latest.Authors,
                     IconUrl = latest.IconUrlString,
@@ -91,7 +91,7 @@ namespace BaGet.Core.Search
                         .Select(p => new SearchResultVersion
                         {
                             RegistrationLeafUrl = _url.GetRegistrationLeafUrl(p.Id, p.Version),
-                            Version = p.Version,
+                            Version = p.Version.ToFullString(),
                             Downloads = p.Downloads,
                         })
                         .ToList()

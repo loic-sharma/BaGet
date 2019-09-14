@@ -50,6 +50,9 @@ namespace BaGet.Core.Content
             return new PackageVersionsResponse
             {
                 Versions = versions
+                    .Select(v => v.ToNormalizedString())
+                    .Select(v => v.ToLowerInvariant())
+                    .ToList()
             };
         }
 

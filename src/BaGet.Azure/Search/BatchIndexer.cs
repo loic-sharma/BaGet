@@ -116,7 +116,7 @@ namespace BaGet.Azure.Search
 
                 document.Key = $"{encodedId}-{searchFilters}";
                 document.Id = latest.Id;
-                document.Version = latest.VersionString;
+                document.Version = latest.Version.ToFullString();
                 document.Description = latest.Description;
                 document.Authors = latest.Authors;
                 document.IconUrl = latest.IconUrlString;
@@ -128,7 +128,7 @@ namespace BaGet.Azure.Search
                 document.Title = latest.Title;
                 document.TotalDownloads = versions.Sum(p => p.Downloads);
                 document.DownloadsMagnitude = document.TotalDownloads.ToString().Length;
-                document.Versions = versions.Select(p => p.VersionString).ToArray();
+                document.Versions = versions.Select(p => p.Version.ToFullString()).ToArray();
                 document.VersionDownloads = versions.Select(p => p.Downloads.ToString()).ToArray();
                 document.Dependencies = dependencies;
                 document.PackageTypes = latest.PackageTypes.Select(t => t.Name).ToArray();

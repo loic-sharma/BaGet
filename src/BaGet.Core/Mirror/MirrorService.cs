@@ -106,7 +106,7 @@ namespace BaGet.Core.Mirror
             return new Package
             {
                 Id = metadata.PackageId,
-                Version = metadata.Version,
+                Version = metadata.ParseVersion(),
                 Authors = ParseAuthors(metadata.Authors),
                 Description = metadata.Description,
                 Downloads = 0,

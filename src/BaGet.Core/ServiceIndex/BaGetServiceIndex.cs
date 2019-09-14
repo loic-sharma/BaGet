@@ -43,7 +43,7 @@ namespace BaGet.Core.ServiceIndex
 
             var result = new ServiceIndexResponse
             {
-                Version = new NuGetVersion("3.0.0"),
+                Version = "3.0.0",
                 Resources = resources,
             };
 

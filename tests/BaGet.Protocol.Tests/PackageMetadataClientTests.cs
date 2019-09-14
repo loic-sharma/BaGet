@@ -29,8 +29,8 @@ namespace BaGet.Protocol.Tests
             Assert.Equal(2, result.Pages.Count);
             Assert.True(result.Pages[0].Count == 64);
             Assert.True(result.Pages[0].ItemsOrNull.Count == 64);
-            Assert.Equal(NewtonsoftJsonLowerVersion, result.Pages[0].Lower);
-            Assert.Equal(NewtonsoftJsonUpperVersion, result.Pages[0].Upper);
+            Assert.Equal(NewtonsoftJsonLowerVersion, result.Pages[0].ParseLower());
+            Assert.Equal(NewtonsoftJsonUpperVersion, result.Pages[0].ParseUpper());
         }
 
         [Fact]
@@ -43,8 +43,8 @@ namespace BaGet.Protocol.Tests
             Assert.True(result.Pages.Count >= 27);
             Assert.Null(result.Pages[0].ItemsOrNull);
             Assert.Equal(64, result.Pages[0].Count);
-            Assert.Equal(FakePage1LowerVersion, result.Pages[0].Lower);
-            Assert.Equal(FakePage1UpperVersion, result.Pages[0].Upper);
+            Assert.Equal(FakePage1LowerVersion, result.Pages[0].ParseLower());
+            Assert.Equal(FakePage1UpperVersion, result.Pages[0].ParseUpper());
         }
 
         [Fact]
@@ -54,8 +54,8 @@ namespace BaGet.Protocol.Tests
 
             Assert.NotNull(result);
             Assert.Equal(64, result.Count);
-            Assert.Equal(new NuGetVersion("1.0.0-alpha-10"), result.Lower);
-            Assert.Equal(new NuGetVersion("1.66.1"), result.Upper);
+            Assert.Equal("1.0.0-alpha-10", result.Lower);
+            Assert.Equal("1.66.1", result.Upper);
         }
 
         [Fact]

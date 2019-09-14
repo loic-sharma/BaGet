@@ -18,7 +18,7 @@ namespace BaGet.Protocol.Tests
         {
             var result = await _target.GetAsync();
 
-            Assert.Equal("3.0.0", result.Version.ToFullString());
+            Assert.Equal("3.0.0", result.Version);
         }
     }
 }

@@ -99,7 +99,7 @@ namespace BaGet.Protocol
 
             return packages
                 .Where(p => p.Listed)
-                .Select(p => p.Version)
+                .Select(p => p.ParseVersion())
                 .ToList();
         }
 
@@ -125,7 +125,7 @@ namespace BaGet.Protocol
                 return new List<NuGetVersion>();
             }
 
-            return response.Versions;
+            return response.ParseVersions();
         }
 
         /// <summary>
@@ -156,8 +156,8 @@ namespace BaGet.Protocol
                 {
                     var externalRegistrationPage = await client.GetRegistrationPageOrNullAsync(
                         packageId,
-                        registrationIndexPage.Lower,
-                        registrationIndexPage.Upper,
+                        registrationIndexPage.ParseLower(),
+                        registrationIndexPage.ParseUpper(),
                         cancellationToken);
 
                     // Skip malformed external pages.
@@ -195,8 +195,11 @@ namespace BaGet.Protocol
             foreach (var registrationIndexPage in registrationIndex.Pages)
             {
                 // Skip pages that do not contain the desired package version.
-                if (registrationIndexPage.Lower > packageVersion) continue;
-                if (registrationIndexPage.Upper < packageVersion) continue;
+                var pageLowerVersion = registrationIndexPage.ParseLower();
+                var pageUpperVersion = registrationIndexPage.ParseUpper();
+
+                if (pageLowerVersion > packageVersion) continue;
+                if (pageUpperVersion < packageVersion) continue;
 
                 // If the package's registration index is too big, it will be split into registration
                 // pages stored at different URLs. We will need to fetch each page's items individually.
@@ -206,8 +209,8 @@ namespace BaGet.Protocol
                 {
                     var externalRegistrationPage = await client.GetRegistrationPageOrNullAsync(
                         packageId,
-                        registrationIndexPage.Lower,
-                        registrationIndexPage.Upper,
+                        pageLowerVersion,
+                        pageUpperVersion,
                         cancellationToken);
 
                     // Skip malformed external pages.
@@ -217,7 +220,7 @@ namespace BaGet.Protocol
                 }
 
                 // We've found the registration items that should cover the desired package.
-                var result = items.SingleOrDefault(i => i.PackageMetadata.Version == packageVersion);
+                var result = items.SingleOrDefault(i => i.PackageMetadata.ParseVersion() == packageVersion);
                 if (result == null)
                 {
                     break;

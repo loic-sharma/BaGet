@@ -55,6 +55,7 @@ namespace BaGet.Protocol.Internal
             var id = packageId.ToLowerInvariant();
             var version = packageVersion.ToNormalizedString().ToLowerInvariant();
 
+            // The response will be disposed when the returned content stream is disposed.
             var url = $"{_packageContentUrl}/{id}/{version}/{id}.{version}.nupkg";
             var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
@@ -75,6 +76,7 @@ namespace BaGet.Protocol.Internal
             var id = packageId.ToLowerInvariant();
             var version = packageVersion.ToNormalizedString().ToLowerInvariant();
 
+            // The response will be disposed when the returned content stream is disposed.
             var url = $"{_packageContentUrl}/{id}/{version}/{id}.nuspec";
             var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 

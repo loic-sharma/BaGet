@@ -17,8 +17,7 @@ namespace BaGet.Protocol
         /// The service index's version.
         /// </summary>
         [JsonProperty("version")]
-        [JsonConverter(typeof(NuGetVersionConverter))]
-        public NuGetVersion Version { get; set; }
+        public string Version { get; set; }
 
         /// <summary>
         /// The resources declared by this service index.
