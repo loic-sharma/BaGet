@@ -9,7 +9,7 @@ namespace BaGet.Protocol.Internal
     /// <summary>
     /// Converts a list of strings into a <see cref="IReadOnlyList{NuGetVersion}"/>.
     /// </summary>
-    public class NuGetVersionListConverter : JsonConverter
+    internal class NuGetVersionListConverter : JsonConverter
     {
         private readonly NuGetVersionConversionFlags _flags;
 

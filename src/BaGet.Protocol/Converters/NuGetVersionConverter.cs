@@ -7,7 +7,7 @@ namespace BaGet.Protocol.Internal
     /// <summary>
     /// Converts a string into a <see cref="NuGetVersion"/>.
     /// </summary>
-    public class NuGetVersionConverter : JsonConverter
+    internal class NuGetVersionConverter : JsonConverter
     {
         private readonly NuGetVersionConversionFlags _flags;
 
