@@ -76,7 +76,7 @@ namespace BaGet.Core.Search
                 result.Add(new SearchResult
                 {
                     PackageId = latest.Id,
-                    Version = latest.VersionString,
+                    Version = latest.Version.ToFullString(),
                     Description = latest.Description,
                     Authors = latest.Authors,
                     IconUrl = latest.IconUrlString,
