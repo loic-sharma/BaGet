@@ -29,7 +29,7 @@ namespace BaGet.Protocol
         }
 
         /// <summary>
-        /// Parse the registration page's lower version as a <see cref="NuGetVersion" />.
+        /// Parse the registration page's upper version as a <see cref="NuGetVersion" />.
         /// </summary>
         /// <param name="page">The registration page.</param>
         /// <returns>The page's upper version.</returns>
