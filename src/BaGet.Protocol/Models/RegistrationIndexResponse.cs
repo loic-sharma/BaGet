@@ -17,6 +17,9 @@ namespace BaGet.Protocol
             "catalog:Permalink"
         };
 
+        [JsonProperty("@id")]
+        public string RegistrationIndexUrl { get; set; }
+
         [JsonProperty("@type")]
         public IReadOnlyList<string> Type { get; set; }
 

@@ -48,8 +48,9 @@ namespace BaGet.Core.Metadata
             // Paged example: https://api.nuget.org/v3/registration3/fake/index.json
             return new BaGetRegistrationIndexResponse
             {
+                RegistrationIndexUrl = _url.GetRegistrationIndexUrl(id),
                 Type = RegistrationIndexResponse.DefaultType,
-                Count = packages.Count,
+                Count = 1,
                 TotalDownloads = packages.Sum(p => p.Downloads),
                 Pages = new[]
                 {
