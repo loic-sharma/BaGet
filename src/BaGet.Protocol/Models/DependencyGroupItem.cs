@@ -6,7 +6,7 @@ namespace BaGet.Protocol.Models
     /// <summary>
     /// The dependencies of the package for a specific target framework.
     /// 
-    /// See <see href="https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource#package-dependency-group"/>.
+    /// See https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource#package-dependency-group
     /// </summary>
     public class DependencyGroupItem
     {

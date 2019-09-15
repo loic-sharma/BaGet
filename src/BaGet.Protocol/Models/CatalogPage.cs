@@ -10,16 +10,25 @@ namespace BaGet.Protocol.Models
     /// A catalog page, used to discover catalog leafs.
     /// Pages can be discovered from a <see cref="CatalogIndex"/>.
     /// 
-    /// See https://docs.microsoft.com/en-us/nuget/api/catalog-resource#catalog-page.
+    /// See https://docs.microsoft.com/en-us/nuget/api/catalog-resource#catalog-page
     /// </summary>
     public class CatalogPage
     {
+        /// <summary>
+        /// A unique ID associated with the most recent commit in this page.
+        /// </summary>
         [JsonProperty("commitTimeStamp")]
         public DateTimeOffset CommitTimestamp { get; set; }
 
+        /// <summary>
+        /// The number of items in the page.
+        /// </summary>
         [JsonProperty("count")]
         public int Count { get; set; }
 
+        /// <summary>
+        /// The items used to discover <see cref="CatalogLeaf"/>s.
+        /// </summary>
         [JsonProperty("items")]
         public List<CatalogLeafItem> Items { get; set; }
 

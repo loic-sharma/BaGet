@@ -8,6 +8,11 @@ namespace BaGet.Protocol.Models
     /// </summary>
     public class PackageNotFoundException : Exception
     {
+        /// <summary>
+        /// Create a new instance of the <see cref="PackageNotFoundException"/>.
+        /// </summary>
+        /// <param name="packageId">The ID of the package that could not be found.</param>
+        /// <param name="packageVersion">The version of the package that could not be found.</param>
         public PackageNotFoundException(string packageId, NuGetVersion packageVersion)
             : base($"Could not find package {packageId} {packageVersion}")
         {

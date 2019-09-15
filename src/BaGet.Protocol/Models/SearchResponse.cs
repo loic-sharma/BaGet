@@ -5,7 +5,8 @@ namespace BaGet.Protocol.Models
 {
     /// <summary>
     /// The response to a search query.
-    /// Documentation: https://docs.microsoft.com/en-us/nuget/api/search-query-service-resource#response
+    ///
+    /// See https://docs.microsoft.com/en-us/nuget/api/search-query-service-resource#response
     /// </summary>
     public class SearchResponse
     {

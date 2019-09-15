@@ -6,7 +6,7 @@ namespace BaGet.Protocol.Models
     /// <summary>
     /// The full list of versions for a single package.
     ///
-    /// See <see href="https://docs.microsoft.com/en-us/nuget/api/package-base-address-resource#enumerate-package-versions"/>.
+    /// See https://docs.microsoft.com/en-us/nuget/api/package-base-address-resource#enumerate-package-versions
     /// </summary>
     public class PackageVersionsResponse
     {

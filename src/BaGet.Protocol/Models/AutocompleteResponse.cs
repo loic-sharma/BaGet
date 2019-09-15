@@ -6,7 +6,7 @@ namespace BaGet.Protocol.Models
     /// <summary>
     /// The package ids that matched the autocomplete query.
     /// 
-    /// See https://docs.microsoft.com/en-us/nuget/api/search-autocomplete-service-resource#search-for-package-ids.
+    /// See https://docs.microsoft.com/en-us/nuget/api/search-autocomplete-service-resource#search-for-package-ids
     /// </summary>
     public class AutocompleteResponse
     {

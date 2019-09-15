@@ -4,6 +4,8 @@ namespace BaGet.Protocol.Models
 
     /// <summary>
     /// The type of a <see cref="CatalogLeaf"/>.
+    ///
+    /// See https://docs.microsoft.com/en-us/nuget/api/catalog-resource#item-types
     /// </summary>
     public enum CatalogLeafType
     {

@@ -10,7 +10,7 @@ namespace BaGet.Protocol.Models
     public class ProtocolException : Exception
     {
         /// <summary>
-        /// Create a new protocol exception.
+        /// Create a new <see cref="ProtocolException"/>.
         /// </summary>
         /// <param name="message">The HTTP response message.</param>
         /// <param name="method">The HTTP request method.</param>

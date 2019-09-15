@@ -6,7 +6,7 @@ namespace BaGet.Protocol.Models
     /// <summary>
     /// Represents a package dependency.
     ///
-    /// See <see href="https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource#package-dependency"/>.
+    /// See https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource#package-dependency
     /// </summary>
     public class DependencyItem
     {

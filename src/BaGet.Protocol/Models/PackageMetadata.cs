@@ -7,7 +7,7 @@ namespace BaGet.Protocol.Models
     /// <summary>
     /// A package's metadata.
     /// 
-    /// See <see href="https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource#catalog-entry"/>.
+    /// See https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource#catalog-entry
     /// </summary>
     public class PackageMetadata
     {

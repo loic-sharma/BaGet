@@ -5,7 +5,8 @@ namespace BaGet.Protocol.Models
 {
     /// <summary>
     /// The metadata for a package and all of its versions.
-    /// See: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource#registration-index
+    /// 
+    /// See https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource#registration-index
     /// </summary>
     public class RegistrationIndexResponse
     {
@@ -16,9 +17,15 @@ namespace BaGet.Protocol.Models
             "catalog:Permalink"
         };
 
+        /// <summary>
+        /// The URL to the registration index.
+        /// </summary>
         [JsonProperty("@id")]
         public string RegistrationIndexUrl { get; set; }
 
+        /// <summary>
+        /// The registration index's type.
+        /// </summary>
         [JsonProperty("@type")]
         public IReadOnlyList<string> Type { get; set; }
 
