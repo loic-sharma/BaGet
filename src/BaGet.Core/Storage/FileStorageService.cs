@@ -33,7 +33,11 @@ namespace BaGet.Core.Storage
             cancellationToken.ThrowIfCancellationRequested();
 
             path = GetFullPath(path);
-            var content = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            try {
+                var content = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            } catch (DirectoryNotFoundException e) {
+                Console.WriteLine("Error reading from the package folder (" + path + ") Please make sure your package folder starts with an uppercase letter. Refer to https://github.com/loic-sharma/BaGet/issues/298 for further reference.", ConsoleColor.Red);
+            }
 
             return Task.FromResult<Stream>(content);
         }
