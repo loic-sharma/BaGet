@@ -1,14 +1,12 @@
-using System;
 using System.Collections.Generic;
-using BaGet.Protocol.Internal;
 using Newtonsoft.Json;
-using NuGet.Versioning;
 
-namespace BaGet.Protocol
+namespace BaGet.Protocol.Models
 {
     /// <summary>
     /// The registration page object found in the registration index.
-    /// See: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource#registration-page-object
+    /// 
+    /// See <see href="https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource#registration-page-object"/>.
     /// </summary>
     public class RegistrationIndexPage
     {

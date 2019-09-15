@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace BaGet.Protocol
+namespace BaGet.Protocol.Models
 {
     /// <summary>
     /// The full list of versions for a single package.
-    /// See: https://docs.microsoft.com/en-us/nuget/api/package-base-address-resource#enumerate-package-versions
-    /// Example: https://api.nuget.org/v3-flatcontainer/newtonsoft.json/index.json
+    ///
+    /// See <see href="https://docs.microsoft.com/en-us/nuget/api/package-base-address-resource#enumerate-package-versions"/>.
     /// </summary>
     public class PackageVersionsResponse
     {

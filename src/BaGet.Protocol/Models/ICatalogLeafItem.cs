@@ -1,6 +1,6 @@
 using System;
 
-namespace BaGet.Protocol
+namespace BaGet.Protocol.Models
 {
     /// <summary>
     /// A catalog leaf. Represents a single package event.

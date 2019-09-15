@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
 using BaGet.Core.Indexing;
-using BaGet.Protocol;
+using BaGet.Protocol.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BaGet.Core.Search

@@ -1,7 +1,6 @@
-using System;
 using Newtonsoft.Json;
 
-namespace BaGet.Protocol
+namespace BaGet.Protocol.Models
 {
     /// <summary>
     /// A resource in the <see cref="ServiceIndexResponse"/>.

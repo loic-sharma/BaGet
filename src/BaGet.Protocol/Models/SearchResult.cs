@@ -1,10 +1,8 @@
-using System;
 using System.Collections.Generic;
 using BaGet.Protocol.Internal;
 using Newtonsoft.Json;
-using NuGet.Versioning;
 
-namespace BaGet.Protocol
+namespace BaGet.Protocol.Models
 {
     /// <summary>
     /// A package that matched a search query.

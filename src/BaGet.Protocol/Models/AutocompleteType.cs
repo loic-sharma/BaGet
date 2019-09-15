@@ -1,4 +1,4 @@
-namespace BaGet.Protocol
+namespace BaGet.Protocol.Models
 {
     /// <summary>
     /// The autocomplete request type.

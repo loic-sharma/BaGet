@@ -262,8 +262,8 @@ namespace BaGet.Extensions
                 }
             });
 
-            services.AddSingleton<INuGetClient, NuGetClient>();
-            services.AddSingleton<INuGetClientFactory>(provider =>
+            services.AddSingleton<NuGetClient>();
+            services.AddSingleton(provider =>
             {
                 var httpClient = provider.GetRequiredService<HttpClient>();
                 var options = provider.GetRequiredService<IOptions<MirrorOptions>>();

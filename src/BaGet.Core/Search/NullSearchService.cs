@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
-using BaGet.Protocol;
+using BaGet.Protocol.Models;
 
 namespace BaGet.Core.Search
 {

@@ -1,7 +1,4 @@
-using System.Collections.Generic;
-using NuGet.Versioning;
-
-namespace BaGet.Protocol
+namespace BaGet.Protocol.Models
 {
     /// <summary>
     /// A page of package metadata entries.

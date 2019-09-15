@@ -2,7 +2,7 @@ using System;
 using System.Net;
 using System.Net.Http;
 
-namespace BaGet.Protocol
+namespace BaGet.Protocol.Models
 {
     /// <summary>
     /// An exception that is thrown when an API has returned an unexpected result.

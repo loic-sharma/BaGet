@@ -8,7 +8,7 @@ using BaGet.Core;
 using BaGet.Core.Entities;
 using BaGet.Core.Indexing;
 using BaGet.Core.Search;
-using BaGet.Protocol;
+using BaGet.Protocol.Models;
 using Microsoft.Azure.Search;
 using NuGet.Versioning;
 

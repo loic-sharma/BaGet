@@ -9,6 +9,7 @@ using BaGet.Core.Extensions;
 using BaGet.Core.Indexing;
 using BaGet.Core.Metadata;
 using BaGet.Protocol;
+using BaGet.Protocol.Models;
 using Microsoft.Extensions.Logging;
 using NuGet.Versioning;
 
@@ -19,13 +20,13 @@ namespace BaGet.Core.Mirror
     public class MirrorService : IMirrorService
     {
         private readonly IPackageService _localPackages;
-        private readonly INuGetClient _upstreamClient;
+        private readonly NuGetClient _upstreamClient;
         private readonly IPackageIndexingService _indexer;
         private readonly ILogger<MirrorService> _logger;
 
         public MirrorService(
             IPackageService localPackages,
-            INuGetClient upstreamClient,
+            NuGetClient upstreamClient,
             IPackageIndexingService indexer,
             ILogger<MirrorService> logger)
         {

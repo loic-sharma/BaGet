@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using BaGet.Protocol;
+using BaGet.Protocol.Models;
 
 namespace BaGet.Core.Metadata
 {

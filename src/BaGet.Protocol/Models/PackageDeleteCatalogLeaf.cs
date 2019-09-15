@@ -1,4 +1,4 @@
-namespace BaGet.Protocol
+namespace BaGet.Protocol.Models
 {
     /// <summary>
     /// A "package delete" catalog leaf. Represents a single package deletion event.

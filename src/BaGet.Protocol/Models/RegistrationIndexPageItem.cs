@@ -1,11 +1,11 @@
-using System;
 using Newtonsoft.Json;
 
-namespace BaGet.Protocol
+namespace BaGet.Protocol.Models
 {
     /// <summary>
     /// An item in a registration page.
-    /// See: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource#registration-leaf-object-in-a-page
+    ///
+    /// See https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource#registration-leaf-object-in-a-page.
     /// </summary>
     public class RegistrationIndexPageItem
     {

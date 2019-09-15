@@ -1,9 +1,6 @@
-using System;
-using BaGet.Protocol.Internal;
 using Newtonsoft.Json;
-using NuGet.Versioning;
 
-namespace BaGet.Protocol
+namespace BaGet.Protocol.Models
 {
     /// <summary>
     /// The version of a package that matched a search query.

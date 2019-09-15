@@ -1,7 +1,7 @@
 using System;
 using Newtonsoft.Json;
 
-namespace BaGet.Protocol
+namespace BaGet.Protocol.Models
 {
     /// <summary>
     /// An item in the <see cref="CatalogIndex"/> that references a <see cref="CatalogPage"/>.
