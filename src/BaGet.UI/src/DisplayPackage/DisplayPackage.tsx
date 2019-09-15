@@ -38,6 +38,7 @@ interface IPackage {
   authors: string;
   tags: string[];
   version: string;
+  normalizedVersion: string;
   versions: IPackageVersion[];
   dependencyGroups: Registration.IDependencyGroup[];
 }
@@ -113,14 +114,15 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
       const versions: IPackageVersion[] = [];
 
       for (const entry of results.items[0].items) {
+        const normalizedVersion = this.normalizeVersion(entry.catalogEntry.version);
         versions.push({
           date: new Date(entry.catalogEntry.published),
           downloads: entry.catalogEntry.downloads,
-          version: entry.catalogEntry.version,
+          version: normalizedVersion,
         });
 
-        if ((!currentItem && entry.catalogEntry.version === latestVersion) ||
-          (this.version && entry.catalogEntry.version === this.version)) {
+        if ((!currentItem && normalizedVersion === latestVersion) ||
+          (this.version && normalizedVersion === this.version)) {
           currentItem = entry;
         }
 
@@ -146,6 +148,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
             isDotnetTool,
             lastUpdate,
             latestVersion,
+            normalizedVersion: this.normalizeVersion(currentItem.catalogEntry.version),
             readme,
             totalDownloads: results.totalDownloads,
             versions
@@ -193,7 +196,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
 
             </div>
 
-            <InstallationInfo id={this.state.package.id} version={this.state.package.version} isDotnetTool={this.state.package.isDotnetTool} />
+            <InstallationInfo id={this.state.package.id} version={this.state.package.normalizedVersion} isDotnetTool={this.state.package.isDotnetTool} />
 
             {/* TODO: Fix this */}
             <div dangerouslySetInnerHTML={{ __html: this.state.package.readme }} />
@@ -264,6 +267,13 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
 
   private dateToString(date: Date): string {
     return `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`;
+  }
+
+  private normalizeVersion(version: string): string {
+    const buildMetadataStart = version.indexOf('+');
+    return buildMetadataStart === -1
+      ? version
+      : version.substring(0, buildMetadataStart);
   }
 }
 

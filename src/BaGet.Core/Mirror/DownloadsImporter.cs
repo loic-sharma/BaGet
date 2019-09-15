@@ -39,7 +39,7 @@ namespace BaGet.Core.Mirror
                 foreach (var package in await GetBatch(batch))
                 {
                     var packageId = package.Id.ToLowerInvariant();
-                    var packageVersion = package.VersionString.ToLowerInvariant();
+                    var packageVersion = package.NormalizedVersionString.ToLowerInvariant();
 
                     if (!packageDownloads.ContainsKey(packageId) ||
                         !packageDownloads[packageId].ContainsKey(packageVersion))

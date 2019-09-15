@@ -41,7 +41,7 @@ namespace BaGet.Core.Metadata
 
             if (version != null)
             {
-                query = query.Where(p => p.VersionString == version.ToNormalizedString());
+                query = query.Where(p => p.NormalizedVersionString == version.ToNormalizedString());
             }
 
             return query.AnyAsync();
@@ -73,7 +73,7 @@ namespace BaGet.Core.Metadata
                 .Include(p => p.Dependencies)
                 .Include(p => p.TargetFrameworks)
                 .Where(p => p.Id == id)
-                .Where(p => p.VersionString == version.ToNormalizedString());
+                .Where(p => p.NormalizedVersionString == version.ToNormalizedString());
 
             if (!includeUnlisted)
             {
@@ -102,7 +102,7 @@ namespace BaGet.Core.Metadata
         {
             var package = await _context.Packages
                 .Where(p => p.Id == id)
-                .Where(p => p.VersionString == version.ToNormalizedString())
+                .Where(p => p.NormalizedVersionString == version.ToNormalizedString())
                 .Include(p => p.Dependencies)
                 .Include(p => p.TargetFrameworks)
                 .FirstOrDefaultAsync();
@@ -122,7 +122,7 @@ namespace BaGet.Core.Metadata
         {
             var package = await _context.Packages
                 .Where(p => p.Id == id)
-                .Where(p => p.VersionString == version.ToNormalizedString())
+                .Where(p => p.NormalizedVersionString == version.ToNormalizedString())
                 .FirstOrDefaultAsync();
 
             if (package != null)

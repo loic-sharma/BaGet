@@ -40,7 +40,7 @@ namespace BaGet.Core.Storage
             nuspecStream = nuspecStream ?? throw new ArgumentNullException(nameof(nuspecStream));
 
             var lowercasedId = package.Id.ToLowerInvariant();
-            var lowercasedNormalizedVersion = package.VersionString.ToLowerInvariant();
+            var lowercasedNormalizedVersion = package.NormalizedVersionString.ToLowerInvariant();
 
             var packagePath = PackagePath(lowercasedId, lowercasedNormalizedVersion);
             var nuspecPath = NuspecPath(lowercasedId, lowercasedNormalizedVersion);

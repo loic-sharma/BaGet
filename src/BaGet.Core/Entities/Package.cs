@@ -10,7 +10,25 @@ namespace BaGet.Core.Entities
         public int Key { get; set; }
 
         public string Id { get; set; }
-        public NuGetVersion Version { get; set; }
+
+        public NuGetVersion Version
+        {
+            get
+            {
+                // Favor the original version string as it contains more information.
+                // Packages uploaded with older versions of BaGet may not have the original version string.
+                return NuGetVersion.Parse(
+                    OriginalVersionString != null
+                        ? OriginalVersionString
+                        : NormalizedVersionString);
+            }
+
+            set
+            {
+                NormalizedVersionString = value.ToNormalizedString().ToLowerInvariant();
+                OriginalVersionString = value.OriginalVersion;
+            }
+        }
 
         public string[] Authors { get; set; }
         public string Description { get; set; }
@@ -44,16 +62,9 @@ namespace BaGet.Core.Entities
         public List<PackageType> PackageTypes { get; set; }
         public List<TargetFramework> TargetFrameworks { get; set; }
 
-        public string VersionString
-        {
-            get => Version?.ToNormalizedString().ToLowerInvariant() ?? string.Empty;
-            set
-            {
-                NuGetVersion.TryParse(value, out var version);
+        public string NormalizedVersionString { get; set; }
+        public string OriginalVersionString { get; set; }
 
-                Version = version;
-            }
-        }
 
         public string IconUrlString => IconUrl?.AbsoluteUri ?? string.Empty;
         public string LicenseUrlString => LicenseUrl?.AbsoluteUri ?? string.Empty;
