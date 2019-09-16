@@ -113,7 +113,7 @@ namespace BaGet.Core.Mirror
                 Downloads = 0,
                 HasReadme = false,
                 Language = metadata.Language,
-                Listed = metadata.Listed,
+                Listed = metadata.IsListed(),
                 MinClientVersion = metadata.MinClientVersion,
                 Published = metadata.Published.UtcDateTime,
                 RequireLicenseAcceptance = metadata.RequireLicenseAcceptance,

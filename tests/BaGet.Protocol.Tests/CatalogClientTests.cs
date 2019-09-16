@@ -17,40 +17,57 @@ namespace BaGet.Protocol.Tests
         }
 
         [Fact]
-        public async Task GetsCatalogIndex()
+        public async Task GetCatalogIndex()
         {
             var result = await _target.GetIndexAsync();
 
             Assert.NotNull(result);
-            Assert.True(result.Count > 0);
-            Assert.NotEmpty(result.Items);
+            Assert.Equal(2, result.Count);
+            Assert.Equal(2, result.Items.Count);
+            Assert.Equal(TestData.CatalogPageUrl, result.Items.Select(i => i.CatalogPageUrl).First());
         }
 
         [Fact]
-        public async Task GetsCatalogLeaf()
+        public async Task GetCatalogPage()
         {
-            var index = await _target.GetIndexAsync();
-            var pageItem = index.Items.First();
+            var page = await _target.GetPageAsync(TestData.CatalogPageUrl);
 
-            var page = await _target.GetPageAsync(pageItem.CatalogPageUrl);
-            var leafItem = page.Items.First();
+            Assert.Equal(2, page.Count);
+            Assert.Equal(2, page.Items.Count);
+            Assert.Equal(TestData.CatalogIndexUrl, page.CatalogIndexUrl);
+            Assert.Equal(TestData.PackageDetailsCatalogLeafUrl, page.Items[0].CatalogLeafUrl);
+            Assert.Equal(TestData.PackageDeleteCatalogLeafUrl, page.Items[1].CatalogLeafUrl);
+        }
 
-            CatalogLeaf result;
-            switch (leafItem.Type)
-            {
-                case CatalogLeafType.PackageDelete:
-                    result = await _target.GetPackageDeleteLeafAsync(leafItem.CatalogLeafUrl);
-                    break;
+        [Fact]
+        public async Task GetPackageDetailsLeaf()
+        {
+            var leaf = await _target.GetPackageDetailsLeafAsync(TestData.PackageDetailsCatalogLeafUrl);
 
-                case CatalogLeafType.PackageDetails:
-                    result = await _target.GetPackageDetailsLeafAsync(leafItem.CatalogLeafUrl);
-                    break;
+            Assert.Equal(TestData.PackageDetailsCatalogLeafUrl, leaf.CatalogLeafUrl);
+            Assert.Equal(CatalogLeafType.PackageDetails, leaf.Type);
 
-                default:
-                    throw new NotSupportedException($"Unknown leaf type '{leafItem.Type}'");
-            }
+            Assert.Equal("Test.Package", leaf.PackageId);
+            Assert.Equal("1.0.0", leaf.PackageVersion);
+        }
 
-            Assert.NotNull(result.PackageId);
+        [Fact]
+        public async Task GetPackageDeleteLeaf()
+        {
+            var leaf = await _target.GetPackageDeleteLeafAsync(TestData.PackageDeleteCatalogLeafUrl);
+
+            Assert.Equal(TestData.PackageDeleteCatalogLeafUrl, leaf.CatalogLeafUrl);
+            Assert.Equal(CatalogLeafType.PackageDelete, leaf.Type);
+
+            Assert.Equal("Deleted.Package", leaf.PackageId);
+            Assert.Equal("1.0.0", leaf.PackageVersion);
+        }
+
+        [Fact]
+        public async Task ThrowsOnTypeMismatch()
+        {
+            await Assert.ThrowsAsync<ArgumentException>(() => _target.GetPackageDetailsLeafAsync(TestData.PackageDeleteCatalogLeafUrl));
+            await Assert.ThrowsAsync<ArgumentException>(() => _target.GetPackageDeleteLeafAsync(TestData.PackageDetailsCatalogLeafUrl));
         }
     }
 }

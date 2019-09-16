@@ -1,18 +1,11 @@
 using System.Threading.Tasks;
 using BaGet.Protocol.Internal;
-using NuGet.Versioning;
 using Xunit;
 
 namespace BaGet.Protocol.Tests
 {
     public class PackageMetadataClientTests : IClassFixture<ProtocolFixture>
     {
-        public static readonly NuGetVersion NewtonsoftJsonLowerVersion = NuGetVersion.Parse("3.5.8");
-        public static readonly NuGetVersion NewtonsoftJsonUpperVersion = NuGetVersion.Parse("12.0.1-beta2");
-
-        public static readonly NuGetVersion FakePage1LowerVersion = NuGetVersion.Parse("1.0.0-alpha-10");
-        public static readonly NuGetVersion FakePage1UpperVersion = NuGetVersion.Parse("1.66.1");
-
         private readonly PackageMetadataClient _target;
 
         public PackageMetadataClientTests(ProtocolFixture fixture)
@@ -21,57 +14,47 @@ namespace BaGet.Protocol.Tests
         }
 
         [Fact]
-        public async Task GetsNewtonsoftJsonRegistrationIndex()
+        public async Task GetRegistrationIndexInlinedItems()
         {
-            var result = await _target.GetRegistrationIndexOrNullAsync("Newtonsoft.Json");
+            var result = await _target.GetRegistrationIndexOrNullAsync("Test.Package");
 
             Assert.NotNull(result);
             Assert.Equal(2, result.Pages.Count);
-            Assert.True(result.Pages[0].Count == 64);
-            Assert.True(result.Pages[0].ItemsOrNull.Count == 64);
-            Assert.Equal(NewtonsoftJsonLowerVersion, result.Pages[0].ParseLower());
-            Assert.Equal(NewtonsoftJsonUpperVersion, result.Pages[0].ParseUpper());
+
+            Assert.True(result.Pages[0].Count == 1);
+            Assert.True(result.Pages[0].ItemsOrNull.Count == 1);
+            Assert.Equal("1.0.0", result.Pages[0].Lower);
+            Assert.Equal("1.0.0", result.Pages[0].Upper);
+            Assert.StartsWith(TestData.RegistrationIndexInlinedItemsUrl, result.Pages[0].RegistrationPageUrl);
+
+            Assert.True(result.Pages[1].Count == 2);
+            Assert.True(result.Pages[1].ItemsOrNull.Count == 2);
+            Assert.Equal("2.0.0", result.Pages[1].Lower);
+            Assert.Equal("3.0.0", result.Pages[1].Upper);
+            Assert.StartsWith(TestData.RegistrationIndexInlinedItemsUrl, result.Pages[1].RegistrationPageUrl);
         }
 
         [Fact]
-        public async Task GetsFakeRegistrationIndex()
+        public async Task GetRegistrationIndexPagedItems()
         {
-            // If this test breaks, "GetFakesRegistrationPage" will need to be updated.
-            var result = await _target.GetRegistrationIndexOrNullAsync("FAKE");
+            var result = await _target.GetRegistrationIndexOrNullAsync("Paged.Package");
 
             Assert.NotNull(result);
-            Assert.True(result.Pages.Count >= 27);
+            Assert.Equal(2, result.Pages.Count);
+
+            Assert.True(result.Pages[0].Count == 1);
             Assert.Null(result.Pages[0].ItemsOrNull);
-            Assert.Equal(64, result.Pages[0].Count);
-            Assert.Equal(FakePage1LowerVersion, result.Pages[0].ParseLower());
-            Assert.Equal(FakePage1UpperVersion, result.Pages[0].ParseUpper());
+            Assert.Equal("1.0.0", result.Pages[0].Lower);
+            Assert.Equal("1.0.0", result.Pages[0].Upper);
+
+            Assert.True(result.Pages[1].Count == 2);
+            Assert.Null(result.Pages[1].ItemsOrNull);
+            Assert.Equal("2.0.0", result.Pages[1].Lower);
+            Assert.Equal("3.0.0", result.Pages[1].Upper);
         }
 
-        [Fact]
-        public async Task GetsFakeRegistrationPage()
-        {
-            var result = await _target.GetRegistrationPageOrNullAsync("FAKE", FakePage1LowerVersion, FakePage1UpperVersion);
 
-            Assert.NotNull(result);
-            Assert.Equal(64, result.Count);
-            Assert.Equal("1.0.0-alpha-10", result.Lower);
-            Assert.Equal("1.66.1", result.Upper);
-        }
-
-        [Fact]
-        public async Task GetsNewtonsoftRegistrationLeaf()
-        {
-            var leaf = await _target.GetRegistrationLeafOrNullAsync("Newtonsoft.Json", NewtonsoftJsonLowerVersion);
-
-            Assert.NotNull(leaf);
-        }
-
-        [Fact]
-        public async Task GetFakeRegistrationLeaf()
-        {
-            var leaf = await _target.GetRegistrationLeafOrNullAsync("FAKE", FakePage1LowerVersion);
-
-            Assert.NotNull(leaf);
-        }
+        // TODO: Get registration page
+        // TODO: Get registration leaf
     }
 }

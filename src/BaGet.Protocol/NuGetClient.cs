@@ -111,7 +111,7 @@ namespace BaGet.Protocol
             var packages = await GetPackageMetadataAsync(packageId, cancellationToken);
 
             return packages
-                .Where(p => p.Listed)
+                .Where(p => p.IsListed())
                 .Select(p => p.ParseVersion())
                 .ToList();
         }
