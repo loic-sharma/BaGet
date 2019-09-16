@@ -33,7 +33,7 @@ namespace BaGet.Protocol
         /// <param name="serviceIndexUrl">
         /// The NuGet Service Index resource URL.
         ///
-        /// For NuGet.org, use <see href="https://api.nuget.org/v3/index.json"/>.
+        /// For NuGet.org, use https://api.nuget.org/v3/index.json
         /// </param>
         public NuGetClientFactory(HttpClient httpClient, string serviceIndexUrl)
         {
@@ -45,9 +45,9 @@ namespace BaGet.Protocol
         }
 
         /// <summary>
-        /// Create a low level client to interact with the NuGet Service Index resource.
+        /// Create a client to interact with the NuGet Service Index resource.
         /// 
-        /// See <see href="https://docs.microsoft.com/en-us/nuget/api/service-index"/>.
+        /// See https://docs.microsoft.com/en-us/nuget/api/service-index
         /// </summary>
         /// <returns>A client to interact with the NuGet Service Index resource.</returns>
         public virtual Task<IServiceIndexResource> CreateServiceIndexClientAsync(CancellationToken cancellationToken = default)
@@ -56,9 +56,9 @@ namespace BaGet.Protocol
         }
 
         /// <summary>
-        /// Create a low level client to interact with the NuGet Package Content resource.
+        /// Create a client to interact with the NuGet Package Content resource.
         ///
-        /// See <see href="https://docs.microsoft.com/en-us/nuget/api/package-base-address-resource"/>.
+        /// See https://docs.microsoft.com/en-us/nuget/api/package-base-address-resource
         /// </summary>
         /// <returns>A client to interact with the NuGet Package Content resource.</returns>
         public virtual Task<IPackageContentResource> CreatePackageContentClientAsync(CancellationToken cancellationToken = default)
@@ -67,9 +67,9 @@ namespace BaGet.Protocol
         }
 
         /// <summary>
-        /// Create a low level client to interact with the NuGet Package Metadata resource.
+        /// Create a client to interact with the NuGet Package Metadata resource.
         /// 
-        /// See <see href="https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource"/>.
+        /// See https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
         /// </summary>
         /// <returns>A client to interact with the NuGet Package Metadata resource.</returns>
         public virtual Task<IPackageMetadataResource> CreatePackageMetadataClientAsync(CancellationToken cancellationToken = default)
@@ -78,9 +78,9 @@ namespace BaGet.Protocol
         }
 
         /// <summary>
-        /// Create a low level client to interact with the NuGet Search resource.
+        /// Create a client to interact with the NuGet Search resource.
         /// 
-        /// See <see href="https://docs.microsoft.com/en-us/nuget/api/search-query-service-resource"/>.
+        /// See https://docs.microsoft.com/en-us/nuget/api/search-query-service-resource
         /// </summary>
         /// <returns>A client to interact with the NuGet Search resource.</returns>
         public virtual Task<ISearchResource> CreateSearchClientAsync(CancellationToken cancellationToken = default)
@@ -91,9 +91,9 @@ namespace BaGet.Protocol
         }
 
         /// <summary>
-        /// Create a low level client to interact with the NuGet catalog resource.
+        /// Create a client to interact with the NuGet catalog resource.
         /// 
-        /// See <see href="https://docs.microsoft.com/en-us/nuget/api/catalog-resource"/>.
+        /// See https://docs.microsoft.com/en-us/nuget/api/catalog-resource
         /// </summary>
         /// <returns>A client to interact with the Catalog resource.</returns>
         public virtual Task<ICatalogResource> CreateCatalogClientAsync(CancellationToken cancellationToken = default)

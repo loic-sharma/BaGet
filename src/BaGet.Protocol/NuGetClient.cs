@@ -32,7 +32,7 @@ namespace BaGet.Protocol
         /// <param name="serviceIndexUrl">
         /// The NuGet Service Index resource URL.
         ///
-        /// For NuGet.org, use <see href="https://api.nuget.org/v3/index.json"/>.
+        /// For NuGet.org, use https://api.nuget.org/v3/index.json
         /// </param>
         public NuGetClient(string serviceIndexUrl)
         {
