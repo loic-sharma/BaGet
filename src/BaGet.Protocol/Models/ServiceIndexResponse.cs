@@ -1,15 +1,12 @@
-using System;
 using System.Collections.Generic;
-using BaGet.Protocol.Internal;
 using Newtonsoft.Json;
-using NuGet.Versioning;
 
-namespace BaGet.Protocol
+namespace BaGet.Protocol.Models
 {
     /// <summary>
-    /// The entry point for a NuGet package source used by the client to find APIs.
-    /// Documentation: https://docs.microsoft.com/en-us/nuget/api/overview
-    /// NuGet.org: https://api.nuget.org/v3-index/index.json
+    /// The entry point for a NuGet package source used by the client to discover NuGet APIs.
+    ///
+    /// See https://docs.microsoft.com/en-us/nuget/api/overview
     /// </summary>
     public class ServiceIndexResponse
     {

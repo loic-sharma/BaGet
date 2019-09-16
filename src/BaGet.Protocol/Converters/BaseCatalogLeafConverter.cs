@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using BaGet.Protocol.Models;
 using Newtonsoft.Json;
 
 namespace BaGet.Protocol.Internal

@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core.Entities;
 using BaGet.Core.Mirror;
-using BaGet.Protocol;
+using BaGet.Protocol.Models;
 using NuGet.Versioning;
 
 namespace BaGet.Core.Metadata

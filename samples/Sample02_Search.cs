@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using BaGet.Protocol.Models;
 using Xunit;
 
 namespace BaGet.Protocol.Samples.Tests

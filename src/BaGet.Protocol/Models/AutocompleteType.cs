@@ -1,7 +1,9 @@
-namespace BaGet.Protocol
+namespace BaGet.Protocol.Models
 {
     /// <summary>
     /// The autocomplete request type.
+    ///
+    /// See https://docs.microsoft.com/en-us/nuget/api/search-autocomplete-service-resource
     /// </summary>
     public enum AutocompleteType
     {

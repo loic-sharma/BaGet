@@ -7,6 +7,7 @@ using BaGet.Core.Metadata;
 using BaGet.Core.Mirror;
 using BaGet.Core.Storage;
 using BaGet.Protocol;
+using BaGet.Protocol.Models;
 using NuGet.Versioning;
 
 namespace BaGet.Core.Content

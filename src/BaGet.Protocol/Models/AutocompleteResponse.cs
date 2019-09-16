@@ -1,12 +1,12 @@
-using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace BaGet.Protocol
+namespace BaGet.Protocol.Models
 {
     /// <summary>
     /// The package ids that matched the autocomplete query.
-    /// Documentation: https://docs.microsoft.com/en-us/nuget/api/search-autocomplete-service-resource#search-for-package-ids
+    /// 
+    /// See https://docs.microsoft.com/en-us/nuget/api/search-autocomplete-service-resource#search-for-package-ids
     /// </summary>
     public class AutocompleteResponse
     {

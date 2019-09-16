@@ -6,21 +6,34 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using BaGet.Protocol.Models;
 using NuGet.Versioning;
 
 namespace BaGet.Protocol
 {
     /// <summary>
-    /// A NuGet client that interact with a NuGet server.
+    /// The <see cref="NuGetClient"/> allows you to interact with a NuGet server.
     /// </summary>
-    public class NuGetClient : INuGetClient
+    public class NuGetClient
     {
-        private readonly INuGetClientFactory _clientFactory;
+        private readonly NuGetClientFactory _clientFactory;
 
         /// <summary>
-        /// Configure the NuGet client.
+        /// Initializes a new instance of the <see cref="NuGetClient"/> class
+        /// for mocking.
         /// </summary>
-        /// <param name="serviceIndexUrl">The NuGet Service Index resource URL.</param>
+        protected NuGetClient()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NuGetClient"/> class.
+        /// </summary>
+        /// <param name="serviceIndexUrl">
+        /// The NuGet Service Index resource URL.
+        ///
+        /// For NuGet.org, use https://api.nuget.org/v3/index.json
+        /// </param>
         public NuGetClient(string serviceIndexUrl)
         {
             var httpClient = new HttpClient(new HttpClientHandler
@@ -32,10 +45,10 @@ namespace BaGet.Protocol
         }
 
         /// <summary>
-        /// Configure the NuGet client.
+        /// Initializes a new instance of the <see cref="NuGetClient"/> class.
         /// </summary>
-        /// <param name="clientFactory">The factory to create NuGet clients.</param>
-        public NuGetClient(INuGetClientFactory clientFactory)
+        /// <param name="clientFactory">The factory used to create NuGet clients.</param>
+        public NuGetClient(NuGetClientFactory clientFactory)
         {
             _clientFactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
         }
@@ -50,7 +63,7 @@ namespace BaGet.Protocol
         /// <exception cref="PackageNotFoundException">
         ///     The package could not be found.
         /// </exception>
-        public async Task<Stream> GetPackageStreamAsync(string packageId, NuGetVersion packageVersion, CancellationToken cancellationToken = default)
+        public virtual async Task<Stream> GetPackageStreamAsync(string packageId, NuGetVersion packageVersion, CancellationToken cancellationToken = default)
         {
             var client = await _clientFactory.CreatePackageContentClientAsync(cancellationToken);
             var stream = await client.GetPackageContentStreamOrNullAsync(packageId, packageVersion, cancellationToken);
@@ -73,7 +86,7 @@ namespace BaGet.Protocol
         /// <exception cref="PackageNotFoundException">
         ///     The package could not be found.
         /// </exception>
-        public async Task<Stream> GetPackageManifestStreamAsync(string packageId, NuGetVersion packageVersion, CancellationToken cancellationToken = default)
+        public virtual async Task<Stream> GetPackageManifestStreamAsync(string packageId, NuGetVersion packageVersion, CancellationToken cancellationToken = default)
         {
             var client = await _clientFactory.CreatePackageContentClientAsync(cancellationToken);
             var stream = await client.GetPackageManifestStreamOrNullAsync(packageId, packageVersion, cancellationToken);
@@ -92,7 +105,7 @@ namespace BaGet.Protocol
         /// <param name="packageId">The package ID.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The package's listed versions, if any.</returns>
-        public async Task<IReadOnlyList<NuGetVersion>> ListPackageVersionsAsync(string packageId, CancellationToken cancellationToken)
+        public virtual async Task<IReadOnlyList<NuGetVersion>> ListPackageVersionsAsync(string packageId, CancellationToken cancellationToken)
         {
             // TODO: Use the Autocomplete's enumerate versions endpoint if this is not Sleet.
             var packages = await GetPackageMetadataAsync(packageId, cancellationToken);
@@ -110,7 +123,7 @@ namespace BaGet.Protocol
         /// <param name="includeUnlisted">Whether to include unlisted versions.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The package's versions, or an empty list if the package does not exist.</returns>
-        public async Task<IReadOnlyList<NuGetVersion>> ListPackageVersionsAsync(string packageId, bool includeUnlisted, CancellationToken cancellationToken = default)
+        public virtual async Task<IReadOnlyList<NuGetVersion>> ListPackageVersionsAsync(string packageId, bool includeUnlisted, CancellationToken cancellationToken = default)
         {
             if (!includeUnlisted)
             {
@@ -134,7 +147,7 @@ namespace BaGet.Protocol
         /// <param name="packageId">The package ID.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The package's metadata, or an empty list if the package does not exist.</returns>
-        public async Task<IReadOnlyList<PackageMetadata>> GetPackageMetadataAsync(string packageId, CancellationToken cancellationToken = default)
+        public virtual async Task<IReadOnlyList<PackageMetadata>> GetPackageMetadataAsync(string packageId, CancellationToken cancellationToken = default)
         {
             var result = new List<PackageMetadata>();
 
@@ -182,7 +195,7 @@ namespace BaGet.Protocol
         /// <exception cref="PackageNotFoundException">
         ///     The package could not be found.
         /// </exception>
-        public async Task<PackageMetadata> GetPackageMetadataAsync(string packageId, NuGetVersion packageVersion, CancellationToken cancellationToken = default)
+        public virtual async Task<PackageMetadata> GetPackageMetadataAsync(string packageId, NuGetVersion packageVersion, CancellationToken cancellationToken = default)
         {
             var client = await _clientFactory.CreatePackageMetadataClientAsync(cancellationToken);
             var registrationIndex = await client.GetRegistrationIndexOrNullAsync(packageId, cancellationToken);
@@ -239,7 +252,7 @@ namespace BaGet.Protocol
         /// <param name="query">The search query.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The search results, including prerelease packages.</returns>
-        public async Task<SearchResponse> SearchAsync(string query, CancellationToken cancellationToken = default)
+        public virtual async Task<SearchResponse> SearchAsync(string query, CancellationToken cancellationToken = default)
         {
             var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
 
@@ -253,7 +266,7 @@ namespace BaGet.Protocol
         /// <param name="includePrerelease">Whether to include prerelease packages.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The search results.</returns>
-        public async Task<SearchResponse> SearchAsync(string query, bool includePrerelease, CancellationToken cancellationToken = default)
+        public virtual async Task<SearchResponse> SearchAsync(string query, bool includePrerelease, CancellationToken cancellationToken = default)
         {
             var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
 
@@ -271,7 +284,7 @@ namespace BaGet.Protocol
         /// <param name="take">The number of results to include.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The search results, including prerelease packages.</returns>
-        public async Task<SearchResponse> SearchAsync(string query, int skip, int take, CancellationToken cancellationToken = default)
+        public virtual async Task<SearchResponse> SearchAsync(string query, int skip, int take, CancellationToken cancellationToken = default)
         {
             var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
 
@@ -287,7 +300,7 @@ namespace BaGet.Protocol
         /// <param name="take">The number of results to include.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The search results, including prerelease packages.</returns>
-        public async Task<SearchResponse> SearchAsync(string query, bool includePrerelease, int skip, int take, CancellationToken cancellationToken = default)
+        public virtual async Task<SearchResponse> SearchAsync(string query, bool includePrerelease, int skip, int take, CancellationToken cancellationToken = default)
         {
             var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
 
@@ -300,7 +313,7 @@ namespace BaGet.Protocol
         /// <param name="query">The search query.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The autocomplete results.</returns>
-        public async Task<AutocompleteResponse> AutocompleteAsync(string query, CancellationToken cancellationToken = default)
+        public virtual async Task<AutocompleteResponse> AutocompleteAsync(string query, CancellationToken cancellationToken = default)
         {
             var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
 
@@ -315,7 +328,7 @@ namespace BaGet.Protocol
         /// <param name="take">The number of results to include.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The autocomplete results.</returns>
-        public async Task<AutocompleteResponse> AutocompleteAsync(string query, int skip, int take, CancellationToken cancellationToken = default)
+        public virtual async Task<AutocompleteResponse> AutocompleteAsync(string query, int skip, int take, CancellationToken cancellationToken = default)
         {
             var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
 

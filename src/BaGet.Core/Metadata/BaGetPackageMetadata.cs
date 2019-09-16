@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using BaGet.Protocol;
+using BaGet.Protocol.Models;
 using NuGet.Versioning;
 
 namespace BaGet.Core.Metadata

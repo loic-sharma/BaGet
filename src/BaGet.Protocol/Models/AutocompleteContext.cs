@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace BaGet.Protocol
+namespace BaGet.Protocol.Models
 {
     public class AutocompleteContext
     {

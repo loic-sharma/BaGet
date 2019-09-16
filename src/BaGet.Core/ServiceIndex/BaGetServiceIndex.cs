@@ -2,8 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Protocol;
-using NuGet.Versioning;
+using BaGet.Protocol.Models;
 
 namespace BaGet.Core.ServiceIndex
 {

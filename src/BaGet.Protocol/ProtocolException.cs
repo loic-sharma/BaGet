@@ -2,7 +2,7 @@ using System;
 using System.Net;
 using System.Net.Http;
 
-namespace BaGet.Protocol
+namespace BaGet.Protocol.Models
 {
     /// <summary>
     /// An exception that is thrown when an API has returned an unexpected result.
@@ -10,7 +10,7 @@ namespace BaGet.Protocol
     public class ProtocolException : Exception
     {
         /// <summary>
-        /// Create a new protocol exception.
+        /// Create a new <see cref="ProtocolException"/>.
         /// </summary>
         /// <param name="message">The HTTP response message.</param>
         /// <param name="method">The HTTP request method.</param>
