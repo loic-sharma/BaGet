@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AutocompleteUrl" xml:space="preserve">
-    <value>https://fake/v3/autocomplete</value>
+    <value>https://test.example/v3/autocomplete</value>
   </data>
   <data name="CatalogIndex" xml:space="preserve">
     <value>{
@@ -133,14 +133,14 @@
   "count": 2,
   "items": [
     {
-      "@id": "https://fake/v3/catalog/page0.json",
+      "@id": "https://test.example/v3/catalog/page0.json",
       "@type": "CatalogPage",
       "commitId": "c088ef83-7dd6-4d24-86e8-85e3089d2c3b",
       "commitTimeStamp": "2010-01-05T00:00:00.000Z",
       "count": 2
     },
     {
-      "@id": "https://fake/v3/catalog/page1.json",
+      "@id": "https://test.example/v3/catalog/page1.json",
       "@type": "CatalogPage",
       "commitId": "6a3a3343-2d99-4a70-a1ef-9221008c8473",
       "commitTimeStamp": "2010-01-15T00:00:00.000Z",
@@ -173,7 +173,7 @@
 }</value>
   </data>
   <data name="CatalogIndexUrl" xml:space="preserve">
-    <value>https://fake/v3/catalog/index.json</value>
+    <value>https://test.example/v3/catalog/index.json</value>
   </data>
   <data name="CatalogLeafInvalidDependencyVersionRange" xml:space="preserve">
     <value />
@@ -183,15 +183,15 @@
   </data>
   <data name="CatalogPage" xml:space="preserve">
     <value>{
-  "@id": "https://fake/v3/catalog/page0.json",
+  "@id": "https://test.example/v3/catalog/page0.json",
   "@type": "CatalogPage",
   "commitId": "c088ef83-7dd6-4d24-86e8-85e3089d2c3b",
   "commitTimeStamp": "2010-01-05T00:00:00.000Z",
   "count": 2,
-  "parent": "https://fake/v3/catalog/index.json",
+  "parent": "https://test.example/v3/catalog/index.json",
   "items": [
     {
-      "@id": "https://fake/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json",
+      "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json",
       "@type": "nuget:PackageDetails",
       "commitId": "c088ef83-7dd6-4d24-86e8-85e3089d2c3b",
       "commitTimeStamp": "2010-01-05T00:00:00.000Z",
@@ -199,7 +199,7 @@
       "nuget:version": "1.0.0"
     },
     {
-      "@id": "https://fake/v3/catalog/2010.01.05.00.00.00/deleted.package.1.0.0.json",
+      "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/deleted.package.1.0.0.json",
       "@type": "nuget:PackageDelete",
       "commitId": "c088ef83-7dd6-4d24-86e8-85e3089d2c3b",
       "commitTimeStamp": "2010-01-05T00:00:00.000Z",
@@ -233,7 +233,7 @@
 }</value>
   </data>
   <data name="CatalogPageUrl" xml:space="preserve">
-    <value>https://fake/v3/catalog/page0.json</value>
+    <value>https://test.example/v3/catalog/page0.json</value>
   </data>
   <data name="DefaultAutocomplete" xml:space="preserve">
     <value>{
@@ -247,28 +247,28 @@
 }</value>
   </data>
   <data name="DefaultAutocompleteUrl" xml:space="preserve">
-    <value>https://fake/v3/autocomplete?take=20&amp;prerelease=True&amp;semVerLevel=2.0.0</value>
+    <value>https://test.example/v3/autocomplete?take=20&amp;prerelease=True&amp;semVerLevel=2.0.0</value>
   </data>
   <data name="DefaultSearch" xml:space="preserve">
     <value>{
   "@context": {
     "@vocab": "http://schema.nuget.org/schema#",
-    "@base": "https://fake/v3/metadata/"
+    "@base": "https://test.example/v3/metadata/"
   },
   "totalHits": 1,
   "data": [
     {
-      "@id": "https://fake/v3/metadata/test.package/index.json",
+      "@id": "https://test.example/v3/metadata/test.package/index.json",
       "@type": "Package",
-      "registration": "https://fake/v3/metadata/test.package/index.json",
+      "registration": "https://test.example/v3/metadata/test.package/index.json",
       "id": "Test.Package",
       "version": "3.0.0",
       "description": "Package description",
       "summary": "Package summary",
       "title": "Test.Package",
-      "iconUrl": "http://fake/icon.png",
-      "licenseUrl": "https://fake/license",
-      "projectUrl": "https://fake/project",
+      "iconUrl": "http://test.example/icon.png",
+      "licenseUrl": "https://test.example/license",
+      "projectUrl": "https://test.example/project",
       "tags": [
         "Test",
         "Package"
@@ -282,17 +282,17 @@
         {
           "version": "3.0.0",
           "downloads": 50,
-          "@id": "https://fake/v3/metadata/test.package/3.0.0.json"
+          "@id": "https://test.example/v3/metadata/test.package/3.0.0.json"
         },
         {
           "version": "2.0.0+build",
           "downloads": 25,
-          "@id": "https://fake/v3/metadata/test.package/2.0.0.json"
+          "@id": "https://test.example/v3/metadata/test.package/2.0.0.json"
         },
         {
           "version": "1.0.0",
           "downloads": 25,
-          "@id": "https://fake/v3/metadata/test.package/1.0.0.json"
+          "@id": "https://test.example/v3/metadata/test.package/1.0.0.json"
         }
       ]
     }
@@ -300,10 +300,10 @@
 }</value>
   </data>
   <data name="DefaultSearchUrl" xml:space="preserve">
-    <value>https://fake/v3/search?take=20&amp;prerelease=True&amp;semVerLevel=2.0.0</value>
+    <value>https://test.example/v3/search?take=20&amp;prerelease=True&amp;semVerLevel=2.0.0</value>
   </data>
   <data name="PackageContentUrl" xml:space="preserve">
-    <value>https://fake/v3/content</value>
+    <value>https://test.example/v3/content</value>
   </data>
   <data name="PackageContentVersionList" xml:space="preserve">
     <value>{
@@ -314,11 +314,11 @@
 }</value>
   </data>
   <data name="PackageContentVersionListUrl" xml:space="preserve">
-    <value>https://fake/v3/content/test.package/index.json</value>
+    <value>https://test.example/v3/content/test.package/index.json</value>
   </data>
   <data name="PackageDeleteCatalogLeaf" xml:space="preserve">
     <value>{
-  "@id": "https://fake/v3/catalog/2010.01.05.00.00.00/deleted.package.1.0.0.json",
+  "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/deleted.package.1.0.0.json",
   "@type": [
     "PackageDelete",
     "catalog:Permalink"
@@ -359,11 +359,11 @@
 }</value>
   </data>
   <data name="PackageDeleteCatalogLeafUrl" xml:space="preserve">
-    <value>https://fake/v3/catalog/2010.01.05.00.00.00/deleted.package.1.0.0.json</value>
+    <value>https://test.example/v3/catalog/2010.01.05.00.00.00/deleted.package.1.0.0.json</value>
   </data>
   <data name="PackageDetailsCatalogLeaf" xml:space="preserve">
     <value>{
-  "@id": "https://fake/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json",
+  "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json",
   "@type": [
     "PackageDetails",
     "catalog:Permalink"
@@ -373,28 +373,28 @@
   "catalog:commitTimeStamp": "2010-01-05T00:00:00.000Z",
   "created": "2010-01-05T00:00:00.000Z",
   "description": "Package description",
-  "iconUrl": "http://fake/icon.png",
+  "iconUrl": "http://test.example/icon.png",
   "id": "Test.Package",
   "isPrerelease": false,
   "lastEdited": "2010-01-05T00:00:00.000Z",
   "licenseFile": "License.txt",
-  "licenseUrl": "https://fake/license",
+  "licenseUrl": "https://test.example/license",
   "listed": true,
   "packageHash": "abc",
   "packageHashAlgorithm": "SHA512",
   "packageSize": 100,
-  "projectUrl": "https://fake/project",
+  "projectUrl": "https://test.example/project",
   "published": "2010-01-05T00:00:00.000Z",
   "requireLicenseAcceptance": true,
   "verbatimVersion": "1.0.0",
   "version": "1.0.0",
   "dependencyGroups": [
     {
-      "@id": "https://fake/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0",
+      "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0",
       "@type": "PackageDependencyGroup",
       "dependencies": [
         {
-          "@id": "https://fake/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0/test.dependency",
+          "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0/test.dependency",
           "@type": "PackageDependency",
           "id": "Test.Dependency",
           "range": "[2.0.0, )"
@@ -405,7 +405,7 @@
   ],
   "packageEntries": [
     {
-      "@id": "https://fake/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#Test.Package.nuspec",
+      "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#Test.Package.nuspec",
       "@type": "PackageEntry",
       "compressedLength": 100,
       "fullName": "Test.Package.nuspec",
@@ -413,7 +413,7 @@
       "name": "Test.Package.nuspec"
     },
     {
-      "@id": "https://fake/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#lib/netstandard2.0/Test.Package.dll",
+      "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#lib/netstandard2.0/Test.Package.dll",
       "@type": "PackageEntry",
       "compressedLength": 100,
       "fullName": "lib/netstandard2.0/Test.Package.dll",
@@ -464,10 +464,10 @@
 }</value>
   </data>
   <data name="PackageDetailsCatalogLeafUrl" xml:space="preserve">
-    <value>https://fake/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json</value>
+    <value>https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json</value>
   </data>
   <data name="PackageMetadataUrl" xml:space="preserve">
-    <value>https://fake/v3/metadata</value>
+    <value>https://test.example/v3/metadata</value>
   </data>
   <data name="RegistrationIndexInlinedItems" xml:space="preserve">
     <value>{
@@ -482,28 +482,28 @@
   "count": 2,
   "items": [
     {
-      "@id": "https://fake/v3/metadata/test.package/index.json#page/1.0.0/1.0.0",
+      "@id": "https://test.example/v3/metadata/test.package/index.json#page/1.0.0/1.0.0",
       "@type": "catalog:CatalogPage",
       "commitId": "c088ef83-7dd6-4d24-86e8-85e3089d2c3b",
       "commitTimeStamp": "2010-01-05T00:00:00.000Z",
       "count": 1,
       "items": [
         {
-          "@id": "https://fake/v3/metadata/test.package/1.0.0.json",
+          "@id": "https://test.example/v3/metadata/test.package/1.0.0.json",
           "@type": "Package",
           "commitId": "c088ef83-7dd6-4d24-86e8-85e3089d2c3b",
           "commitTimeStamp": "2010-01-05T00:00:00.000Z",
           "catalogEntry": {
-            "@id": "https://fake/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json",
+            "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json",
             "@type": "PackageDetails",
             "authors": "Test Author",
             "dependencyGroups": [
               {
-                "@id": "https://fake/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0",
+                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0",
                 "@type": "PackageDependencyGroup",
                 "dependencies": [
                   {
-                    "@id": "https://fake/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0/test.dependency",
+                    "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0/test.dependency",
                     "@type": "PackageDependency",
                     "id": "Test.Dependency",
                     "range": "[2.0.0, )"
@@ -512,21 +512,21 @@
                 "targetFramework": ".NETStandard2.0"
               },
               {
-                "@id": "https://fake/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0",
+                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0",
                 "@type": "PackageDependencyGroup",
                 "targetFramework": ".NETFramework4.8"
               }
             ],
             "description": "Package description",
-            "iconUrl": "http://fake/icon.png",
+            "iconUrl": "https://test.example/icon.png",
             "id": "Test.Package",
             "language": "Test Language",
             "licenseExpression": "MIT",
-            "licenseUrl": "https://fake/license",
+            "licenseUrl": "https://test.example/license",
             "listed": true,
             "minClientVersion": "2.12",
-            "packageContent": "https://fake/content/test.package/1.0.0/test.package.1.0.0.nupkg",
-            "projectUrl": "https://fake/project",
+            "packageContent": "https://test.example/content/test.package/1.0.0/test.package.1.0.0.nupkg",
+            "projectUrl": "https://test.example/project",
             "published": "2010-01-05T00:00:00.000Z",
             "requireLicenseAcceptance": false,
             "summary": "",
@@ -537,37 +537,37 @@
             "title": "Test.Package",
             "version": "1.0.0"
           },
-          "packageContent": "https://fake/content/test.package/1.0.0/test.package.1.0.0.nupkg",
-          "registration": "https://fake/metadata/test.package/index.json"
+          "packageContent": "https://test.example/content/test.package/1.0.0/test.package.1.0.0.nupkg",
+          "registration": "https://test.example/metadata/test.package/index.json"
         }
       ],
-      "parent": "https://fake/v3/metadata/test.package/index.json",
+      "parent": "https://test.example/v3/metadata/test.package/index.json",
       "lower": "1.0.0",
       "upper": "1.0.0"
     },
     {
-      "@id": "https://fake/v3/metadata/test.package/index.json#page/2.0.0/3.0.0",
+      "@id": "https://test.example/v3/metadata/test.package/index.json#page/2.0.0/3.0.0",
       "@type": "catalog:CatalogPage",
       "commitId": "c088ef83-7dd6-4d24-86e8-85e3089d2c3b",
       "commitTimeStamp": "2010-01-05T00:00:00.000Z",
       "count": 2,
       "items": [
         {
-          "@id": "https://fake/v3/metadata/test.package/2.0.0.json",
+          "@id": "https://test.example/v3/metadata/test.package/2.0.0.json",
           "@type": "Package",
           "commitId": "c088ef83-7dd6-4d24-86e8-85e3089d2c3b",
           "commitTimeStamp": "2010-01-05T00:00:00.000Z",
           "catalogEntry": {
-            "@id": "https://fake/v3/catalog/2010.01.05.00.00.00/test.package.2.0.0.json",
+            "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.2.0.0.json",
             "@type": "PackageDetails",
             "authors": "Test Author",
             "dependencyGroups": [
               {
-                "@id": "https://fake/v3/catalog/2010.01.05.00.00.00/test.package.2.0.0.json#dependencygroup/.netstandard2.0",
+                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.2.0.0.json#dependencygroup/.netstandard2.0",
                 "@type": "PackageDependencyGroup",
                 "dependencies": [
                   {
-                    "@id": "https://fake/v3/catalog/2010.01.05.00.00.00/test.package.2.0.0.json#dependencygroup/.netstandard2.0/test.dependency",
+                    "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.2.0.0.json#dependencygroup/.netstandard2.0/test.dependency",
                     "@type": "PackageDependency",
                     "id": "Test.Dependency",
                     "range": "[2.0.0, )"
@@ -576,21 +576,21 @@
                 "targetFramework": ".NETStandard2.0"
               },
               {
-                "@id": "https://fake/v3/catalog/2010.01.05.00.00.00/test.package.2.0.0.json#dependencygroup/.netstandard2.0",
+                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.2.0.0.json#dependencygroup/.netstandard2.0",
                 "@type": "PackageDependencyGroup",
                 "targetFramework": ".NETFramework4.8"
               }
             ],
             "description": "Package description",
-            "iconUrl": "http://fake/icon.png",
+            "iconUrl": "http://test.example/icon.png",
             "id": "Test.Package",
             "language": "Test Language",
             "licenseExpression": "MIT",
-            "licenseUrl": "https://fake/license",
+            "licenseUrl": "https://test.example/license",
             "listed": true,
             "minClientVersion": "2.12",
-            "packageContent": "https://fake/content/test.package/1.0.0/test.package.2.0.0.nupkg",
-            "projectUrl": "https://fake/project",
+            "packageContent": "https://test.example/content/test.package/1.0.0/test.package.2.0.0.nupkg",
+            "projectUrl": "https://test.example/project",
             "published": "2010-01-05T00:00:00.000Z",
             "requireLicenseAcceptance": false,
             "summary": "",
@@ -601,25 +601,25 @@
             "title": "Test.Package",
             "version": "2.0.0+build"
           },
-          "packageContent": "https://fake/content/test.package/2.0.0/test.package.2.0.0.nupkg",
-          "registration": "https://fake/metadata/test.package/index.json"
+          "packageContent": "https://test.example/content/test.package/2.0.0/test.package.2.0.0.nupkg",
+          "registration": "https://test.example/metadata/test.package/index.json"
         },
         {
-          "@id": "https://fake/v3/metadata/test.package/3.0.0.json",
+          "@id": "https://test.example/v3/metadata/test.package/3.0.0.json",
           "@type": "Package",
           "commitId": "c088ef83-7dd6-4d24-86e8-85e3089d2c3b",
           "commitTimeStamp": "2010-01-05T00:00:00.000Z",
           "catalogEntry": {
-            "@id": "https://fake/v3/catalog/2010.01.05.00.00.00/test.package.3.0.0.json",
+            "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.3.0.0.json",
             "@type": "PackageDetails",
             "authors": "Test Author",
             "dependencyGroups": [
               {
-                "@id": "https://fake/v3/catalog/2010.01.05.00.00.00/test.package.3.0.0.json#dependencygroup/.netstandard2.0",
+                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.3.0.0.json#dependencygroup/.netstandard2.0",
                 "@type": "PackageDependencyGroup",
                 "dependencies": [
                   {
-                    "@id": "https://fake/v3/catalog/2010.01.05.00.00.00/test.package.3.0.0.json#dependencygroup/.netstandard2.0/test.dependency",
+                    "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.3.0.0.json#dependencygroup/.netstandard2.0/test.dependency",
                     "@type": "PackageDependency",
                     "id": "Test.Dependency",
                     "range": "[2.0.0, )"
@@ -628,21 +628,21 @@
                 "targetFramework": ".NETStandard2.0"
               },
               {
-                "@id": "https://fake/v3/catalog/2010.01.05.00.00.00/test.package.3.0.0.json#dependencygroup/.netstandard2.0",
+                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.3.0.0.json#dependencygroup/.netstandard2.0",
                 "@type": "PackageDependencyGroup",
                 "targetFramework": ".NETFramework4.8"
               }
             ],
             "description": "Package description",
-            "iconUrl": "http://fake/icon.png",
+            "iconUrl": "http://test.example/icon.png",
             "id": "Test.Package",
             "language": "Test Language",
             "licenseExpression": "MIT",
-            "licenseUrl": "https://fake/license",
+            "licenseUrl": "https://test.example/license",
             "listed": true,
             "minClientVersion": "2.12",
-            "packageContent": "https://fake/content/test.package/1.0.0/test.package.3.0.0.nupkg",
-            "projectUrl": "https://fake/project",
+            "packageContent": "https://test.example/content/test.package/1.0.0/test.package.3.0.0.nupkg",
+            "projectUrl": "https://test.example/project",
             "published": "2010-01-05T00:00:00.000Z",
             "requireLicenseAcceptance": false,
             "summary": "",
@@ -653,11 +653,11 @@
             "title": "Test.Package",
             "version": "3.0.0"
           },
-          "packageContent": "https://fake/content/test.package/3.0.0/test.package.3.0.0.nupkg",
-          "registration": "https://fake/metadata/test.package/index.json"
+          "packageContent": "https://test.example/content/test.package/3.0.0/test.package.3.0.0.nupkg",
+          "registration": "https://test.example/metadata/test.package/index.json"
         }
       ],
-      "parent": "https://fake/v3/metadata/test.package/index.json",
+      "parent": "https://test.example/v3/metadata/test.package/index.json",
       "lower": "2.0.0",
       "upper": "3.0.0"
     }
@@ -716,11 +716,11 @@
 }</value>
   </data>
   <data name="RegistrationIndexInlinedItemsUrl" xml:space="preserve">
-    <value>https://fake/v3/metadata/test.package/index.json</value>
+    <value>https://test.example/v3/metadata/test.package/index.json</value>
   </data>
   <data name="RegistrationIndexPagedItems" xml:space="preserve">
     <value>{
-  "@id": "https://fake/v3/metadata/paged.package/index.json",
+  "@id": "https://test.example/v3/metadata/paged.package/index.json",
   "@type": [
     "catalog:CatalogRoot",
     "PackageRegistration",
@@ -731,7 +731,7 @@
   "count": 2,
   "items": [
     {
-      "@id": "https://fake/v3/metadata/paged.package/page/1.0.0/1.0.0.json",
+      "@id": "https://test.example/v3/metadata/paged.package/page/1.0.0/1.0.0.json",
       "@type": "catalog:CatalogPage",
       "commitId": "c088ef83-7dd6-4d24-86e8-85e3089d2c3b",
       "commitTimeStamp": "2010-01-05T00:00:00.000Z",
@@ -740,7 +740,7 @@
       "upper": "1.0.0"
     },
     {
-      "@id": "https://fake/v3/metadata/paged.package/page/2.0.0/3.0.0.json",
+      "@id": "https://test.example/v3/metadata/paged.package/page/2.0.0/3.0.0.json",
       "@type": "catalog:CatalogPage",
       "commitId": "c088ef83-7dd6-4d24-86e8-85e3089d2c3b",
       "commitTimeStamp": "2010-01-05T00:00:00.000Z",
@@ -803,55 +803,275 @@
 }</value>
   </data>
   <data name="RegistrationIndexPagedItemsUrl" xml:space="preserve">
-    <value>https://fake/v3/metadata/paged.package/index.json</value>
+    <value>https://test.example/v3/metadata/paged.package/index.json</value>
   </data>
   <data name="RegistrationLeafListed" xml:space="preserve">
-    <value />
+    <value>{
+  "@id": "https://test.example/v3/metadata/test.package/1.0.0.json",
+  "@type": [
+    "Package",
+    "http://schema.nuget.org/catalog#Permalink"
+  ],
+  "catalogEntry": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json",
+  "listed": true,
+  "packageContent": "https://test.example/v3/content/test.package/1.0.0/test.package.1.0.0.nupkg",
+  "published": "2010-01-05T00:00:00.000Z",
+  "registration": "https://test.example/v3/metadata/test.package/1.0.0.json",
+  "@context": {
+    "@vocab": "http://schema.nuget.org/schema#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "catalogEntry": {
+      "@type": "@id"
+    },
+    "registration": {
+      "@type": "@id"
+    },
+    "packageContent": {
+      "@type": "@id"
+    },
+    "published": {
+      "@type": "xsd:dateTime"
+    }
+  }
+}</value>
   </data>
   <data name="RegistrationLeafListedUrl" xml:space="preserve">
-    <value />
+    <value>https://test.example/v3/metadata/test.package/1.0.0.json</value>
   </data>
   <data name="RegistrationLeafUnlisted" xml:space="preserve">
-    <value />
+    <value>{
+  "@id": "https://test.example/v3/metadata/paged.package/2.0.0.json",
+  "@type": [
+    "Package",
+    "http://schema.nuget.org/catalog#Permalink"
+  ],
+  "catalogEntry": "https://test.example/v3/catalog/2010.01.05.00.00.00/paged.package.2.0.0.json",
+  "listed": false,
+  "packageContent": "https://test.example/v3/content/paged.package/2.0.0/paged.package.2.0.0.nupkg",
+  "published": "2010-01-05T00:00:00.000Z",
+  "registration": "https://test.example/v3/metadata/paged.package/2.0.0.json",
+  "@context": {
+    "@vocab": "http://schema.nuget.org/schema#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "catalogEntry": {
+      "@type": "@id"
+    },
+    "registration": {
+      "@type": "@id"
+    },
+    "packageContent": {
+      "@type": "@id"
+    },
+    "published": {
+      "@type": "xsd:dateTime"
+    }
+  }
+}</value>
   </data>
   <data name="RegistrationLeafUnlistedUrl" xml:space="preserve">
-    <value />
+    <value>https://fake/v3/metadata/paged.package/2.0.0.json</value>
   </data>
   <data name="RegistrationPage" xml:space="preserve">
-    <value />
+    <value>{
+  "@id": "https://test.example/v3/metadata/paged.package/page/2.0.0/3.0.0.json",
+  "@type": "catalog:CatalogPage",
+  "commitId": "c088ef83-7dd6-4d24-86e8-85e3089d2c3b",
+  "commitTimeStamp": "2010-01-05T00:00:00.000Z",
+  "count": 2,
+  "lower": "2.0.0",
+  "parent": "https://test.example/v3/metadata/paged.package/index.json",
+  "upper": "3.0.0",
+  "items": [
+    {
+      "@id": "https://test.example/v3/metadata/paged.package/2.0.0.json",
+      "@type": "Package",
+      "commitId": "c088ef83-7dd6-4d24-86e8-85e3089d2c3b",
+      "commitTimeStamp": "2010-01-05T00:00:00.000Z",
+      "catalogEntry": {
+        "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/paged.package.2.0.0.json",
+        "@type": "PackageDetails",
+        "authors": "Package Authors",
+        "dependencyGroups": [
+          {
+            "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0",
+            "@type": "PackageDependencyGroup",
+            "dependencies": [
+              {
+                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0/test.dependency",
+                "@type": "PackageDependency",
+                "id": "Test.Dependency",
+                "range": "[2.0.0, )"
+              }
+            ],
+            "targetFramework": ".NETStandard2.0"
+          },
+          {
+            "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0",
+            "@type": "PackageDependencyGroup",
+            "targetFramework": ".NETFramework4.8"
+          }
+        ],
+        "description": "Package Description",
+        "iconUrl": "https://test.example/icon.png",
+        "id": "Paged.Package",
+        "language": "Package language",
+        "licenseExpression": "Package license",
+        "licenseUrl": "https://test.example/license",
+        "listed": false,
+        "minClientVersion": "",
+        "packageContent": "https://test.example/v3/content/paged.package/2.0.0/paged.package.2.0.0.nupkg",
+        "projectUrl": "https://test.example/project",
+        "published": "2010-01-05T00:00:00.000Z",
+        "requireLicenseAcceptance": false,
+        "summary": "Package summary",
+        "tags": [
+          "Paged",
+          "Package"
+        ],
+        "title": "Packaged.Package",
+        "version": "2.0.0+build"
+      },
+      "packageContent": "https://test.example/v3/content/paged.package/2.0.0/paged.package.2.0.0.nupkg",
+      "registration": "https://test.example/v3/metadata/paged.package/index.json"
+    },
+    {
+      "@id": "https://test.example/v3/metadata/paged.package/3.0.0.json",
+      "@type": "Package",
+      "commitId": "c088ef83-7dd6-4d24-86e8-85e3089d2c3b",
+      "commitTimeStamp": "2010-01-05T00:00:00.000Z",
+      "catalogEntry": {
+        "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/paged.package.3.0.0.json",
+        "@type": "PackageDetails",
+        "authors": "Package Authors",
+        "dependencyGroups": [
+          {
+            "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0",
+            "@type": "PackageDependencyGroup",
+            "dependencies": [
+              {
+                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0/test.dependency",
+                "@type": "PackageDependency",
+                "id": "Test.Dependency",
+                "range": "[2.0.0, )"
+              }
+            ],
+            "targetFramework": ".NETStandard2.0"
+          },
+          {
+            "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0",
+            "@type": "PackageDependencyGroup",
+            "targetFramework": ".NETFramework4.8"
+          }
+        ],
+        "description": "Package Description",
+        "iconUrl": "https://test.example/icon.png",
+        "id": "Paged.Package",
+        "language": "Package language",
+        "licenseExpression": "Package license",
+        "licenseUrl": "https://test.example/license",
+        "listed": true,
+        "minClientVersion": "",
+        "packageContent": "https://test.example/v3/content/paged.package/3.0.0/paged.package.3.0.0.nupkg",
+        "projectUrl": "https://test.example/project",
+        "published": "2010-01-05T00:00:00.000Z",
+        "requireLicenseAcceptance": false,
+        "summary": "Package summary",
+        "tags": [
+          "Paged",
+          "Package"
+        ],
+        "title": "Packaged.Package",
+        "version": "3.0.0"
+      },
+      "packageContent": "https://test.example/v3/content/paged.package/3.0.0/paged.package.3.0.0.nupkg",
+      "registration": "https://test.example/v3/metadata/paged.package/index.json"
+    }
+  ],
+  "@context": {
+    "@vocab": "http://schema.nuget.org/schema#",
+    "catalog": "http://schema.nuget.org/catalog#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "items": {
+      "@id": "catalog:item",
+      "@container": "@set"
+    },
+    "commitTimeStamp": {
+      "@id": "catalog:commitTimeStamp",
+      "@type": "xsd:dateTime"
+    },
+    "commitId": {
+      "@id": "catalog:commitId"
+    },
+    "count": {
+      "@id": "catalog:count"
+    },
+    "parent": {
+      "@id": "catalog:parent",
+      "@type": "@id"
+    },
+    "tags": {
+      "@container": "@set",
+      "@id": "tag"
+    },
+    "reasons": {
+      "@container": "@set"
+    },
+    "packageTargetFrameworks": {
+      "@container": "@set",
+      "@id": "packageTargetFramework"
+    },
+    "dependencyGroups": {
+      "@container": "@set",
+      "@id": "dependencyGroup"
+    },
+    "dependencies": {
+      "@container": "@set",
+      "@id": "dependency"
+    },
+    "packageContent": {
+      "@type": "@id"
+    },
+    "published": {
+      "@type": "xsd:dateTime"
+    },
+    "registration": {
+      "@type": "@id"
+    }
+  }
+}</value>
   </data>
   <data name="RegistrationPageUrl" xml:space="preserve">
-    <value>https://fake/v3/metadata/package/page/1.0.0/2.0.0.json</value>
+    <value>https://test.example/v3/metadata/paged.package/page/2.0.0/3.0.0.json</value>
   </data>
   <data name="SearchUrl" xml:space="preserve">
-    <value>https://fake/v3/search</value>
+    <value>https://test.example/v3/search</value>
   </data>
   <data name="ServiceIndex" xml:space="preserve">
     <value>{
   "version": "3.0.0",
   "resources": [
     {
-      "@id": "https://fake/v3/catalog/index.json",
+      "@id": "https://test.example/v3/catalog/index.json",
       "@type": "Catalog/3.0.0",
       "comment": ""
     },
     {
-      "@id": "https://fake/v3/metadata/",
+      "@id": "https://test.example/v3/metadata/",
       "@type": "RegistrationsBaseUrl/3.6.0",
       "comment": ""
     },
     {
-      "@id": "https://fake/v3/content/",
+      "@id": "https://test.example/v3/content/",
       "@type": "PackageBaseAddress/3.0.0",
       "comment": ""
     },
     {
-      "@id": "https://fake/v3/search",
+      "@id": "https://test.example/v3/search",
       "@type": "SearchQueryService/3.4.0",
       "comment": ""
     },
     {
-      "@id": "https://fake/v3/autocomplete",
+      "@id": "https://test.example/v3/autocomplete",
       "@type": "SearchAutocompleteService/3.0.0-beta",
       "comment": ""
     }
@@ -863,6 +1083,6 @@
 }</value>
   </data>
   <data name="ServiceIndexUrl" xml:space="preserve">
-    <value>https://fake/v3/index.json</value>
+    <value>https://test.example/v3/index.json</value>
   </data>
 </root>

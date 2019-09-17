@@ -61,7 +61,7 @@ namespace BaGet.Protocol.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://fake/v3/autocomplete.
+        ///   Looks up a localized string similar to https://test.example/v3/autocomplete.
         /// </summary>
         internal static string AutocompleteUrl {
             get {
@@ -82,13 +82,12 @@ namespace BaGet.Protocol.Tests {
         ///  &quot;count&quot;: 2,
         ///  &quot;items&quot;: [
         ///    {
-        ///      &quot;@id&quot;: &quot;https://fake/v3/catalog/page0.json&quot;,
+        ///      &quot;@id&quot;: &quot;https://test.example/v3/catalog/page0.json&quot;,
         ///      &quot;@type&quot;: &quot;CatalogPage&quot;,
         ///      &quot;commitId&quot;: &quot;c088ef83-7dd6-4d24-86e8-85e3089d2c3b&quot;,
         ///      &quot;commitTimeStamp&quot;: &quot;2010-01-05T00:00:00.000Z&quot;,
         ///      &quot;count&quot;: 2
-        ///    },
-        ///    { [rest of string was truncated]&quot;;.
+        ///    } [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CatalogIndex {
             get {
@@ -97,7 +96,7 @@ namespace BaGet.Protocol.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://fake/v3/catalog/index.json.
+        ///   Looks up a localized string similar to https://test.example/v3/catalog/index.json.
         /// </summary>
         internal static string CatalogIndexUrl {
             get {
@@ -125,19 +124,18 @@ namespace BaGet.Protocol.Tests {
         
         /// <summary>
         ///   Looks up a localized string similar to {
-        ///  &quot;@id&quot;: &quot;https://fake/v3/catalog/page0.json&quot;,
+        ///  &quot;@id&quot;: &quot;https://test.example/v3/catalog/page0.json&quot;,
         ///  &quot;@type&quot;: &quot;CatalogPage&quot;,
         ///  &quot;commitId&quot;: &quot;c088ef83-7dd6-4d24-86e8-85e3089d2c3b&quot;,
         ///  &quot;commitTimeStamp&quot;: &quot;2010-01-05T00:00:00.000Z&quot;,
         ///  &quot;count&quot;: 2,
-        ///  &quot;parent&quot;: &quot;https://fake/v3/catalog/index.json&quot;,
+        ///  &quot;parent&quot;: &quot;https://test.example/v3/catalog/index.json&quot;,
         ///  &quot;items&quot;: [
         ///    {
-        ///      &quot;@id&quot;: &quot;https://fake/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json&quot;,
+        ///      &quot;@id&quot;: &quot;https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json&quot;,
         ///      &quot;@type&quot;: &quot;nuget:PackageDetails&quot;,
         ///      &quot;commitId&quot;: &quot;c088ef83-7dd6-4d24-86e8-85e3089d2c3b&quot;,
-        ///      &quot;commitTimeStamp&quot;: &quot;2010-01-05T00:00:00.000Z&quot;,
-        ///     [rest of string was truncated]&quot;;.
+        ///      &quot;commitTimeStamp&quot;: &quot;2010-01- [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CatalogPage {
             get {
@@ -146,7 +144,7 @@ namespace BaGet.Protocol.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://fake/v3/catalog/page0.json.
+        ///   Looks up a localized string similar to https://test.example/v3/catalog/page0.json.
         /// </summary>
         internal static string CatalogPageUrl {
             get {
@@ -172,7 +170,7 @@ namespace BaGet.Protocol.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://fake/v3/autocomplete?take=20&amp;prerelease=True&amp;semVerLevel=2.0.0.
+        ///   Looks up a localized string similar to https://test.example/v3/autocomplete?take=20&amp;prerelease=True&amp;semVerLevel=2.0.0.
         /// </summary>
         internal static string DefaultAutocompleteUrl {
             get {
@@ -184,20 +182,19 @@ namespace BaGet.Protocol.Tests {
         ///   Looks up a localized string similar to {
         ///  &quot;@context&quot;: {
         ///    &quot;@vocab&quot;: &quot;http://schema.nuget.org/schema#&quot;,
-        ///    &quot;@base&quot;: &quot;https://fake/v3/metadata/&quot;
+        ///    &quot;@base&quot;: &quot;https://test.example/v3/metadata/&quot;
         ///  },
         ///  &quot;totalHits&quot;: 1,
         ///  &quot;data&quot;: [
         ///    {
-        ///      &quot;@id&quot;: &quot;https://fake/v3/metadata/test.package/index.json&quot;,
+        ///      &quot;@id&quot;: &quot;https://test.example/v3/metadata/test.package/index.json&quot;,
         ///      &quot;@type&quot;: &quot;Package&quot;,
-        ///      &quot;registration&quot;: &quot;https://fake/v3/metadata/test.package/index.json&quot;,
+        ///      &quot;registration&quot;: &quot;https://test.example/v3/metadata/test.package/index.json&quot;,
         ///      &quot;id&quot;: &quot;Test.Package&quot;,
         ///      &quot;version&quot;: &quot;3.0.0&quot;,
         ///      &quot;description&quot;: &quot;Package description&quot;,
         ///      &quot;summary&quot;: &quot;Package summary&quot;,
-        ///      &quot;title&quot;: &quot;Test.Package&quot;,
-        ///      &quot;iconUrl&quot;:  [rest of string was truncated]&quot;;.
+        ///      &quot;title&quot;: &quot;Test.Pack [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string DefaultSearch {
             get {
@@ -206,7 +203,7 @@ namespace BaGet.Protocol.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://fake/v3/search?take=20&amp;prerelease=True&amp;semVerLevel=2.0.0.
+        ///   Looks up a localized string similar to https://test.example/v3/search?take=20&amp;prerelease=True&amp;semVerLevel=2.0.0.
         /// </summary>
         internal static string DefaultSearchUrl {
             get {
@@ -215,7 +212,7 @@ namespace BaGet.Protocol.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://fake/v3/content.
+        ///   Looks up a localized string similar to https://test.example/v3/content.
         /// </summary>
         internal static string PackageContentUrl {
             get {
@@ -238,7 +235,7 @@ namespace BaGet.Protocol.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://fake/v3/content/test.package/index.json.
+        ///   Looks up a localized string similar to https://test.example/v3/content/test.package/index.json.
         /// </summary>
         internal static string PackageContentVersionListUrl {
             get {
@@ -248,7 +245,7 @@ namespace BaGet.Protocol.Tests {
         
         /// <summary>
         ///   Looks up a localized string similar to {
-        ///  &quot;@id&quot;: &quot;https://fake/v3/catalog/2010.01.05.00.00.00/deleted.package.1.0.0.json&quot;,
+        ///  &quot;@id&quot;: &quot;https://test.example/v3/catalog/2010.01.05.00.00.00/deleted.package.1.0.0.json&quot;,
         ///  &quot;@type&quot;: [
         ///    &quot;PackageDelete&quot;,
         ///    &quot;catalog:Permalink&quot;
@@ -261,7 +258,7 @@ namespace BaGet.Protocol.Tests {
         ///  &quot;version&quot;: &quot;1.0.0&quot;,
         ///  &quot;@context&quot;: {
         ///    &quot;@vocab&quot;: &quot;http://schema.nuget.org/schema#&quot;,
-        ///    &quot;catalog&quot;: &quot;http://schema.nuget.org [rest of string was truncated]&quot;;.
+        ///    &quot;catalog&quot;: &quot;http://schema.n [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string PackageDeleteCatalogLeaf {
             get {
@@ -270,7 +267,7 @@ namespace BaGet.Protocol.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://fake/v3/catalog/2010.01.05.00.00.00/deleted.package.1.0.0.json.
+        ///   Looks up a localized string similar to https://test.example/v3/catalog/2010.01.05.00.00.00/deleted.package.1.0.0.json.
         /// </summary>
         internal static string PackageDeleteCatalogLeafUrl {
             get {
@@ -280,7 +277,7 @@ namespace BaGet.Protocol.Tests {
         
         /// <summary>
         ///   Looks up a localized string similar to {
-        ///  &quot;@id&quot;: &quot;https://fake/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json&quot;,
+        ///  &quot;@id&quot;: &quot;https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json&quot;,
         ///  &quot;@type&quot;: [
         ///    &quot;PackageDetails&quot;,
         ///    &quot;catalog:Permalink&quot;
@@ -290,10 +287,10 @@ namespace BaGet.Protocol.Tests {
         ///  &quot;catalog:commitTimeStamp&quot;: &quot;2010-01-05T00:00:00.000Z&quot;,
         ///  &quot;created&quot;: &quot;2010-01-05T00:00:00.000Z&quot;,
         ///  &quot;description&quot;: &quot;Package description&quot;,
-        ///  &quot;iconUrl&quot;: &quot;http://fake/icon.png&quot;,
+        ///  &quot;iconUrl&quot;: &quot;http://test.example/icon.png&quot;,
         ///  &quot;id&quot;: &quot;Test.Package&quot;,
         ///  &quot;isPrerelease&quot;: false,
-        ///  &quot;lastEdited&quot;: &quot;2010-01-05T00:00:0 [rest of string was truncated]&quot;;.
+        ///  &quot;lastEdited&quot;: &quot;20 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string PackageDetailsCatalogLeaf {
             get {
@@ -302,7 +299,7 @@ namespace BaGet.Protocol.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://fake/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json.
+        ///   Looks up a localized string similar to https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json.
         /// </summary>
         internal static string PackageDetailsCatalogLeafUrl {
             get {
@@ -311,7 +308,7 @@ namespace BaGet.Protocol.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://fake/v3/metadata.
+        ///   Looks up a localized string similar to https://test.example/v3/metadata.
         /// </summary>
         internal static string PackageMetadataUrl {
             get {
@@ -332,9 +329,9 @@ namespace BaGet.Protocol.Tests {
         ///  &quot;count&quot;: 2,
         ///  &quot;items&quot;: [
         ///    {
-        ///      &quot;@id&quot;: &quot;https://fake/v3/metadata/test.package/index.json#page/1.0.0/1.0.0&quot;,
+        ///      &quot;@id&quot;: &quot;https://test.example/v3/metadata/test.package/index.json#page/1.0.0/1.0.0&quot;,
         ///      &quot;@type&quot;: &quot;catalog:CatalogPage&quot;,
-        ///      &quot;commitId&quot;: &quot;c088ef83-7dd6-4d24-86e8-85e3089d2c3b [rest of string was truncated]&quot;;.
+        ///      &quot;commitId&quot;: &quot;c088ef83-7dd6-4d24-86e8-85e3 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string RegistrationIndexInlinedItems {
             get {
@@ -343,7 +340,7 @@ namespace BaGet.Protocol.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://fake/v3/metadata/test.package/index.json.
+        ///   Looks up a localized string similar to https://test.example/v3/metadata/test.package/index.json.
         /// </summary>
         internal static string RegistrationIndexInlinedItemsUrl {
             get {
@@ -353,7 +350,7 @@ namespace BaGet.Protocol.Tests {
         
         /// <summary>
         ///   Looks up a localized string similar to {
-        ///  &quot;@id&quot;: &quot;https://fake/v3/metadata/paged.package/index.json&quot;,
+        ///  &quot;@id&quot;: &quot;https://test.example/v3/metadata/paged.package/index.json&quot;,
         ///  &quot;@type&quot;: [
         ///    &quot;catalog:CatalogRoot&quot;,
         ///    &quot;PackageRegistration&quot;,
@@ -364,10 +361,10 @@ namespace BaGet.Protocol.Tests {
         ///  &quot;count&quot;: 2,
         ///  &quot;items&quot;: [
         ///    {
-        ///      &quot;@id&quot;: &quot;https://fake/v3/metadata/paged.package/page/1.0.0/1.0.0.json&quot;,
+        ///      &quot;@id&quot;: &quot;https://test.example/v3/metadata/paged.package/page/1.0.0/1.0.0.json&quot;,
         ///      &quot;@type&quot;: &quot;catalog:CatalogPage&quot;,
         ///      &quot;commitId&quot;: &quot;c088ef83-7dd6-4d24-86e8-85e3089d2c3b&quot;,
-        ///      &quot;commitTimeStamp&quot;: &quot;20 [rest of string was truncated]&quot;;.
+        ///      &quot;commi [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string RegistrationIndexPagedItems {
             get {
@@ -376,7 +373,7 @@ namespace BaGet.Protocol.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://fake/v3/metadata/paged.package/index.json.
+        ///   Looks up a localized string similar to https://test.example/v3/metadata/paged.package/index.json.
         /// </summary>
         internal static string RegistrationIndexPagedItemsUrl {
             get {
@@ -385,7 +382,18 @@ namespace BaGet.Protocol.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to {
+        ///  &quot;@id&quot;: &quot;https://test.example/v3/metadata/test.package/1.0.0.json&quot;,
+        ///  &quot;@type&quot;: [
+        ///    &quot;Package&quot;,
+        ///    &quot;http://schema.nuget.org/catalog#Permalink&quot;
+        ///  ],
+        ///  &quot;catalogEntry&quot;: &quot;https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json&quot;,
+        ///  &quot;listed&quot;: true,
+        ///  &quot;packageContent&quot;: &quot;https://test.example/v3/content/test.package/1.0.0/test.package.1.0.0.nupkg&quot;,
+        ///  &quot;published&quot;: &quot;2010-01-05T00:00:00.000Z&quot;,
+        ///  &quot;registration&quot;: &quot;https://test.example/v3/metadata/test.package/1.0.0.json&quot;,
+        ///  &quot;@context&quot;:  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string RegistrationLeafListed {
             get {
@@ -394,7 +402,7 @@ namespace BaGet.Protocol.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to https://test.example/v3/metadata/test.package/1.0.0.json.
         /// </summary>
         internal static string RegistrationLeafListedUrl {
             get {
@@ -403,7 +411,18 @@ namespace BaGet.Protocol.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to {
+        ///  &quot;@id&quot;: &quot;https://test.example/v3/metadata/paged.package/2.0.0.json&quot;,
+        ///  &quot;@type&quot;: [
+        ///    &quot;Package&quot;,
+        ///    &quot;http://schema.nuget.org/catalog#Permalink&quot;
+        ///  ],
+        ///  &quot;catalogEntry&quot;: &quot;https://test.example/v3/catalog/2010.01.05.00.00.00/paged.package.2.0.0.json&quot;,
+        ///  &quot;listed&quot;: false,
+        ///  &quot;packageContent&quot;: &quot;https://test.example/v3/content/paged.package/2.0.0/paged.package.2.0.0.nupkg&quot;,
+        ///  &quot;published&quot;: &quot;2010-01-05T00:00:00.000Z&quot;,
+        ///  &quot;registration&quot;: &quot;https://test.example/v3/metadata/paged.package/2.0.0.json&quot;,
+        ///  &quot;@cont [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string RegistrationLeafUnlisted {
             get {
@@ -412,7 +431,7 @@ namespace BaGet.Protocol.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to https://fake/v3/metadata/paged.package/2.0.0.json.
         /// </summary>
         internal static string RegistrationLeafUnlistedUrl {
             get {
@@ -421,7 +440,20 @@ namespace BaGet.Protocol.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to {
+        ///  &quot;@id&quot;: &quot;https://test.example/v3/metadata/paged.package/page/2.0.0/3.0.0.json&quot;,
+        ///  &quot;@type&quot;: &quot;catalog:CatalogPage&quot;,
+        ///  &quot;commitId&quot;: &quot;c088ef83-7dd6-4d24-86e8-85e3089d2c3b&quot;,
+        ///  &quot;commitTimeStamp&quot;: &quot;2010-01-05T00:00:00.000Z&quot;,
+        ///  &quot;count&quot;: 2,
+        ///  &quot;lower&quot;: &quot;2.0.0&quot;,
+        ///  &quot;parent&quot;: &quot;https://test.example/v3/metadata/paged.package/index.json&quot;,
+        ///  &quot;upper&quot;: &quot;3.0.0&quot;,
+        ///  &quot;items&quot;: [
+        ///    {
+        ///      &quot;@id&quot;: &quot;https://test.example/v3/metadata/paged.package/2.0.0.json&quot;,
+        ///      &quot;@type&quot;: &quot;Package&quot;,
+        ///      &quot;commitId&quot;: &quot;c088ef83-7dd6- [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string RegistrationPage {
             get {
@@ -430,7 +462,7 @@ namespace BaGet.Protocol.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://fake/v3/metadata/package/page/1.0.0/2.0.0.json.
+        ///   Looks up a localized string similar to https://test.example/v3/metadata/paged.package/page/2.0.0/3.0.0.json.
         /// </summary>
         internal static string RegistrationPageUrl {
             get {
@@ -439,7 +471,7 @@ namespace BaGet.Protocol.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://fake/v3/search.
+        ///   Looks up a localized string similar to https://test.example/v3/search.
         /// </summary>
         internal static string SearchUrl {
             get {
@@ -452,24 +484,23 @@ namespace BaGet.Protocol.Tests {
         ///  &quot;version&quot;: &quot;3.0.0&quot;,
         ///  &quot;resources&quot;: [
         ///    {
-        ///      &quot;@id&quot;: &quot;https://fake/v3/catalog/index.json&quot;,
+        ///      &quot;@id&quot;: &quot;https://test.example/v3/catalog/index.json&quot;,
         ///      &quot;@type&quot;: &quot;Catalog/3.0.0&quot;,
         ///      &quot;comment&quot;: &quot;&quot;
         ///    },
         ///    {
-        ///      &quot;@id&quot;: &quot;https://fake/v3/metadata/&quot;,
+        ///      &quot;@id&quot;: &quot;https://test.example/v3/metadata/&quot;,
         ///      &quot;@type&quot;: &quot;RegistrationsBaseUrl/3.6.0&quot;,
         ///      &quot;comment&quot;: &quot;&quot;
         ///    },
         ///    {
-        ///      &quot;@id&quot;: &quot;https://fake/v3/content/&quot;,
+        ///      &quot;@id&quot;: &quot;https://test.example/v3/content/&quot;,
         ///      &quot;@type&quot;: &quot;PackageBaseAddress/3.0.0&quot;,
         ///      &quot;comment&quot;: &quot;&quot;
         ///    },
         ///    {
-        ///      &quot;@id&quot;: &quot;https://fake/v3/search&quot;,
-        ///      &quot;@type&quot;: &quot;SearchQueryService/3.4.0&quot;,
-        ///      &quot;co [rest of string was truncated]&quot;;.
+        ///      &quot;@id&quot;: &quot;https://test.example/v3/search&quot;,
+        ///      &quot;@type&quot;: &quot;Searc [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ServiceIndex {
             get {
@@ -478,7 +509,7 @@ namespace BaGet.Protocol.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://fake/v3/index.json.
+        ///   Looks up a localized string similar to https://test.example/v3/index.json.
         /// </summary>
         internal static string ServiceIndexUrl {
             get {

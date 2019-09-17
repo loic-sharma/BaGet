@@ -22,9 +22,9 @@ namespace BaGet.Protocol.Tests
 
             { TestData.RegistrationIndexInlinedItemsUrl, () => TestData.RegistrationIndexInlinedItems },
             { TestData.RegistrationIndexPagedItemsUrl, () => TestData.RegistrationIndexPagedItems },
-            //{ TestData.RegistrationLeafUnlistedUrl, () => TestData.RegistrationLeafUnlisted },
-            //{ TestData.RegistrationLeafListedUrl, () => TestData.RegistrationLeafListed },
-            //{ TestData.RegistrationPageUrl, () => TestData.RegistrationPage },
+            { TestData.RegistrationLeafUnlistedUrl, () => TestData.RegistrationLeafUnlisted },
+            { TestData.RegistrationLeafListedUrl, () => TestData.RegistrationLeafListed },
+            { TestData.RegistrationPageUrl, () => TestData.RegistrationPage },
 
             { TestData.PackageContentVersionListUrl, () => TestData.PackageContentVersionList },
 

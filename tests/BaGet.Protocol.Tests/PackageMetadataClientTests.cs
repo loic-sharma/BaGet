@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using BaGet.Protocol.Internal;
+using NuGet.Versioning;
 using Xunit;
 
 namespace BaGet.Protocol.Tests
@@ -53,8 +54,32 @@ namespace BaGet.Protocol.Tests
             Assert.Equal("3.0.0", result.Pages[1].Upper);
         }
 
+        [Fact]
+        public async Task GetRegistrationPage()
+        {
+            var lower = NuGetVersion.Parse("2.0.0+build");
+            var upper = NuGetVersion.Parse("3.0.0");
+            var result = await _target.GetRegistrationPageOrNullAsync("Paged.Package", lower, upper);
 
-        // TODO: Get registration page
-        // TODO: Get registration leaf
+            // TODO
+        }
+
+        [Fact]
+        public async Task GetsRegistrationLeaf()
+        {
+            var version = NuGetVersion.Parse("1.0.0");
+            var result = await _target.GetRegistrationLeafOrNullAsync("Test.Package", version);
+
+            // TODO
+        }
+
+        [Fact]
+        public async Task GetsRegistrationLeafUnlisted()
+        {
+            var version = NuGetVersion.Parse("2.0.0+build");
+            var result = await _target.GetRegistrationLeafOrNullAsync("Paged.Package", version);
+
+            // TODO
+        }
     }
 }
