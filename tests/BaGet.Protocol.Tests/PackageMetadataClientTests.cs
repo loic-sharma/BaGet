@@ -61,7 +61,17 @@ namespace BaGet.Protocol.Tests
             var upper = NuGetVersion.Parse("3.0.0");
             var result = await _target.GetRegistrationPageOrNullAsync("Paged.Package", lower, upper);
 
-            // TODO
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count);
+            Assert.NotNull(result.ItemsOrNull);
+            Assert.Equal(2, result.ItemsOrNull.Count);
+            Assert.Equal("2.0.0", result.Lower);
+            Assert.Equal("3.0.0", result.Upper);
+
+            var firstMetadata = result.ItemsOrNull[0].PackageMetadata;
+
+            Assert.Equal("Paged.Package", firstMetadata.PackageId);
+            Assert.Equal("2.0.0+build", firstMetadata.Version);
         }
 
         [Fact]
@@ -70,7 +80,19 @@ namespace BaGet.Protocol.Tests
             var version = NuGetVersion.Parse("1.0.0");
             var result = await _target.GetRegistrationLeafOrNullAsync("Test.Package", version);
 
-            // TODO
+            Assert.NotNull(result);
+            Assert.True(result.Listed);
+            Assert.Equal(2010, result.Published.Year);
+
+            Assert.Equal(
+                "https://test.example/v3/content/test.package/1.0.0/test.package.1.0.0.nupkg",
+                result.PackageContentUrl);
+            Assert.Equal(
+                "https://test.example/v3/metadata/test.package/index.json",
+                result.RegistrationIndexUrl);
+            Assert.Equal(
+                "https://test.example/v3/metadata/test.package/1.0.0.json",
+                result.RegistrationLeafUrl);
         }
 
         [Fact]
@@ -79,7 +101,19 @@ namespace BaGet.Protocol.Tests
             var version = NuGetVersion.Parse("2.0.0+build");
             var result = await _target.GetRegistrationLeafOrNullAsync("Paged.Package", version);
 
-            // TODO
+            Assert.NotNull(result);
+            Assert.False(result.Listed);
+            Assert.Equal(2010, result.Published.Year);
+
+            Assert.Equal(
+                "https://test.example/v3/content/paged.package/2.0.0/paged.package.2.0.0.nupkg",
+                result.PackageContentUrl);
+            Assert.Equal(
+                "https://test.example/v3/metadata/paged.package/index.json",
+                result.RegistrationIndexUrl);
+            Assert.Equal(
+                "https://test.example/v3/metadata/paged.package/2.0.0.json",
+                result.RegistrationLeafUrl);
         }
     }
 }

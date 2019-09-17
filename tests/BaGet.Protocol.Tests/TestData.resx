@@ -816,7 +816,7 @@
   "listed": true,
   "packageContent": "https://test.example/v3/content/test.package/1.0.0/test.package.1.0.0.nupkg",
   "published": "2010-01-05T00:00:00.000Z",
-  "registration": "https://test.example/v3/metadata/test.package/1.0.0.json",
+  "registration": "https://test.example/v3/metadata/test.package/index.json",
   "@context": {
     "@vocab": "http://schema.nuget.org/schema#",
     "xsd": "http://www.w3.org/2001/XMLSchema#",
@@ -849,7 +849,7 @@
   "listed": false,
   "packageContent": "https://test.example/v3/content/paged.package/2.0.0/paged.package.2.0.0.nupkg",
   "published": "2010-01-05T00:00:00.000Z",
-  "registration": "https://test.example/v3/metadata/paged.package/2.0.0.json",
+  "registration": "https://test.example/v3/metadata/paged.package/index.json",
   "@context": {
     "@vocab": "http://schema.nuget.org/schema#",
     "xsd": "http://www.w3.org/2001/XMLSchema#",
@@ -869,7 +869,7 @@
 }</value>
   </data>
   <data name="RegistrationLeafUnlistedUrl" xml:space="preserve">
-    <value>https://fake/v3/metadata/paged.package/2.0.0.json</value>
+    <value>https://test.example/v3/metadata/paged.package/2.0.0.json</value>
   </data>
   <data name="RegistrationPage" xml:space="preserve">
     <value>{

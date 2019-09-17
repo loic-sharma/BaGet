@@ -392,7 +392,7 @@ namespace BaGet.Protocol.Tests {
         ///  &quot;listed&quot;: true,
         ///  &quot;packageContent&quot;: &quot;https://test.example/v3/content/test.package/1.0.0/test.package.1.0.0.nupkg&quot;,
         ///  &quot;published&quot;: &quot;2010-01-05T00:00:00.000Z&quot;,
-        ///  &quot;registration&quot;: &quot;https://test.example/v3/metadata/test.package/1.0.0.json&quot;,
+        ///  &quot;registration&quot;: &quot;https://test.example/v3/metadata/test.package/index.json&quot;,
         ///  &quot;@context&quot;:  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string RegistrationLeafListed {
@@ -421,7 +421,7 @@ namespace BaGet.Protocol.Tests {
         ///  &quot;listed&quot;: false,
         ///  &quot;packageContent&quot;: &quot;https://test.example/v3/content/paged.package/2.0.0/paged.package.2.0.0.nupkg&quot;,
         ///  &quot;published&quot;: &quot;2010-01-05T00:00:00.000Z&quot;,
-        ///  &quot;registration&quot;: &quot;https://test.example/v3/metadata/paged.package/2.0.0.json&quot;,
+        ///  &quot;registration&quot;: &quot;https://test.example/v3/metadata/paged.package/index.json&quot;,
         ///  &quot;@cont [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string RegistrationLeafUnlisted {
@@ -431,7 +431,7 @@ namespace BaGet.Protocol.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://fake/v3/metadata/paged.package/2.0.0.json.
+        ///   Looks up a localized string similar to https://test.example/v3/metadata/paged.package/2.0.0.json.
         /// </summary>
         internal static string RegistrationLeafUnlistedUrl {
             get {
