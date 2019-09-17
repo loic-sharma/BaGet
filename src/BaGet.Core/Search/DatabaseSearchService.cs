@@ -29,7 +29,7 @@ namespace BaGet.Core.Search
         }
 
         public async Task<SearchResponse> SearchAsync(
-            string query,
+            string query = null,
             int skip = 0,
             int take = 20,
             bool includePrerelease = true,
@@ -48,7 +48,7 @@ namespace BaGet.Core.Search
         }
 
         public async Task<SearchResponse> SearchAsync(
-            string query,
+            string query = null,
             int skip = 0,
             int take = 20,
             bool includePrerelease = true,
@@ -107,7 +107,7 @@ namespace BaGet.Core.Search
         }
 
         public async Task<AutocompleteResponse> AutocompleteAsync(
-            string query,
+            string query = null,
             AutocompleteType type = AutocompleteType.PackageIds,
             int skip = 0,
             int take = 20,

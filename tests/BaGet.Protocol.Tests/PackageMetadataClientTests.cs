@@ -7,12 +7,6 @@ namespace BaGet.Protocol.Tests
 {
     public class PackageMetadataClientTests : IClassFixture<ProtocolFixture>
     {
-        public static readonly NuGetVersion NewtonsoftJsonLowerVersion = NuGetVersion.Parse("3.5.8");
-        public static readonly NuGetVersion NewtonsoftJsonUpperVersion = NuGetVersion.Parse("12.0.1-beta2");
-
-        public static readonly NuGetVersion FakePage1LowerVersion = NuGetVersion.Parse("1.0.0-alpha-10");
-        public static readonly NuGetVersion FakePage1UpperVersion = NuGetVersion.Parse("1.66.1");
-
         private readonly PackageMetadataClient _target;
 
         public PackageMetadataClientTests(ProtocolFixture fixture)
@@ -21,57 +15,105 @@ namespace BaGet.Protocol.Tests
         }
 
         [Fact]
-        public async Task GetsNewtonsoftJsonRegistrationIndex()
+        public async Task GetRegistrationIndexInlinedItems()
         {
-            var result = await _target.GetRegistrationIndexOrNullAsync("Newtonsoft.Json");
+            var result = await _target.GetRegistrationIndexOrNullAsync("Test.Package");
 
             Assert.NotNull(result);
             Assert.Equal(2, result.Pages.Count);
-            Assert.True(result.Pages[0].Count == 64);
-            Assert.True(result.Pages[0].ItemsOrNull.Count == 64);
-            Assert.Equal(NewtonsoftJsonLowerVersion, result.Pages[0].ParseLower());
-            Assert.Equal(NewtonsoftJsonUpperVersion, result.Pages[0].ParseUpper());
+
+            Assert.True(result.Pages[0].Count == 1);
+            Assert.True(result.Pages[0].ItemsOrNull.Count == 1);
+            Assert.Equal("1.0.0", result.Pages[0].Lower);
+            Assert.Equal("1.0.0", result.Pages[0].Upper);
+            Assert.StartsWith(TestData.RegistrationIndexInlinedItemsUrl, result.Pages[0].RegistrationPageUrl);
+
+            Assert.True(result.Pages[1].Count == 2);
+            Assert.True(result.Pages[1].ItemsOrNull.Count == 2);
+            Assert.Equal("2.0.0", result.Pages[1].Lower);
+            Assert.Equal("3.0.0", result.Pages[1].Upper);
+            Assert.StartsWith(TestData.RegistrationIndexInlinedItemsUrl, result.Pages[1].RegistrationPageUrl);
         }
 
         [Fact]
-        public async Task GetsFakeRegistrationIndex()
+        public async Task GetRegistrationIndexPagedItems()
         {
-            // If this test breaks, "GetFakesRegistrationPage" will need to be updated.
-            var result = await _target.GetRegistrationIndexOrNullAsync("FAKE");
+            var result = await _target.GetRegistrationIndexOrNullAsync("Paged.Package");
 
             Assert.NotNull(result);
-            Assert.True(result.Pages.Count >= 27);
+            Assert.Equal(2, result.Pages.Count);
+
+            Assert.True(result.Pages[0].Count == 1);
             Assert.Null(result.Pages[0].ItemsOrNull);
-            Assert.Equal(64, result.Pages[0].Count);
-            Assert.Equal(FakePage1LowerVersion, result.Pages[0].ParseLower());
-            Assert.Equal(FakePage1UpperVersion, result.Pages[0].ParseUpper());
+            Assert.Equal("1.0.0", result.Pages[0].Lower);
+            Assert.Equal("1.0.0", result.Pages[0].Upper);
+
+            Assert.True(result.Pages[1].Count == 2);
+            Assert.Null(result.Pages[1].ItemsOrNull);
+            Assert.Equal("2.0.0", result.Pages[1].Lower);
+            Assert.Equal("3.0.0", result.Pages[1].Upper);
         }
 
         [Fact]
-        public async Task GetsFakeRegistrationPage()
+        public async Task GetRegistrationPage()
         {
-            var result = await _target.GetRegistrationPageOrNullAsync("FAKE", FakePage1LowerVersion, FakePage1UpperVersion);
+            var lower = NuGetVersion.Parse("2.0.0+build");
+            var upper = NuGetVersion.Parse("3.0.0");
+            var result = await _target.GetRegistrationPageOrNullAsync("Paged.Package", lower, upper);
 
             Assert.NotNull(result);
-            Assert.Equal(64, result.Count);
-            Assert.Equal("1.0.0-alpha-10", result.Lower);
-            Assert.Equal("1.66.1", result.Upper);
+            Assert.Equal(2, result.Count);
+            Assert.NotNull(result.ItemsOrNull);
+            Assert.Equal(2, result.ItemsOrNull.Count);
+            Assert.Equal("2.0.0", result.Lower);
+            Assert.Equal("3.0.0", result.Upper);
+
+            var firstMetadata = result.ItemsOrNull[0].PackageMetadata;
+
+            Assert.Equal("Paged.Package", firstMetadata.PackageId);
+            Assert.Equal("2.0.0+build", firstMetadata.Version);
         }
 
         [Fact]
-        public async Task GetsNewtonsoftRegistrationLeaf()
+        public async Task GetsRegistrationLeaf()
         {
-            var leaf = await _target.GetRegistrationLeafOrNullAsync("Newtonsoft.Json", NewtonsoftJsonLowerVersion);
+            var version = NuGetVersion.Parse("1.0.0");
+            var result = await _target.GetRegistrationLeafOrNullAsync("Test.Package", version);
 
-            Assert.NotNull(leaf);
+            Assert.NotNull(result);
+            Assert.True(result.Listed);
+            Assert.Equal(2010, result.Published.Year);
+
+            Assert.Equal(
+                "https://test.example/v3/content/test.package/1.0.0/test.package.1.0.0.nupkg",
+                result.PackageContentUrl);
+            Assert.Equal(
+                "https://test.example/v3/metadata/test.package/index.json",
+                result.RegistrationIndexUrl);
+            Assert.Equal(
+                "https://test.example/v3/metadata/test.package/1.0.0.json",
+                result.RegistrationLeafUrl);
         }
 
         [Fact]
-        public async Task GetFakeRegistrationLeaf()
+        public async Task GetsRegistrationLeafUnlisted()
         {
-            var leaf = await _target.GetRegistrationLeafOrNullAsync("FAKE", FakePage1LowerVersion);
+            var version = NuGetVersion.Parse("2.0.0+build");
+            var result = await _target.GetRegistrationLeafOrNullAsync("Paged.Package", version);
 
-            Assert.NotNull(leaf);
+            Assert.NotNull(result);
+            Assert.False(result.Listed);
+            Assert.Equal(2010, result.Published.Year);
+
+            Assert.Equal(
+                "https://test.example/v3/content/paged.package/2.0.0/paged.package.2.0.0.nupkg",
+                result.PackageContentUrl);
+            Assert.Equal(
+                "https://test.example/v3/metadata/paged.package/index.json",
+                result.RegistrationIndexUrl);
+            Assert.Equal(
+                "https://test.example/v3/metadata/paged.package/2.0.0.json",
+                result.RegistrationLeafUrl);
         }
     }
 }

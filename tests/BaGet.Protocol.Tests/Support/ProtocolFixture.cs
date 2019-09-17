@@ -8,20 +8,23 @@ namespace BaGet.Protocol.Tests
     {
         public ProtocolFixture()
         {
-            var httpClient = new HttpClient(new HttpClientHandler
-            {
-                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
-            });
+            var httpClient = new HttpClient(new TestDataHttpMessageHandler());
 
-            ServiceIndexClient = new ServiceIndexClient(httpClient, "https://api.nuget.org/v3/index.json");
-            ContentClient = new PackageContentClient(httpClient, "https://api.nuget.org/v3-flatcontainer");
-            MetadataClient = new PackageMetadataClient(httpClient, "https://api.nuget.org/v3/registration3-gz-semver2");
-            CatalogClient = new CatalogClient(httpClient, "https://api.nuget.org/v3/catalog0/index.json");
+            NuGetClientFactory = new NuGetClientFactory(httpClient, TestData.ServiceIndexUrl);
+            NuGetClient = new NuGetClient(NuGetClientFactory);
+
+            ServiceIndexClient = new ServiceIndexClient(httpClient, TestData.ServiceIndexUrl);
+            ContentClient = new PackageContentClient(httpClient, TestData.PackageContentUrl);
+            MetadataClient = new PackageMetadataClient(httpClient, TestData.PackageMetadataUrl);
+            CatalogClient = new CatalogClient(httpClient, TestData.CatalogIndexUrl);
             SearchClient = new SearchClient(
                 httpClient,
-                "https://azuresearch-usnc.nuget.org/query",
-                "https://azuresearch-ussc.nuget.org/autocomplete");
+                TestData.SearchUrl,
+                TestData.AutocompleteUrl);
         }
+
+        public NuGetClient NuGetClient { get; }
+        public NuGetClientFactory NuGetClientFactory { get; }
 
         public ServiceIndexClient ServiceIndexClient { get; }
         public PackageContentClient ContentClient { get; }

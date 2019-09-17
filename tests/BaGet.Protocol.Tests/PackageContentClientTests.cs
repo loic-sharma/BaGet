@@ -17,10 +17,12 @@ namespace BaGet.Protocol.Tests
         [Fact]
         public async Task GetsPackageVersions()
         {
-            var result = await _target.GetPackageVersionsOrNullAsync("Newtonsoft.Json");
+            var result = await _target.GetPackageVersionsOrNullAsync("Test.Package");
 
             Assert.NotNull(result);
-            Assert.NotEmpty(result.Versions);
+            Assert.Equal(2, result.Versions.Count);
+            Assert.Equal("1.0.0", result.Versions[0]);
+            Assert.Equal("2.0.0", result.Versions[1]);
         }
 
         [Fact]
@@ -30,5 +32,8 @@ namespace BaGet.Protocol.Tests
 
             Assert.Null(result);
         }
+
+        // TODO: Test package download
+        // TODO: Test package manifest download
     }
 }

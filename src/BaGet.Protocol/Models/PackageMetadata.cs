@@ -61,9 +61,10 @@ namespace BaGet.Protocol.Models
 
         /// <summary>
         /// Whether the package is listed in search results.
+        /// If <see langword="null"/>, the package should be considered as listed.
         /// </summary>
         [JsonProperty("listed")]
-        public bool Listed { get; set; }
+        public bool? Listed { get; set; }
 
         /// <summary>
         /// The minimum NuGet client version needed to use this package.

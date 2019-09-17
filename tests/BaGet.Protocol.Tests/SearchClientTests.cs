@@ -1,7 +1,5 @@
-using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Protocol.Internal;
-using NuGet.Versioning;
 using Xunit;
 
 namespace BaGet.Protocol.Tests
@@ -16,27 +14,27 @@ namespace BaGet.Protocol.Tests
         }
 
         [Fact]
-        public async Task GetsNewtonsoftJsonSearchResults()
+        public async Task GetDefaultSearchResults()
         {
-            var registrationurl = "https://api.nuget.org/v3/registration3-gz-semver2/newtonsoft.json/index.json";
+            var response = await _target.SearchAsync();
 
-            var result = await _target.SearchAsync("Newtonsoft");
+            Assert.NotNull(response);
+            Assert.Equal(1, response.TotalHits);
 
-            Assert.True(result.TotalHits > 0);
-            Assert.True(result.Data.Count > 0);
-            Assert.Equal(registrationurl, result.Data[0].RegistrationIndexUrl);
-            Assert.Equal("Newtonsoft.Json", result.Data[0].PackageId);
-            Assert.Contains("12.0.2", result.Data[0].Versions.Select(v => v.Version));
+            var result = Assert.Single(response.Data);
+            Assert.Equal("Test.Package", result.PackageId);
+            Assert.Equal("Package Authors", Assert.Single(result.Authors));
+            Assert.Equal(TestData.RegistrationIndexInlinedItemsUrl, result.RegistrationIndexUrl);
         }
 
         [Fact]
-        public async Task GetsNewtonsoftJsonAutocompleteResults()
+        public async Task GetDefaultAutocompleteResults()
         {
-            var result = await _target.AutocompleteAsync("newt");
+            var response = await _target.AutocompleteAsync();
 
-            Assert.True(result.TotalHits > 0);
-            Assert.True(result.Data.Count > 0);
-            Assert.Contains(result.Data, id => id == "Newtonsoft.Json");
+            Assert.NotNull(response);
+            Assert.Equal(1, response.TotalHits);
+            Assert.Equal("Test.Package", Assert.Single(response.Data));
         }
     }
 }
