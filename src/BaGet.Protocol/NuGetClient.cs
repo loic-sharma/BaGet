@@ -254,11 +254,14 @@ namespace BaGet.Protocol
         /// </param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The search results, including prerelease packages.</returns>
-        public virtual async Task<SearchResponse> SearchAsync(string query = null, CancellationToken cancellationToken = default)
+        public virtual async Task<IReadOnlyList<SearchResult>> SearchAsync(
+            string query = null,
+            CancellationToken cancellationToken = default)
         {
             var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
+            var response = await client.SearchAsync(query, cancellationToken: cancellationToken);
 
-            return await client.SearchAsync(query, cancellationToken: cancellationToken);
+            return response.Data;
         }
 
         /// <summary>
@@ -270,14 +273,18 @@ namespace BaGet.Protocol
         /// <param name="includePrerelease">Whether to include prerelease packages.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The search results.</returns>
-        public virtual async Task<SearchResponse> SearchAsync(string query, bool includePrerelease, CancellationToken cancellationToken = default)
+        public virtual async Task<IReadOnlyList<SearchResult>> SearchAsync(
+            string query,
+            bool includePrerelease,
+            CancellationToken cancellationToken = default)
         {
             var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
-
-            return await client.SearchAsync(
+            var response = await client.SearchAsync(
                 query,
                 includePrerelease: includePrerelease,
                 cancellationToken: cancellationToken);
+
+            return response.Data;
         }
 
         /// <summary>
@@ -290,11 +297,20 @@ namespace BaGet.Protocol
         /// <param name="take">The number of results to include.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The search results, including prerelease packages.</returns>
-        public virtual async Task<SearchResponse> SearchAsync(string query, int skip, int take, CancellationToken cancellationToken = default)
+        public virtual async Task<IReadOnlyList<SearchResult>> SearchAsync(
+            string query,
+            int skip,
+            int take,
+            CancellationToken cancellationToken = default)
         {
             var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
+            var response =  await client.SearchAsync(
+                query,
+                skip,
+                take,
+                cancellationToken: cancellationToken);
 
-            return await client.SearchAsync(query, skip, take, cancellationToken: cancellationToken);
+            return response.Data;
         }
 
         /// <summary>
@@ -308,11 +324,23 @@ namespace BaGet.Protocol
         /// <param name="take">The number of results to include.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The search results, including prerelease packages.</returns>
-        public virtual async Task<SearchResponse> SearchAsync(string query, bool includePrerelease, int skip, int take, CancellationToken cancellationToken = default)
+        public virtual async Task<IReadOnlyList<SearchResult>> SearchAsync(
+            string query,
+            bool includePrerelease,
+            int skip,
+            int take,
+            CancellationToken cancellationToken = default)
         {
             var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
+            var response = await client.SearchAsync(
+                query,
+                skip,
+                take,
+                includePrerelease,
+                includeSemVer2: true,
+                cancellationToken);
 
-            return await client.SearchAsync(query, skip, take, includePrerelease, includeSemVer2: true, cancellationToken);
+            return response.Data;
         }
 
         /// <summary>
@@ -322,12 +350,15 @@ namespace BaGet.Protocol
         /// The search query. If <see langword="null"/>, gets default autocomplete results.
         /// </param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
-        /// <returns>The autocomplete results.</returns>
-        public virtual async Task<AutocompleteResponse> AutocompleteAsync(string query = null, CancellationToken cancellationToken = default)
+        /// <returns>The package IDs that matched the query.</returns>
+        public virtual async Task<IReadOnlyList<string>> AutocompleteAsync(
+            string query = null,
+            CancellationToken cancellationToken = default)
         {
             var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
+            var response = await client.AutocompleteAsync(query, cancellationToken: cancellationToken);
 
-            return await client.AutocompleteAsync(query, cancellationToken: cancellationToken);
+            return response.Data;
         }
 
         /// <summary>
@@ -339,16 +370,17 @@ namespace BaGet.Protocol
         /// <param name="skip">The number of results to skip.</param>
         /// <param name="take">The number of results to include.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
-        /// <returns>The autocomplete results.</returns>
-        public virtual async Task<AutocompleteResponse> AutocompleteAsync(string query, int skip, int take, CancellationToken cancellationToken = default)
+        /// <returns>The package IDs that matched the query.</returns>
+        public virtual async Task<IReadOnlyList<string>> AutocompleteAsync(string query, int skip, int take, CancellationToken cancellationToken = default)
         {
             var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
-
-            return await client.AutocompleteAsync(
+            var response = await client.AutocompleteAsync(
                 query,
                 skip: skip,
                 take: take,
                 cancellationToken: cancellationToken);
+
+            return response.Data;
         }
     }
 }

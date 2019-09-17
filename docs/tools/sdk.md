@@ -77,12 +77,10 @@ Search for "json" packages:
 
 ```csharp
 NuGetClient client = new NuGetClient("https://api.nuget.org/v3/index.json");
-SearchResponse response = await client.SearchAsync("json");
+IReadOnlyList<SearchResult> results = await client.SearchAsync("json");
 
-Console.WriteLine($"Found {response.TotalHits} total results");
-
-foreach (SearchResult searchResult in response.Data)
+foreach (SearchResult result in results)
 {
-    Console.WriteLine($"Found package {searchResult.Id} {searchResult.Version}");
+    Console.WriteLine($"Found package {result.PackageId} {searchResult.Version}");
 }
 ```
