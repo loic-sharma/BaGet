@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
-    Microsoft ResX Schema
-
+  <!-- 
+    Microsoft ResX Schema 
+    
     Version 2.0
-
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
     associated with the data types.
-
+    
     Example:
-
+    
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-
-    There are any number of "resheader" rows that contain simple
+                
+    There are any number of "resheader" rows that contain simple 
     name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
     mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
     extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
     read any of the formats listed below.
-
+    
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-
+    
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
+    value   : The object must be serialized into a byte array 
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -234,6 +234,73 @@
   </data>
   <data name="CatalogPageUrl" xml:space="preserve">
     <value>https://fake/v3/catalog/page0.json</value>
+  </data>
+  <data name="DefaultAutocomplete" xml:space="preserve">
+    <value>{
+  "@context": {
+    "@vocab": "http://schema.nuget.org/schema#"
+  },
+  "totalHits": 1,
+  "data": [
+    "Test.Package"
+  ]
+}</value>
+  </data>
+  <data name="DefaultAutocompleteUrl" xml:space="preserve">
+    <value>https://fake/v3/autocomplete?take=20&amp;prerelease=True&amp;semVerLevel=2.0.0</value>
+  </data>
+  <data name="DefaultSearch" xml:space="preserve">
+    <value>{
+  "@context": {
+    "@vocab": "http://schema.nuget.org/schema#",
+    "@base": "https://fake/v3/metadata/"
+  },
+  "totalHits": 1,
+  "data": [
+    {
+      "@id": "https://fake/v3/metadata/test.package/index.json",
+      "@type": "Package",
+      "registration": "https://fake/v3/metadata/test.package/index.json",
+      "id": "Test.Package",
+      "version": "3.0.0",
+      "description": "Package description",
+      "summary": "Package summary",
+      "title": "Test.Package",
+      "iconUrl": "http://fake/icon.png",
+      "licenseUrl": "https://fake/license",
+      "projectUrl": "https://fake/project",
+      "tags": [
+        "Test",
+        "Package"
+      ],
+      "authors": [
+        "Package Authors"
+      ],
+      "totalDownloads": 100,
+      "verified": false,
+      "versions": [
+        {
+          "version": "3.0.0",
+          "downloads": 50,
+          "@id": "https://fake/v3/metadata/test.package/3.0.0.json"
+        },
+        {
+          "version": "2.0.0+build",
+          "downloads": 25,
+          "@id": "https://fake/v3/metadata/test.package/2.0.0.json"
+        },
+        {
+          "version": "1.0.0",
+          "downloads": 25,
+          "@id": "https://fake/v3/metadata/test.package/1.0.0.json"
+        }
+      ]
+    }
+  ]
+}</value>
+  </data>
+  <data name="DefaultSearchUrl" xml:space="preserve">
+    <value>https://fake/v3/search?take=20&amp;prerelease=True&amp;semVerLevel=2.0.0</value>
   </data>
   <data name="PackageContentUrl" xml:space="preserve">
     <value>https://fake/v3/content</value>

@@ -155,6 +155,66 @@ namespace BaGet.Protocol.Tests {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {
+        ///  &quot;@context&quot;: {
+        ///    &quot;@vocab&quot;: &quot;http://schema.nuget.org/schema#&quot;
+        ///  },
+        ///  &quot;totalHits&quot;: 1,
+        ///  &quot;data&quot;: [
+        ///    &quot;Test.Package&quot;
+        ///  ]
+        ///}.
+        /// </summary>
+        internal static string DefaultAutocomplete {
+            get {
+                return ResourceManager.GetString("DefaultAutocomplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to https://fake/v3/autocomplete?take=20&amp;prerelease=True&amp;semVerLevel=2.0.0.
+        /// </summary>
+        internal static string DefaultAutocompleteUrl {
+            get {
+                return ResourceManager.GetString("DefaultAutocompleteUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
+        ///  &quot;@context&quot;: {
+        ///    &quot;@vocab&quot;: &quot;http://schema.nuget.org/schema#&quot;,
+        ///    &quot;@base&quot;: &quot;https://fake/v3/metadata/&quot;
+        ///  },
+        ///  &quot;totalHits&quot;: 1,
+        ///  &quot;data&quot;: [
+        ///    {
+        ///      &quot;@id&quot;: &quot;https://fake/v3/metadata/test.package/index.json&quot;,
+        ///      &quot;@type&quot;: &quot;Package&quot;,
+        ///      &quot;registration&quot;: &quot;https://fake/v3/metadata/test.package/index.json&quot;,
+        ///      &quot;id&quot;: &quot;Test.Package&quot;,
+        ///      &quot;version&quot;: &quot;3.0.0&quot;,
+        ///      &quot;description&quot;: &quot;Package description&quot;,
+        ///      &quot;summary&quot;: &quot;Package summary&quot;,
+        ///      &quot;title&quot;: &quot;Test.Package&quot;,
+        ///      &quot;iconUrl&quot;:  [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string DefaultSearch {
+            get {
+                return ResourceManager.GetString("DefaultSearch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to https://fake/v3/search?take=20&amp;prerelease=True&amp;semVerLevel=2.0.0.
+        /// </summary>
+        internal static string DefaultSearchUrl {
+            get {
+                return ResourceManager.GetString("DefaultSearchUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to https://fake/v3/content.
         /// </summary>
         internal static string PackageContentUrl {
@@ -272,7 +332,7 @@ namespace BaGet.Protocol.Tests {
         ///  &quot;count&quot;: 2,
         ///  &quot;items&quot;: [
         ///    {
-        ///      &quot;@id&quot;: &quot;https://fake/v3/metadata/test.package/index.json#page/2.0.0/3.0.0&quot;,
+        ///      &quot;@id&quot;: &quot;https://fake/v3/metadata/test.package/index.json#page/1.0.0/1.0.0&quot;,
         ///      &quot;@type&quot;: &quot;catalog:CatalogPage&quot;,
         ///      &quot;commitId&quot;: &quot;c088ef83-7dd6-4d24-86e8-85e3089d2c3b [rest of string was truncated]&quot;;.
         /// </summary>

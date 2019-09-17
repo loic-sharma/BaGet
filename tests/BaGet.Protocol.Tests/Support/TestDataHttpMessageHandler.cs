@@ -27,6 +27,9 @@ namespace BaGet.Protocol.Tests
             //{ TestData.RegistrationPageUrl, () => TestData.RegistrationPage },
 
             { TestData.PackageContentVersionListUrl, () => TestData.PackageContentVersionList },
+
+            { TestData.DefaultSearchUrl, () => TestData.DefaultSearch },
+            { TestData.DefaultAutocompleteUrl, () => TestData.DefaultAutocomplete },
         };
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)

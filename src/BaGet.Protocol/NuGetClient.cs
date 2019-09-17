@@ -249,10 +249,12 @@ namespace BaGet.Protocol
         /// <summary>
         /// Search for packages. Includes prerelease packages.
         /// </summary>
-        /// <param name="query">The search query.</param>
+        /// <param name="query">
+        /// The search query. If <see langword="null"/>, gets default search results.
+        /// </param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The search results, including prerelease packages.</returns>
-        public virtual async Task<SearchResponse> SearchAsync(string query, CancellationToken cancellationToken = default)
+        public virtual async Task<SearchResponse> SearchAsync(string query = null, CancellationToken cancellationToken = default)
         {
             var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
 
@@ -262,7 +264,9 @@ namespace BaGet.Protocol
         /// <summary>
         /// Search for packages.
         /// </summary>
-        /// <param name="query">The search query.</param>
+        /// <param name="query">
+        /// The search query. If <see langword="null"/>, gets default search results.
+        /// </param>
         /// <param name="includePrerelease">Whether to include prerelease packages.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The search results.</returns>
@@ -279,7 +283,9 @@ namespace BaGet.Protocol
         /// <summary>
         /// Search for packages. Includes prerelease packages.
         /// </summary>
-        /// <param name="query">The search query.</param>
+        /// <param name="query">
+        /// The search query. If <see langword="null"/>, gets default search results.
+        /// </param>
         /// <param name="skip">The number of results to skip.</param>
         /// <param name="take">The number of results to include.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
@@ -294,7 +300,9 @@ namespace BaGet.Protocol
         /// <summary>
         /// Search for packages.
         /// </summary>
-        /// <param name="query">The search query.</param>
+        /// <param name="query">
+        /// The search query. If <see langword="null"/>, gets default search results.
+        /// </param>
         /// <param name="includePrerelease">Whether to include prerelease packages.</param>
         /// <param name="skip">The number of results to skip.</param>
         /// <param name="take">The number of results to include.</param>
@@ -310,10 +318,12 @@ namespace BaGet.Protocol
         /// <summary>
         /// Search for package IDs.
         /// </summary>
-        /// <param name="query">The search query.</param>
+        /// <param name="query">
+        /// The search query. If <see langword="null"/>, gets default autocomplete results.
+        /// </param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The autocomplete results.</returns>
-        public virtual async Task<AutocompleteResponse> AutocompleteAsync(string query, CancellationToken cancellationToken = default)
+        public virtual async Task<AutocompleteResponse> AutocompleteAsync(string query = null, CancellationToken cancellationToken = default)
         {
             var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
 
@@ -323,7 +333,9 @@ namespace BaGet.Protocol
         /// <summary>
         /// Search for package IDs.
         /// </summary>
-        /// <param name="query">The search query.</param>
+        /// <param name="query">
+        /// The search query. If <see langword="null"/>, gets default autocomplete results.
+        /// </param>
         /// <param name="skip">The number of results to skip.</param>
         /// <param name="take">The number of results to include.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
