@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using BaGet.Protocol.Models;
 using Xunit;
@@ -12,18 +13,16 @@ namespace BaGet.Protocol.Samples.Tests
         {
             // Search for packages that are relevant to "json".
             NuGetClient client = new NuGetClient("https://api.nuget.org/v3/index.json");
-            SearchResponse response = await client.SearchAsync("json");
-
-            Console.WriteLine($"Found {response.TotalHits} results");
+            IReadOnlyList<SearchResult> results = await client.SearchAsync("json");
 
             var index = 1;
-            foreach (SearchResult searchResult in response.Data)
+            foreach (SearchResult result in results)
             {
                 Console.WriteLine($"Result #{index}");
-                Console.WriteLine($"Package id: {searchResult.PackageId}");
-                Console.WriteLine($"Package version: {searchResult.Version}");
-                Console.WriteLine($"Package downloads: {searchResult.TotalDownloads}");
-                Console.WriteLine($"Package versions: {searchResult.Versions.Count}");
+                Console.WriteLine($"Package id: {result.PackageId}");
+                Console.WriteLine($"Package version: {result.Version}");
+                Console.WriteLine($"Package downloads: {result.TotalDownloads}");
+                Console.WriteLine($"Package versions: {result.Versions.Count}");
                 Console.WriteLine();
 
                 index++;
@@ -35,15 +34,11 @@ namespace BaGet.Protocol.Samples.Tests
         {
             // Search for packages whose names' start with "Newt".
             NuGetClient client = new NuGetClient("https://api.nuget.org/v3/index.json");
-            AutocompleteResponse response = await client.AutocompleteAsync("Newt");
+            IReadOnlyList<string> packageIds = await client.AutocompleteAsync("Newt");
 
-            Console.WriteLine($"Found {response.TotalHits} results");
-
-            var index = 1;
-            foreach (string packageId in response.Data)
+            foreach (string packageId in packageIds)
             {
-                Console.WriteLine($"Found package ID #{index}: '{packageId}'");
-                index++;
+                Console.WriteLine($"Found package ID '{packageId}'");
             }
         }
     }
