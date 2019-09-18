@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace BaGet.Core.Mirror
+namespace BaGet.Core
 {
     public interface IPackageDownloadsSource
     {

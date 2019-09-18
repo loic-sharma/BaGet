@@ -167,10 +167,8 @@ namespace BaGet.Protocol
                 var items = registrationIndexPage.ItemsOrNull;
                 if (items == null)
                 {
-                    var externalRegistrationPage = await client.GetRegistrationPageOrNullAsync(
-                        packageId,
-                        registrationIndexPage.ParseLower(),
-                        registrationIndexPage.ParseUpper(),
+                    var externalRegistrationPage = await client.GetRegistrationPageAsync(
+                        registrationIndexPage.RegistrationPageUrl,
                         cancellationToken);
 
                     // Skip malformed external pages.
@@ -220,10 +218,8 @@ namespace BaGet.Protocol
                 var items = registrationIndexPage.ItemsOrNull;
                 if (items == null)
                 {
-                    var externalRegistrationPage = await client.GetRegistrationPageOrNullAsync(
-                        packageId,
-                        pageLowerVersion,
-                        pageUpperVersion,
+                    var externalRegistrationPage = await client.GetRegistrationPageAsync(
+                        registrationIndexPage.RegistrationPageUrl,
                         cancellationToken);
 
                     // Skip malformed external pages.

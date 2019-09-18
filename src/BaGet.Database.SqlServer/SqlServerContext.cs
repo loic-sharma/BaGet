@@ -1,6 +1,6 @@
 using System.Data.SqlClient;
 using System.Linq;
-using BaGet.Core.Entities;
+using BaGet.Core;
 using Microsoft.EntityFrameworkCore;
 
 namespace BaGet.Database.SqlServer

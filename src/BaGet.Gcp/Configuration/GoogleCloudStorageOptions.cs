@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using BaGet.Core.Configuration;
+using BaGet.Core;
 
 namespace BaGet.Gcp.Configuration
 {

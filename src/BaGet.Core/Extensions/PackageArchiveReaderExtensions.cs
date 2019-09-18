@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NuGet.Packaging;
 
-namespace BaGet.Core.Extensions
+namespace BaGet.Core
 {
     public static class PackageArchiveReaderExtensions
     {

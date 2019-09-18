@@ -1,7 +1,6 @@
 using System;
 using BaGet.Configuration;
-using BaGet.Core.Configuration;
-using BaGet.Core.Entities;
+using BaGet.Core;
 using BaGet.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

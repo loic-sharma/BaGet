@@ -5,10 +5,11 @@ using BaGet.Protocol.Models;
 namespace BaGet.Protocol
 {
     /// <summary>
-    /// The resource used to search for packages.
-    /// See: https://docs.microsoft.com/en-us/nuget/api/search-query-service-resource
+    /// The client used to search for packages.
+    /// 
+    /// See https://docs.microsoft.com/en-us/nuget/api/search-query-service-resource
     /// </summary>
-    public interface ISearchResource
+    public interface ISearchClient
     {
         /// <summary>
         /// Perform a search query.

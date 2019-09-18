@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
-using System.Reflection;
 
-namespace BaGet.Core.Validation
+namespace BaGet.Core
 {
     /// <summary>
     /// Provides conditional validation based on related property value.
@@ -108,23 +107,23 @@ namespace BaGet.Core.Validation
             if (validationContext == null)
                 throw new ArgumentNullException(nameof(validationContext));
 
-            PropertyInfo otherProperty = validationContext.ObjectType.GetProperty(OtherProperty);
+            var otherProperty = validationContext.ObjectType.GetProperty(OtherProperty);
             if (otherProperty == null)
             {
                 return new ValidationResult(
                     string.Format(CultureInfo.CurrentCulture, "Could not find a property named '{0}'.", OtherProperty));
             }
 
-            object otherValue = otherProperty.GetValue(validationContext.ObjectInstance);
+            var otherValue = otherProperty.GetValue(validationContext.ObjectInstance);
 
-            // check if this value is actually required and validate it
+            // Check if this value is actually required and validate it.
             if (!IsInverted && Equals(otherValue, OtherPropertyValue) ||
                 IsInverted && !Equals(otherValue, OtherPropertyValue))
             {
                 if (value == null)
                     return new ValidationResult(FormatErrorMessage(validationContext.DisplayName));
 
-                // additional check for strings so they're not empty
+                // Additional check for strings so they're not empty
                 if (value is string val && val.Trim().Length == 0)
                     return new ValidationResult(FormatErrorMessage(validationContext.DisplayName));
             }

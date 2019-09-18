@@ -1,16 +1,15 @@
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.Entities;
-using BaGet.Protocol;
 using BaGet.Protocol.Models;
 
-namespace BaGet.Core.Search
+namespace BaGet.Core
 {
     /// <summary>
-    /// BaGet's extensions to the NuGet Search resource. These additions
-    /// are not part of the official protocol.
+    /// The service used to search for packages.
+    /// 
+    /// See https://docs.microsoft.com/en-us/nuget/api/search-query-service-resource
     /// </summary>
-    public interface IBaGetSearchResource : ISearchResource
+    public interface ISearchService
     {
         /// <summary>
         /// Add a package to the search index.
@@ -41,6 +40,27 @@ namespace BaGet.Core.Search
             bool includeSemVer2 = true,
             string packageType = null,
             string framework = null,
+            CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Perform an autocomplete query.
+        /// See: https://docs.microsoft.com/en-us/nuget/api/search-autocomplete-service-resource
+        /// </summary>
+        /// <param name="query">The autocomplete query.</param>
+        /// <param name="type">The autocomplete request type.</param>
+        /// <param name="skip">How many results to skip.</param>
+        /// <param name="take">How many results to return.</param>
+        /// <param name="includePrerelease">Whether pre-release packages should be returned.</param>
+        /// <param name="includeSemVer2">Whether packages that require SemVer 2.0.0 compatibility should be returned.</param>
+        /// <param name="cancellationToken">A token to cancel the task.</param>
+        /// <returns>The autocomplete response.</returns>
+        Task<AutocompleteResponse> AutocompleteAsync(
+            string query = null,
+            AutocompleteType type = AutocompleteType.PackageIds,
+            int skip = 0,
+            int take = 20,
+            bool includePrerelease = true,
+            bool includeSemVer2 = true,
             CancellationToken cancellationToken = default);
 
         /// <summary>

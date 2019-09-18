@@ -5,11 +5,12 @@ using BaGet.Protocol.Models;
 namespace BaGet.Protocol
 {
     /// <summary>
-    /// The Catalog resource that records all package operations.
+    /// The Catalog client, used to discover package events.
     /// You can use this resource to query for all published packages.
-    /// See: https://docs.microsoft.com/en-us/nuget/api/catalog-resource
+    /// 
+    /// See https://docs.microsoft.com/en-us/nuget/api/catalog-resource
     /// </summary>
-    public interface ICatalogResource
+    public interface ICatalogClient
     {
         /// <summary>
         /// Get the entry point for the catalog resource.

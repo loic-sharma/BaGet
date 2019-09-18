@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.Entities;
-using BaGet.Core.Indexing;
 using BaGet.Protocol.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace BaGet.Core.Search
+namespace BaGet.Core
 {
-    public class DatabaseSearchService : IBaGetSearchResource
+    public class DatabaseSearchService : ISearchService
     {
         private readonly IContext _context;
         private readonly IFrameworkCompatibilityService _frameworks;

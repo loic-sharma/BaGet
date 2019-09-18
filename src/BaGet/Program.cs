@@ -1,5 +1,5 @@
 using System;
-using BaGet.Core.Mirror;
+using BaGet.Core;
 using BaGet.Extensions;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.AspNetCore;

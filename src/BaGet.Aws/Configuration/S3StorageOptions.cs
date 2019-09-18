@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using BaGet.Core.Validation;
+using BaGet.Core;
 
 namespace BaGet.Aws.Configuration
 {

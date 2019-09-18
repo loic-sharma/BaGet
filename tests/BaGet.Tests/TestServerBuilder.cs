@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using BaGet.Core.Configuration;
-using BaGet.Core.Entities;
+using BaGet.Core;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +18,6 @@ namespace BaGet.Tests
     /// </summary>
     public class TestServerBuilder
     {
-
         private const string DefaultPackagesFolderName = "Packages";
 
         private readonly string DatabaseTypeKey = $"{nameof(BaGetOptions.Database)}:{nameof(DatabaseOptions.Type)}";

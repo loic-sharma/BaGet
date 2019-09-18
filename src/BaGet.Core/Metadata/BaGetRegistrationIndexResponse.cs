@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-using BaGet.Protocol;
 using BaGet.Protocol.Models;
 
-namespace BaGet.Core.Metadata
+namespace BaGet.Core
 {
     /// <summary>
-    /// BaGet's extensions to a search request. These additions
+    /// BaGet's extensions to a registration index response. These additions
     /// are not part of the official protocol.
     /// </summary>
     public class BaGetRegistrationIndexResponse : RegistrationIndexResponse

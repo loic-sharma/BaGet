@@ -1,68 +1,45 @@
 using System;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Protocol.Models;
 
 namespace BaGet.Protocol.Internal
 {
-    public class CatalogClient : ICatalogResource
+    public class CatalogClient : ICatalogClient
     {
-        private readonly HttpClient _httpClient;
-        private readonly string _catalogUrl;
+        private readonly NuGetClientFactory _clientfactory;
 
-        public CatalogClient(HttpClient httpClient, string catalogUrl)
+        public CatalogClient(NuGetClientFactory clientFactory)
         {
-            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-            _catalogUrl = catalogUrl ?? throw new ArgumentNullException(nameof(catalogUrl));
+            _clientfactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
         }
 
         public async Task<CatalogIndex> GetIndexAsync(CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.DeserializeUrlAsync<CatalogIndex>(_catalogUrl, cancellationToken);
+            var client = await _clientfactory.CreateCatalogClientAsync(cancellationToken);
 
-            return response.GetResultOrThrow();
+            return await client.GetIndexAsync(cancellationToken);
         }
 
         public async Task<CatalogPage> GetPageAsync(string pageUrl, CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.DeserializeUrlAsync<CatalogPage>(pageUrl, cancellationToken);
+            var client = await _clientfactory.CreateCatalogClientAsync(cancellationToken);
 
-            return response.GetResultOrThrow();
-        }
-
-        public async Task<PackageDeleteCatalogLeaf> GetPackageDeleteLeafAsync(string leafUrl, CancellationToken cancellationToken = default)
-        {
-            return await GetAndValidateLeafAsync<PackageDeleteCatalogLeaf>(
-                CatalogLeafType.PackageDelete,
-                leafUrl,
-                cancellationToken);
+            return await client.GetPageAsync(pageUrl, cancellationToken);
         }
 
         public async Task<PackageDetailsCatalogLeaf> GetPackageDetailsLeafAsync(string leafUrl, CancellationToken cancellationToken = default)
         {
-            return await GetAndValidateLeafAsync<PackageDetailsCatalogLeaf>(
-                CatalogLeafType.PackageDetails,
-                leafUrl,
-                cancellationToken);
+            var client = await _clientfactory.CreateCatalogClientAsync(cancellationToken);
+
+            return await client.GetPackageDetailsLeafAsync(leafUrl, cancellationToken);
         }
 
-        private async Task<T> GetAndValidateLeafAsync<T>(
-            CatalogLeafType type,
-            string leafUrl,
-            CancellationToken cancellationToken) where T : CatalogLeaf
+        public async Task<PackageDeleteCatalogLeaf> GetPackageDeleteLeafAsync(string leafUrl, CancellationToken cancellationToken = default)
         {
-            var result = await _httpClient.DeserializeUrlAsync<T>(leafUrl, cancellationToken);
-            var leaf = result.GetResultOrThrow();
+            var client = await _clientfactory.CreateCatalogClientAsync(cancellationToken);
 
-            if (leaf.Type != type)
-            {
-                throw new ArgumentException(
-                    $"The leaf type found in the document does not match the expected '{type}' type.",
-                    nameof(type));
-            }
-
-            return leaf;
+            return await client.GetPackageDeleteLeafAsync(leafUrl, cancellationToken);
         }
     }
 }

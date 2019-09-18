@@ -1,9 +1,8 @@
-using BaGet.Core.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace BaGet.Core.Extensions
+namespace BaGet.Core
 {
     public static class ServiceCollectionExtensions
     {

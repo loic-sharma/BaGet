@@ -2,7 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NuGet.Versioning;
 
-namespace BaGet.Core.Metadata
+namespace BaGet.Core
 {
     public interface IPackageDeletionService
     {

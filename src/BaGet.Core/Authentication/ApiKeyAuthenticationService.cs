@@ -1,9 +1,8 @@
 using System;
 using System.Threading.Tasks;
-using BaGet.Core.Configuration;
 using Microsoft.Extensions.Options;
 
-namespace BaGet.Core.Authentication
+namespace BaGet.Core
 {
     public class ApiKeyAuthenticationService : IAuthenticationService
     {

@@ -7,9 +7,11 @@ using BaGet.Protocol.Models;
 namespace BaGet.Protocol.Internal
 {
     /// <summary>
-    /// Fetches the service index from an upstream package source.
+    /// The NuGet Service Index client, used to discover other resources.
+    /// 
+    /// See https://docs.microsoft.com/en-us/nuget/api/service-index
     /// </summary>
-    public class ServiceIndexClient : IServiceIndexResource
+    public class ServiceIndexClient : IServiceIndexClient
     {
         private readonly HttpClient _httpClient;
         private readonly string _serviceIndexUrl;

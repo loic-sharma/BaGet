@@ -4,16 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.Entities;
-using BaGet.Core.Extensions;
-using BaGet.Core.Indexing;
-using BaGet.Core.Metadata;
 using BaGet.Protocol;
 using BaGet.Protocol.Models;
 using Microsoft.Extensions.Logging;
 using NuGet.Versioning;
 
-namespace BaGet.Core.Mirror
+namespace BaGet.Core
 {
     using PackageIdentity = NuGet.Packaging.Core.PackageIdentity;
 

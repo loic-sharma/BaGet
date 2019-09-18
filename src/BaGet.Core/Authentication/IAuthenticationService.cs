@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace BaGet.Core.Authentication
+namespace BaGet.Core
 {
     public interface IAuthenticationService
     {

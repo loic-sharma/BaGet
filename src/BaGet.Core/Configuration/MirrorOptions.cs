@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace BaGet.Core.Configuration
+namespace BaGet.Core
 {
     public class MirrorOptions : IValidatableObject
     {

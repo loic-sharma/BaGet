@@ -14,7 +14,7 @@ namespace BaGet.Protocol.Catalog
     public class CatalogProcessor
     {
         private readonly ICatalogLeafProcessor _leafProcessor;
-        private readonly ICatalogResource _client;
+        private readonly ICatalogClient _client;
         private readonly ICursor _cursor;
         private readonly CatalogProcessorOptions _options;
         private readonly ILogger<CatalogProcessor> _logger;
@@ -30,7 +30,7 @@ namespace BaGet.Protocol.Catalog
         /// <param name="logger">The logger used for telemetry.</param>
         public CatalogProcessor(
             ICursor cursor,
-            ICatalogResource client,
+            ICatalogClient client,
             ICatalogLeafProcessor leafProcessor,
             CatalogProcessorOptions options,
             ILogger<CatalogProcessor> logger)

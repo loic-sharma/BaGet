@@ -2,13 +2,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Protocol.Models;
 
-namespace BaGet.Protocol
+namespace BaGet.Core
 {
     /// <summary>
-    /// The NuGet Service Index resource, used to discover other resources.
-    /// See: https://docs.microsoft.com/en-us/nuget/api/service-index
+    /// The NuGet Service Index service, used to discover other resources.
+    /// 
+    /// See https://docs.microsoft.com/en-us/nuget/api/service-index
     /// </summary>
-    public interface IServiceIndexResource
+    public interface IServiceIndexService
     {
         /// <summary>
         /// Get the resources available on this package feed.

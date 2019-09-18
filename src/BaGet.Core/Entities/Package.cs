@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using NuGet.Versioning;
 
-namespace BaGet.Core.Entities
+namespace BaGet.Core
 {
     // See NuGetGallery's: https://github.com/NuGet/NuGetGallery/blob/master/src/NuGetGallery.Core/Entities/Package.cs
     public class Package

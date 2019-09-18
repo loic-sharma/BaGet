@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.Metadata;
+using BaGet.Core;
 using BaGet.Protocol.Models;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Versioning;
@@ -14,9 +14,9 @@ namespace BaGet.Controllers
     /// </summary>
     public class PackageMetadataController : Controller
     {
-        private readonly IBaGetPackageMetadataService _metadata;
+        private readonly IPackageMetadataService _metadata;
 
-        public PackageMetadataController(IBaGetPackageMetadataService metadata)
+        public PackageMetadataController(IPackageMetadataService metadata)
         {
             _metadata = metadata ?? throw new ArgumentNullException(nameof(metadata));
         }

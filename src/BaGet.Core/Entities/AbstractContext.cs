@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BaGet.Core.Entities
+namespace BaGet.Core
 {
     public abstract class AbstractContext<TContext> : DbContext, IContext where TContext : DbContext
     {

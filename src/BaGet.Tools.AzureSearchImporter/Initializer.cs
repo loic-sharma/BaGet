@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BaGet.Azure.Search;
-using BaGet.Core.Entities;
+using BaGet.Core;
 using BaGet.Tools.AzureSearchImporter.Entities;
 using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;

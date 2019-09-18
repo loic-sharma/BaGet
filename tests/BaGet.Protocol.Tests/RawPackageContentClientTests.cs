@@ -5,11 +5,11 @@ using Xunit;
 
 namespace BaGet.Protocol.Tests
 {
-    public class PackageContentTests : IClassFixture<ProtocolFixture>
+    public class RawPackageContentTests : IClassFixture<ProtocolFixture>
     {
-        private readonly PackageContentClient _target;
+        private readonly RawPackageContentClient _target;
 
-        public PackageContentTests(ProtocolFixture fixture)
+        public RawPackageContentTests(ProtocolFixture fixture)
         {
             _target = fixture.ContentClient;
         }

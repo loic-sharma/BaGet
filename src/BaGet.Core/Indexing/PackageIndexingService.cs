@@ -4,17 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.Configuration;
-using BaGet.Core.Entities;
-using BaGet.Core.Extensions;
-using BaGet.Core.Metadata;
-using BaGet.Core.Search;
-using BaGet.Core.Storage;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NuGet.Packaging;
 
-namespace BaGet.Core.Indexing
+namespace BaGet.Core
 {
     using NuGetPackageType = NuGet.Packaging.Core.PackageType;
 
@@ -22,14 +16,14 @@ namespace BaGet.Core.Indexing
     {
         private readonly IPackageService _packages;
         private readonly IPackageStorageService _storage;
-        private readonly IBaGetSearchResource _search;
+        private readonly ISearchService _search;
         private readonly IOptionsSnapshot<BaGetOptions> _options;
         private readonly ILogger<PackageIndexingService> _logger;
 
         public PackageIndexingService(
             IPackageService packages,
             IPackageStorageService storage,
-            IBaGetSearchResource search,
+            ISearchService search,
             IOptionsSnapshot<BaGetOptions> options,
             ILogger<PackageIndexingService> logger)
         {

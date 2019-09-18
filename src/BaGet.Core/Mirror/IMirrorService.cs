@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.Entities;
 using NuGet.Versioning;
 
-namespace BaGet.Core.Mirror
+namespace BaGet.Core
 {
     /// <summary>
     /// Indexes packages from an external source.

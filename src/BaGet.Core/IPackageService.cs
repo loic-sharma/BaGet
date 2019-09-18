@@ -1,14 +1,13 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.Entities;
 using NuGet.Versioning;
 
-namespace BaGet.Core.Metadata
+namespace BaGet.Core
 {
     /// <summary>
     /// The "source of truth" for packages' state. Packages' content
-    /// are stored by the <see cref="Storage.IPackageStorageService"/>.
+    /// are stored by the <see cref="IPackageStorageService"/>.
     /// </summary>
     public interface IPackageService
     {
