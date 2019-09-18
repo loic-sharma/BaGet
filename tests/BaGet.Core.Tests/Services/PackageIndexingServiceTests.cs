@@ -1,9 +1,4 @@
 using System.Threading.Tasks;
-using BaGet.Core.Configuration;
-using BaGet.Core.Indexing;
-using BaGet.Core.Metadata;
-using BaGet.Core.Search;
-using BaGet.Core.Storage;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -15,14 +10,14 @@ namespace BaGet.Core.Tests.Services
     {
         private readonly Mock<IPackageService> _packages;
         private readonly Mock<IPackageStorageService> _storage;
-        private readonly Mock<IBaGetSearchResource> _search;
+        private readonly Mock<ISearchService> _search;
         private readonly PackageIndexingService _target;
 
         public PackageIndexingServiceTests()
         {
             _packages = new Mock<IPackageService>();
             _storage = new Mock<IPackageStorageService>();
-            _search = new Mock<IBaGetSearchResource>();
+            _search = new Mock<ISearchService>();
 
             _target = new PackageIndexingService(
                 _packages.Object,

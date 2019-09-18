@@ -9,18 +9,8 @@ using BaGet.Azure.Configuration;
 using BaGet.Azure.Extensions;
 using BaGet.Azure.Search;
 using BaGet.Core;
-using BaGet.Core.Authentication;
-using BaGet.Core.Configuration;
 using BaGet.Core.Content;
-using BaGet.Core.Entities;
-using BaGet.Core.Extensions;
-using BaGet.Core.Indexing;
-using BaGet.Core.Metadata;
-using BaGet.Core.Mirror;
-using BaGet.Core.Search;
 using BaGet.Core.Server.Extensions;
-using BaGet.Core.ServiceIndex;
-using BaGet.Core.Storage;
 using BaGet.Database.MySql;
 using BaGet.Database.PostgreSql;
 using BaGet.Database.Sqlite;
@@ -68,9 +58,9 @@ namespace BaGet.Extensions
             services.AddTransient<IPackageIndexingService, PackageIndexingService>();
             services.AddTransient<IPackageDeletionService, PackageDeletionService>();
             services.AddTransient<ISymbolIndexingService, SymbolIndexingService>();
-            services.AddTransient<IBaGetServiceIndex, BaGetServiceIndex>();
-            services.AddTransient<IBaGetPackageContentService, DatabasePackageContentService>();
-            services.AddTransient<IBaGetPackageMetadataService, DatabasePackageMetadataService>();
+            services.AddTransient<IServiceIndexService, BaGetServiceIndex>();
+            services.AddTransient<IPackageContentService, DatabasePackageContentService>();
+            services.AddTransient<IPackageMetadataService, DatabasePackageMetadataService>();
             services.AddSingleton<IFrameworkCompatibilityService, FrameworkCompatibilityService>();
             services.AddMirrorServices();
 
@@ -211,7 +201,7 @@ namespace BaGet.Extensions
 
         public static IServiceCollection AddSearchProviders(this IServiceCollection services)
         {
-            services.AddTransient<IBaGetSearchResource>(provider =>
+            services.AddTransient<ISearchService>(provider =>
             {
                 var options = provider.GetRequiredService<IOptionsSnapshot<SearchOptions>>();
 
@@ -245,7 +235,7 @@ namespace BaGet.Extensions
         /// <param name="services">The defined services.</param>
         public static IServiceCollection AddMirrorServices(this IServiceCollection services)
         {
-            services.AddTransient<FakeMirrorService>();
+            services.AddTransient<NullMirrorService>();
             services.AddTransient<MirrorService>();
 
             services.AddTransient<IMirrorService>(provider =>
@@ -254,7 +244,7 @@ namespace BaGet.Extensions
 
                 if (!options.Value.Enabled)
                 {
-                    return provider.GetRequiredService<FakeMirrorService>();
+                    return provider.GetRequiredService<NullMirrorService>();
                 }
                 else
                 {
@@ -272,8 +262,6 @@ namespace BaGet.Extensions
                     httpClient,
                     options.Value.PackageSource.ToString());
             });
-
-            services.AddTransient<IPackageDownloader, PackageDownloader>();
 
             services.AddSingleton(provider =>
             {

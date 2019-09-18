@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using BaGet.Core.Configuration;
-using BaGet.Core.Storage;
 using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
@@ -238,7 +236,7 @@ namespace BaGet.Core.Tests.Services
             {
                 get
                 {
-                    string fullPath = Path.GetFullPath(_storePath);
+                    var fullPath = Path.GetFullPath(_storePath);
                     yield return "../file";
                     yield return ".";
                     yield return $"../{Path.GetFileName(_storePath)}";

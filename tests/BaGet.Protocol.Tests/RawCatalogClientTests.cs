@@ -7,11 +7,11 @@ using Xunit;
 
 namespace BaGet.Protocol.Tests
 {
-    public class CatalogClientTests : IClassFixture<ProtocolFixture>
+    public class RawCatalogClientTests : IClassFixture<ProtocolFixture>
     {
-        private readonly CatalogClient _target;
+        private readonly RawCatalogClient _target;
 
-        public CatalogClientTests(ProtocolFixture fixture)
+        public RawCatalogClientTests(ProtocolFixture fixture)
         {
             _target = fixture.CatalogClient;
         }

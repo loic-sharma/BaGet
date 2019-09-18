@@ -2,9 +2,8 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.Storage;
 
-namespace BaGet.Core.Search
+namespace BaGet.Core
 {
     /// <summary>
     /// A minimal storage implementation, used for advanced scenarios.

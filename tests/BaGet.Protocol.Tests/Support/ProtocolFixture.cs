@@ -14,10 +14,10 @@ namespace BaGet.Protocol.Tests
             NuGetClient = new NuGetClient(NuGetClientFactory);
 
             ServiceIndexClient = new ServiceIndexClient(httpClient, TestData.ServiceIndexUrl);
-            ContentClient = new PackageContentClient(httpClient, TestData.PackageContentUrl);
-            MetadataClient = new PackageMetadataClient(httpClient, TestData.PackageMetadataUrl);
-            CatalogClient = new CatalogClient(httpClient, TestData.CatalogIndexUrl);
-            SearchClient = new SearchClient(
+            ContentClient = new RawPackageContentClient(httpClient, TestData.PackageContentUrl);
+            MetadataClient = new RawPackageMetadataClient(httpClient, TestData.PackageMetadataUrl);
+            CatalogClient = new RawCatalogClient(httpClient, TestData.CatalogIndexUrl);
+            SearchClient = new RawSearchClient(
                 httpClient,
                 TestData.SearchUrl,
                 TestData.AutocompleteUrl);
@@ -27,9 +27,9 @@ namespace BaGet.Protocol.Tests
         public NuGetClientFactory NuGetClientFactory { get; }
 
         public ServiceIndexClient ServiceIndexClient { get; }
-        public PackageContentClient ContentClient { get; }
-        public PackageMetadataClient MetadataClient { get; }
-        public SearchClient SearchClient { get; }
-        public CatalogClient CatalogClient { get; }
+        public RawPackageContentClient ContentClient { get; }
+        public RawPackageMetadataClient MetadataClient { get; }
+        public RawSearchClient SearchClient { get; }
+        public RawCatalogClient CatalogClient { get; }
     }
 }

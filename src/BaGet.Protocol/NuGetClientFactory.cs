@@ -50,7 +50,7 @@ namespace BaGet.Protocol
         /// See https://docs.microsoft.com/en-us/nuget/api/service-index
         /// </summary>
         /// <returns>A client to interact with the NuGet Service Index resource.</returns>
-        public virtual Task<IServiceIndexResource> CreateServiceIndexClientAsync(CancellationToken cancellationToken = default)
+        public virtual Task<IServiceIndexClient> CreateServiceIndexClientAsync(CancellationToken cancellationToken = default)
         {
             return GetClientAsync(c => c.ServiceIndexClient, cancellationToken);
         }
@@ -61,7 +61,7 @@ namespace BaGet.Protocol
         /// See https://docs.microsoft.com/en-us/nuget/api/package-base-address-resource
         /// </summary>
         /// <returns>A client to interact with the NuGet Package Content resource.</returns>
-        public virtual Task<IPackageContentResource> CreatePackageContentClientAsync(CancellationToken cancellationToken = default)
+        public virtual Task<IPackageContentClient> CreatePackageContentClientAsync(CancellationToken cancellationToken = default)
         {
             return GetClientAsync(c => c.PackageContentClient, cancellationToken);
         }
@@ -72,7 +72,7 @@ namespace BaGet.Protocol
         /// See https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
         /// </summary>
         /// <returns>A client to interact with the NuGet Package Metadata resource.</returns>
-        public virtual Task<IPackageMetadataResource> CreatePackageMetadataClientAsync(CancellationToken cancellationToken = default)
+        public virtual Task<IPackageMetadataClient> CreatePackageMetadataClientAsync(CancellationToken cancellationToken = default)
         {
             return GetClientAsync(c => c.PackageMetadataClient, cancellationToken);
         }
@@ -83,10 +83,8 @@ namespace BaGet.Protocol
         /// See https://docs.microsoft.com/en-us/nuget/api/search-query-service-resource
         /// </summary>
         /// <returns>A client to interact with the NuGet Search resource.</returns>
-        public virtual Task<ISearchResource> CreateSearchClientAsync(CancellationToken cancellationToken = default)
+        public virtual Task<ISearchClient> CreateSearchClientAsync(CancellationToken cancellationToken = default)
         {
-            // TODO: There are multiple search endpoints to support high read availability.
-            // This factory should create a search client that uses all these endpoints.
             return GetClientAsync(c => c.SearchClient, cancellationToken);
         }
 
@@ -96,7 +94,7 @@ namespace BaGet.Protocol
         /// See https://docs.microsoft.com/en-us/nuget/api/catalog-resource
         /// </summary>
         /// <returns>A client to interact with the Catalog resource.</returns>
-        public virtual Task<ICatalogResource> CreateCatalogClientAsync(CancellationToken cancellationToken = default)
+        public virtual Task<ICatalogClient> CreateCatalogClientAsync(CancellationToken cancellationToken = default)
         {
             return GetClientAsync(c => c.CatalogClient, cancellationToken);
         }
@@ -115,10 +113,10 @@ namespace BaGet.Protocol
 
                         var serviceIndex = await serviceIndexClient.GetAsync(cancellationToken);
 
-                        var contentClient = new PackageContentClient(_httpClient, serviceIndex.GetPackageContentResourceUrl());
-                        var metadataClient = new PackageMetadataClient(_httpClient, serviceIndex.GetPackageMetadataResourceUrl());
-                        var catalogClient = new CatalogClient(_httpClient, serviceIndex.GetCatalogResourceUrl());
-                        var searchClient = new SearchClient(_httpClient,
+                        var contentClient = new RawPackageContentClient(_httpClient, serviceIndex.GetPackageContentResourceUrl());
+                        var metadataClient = new RawPackageMetadataClient(_httpClient, serviceIndex.GetPackageMetadataResourceUrl());
+                        var catalogClient = new RawCatalogClient(_httpClient, serviceIndex.GetCatalogResourceUrl());
+                        var searchClient = new RawSearchClient(_httpClient,
                             serviceIndex.GetSearchQueryResourceUrl(),
                             serviceIndex.GetSearchAutocompleteResourceUrl());
 
@@ -144,11 +142,11 @@ namespace BaGet.Protocol
 
         private class NuGetClients
         {
-            public IServiceIndexResource ServiceIndexClient { get; set; }
-            public IPackageContentResource PackageContentClient { get; set; }
-            public IPackageMetadataResource PackageMetadataClient { get; set; }
-            public ISearchResource SearchClient { get; set; }
-            public ICatalogResource CatalogClient { get; set; }
+            public IServiceIndexClient ServiceIndexClient { get; set; }
+            public IPackageContentClient PackageContentClient { get; set; }
+            public IPackageMetadataClient PackageMetadataClient { get; set; }
+            public ISearchClient SearchClient { get; set; }
+            public ICatalogClient CatalogClient { get; set; }
         }
     }
 }

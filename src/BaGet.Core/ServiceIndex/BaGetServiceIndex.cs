@@ -4,9 +4,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Protocol.Models;
 
-namespace BaGet.Core.ServiceIndex
+namespace BaGet.Core
 {
-    public class BaGetServiceIndex : IBaGetServiceIndex
+    public class BaGetServiceIndex : IServiceIndexService
     {
         private readonly IUrlGenerator _url;
 

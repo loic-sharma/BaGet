@@ -1,10 +1,7 @@
-using System;
 using System.Collections.Generic;
-using BaGet.Protocol;
 using BaGet.Protocol.Models;
-using NuGet.Versioning;
 
-namespace BaGet.Core.Metadata
+namespace BaGet.Core
 {
     /// <summary>
     /// BaGet's extensions to the package metadata model. These additions

@@ -3,10 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.Metadata;
-using BaGet.Core.Mirror;
-using BaGet.Core.Storage;
-using BaGet.Protocol;
 using BaGet.Protocol.Models;
 using NuGet.Versioning;
 
@@ -17,20 +13,25 @@ namespace BaGet.Core.Content
     /// Tracks state in a database (<see cref="IPackageService"/>) and stores packages
     /// using <see cref="IPackageStorageService"/>.
     /// </summary>
-    public class DatabasePackageContentService : IBaGetPackageContentService
+    public class DatabasePackageContentService : IPackageContentService
     {
         private readonly IMirrorService _mirror;
         private readonly IPackageService _packages;
         private readonly IPackageStorageService _storage;
 
-        public DatabasePackageContentService(IMirrorService mirror, IPackageService packages, IPackageStorageService storage)
+        public DatabasePackageContentService(
+            IMirrorService mirror,
+            IPackageService packages,
+            IPackageStorageService storage)
         {
             _mirror = mirror ?? throw new ArgumentNullException(nameof(mirror));
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
         }
 
-        public async Task<PackageVersionsResponse> GetPackageVersionsOrNullAsync(string id, CancellationToken cancellationToken = default)
+        public async Task<PackageVersionsResponse> GetPackageVersionsOrNullAsync(
+            string id,
+            CancellationToken cancellationToken = default)
         {
             // First, attempt to find all package versions using the upstream source.
             var versions = await _mirror.FindPackageVersionsOrNullAsync(id, cancellationToken);

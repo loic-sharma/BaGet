@@ -1,7 +1,4 @@
 using System.Threading.Tasks;
-using BaGet.Core.Indexing;
-using BaGet.Core.Metadata;
-using BaGet.Core.Mirror;
 using BaGet.Protocol;
 using Microsoft.Extensions.Logging;
 using Moq;

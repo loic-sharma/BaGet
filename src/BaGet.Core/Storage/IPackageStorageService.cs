@@ -1,14 +1,13 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.Entities;
 using NuGet.Versioning;
 
-namespace BaGet.Core.Storage
+namespace BaGet.Core
 {
     /// <summary>
     /// Stores packages' content. Packages' state are stored by the
-    /// <see cref="Metadata.IPackageService"/>.
+    /// <see cref="IPackageService"/>.
     /// </summary>
     public interface IPackageStorageService
     {

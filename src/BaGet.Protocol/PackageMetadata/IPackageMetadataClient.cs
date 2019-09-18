@@ -6,10 +6,11 @@ using NuGet.Versioning;
 namespace BaGet.Protocol
 {
     /// <summary>
-    /// The Package Metadata resource, used to fetch packages' metadata.
-    /// See: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
+    /// The Package Metadata client, used to fetch packages' metadata.
+    /// 
+    /// See https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
     /// </summary>
-    public interface IPackageMetadataResource
+    public interface IPackageMetadataClient
     {
         /// <summary>
         /// Attempt to get a package's registration index, if it exists.
@@ -21,18 +22,14 @@ namespace BaGet.Protocol
         Task<RegistrationIndexResponse> GetRegistrationIndexOrNullAsync(string packageId, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Get a page that was linked by the package's registration index, if it exists.
+        /// Get a page that was linked from the package's registration index.
         /// See: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource#registration-page
         /// </summary>
-        /// <param name="packageId">The package's id.</param>
-        /// <param name="lower">The lowest SemVer 2.0.0 version in the page (inclusive).</param>
-        /// <param name="upper">The highest SemVer 2.0.0 version in the page (inclusive).</param>
+        /// <param name="pageUrl">The URL of the page, from the <see cref="RegistrationIndexResponse"/>.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The registration index page, or null if the page does not exist.</returns>
-        Task<RegistrationPageResponse> GetRegistrationPageOrNullAsync(
-            string packageId,
-            NuGetVersion lower,
-            NuGetVersion upper,
+        Task<RegistrationPageResponse> GetRegistrationPageAsync(
+            string pageUrl,
             CancellationToken cancellationToken = default);
 
         /// <summary>

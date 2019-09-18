@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Versioning;
 
-namespace BaGet.Core.Metadata
+namespace BaGet.Core
 {
     public class PackageService : IPackageService
     {

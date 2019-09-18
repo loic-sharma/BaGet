@@ -1,15 +1,14 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.Entities;
 using BaGet.Protocol.Models;
 
-namespace BaGet.Core.Search
+namespace BaGet.Core
 {
     /// <summary>
     /// A minimal search service implementation, used for advanced scenarios.
     /// </summary>
-    public class NullSearchService : IBaGetSearchResource
+    public class NullSearchService : ISearchService
     {
         private static readonly IReadOnlyList<string> EmptyStringList = new List<string>();
 

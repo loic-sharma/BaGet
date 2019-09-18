@@ -5,11 +5,11 @@ using Xunit;
 
 namespace BaGet.Protocol.Tests
 {
-    public class PackageMetadataClientTests : IClassFixture<ProtocolFixture>
+    public class RawPackageMetadataClientTests : IClassFixture<ProtocolFixture>
     {
-        private readonly PackageMetadataClient _target;
+        private readonly RawPackageMetadataClient _target;
 
-        public PackageMetadataClientTests(ProtocolFixture fixture)
+        public RawPackageMetadataClientTests(ProtocolFixture fixture)
         {
             _target = fixture.MetadataClient;
         }
@@ -57,9 +57,7 @@ namespace BaGet.Protocol.Tests
         [Fact]
         public async Task GetRegistrationPage()
         {
-            var lower = NuGetVersion.Parse("2.0.0+build");
-            var upper = NuGetVersion.Parse("3.0.0");
-            var result = await _target.GetRegistrationPageOrNullAsync("Paged.Package", lower, upper);
+            var result = await _target.GetRegistrationPageAsync(TestData.RegistrationPageUrl);
 
             Assert.NotNull(result);
             Assert.Equal(2, result.Count);

@@ -1,7 +1,7 @@
-﻿using System.IO;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.Extensions;
+using BaGet.Core;
 using Microsoft.AspNetCore.Http;
 
 namespace BaGet.Extensions

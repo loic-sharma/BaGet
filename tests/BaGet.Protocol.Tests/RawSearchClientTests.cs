@@ -4,11 +4,11 @@ using Xunit;
 
 namespace BaGet.Protocol.Tests
 {
-    public class SearchClientTests : IClassFixture<ProtocolFixture>
+    public class RawSearchClientTests : IClassFixture<ProtocolFixture>
     {
-        private readonly SearchClient _target;
+        private readonly RawSearchClient _target;
 
-        public SearchClientTests(ProtocolFixture fixture)
+        public RawSearchClientTests(ProtocolFixture fixture)
         {
             _target = fixture.SearchClient;
         }

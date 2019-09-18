@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.Search;
+using BaGet.Core;
 using BaGet.Protocol.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,9 +9,9 @@ namespace BaGet.Controllers
 {
     public class SearchController : Controller
     {
-        private readonly IBaGetSearchResource _searchService;
+        private readonly ISearchService _searchService;
 
-        public SearchController(IBaGetSearchResource searchService)
+        public SearchController(ISearchService searchService)
         {
             _searchService = searchService ?? throw new ArgumentNullException(nameof(searchService));
         }

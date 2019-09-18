@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
+using BaGet.Core;
 
 namespace BaGet.Azure.Configuration
 {
-    public class AzureSearchOptions : Core.Configuration.SearchOptions
+    public class AzureSearchOptions : SearchOptions
     {
         [Required]
         public string AccountName { get; set; }

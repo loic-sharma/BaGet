@@ -5,7 +5,7 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.Storage;
+using BaGet.Core;
 using BaGet.Gcp.Configuration;
 using Google;
 using Google.Cloud.Storage.V1;

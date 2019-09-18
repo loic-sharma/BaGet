@@ -14,9 +14,9 @@ namespace BaGet.Controllers
     /// </summary>
     public class PackageContentController : Controller
     {
-        private readonly IBaGetPackageContentService _content;
+        private readonly IPackageContentService _content;
 
-        public PackageContentController(IBaGetPackageContentService content)
+        public PackageContentController(IPackageContentService content)
         {
             _content = content ?? throw new ArgumentNullException(nameof(content));
         }

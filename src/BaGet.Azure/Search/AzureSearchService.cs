@@ -5,9 +5,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core;
-using BaGet.Core.Entities;
-using BaGet.Core.Indexing;
-using BaGet.Core.Search;
 using BaGet.Protocol.Models;
 using Microsoft.Azure.Search;
 using NuGet.Versioning;
@@ -17,7 +14,7 @@ namespace BaGet.Azure.Search
     using QueryType = Microsoft.Azure.Search.Models.QueryType;
     using SearchParameters = Microsoft.Azure.Search.Models.SearchParameters;
 
-    public class AzureSearchService : IBaGetSearchResource
+    public class AzureSearchService : ISearchService
     {
         private readonly BatchIndexer _indexer;
         private readonly SearchIndexClient _searchClient;

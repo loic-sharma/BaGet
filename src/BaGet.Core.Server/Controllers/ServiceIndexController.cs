@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.ServiceIndex;
+using BaGet.Core;
 using BaGet.Protocol.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,9 +12,9 @@ namespace BaGet.Controllers
     /// </summary>
     public class ServiceIndexController : Controller
     {
-        private readonly IBaGetServiceIndex _serviceIndex;
+        private readonly IServiceIndexService _serviceIndex;
 
-        public ServiceIndexController(IBaGetServiceIndex serviceIndex)
+        public ServiceIndexController(IServiceIndexService serviceIndex)
         {
             _serviceIndex = serviceIndex ?? throw new ArgumentNullException(nameof(serviceIndex));
         }

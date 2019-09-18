@@ -2,11 +2,9 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.Configuration;
-using BaGet.Core.Extensions;
 using Microsoft.Extensions.Options;
 
-namespace BaGet.Core.Storage
+namespace BaGet.Core
 {
     /// <summary>
     /// Stores content on disk.

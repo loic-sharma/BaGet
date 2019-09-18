@@ -1,7 +1,6 @@
-using System;
 using System.Collections.Generic;
 
-namespace BaGet.Core.Search
+namespace BaGet.Core
 {
     /// <summary>
     /// The package ids that depend on the queried package.

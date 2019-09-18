@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.Entities;
-using BaGet.Core.Mirror;
 using BaGet.Protocol.Models;
 using NuGet.Versioning;
 
-namespace BaGet.Core.Metadata
+namespace BaGet.Core
 {
     /// <inheritdoc />
-    public class DatabasePackageMetadataService : IBaGetPackageMetadataService
+    public class DatabasePackageMetadataService : IPackageMetadataService
     {
         private readonly IMirrorService _mirror;
         private readonly IPackageService _packages;
@@ -24,7 +22,9 @@ namespace BaGet.Core.Metadata
             _url = url ?? throw new ArgumentNullException(nameof(url));
         }
 
-        public async Task<RegistrationIndexResponse> GetRegistrationIndexOrNullAsync(string id, CancellationToken cancellationToken = default)
+        public async Task<BaGetRegistrationIndexResponse> GetRegistrationIndexOrNullAsync(
+            string id,
+            CancellationToken cancellationToken = default)
         {
             // Find the packages that match the given package id from the upstream, if
             // one is configured. If these packages cannot be found on the upstream,
@@ -66,7 +66,7 @@ namespace BaGet.Core.Metadata
             };
         }
 
-        public async Task<RegistrationLeafResponse> GetRegistrationLeafOrNullAsync(
+        public async Task<BaGetRegistrationLeafResponse> GetRegistrationLeafOrNullAsync(
             string id,
             NuGetVersion version,
             CancellationToken cancellationToken = default)
@@ -90,19 +90,6 @@ namespace BaGet.Core.Metadata
                 PackageContentUrl = _url.GetPackageDownloadUrl(id, version),
                 RegistrationIndexUrl = _url.GetRegistrationIndexUrl(id)
             };
-        }
-
-        public Task<RegistrationPageResponse> GetRegistrationPageOrNullAsync(
-            string id,
-            NuGetVersion lower,
-            NuGetVersion upper,
-            CancellationToken cancellationToken = default)
-        {
-            // TODO: BaGet does not support paging of registration items.
-            // Currently, all items are inlined into the registration index.
-            // Implementing this feature efficiently requires the ability to
-            // sort packages by their versions from the database.
-            throw new NotImplementedException();
         }
 
         private RegistrationIndexPageItem ToRegistrationIndexPageItem(Package package) =>
