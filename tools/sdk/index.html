@@ -751,13 +751,11 @@
 <h2 id="search-for-packages">Search for packages<a class="headerlink" href="#search-for-packages" title="Permanent link">&para;</a></h2>
 <p>Search for "json" packages:</p>
 <div class="codehilite"><pre><span></span><span class="n">NuGetClient</span> <span class="n">client</span> <span class="p">=</span> <span class="k">new</span> <span class="n">NuGetClient</span><span class="p">(</span><span class="s">&quot;https://api.nuget.org/v3/index.json&quot;</span><span class="p">);</span>
-<span class="n">SearchResponse</span> <span class="n">response</span> <span class="p">=</span> <span class="k">await</span> <span class="n">client</span><span class="p">.</span><span class="n">SearchAsync</span><span class="p">(</span><span class="s">&quot;json&quot;</span><span class="p">);</span>
+<span class="n">IReadOnlyList</span><span class="p">&lt;</span><span class="n">SearchResult</span><span class="p">&gt;</span> <span class="n">results</span> <span class="p">=</span> <span class="k">await</span> <span class="n">client</span><span class="p">.</span><span class="n">SearchAsync</span><span class="p">(</span><span class="s">&quot;json&quot;</span><span class="p">);</span>
 
-<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Found {response.TotalHits} total results&quot;</span><span class="p">);</span>
-
-<span class="k">foreach</span> <span class="p">(</span><span class="n">SearchResult</span> <span class="n">searchResult</span> <span class="k">in</span> <span class="n">response</span><span class="p">.</span><span class="n">Data</span><span class="p">)</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="n">SearchResult</span> <span class="n">result</span> <span class="k">in</span> <span class="n">results</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Found package {searchResult.Id} {searchResult.Version}&quot;</span><span class="p">);</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Found package {result.PackageId} {searchResult.Version}&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
                 
