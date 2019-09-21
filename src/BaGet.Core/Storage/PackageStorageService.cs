@@ -153,7 +153,22 @@ namespace BaGet.Core
             var lowercasedNormalizedVersion = version.ToNormalizedString().ToLowerInvariant();
             var path = pathFunc(lowercasedId, lowercasedNormalizedVersion);
 
-            return await _storage.GetAsync(path, cancellationToken);
+            try
+            {
+                return await _storage.GetAsync(path, cancellationToken);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                // The "packages" prefix was lowercased, which was a breaking change
+                // on filesystems that are case sensitive. Handle this case to help
+                // users migrate to the latest version of BaGet.
+                // See https://github.com/loic-sharma/BaGet/issues/298
+                _logger.LogError(
+                    $"Unable to find the '{PackagesPathPrefix}' folder. " +
+                    "If you've recently upgraded BaGet, please make sure this folder starts with a lowercased letter. " +
+                    "For more information, please see https://github.com/loic-sharma/BaGet/issues/298");
+                throw;
+            }
         }
 
         private string PackagePath(string lowercasedId, string lowercasedNormalizedVersion)
