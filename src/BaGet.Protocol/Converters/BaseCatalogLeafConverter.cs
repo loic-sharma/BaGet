@@ -24,13 +24,12 @@ namespace BaGet.Protocol.Internal
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            string output;
-            if (_fromType.TryGetValue((CatalogLeafType)value, out output))
+            if (!_fromType.TryGetValue((CatalogLeafType)value, out var output))
             {
-                writer.WriteValue(output);
+                throw new NotSupportedException($"The catalog leaf type '{value}' is not supported.");
             }
 
-            throw new NotSupportedException($"The catalog leaf type '{value}' is not supported.");
+            writer.WriteValue(output);
         }
     }
 }
