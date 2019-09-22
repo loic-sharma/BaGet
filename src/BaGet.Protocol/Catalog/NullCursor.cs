@@ -13,7 +13,7 @@ namespace BaGet.Protocol.Catalog
     {
         public Task<DateTimeOffset?> GetAsync(CancellationToken cancellationToken = default)
         {
-            return null;
+            return Task.FromResult<DateTimeOffset?>(null);
         }
 
         public Task SetAsync(DateTimeOffset value, CancellationToken cancellationToken = default)
