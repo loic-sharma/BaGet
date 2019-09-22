@@ -46,7 +46,7 @@ namespace BaGet.Core
             return query.AnyAsync();
         }
 
-        public async Task<IReadOnlyList<Package>> FindAsync(string id, bool includeUnlisted = false)
+        public async Task<IReadOnlyList<Package>> FindAsync(string id, bool includeUnlisted)
         {
             var query = _context.Packages
                 .Include(p => p.Dependencies)
@@ -65,7 +65,7 @@ namespace BaGet.Core
         public Task<Package> FindOrNullAsync(
             string id,
             NuGetVersion version,
-            bool includeUnlisted = false,
+            bool includeUnlisted,
             CancellationToken cancellationToken = default)
         {
             var query = _context.Packages
