@@ -18,8 +18,8 @@ namespace BaGet.Protocol
         private static readonly string Version490 = "/4.9.0";
 
         private static readonly string[] Catalog = { "Catalog" + Version300 };
-        private static readonly string[] SearchQueryService = { "SearchQueryService", "SearchQueryService" + Version340, "SearchQueryService" + Version300beta };
-        private static readonly string[] RegistrationsBaseUrl = { "RegistrationsBaseUrl", "RegistrationsBaseUrl" + Version360, "RegistrationsBaseUrl" + Version340, "RegistrationsBaseUrl" + Version300beta };
+        private static readonly string[] SearchQueryService = { "SearchQueryService" + Version340, "SearchQueryService" + Version300beta, "SearchQueryService" };
+        private static readonly string[] RegistrationsBaseUrl = { "RegistrationsBaseUrl" + Version360, "RegistrationsBaseUrl" + Version340, "RegistrationsBaseUrl" + Version300beta, "RegistrationsBaseUrl" };
         private static readonly string[] SearchAutocompleteService = { "SearchAutocompleteService", "SearchAutocompleteService" + Version300beta };
         private static readonly string[] ReportAbuse = { "ReportAbuseUriTemplate", "ReportAbuseUriTemplate" + Version300 };
         private static readonly string[] LegacyGallery = { "LegacyGallery" + Version200 };
