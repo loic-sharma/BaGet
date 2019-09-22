@@ -10,7 +10,7 @@ namespace BaGet.Azure
     /// </summary>
     public partial class TablePackageService
     {
-        private class PackageDownloadsEntity : TableEntity
+        private class PackageDownloadsEntity : TableEntity, IDownloadCount
         {
             public PackageDownloadsEntity()
             {

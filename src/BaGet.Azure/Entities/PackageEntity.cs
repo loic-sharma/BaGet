@@ -14,7 +14,7 @@ namespace BaGet.Azure
         /// The <see cref="TableEntity.PartitionKey"/> is the <see cref="Package.Id"/> and
         /// the <see cref="TableEntity.RowKey"/> is the <see cref="Package.Version"/>.
         /// </summary>
-        private class PackageEntity : TableEntity
+        private class PackageEntity : TableEntity, IDownloadCount, IListed
         {
             public PackageEntity()
             {
