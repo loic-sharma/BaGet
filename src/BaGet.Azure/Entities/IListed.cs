@@ -7,7 +7,7 @@ namespace BaGet.Azure
     /// </summary>
     public partial class TablePackageService
     {
-        private interface IListed
+        internal interface IListed
         {
             bool Listed { get; set; }
         }

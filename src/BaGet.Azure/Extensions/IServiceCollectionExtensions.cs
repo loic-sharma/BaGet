@@ -65,6 +65,13 @@ namespace BaGet.Azure.Extensions
             return services;
         }
 
+        public static IServiceCollection AddAzureTableSearch(this IServiceCollection services)
+        {
+            services.AddTransient<TableSearchService>();
+
+            return services;
+        }
+
         public static IServiceCollection AddAzureSearch(this IServiceCollection services)
         {
             services.AddTransient<BatchIndexer>();

@@ -7,7 +7,7 @@ namespace BaGet.Azure
     /// </summary>
     public partial class TablePackageService
     {
-        private interface IDownloadCount
+        internal interface IDownloadCount
         {
             long Downloads { get; set; }
         }
