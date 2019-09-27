@@ -227,7 +227,9 @@ namespace BaGet.Core
                 search = _context.Packages.Where(p => packageIdResults.Contains(p.Id));
             }
 
-            return await search.GroupBy(p => p.Id).ToListAsync(cancellationToken);
+            return (await search.ToListAsync(cancellationToken))
+                .GroupBy(p => p.Id)
+                .ToList();
         }
 
         private IReadOnlyList<string> GetCompatibleFrameworksOrNull(string framework)
