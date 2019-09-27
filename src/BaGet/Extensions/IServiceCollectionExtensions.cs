@@ -227,12 +227,29 @@ namespace BaGet.Extensions
         {
             services.AddTransient<ISearchService>(provider =>
             {
-                var options = provider.GetRequiredService<IOptionsSnapshot<SearchOptions>>();
+                var searchOptions = provider.GetRequiredService<IOptionsSnapshot<SearchOptions>>();
 
-                switch (options.Value.Type)
+                switch (searchOptions.Value.Type)
                 {
                     case SearchType.Database:
-                        return provider.GetRequiredService<DatabaseSearchService>();
+                        var databaseOptions = provider.GetRequiredService<IOptionsSnapshot<DatabaseOptions>>();
+
+                        switch (databaseOptions.Value.Type)
+                        {
+                            case DatabaseType.MySql:
+                            case DatabaseType.PostgreSql:
+                            case DatabaseType.Sqlite:
+                            case DatabaseType.SqlServer:
+                                return provider.GetRequiredService<DatabaseSearchService>();
+
+                            case DatabaseType.AzureTable:
+                                return provider.GetRequiredService<TableSearchService>();
+
+                            default:
+                                throw new InvalidOperationException(
+                                    $"Database type '{databaseOptions.Value.Type}' cannot be used with " +
+                                    $"search type '{searchOptions.Value.Type}'");
+                        }
 
                     case SearchType.Azure:
                         return provider.GetRequiredService<AzureSearchService>();
@@ -242,13 +259,14 @@ namespace BaGet.Extensions
 
                     default:
                         throw new InvalidOperationException(
-                            $"Unsupported search service: {options.Value.Type}");
+                            $"Unsupported search service: {searchOptions.Value.Type}");
                 }
             });
 
             services.AddTransient<DatabaseSearchService>();
             services.AddSingleton<NullSearchService>();
             services.AddAzureSearch();
+            services.AddAzureTableSearch();
 
             return services;
         }

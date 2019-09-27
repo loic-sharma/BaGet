@@ -10,7 +10,7 @@ namespace BaGet.Azure
     /// </summary>
     public partial class TablePackageService
     {
-        private class PackageListingEntity : TableEntity, IListed
+        internal class PackageListingEntity : TableEntity, IListed
         {
             public PackageListingEntity()
             {
