@@ -12,7 +12,7 @@ interface IPackageDependenciesProps {
 class Dependencies extends React.Component<IDependenciesProps> {
 
   constructor(props: IDependenciesProps) {
-    props.dependencyGroups.map(group => {
+    props.dependencyGroups.forEach(group => {
       if (!group.dependencies) {
         group.dependencies = [];
       }
@@ -52,10 +52,6 @@ class Dependencies extends React.Component<IDependenciesProps> {
 
 // tslint:disable-next-line:max-classes-per-file
 class PackageDependencies extends React.Component<IPackageDependenciesProps> {
-
-  constructor(props: IPackageDependenciesProps) {
-    super(props);
-  }
 
   public render() {
     if (!this.props.dependencies || this.props.dependencies.length === 0) {

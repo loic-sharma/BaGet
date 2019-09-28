@@ -1,6 +1,6 @@
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as React from 'react';
-import * as CopyToClipboard from 'react-copy-to-clipboard';
+import CopyText from 'copy-text-to-clipboard';
 
 import './InstallationInfo.css';
 
@@ -73,11 +73,9 @@ class InstallationInfo extends React.Component<IInstallationInfoProps, IInstalla
             {this.state.prefix} {this.state.content}
           </div>
           <div className="copy-button">
-            <CopyToClipboard text={this.state.content}>
-              <button className="btn btn-default btn-warning" type="button" data-tottle="popover" data-placement="bottom" data-content="Copied">
-                <Icon iconName="Copy" className="ms-Icon" />
-              </button>
-            </CopyToClipboard>
+            <button onClick={this.copyCommand} className="btn btn-default btn-warning" type="button" data-tottle="popover" data-placement="bottom" data-content="Copied">
+              <Icon iconName="Copy" className="ms-Icon" />
+            </button>
           </div>
         </div>
       </div>
@@ -86,6 +84,9 @@ class InstallationInfo extends React.Component<IInstallationInfoProps, IInstalla
 
   private handleSelect = (selected: Tab) =>
     this.setState(this.buildState(selected));
+
+  private copyCommand = () =>
+    CopyText(this.state.content);
 
   private buildState(tab: Tab): IInstallationInfoState {
     let content: string;
@@ -148,6 +149,7 @@ class InstallationInfoTab extends React.Component<IInstallationInfoTabProps> {
       case Tab.PackageReference: this.title = "PackageReference"; break;
       case Tab.Paket: this.title = "Paket CLI"; break;
       case Tab.PackageManager: this.title = "Package Manager"; break;
+      default: this.title = "Unknown"; break;
     }
   }
 
@@ -157,9 +159,11 @@ class InstallationInfoTab extends React.Component<IInstallationInfoTabProps> {
     }
 
     if (this.props.type === this.props.selected) {
+      // eslint-disable-next-line
       return <li className="active"><a href="#">{this.title}</a></li>
     }
 
+    // eslint-disable-next-line
     return <li><a href="#" onClick={this.onSelect}>{this.title}</a></li>
   }
 

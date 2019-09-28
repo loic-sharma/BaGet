@@ -55,6 +55,8 @@ interface IDisplayPackageState {
 
 class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPackageState> {
 
+  private readonly defaultIconUrl: string = 'https://www.nuget.org/Content/gallery/img/default-package-icon-256x256.png';
+
   private id: string;
   private version?: string;
   private parser: Parser;
@@ -185,7 +187,11 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
       return (
         <div className="row display-package">
           <aside className="col-sm-1 package-icon">
-            <img src={this.state.package.iconUrl} className="img-responsive" />
+            <img
+              src={this.state.package.iconUrl}
+              className="img-responsive"
+              onError={this.loadDefaultIcon}
+              alt="The package icon" />
           </aside>
           <article className="col-sm-8 package-details-main">
             <div className="package-title">
@@ -263,6 +269,10 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
         </div>
       );
     }
+  }
+
+  private loadDefaultIcon = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    e.currentTarget.src = this.defaultIconUrl;
   }
 
   private dateToString(date: Date): string {

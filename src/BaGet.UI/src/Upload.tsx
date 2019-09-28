@@ -1,6 +1,6 @@
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as React from 'react';
-import * as CopyToClipboard from 'react-copy-to-clipboard';
+import CopyText from 'copy-text-to-clipboard';
 
 import './Upload.css';
 
@@ -23,7 +23,6 @@ class Upload extends React.Component<{}, IUploadState> {
   private baseUrl: string;
   private serviceIndexUrl: string;
   private publishUrl: string;
-
 
   constructor(props: {}) {
     super(props);
@@ -61,15 +60,13 @@ class Upload extends React.Component<{}, IUploadState> {
               ))}
             </div>
             <div className="copy-button">
-              <CopyToClipboard text={this.state.content.join("\n")}>
-                <button className="btn btn-default btn-warning" type="button" data-tottle="popover" data-placement="bottom" data-content="Copied">
-                  <Icon iconName="Copy" className="ms-Icon" />
-                </button>
-              </CopyToClipboard>
+              <button onClick={this.copyCommand} className="btn btn-default btn-warning" type="button" data-tottle="popover" data-placement="bottom" data-content="Copied">
+                <Icon iconName="Copy" className="ms-Icon" />
+              </button>
             </div>
           </div>
           <div className="icon-text alert alert-warning">
-            For more information, please refer to <a target="_blank" href={this.state.documentationUrl}>{this.state.name}'s documentation</a>.
+            For more information, please refer to <a target="_blank" rel="noopener noreferrer" href={this.state.documentationUrl}>{this.state.name}'s documentation</a>.
           </div>
         </div>
       </div>
@@ -78,6 +75,9 @@ class Upload extends React.Component<{}, IUploadState> {
 
   private handleSelect = (selected: Tab) =>
     this.setState(this.buildState(selected));
+
+    private copyCommand = () =>
+      CopyText(this.state.content.join("\n"));
 
   private buildState(tab: Tab): IUploadState {
     let name: string;
@@ -142,14 +142,17 @@ class UploadTab extends React.Component<IUploadTabProps> {
       case Tab.NuGet: this.title = "NuGet CLI"; break;
       case Tab.Paket: this.title = "Paket CLI"; break;
       case Tab.PowerShellGet: this.title = "PowerShellGet"; break;
+      default: this.title = "Unknown"; break;
     }
   }
 
   public render() {
     if (this.props.type === this.props.selected) {
+      // eslint-disable-next-line
       return <li className="active"><a href="#">{this.title}</a></li>
     }
 
+    // eslint-disable-next-line
     return <li><a href="#" onClick={this.onSelect}>{this.title}</a></li>
   }
 

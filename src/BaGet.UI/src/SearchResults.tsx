@@ -157,7 +157,11 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         {this.state.items.map(value => (
           <div key={value.id} className="row search-result">
             <div className="col-sm-1 hidden-xs hidden-sm">
-              <img src={value.iconUrl || this.defaultIconUrl} className="package-icon img-responsive" onError={this.loadDefaultIcon} />
+              <img
+                src={value.iconUrl || this.defaultIconUrl}
+                className="package-icon img-responsive"
+                onError={this.loadDefaultIcon}
+                alt="The package icon" />
             </div>
             <div className="col-sm-11">
               <div>
