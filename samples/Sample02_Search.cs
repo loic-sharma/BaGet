@@ -2,12 +2,31 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BaGet.Protocol.Models;
+using NuGet.Versioning;
 using Xunit;
 
 namespace BaGet.Protocol.Samples.Tests
 {
     public class Sample02_Search
     {
+        [Fact]
+        public async Task Exists()
+        {
+            // Check if a package exists.
+            NuGetClient client = new NuGetClient("https://api.nuget.org/v3/index.json");
+
+            if (!await client.ExistsAsync("newtonsoft.json"))
+            {
+                Console.WriteLine("Package 'newtonsoft.json' does not exist!");
+            }
+
+            var packageVersion = NuGetVersion.Parse("12.0.1");
+            if (!await client.ExistsAsync("newtonsoft.json", packageVersion))
+            {
+                Console.WriteLine("Package 'newtonsoft.json' version '12.0.1' does not exist!");
+            }
+        }
+
         [Fact]
         public async Task Search()
         {

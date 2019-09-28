@@ -54,12 +54,53 @@ namespace BaGet.Protocol
         }
 
         /// <summary>
+        /// Check if a package exists.
+        /// </summary>
+        /// <param name="packageId">The package ID.</param>
+        /// <param name="cancellationToken">A token to cancel the task.</param>
+        /// <returns>Whether the package exists.</returns>
+        public virtual async Task<bool> ExistsAsync(
+            string packageId,
+            CancellationToken cancellationToken = default)
+        {
+            var client = await _clientFactory.CreatePackageContentClientAsync(cancellationToken);
+            var versions = await client.GetPackageVersionsOrNullAsync(packageId, cancellationToken);
+
+            return (versions != null && versions.Versions.Any());
+        }
+
+        /// <summary>
+        /// Check if a package exists.
+        /// </summary>
+        /// <param name="packageId">The package ID.</param>
+        /// <param name="packageVersion">The package version.</param>
+        /// <param name="cancellationToken">A token to cancel the task.</param>
+        /// <returns>Whether the package exists.</returns>
+        public virtual async Task<bool> ExistsAsync(
+            string packageId,
+            NuGetVersion packageVersion,
+            CancellationToken cancellationToken = default)
+        {
+            var client = await _clientFactory.CreatePackageContentClientAsync(cancellationToken);
+            var versions = await client.GetPackageVersionsOrNullAsync(packageId, cancellationToken);
+
+            if (versions == null)
+            {
+                return false;
+            }
+
+            return versions
+                .ParseVersions()
+                .Any(v => v == packageVersion);
+        }
+
+        /// <summary>
         /// Download a package (.nupkg), or throws if the package does not exist.
         /// </summary>
         /// <param name="packageId">The package ID.</param>
         /// <param name="packageVersion">The package version.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
-        /// <returns>The package's content stream. The stream may not be seekable.</returns>
+        /// <returns>The package's content stream. The stream may be unseekable and may be unbuffered.</returns>
         /// <exception cref="PackageNotFoundException">
         ///     The package could not be found.
         /// </exception>
