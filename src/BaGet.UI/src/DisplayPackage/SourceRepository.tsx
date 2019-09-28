@@ -8,10 +8,6 @@ interface ISourceRepositoryProps {
 
 class SourceRepository extends React.Component<ISourceRepositoryProps> {
 
-  constructor(props: ISourceRepositoryProps) {
-    super(props);
-  }
-
   public render() {
     if (!this.props.url) {
         return null;

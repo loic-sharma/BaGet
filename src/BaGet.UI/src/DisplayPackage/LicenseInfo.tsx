@@ -7,10 +7,6 @@ interface ILicenseInfoProps {
 
 class LicenseInfo extends React.Component<ILicenseInfoProps> {
 
-  constructor(props: ILicenseInfoProps) {
-    super(props);
-  }
-
   public render() {
     if (!this.props.url) {
       return null;
