@@ -74,7 +74,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
     this.registrationController = new AbortController();
     this.readmeController = new AbortController();
 
-    this.id = props.match.params.id;
+    this.id = props.match.params.id.toLowerCase();
     this.version = props.match.params.version;
     this.state = {package: undefined};
   }
@@ -94,7 +94,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
       this.registrationController = new AbortController();
       this.readmeController = new AbortController();
 
-      this.id = this.props.match.params.id;
+      this.id = this.props.match.params.id.toLowerCase();
       this.version = this.props.match.params.version;
       this.setState({package: undefined});
       this.componentDidMount();
