@@ -1,4 +1,5 @@
 using BaGet.Protocol.Models;
+using Newtonsoft.Json;
 
 namespace BaGet.Core
 {
@@ -8,6 +9,7 @@ namespace BaGet.Core
     /// </summary>
     public class BaGetRegistrationLeafResponse : RegistrationLeafResponse
     {
+        [JsonProperty("downloads")]
         public long Downloads { get; set; }
     }
 }
