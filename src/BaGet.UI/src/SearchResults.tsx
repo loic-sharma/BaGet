@@ -1,3 +1,4 @@
+import { config } from './config';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import { Checkbox, Dropdown, IDropdownOption, SelectableOptionMenuItemType } from 'office-ui-fabric-react/lib/index';
 import * as React from 'react';
@@ -252,7 +253,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
       .map(k => `${k}=${encodeURIComponent(parameters[k])}`)
       .join('&');
 
-    return `/v3/search?${queryString}`;
+    return `${config.apiUrl}/v3/search?${queryString}`;
   }
 
   private loadDefaultIcon = (e: React.SyntheticEvent<HTMLImageElement>) => {

@@ -1,3 +1,4 @@
+import { config } from '../config';
 import * as React from 'react';
 
 interface IDependentsProps {
@@ -29,7 +30,7 @@ class Dependents extends React.Component<IDependentsProps, IDependentsState> {
   }
 
   public componentDidMount() {
-    const url = `/v3/dependents?packageId=${this.props.packageId}`;
+    const url = `${config.apiUrl}/v3/dependents?packageId=${this.props.packageId}`;
 
     fetch(url, {signal: this.controller.signal}).then(response => {
       return response.json();
