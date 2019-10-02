@@ -1,4 +1,5 @@
 import { HtmlRenderer, Parser } from 'commonmark';
+import { config } from '../config';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
@@ -102,7 +103,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
   }
 
   public componentDidMount() {
-    const url = `/v3/registration/${this.id}/index.json`;
+    const url = `${config.apiUrl}/v3/registration/${this.id}/index.json`;
 
     fetch(url, {signal: this.registrationController.signal}).then(response => {
       return response.json();
@@ -158,7 +159,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
         });
 
         if (currentItem.catalogEntry.hasReadme) {
-          const readmeUrl = `/v3/package/${this.id}/${currentItem.catalogEntry.version}/readme`;
+          const readmeUrl = `${config.apiUrl}/v3/package/${this.id}/${currentItem.catalogEntry.version}/readme`;
 
           fetch(readmeUrl, {signal: this.readmeController.signal}).then(response => {
             return response.text();
