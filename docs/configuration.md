@@ -100,7 +100,7 @@ Each database engine requires a connection string to configure the connection.
 The conenction string format for each database engine is slightly different, a handy resource that can help figure the
 correct connection string out is available at [ConnectionStrings.com](https://www.connectionstrings.com/).
 
-You may chonfigure the chosen database engine either using environment variables or by editing the `appsettings.json` file:
+You may configure the chosen database engine either using environment variables or by editing the `appsettings.json` file:
 
 ### Environment Variables
 
