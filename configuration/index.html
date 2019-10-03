@@ -416,6 +416,33 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#database-configuration" title="Database Configuration" class="md-nav__link">
+    Database Configuration
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#environment-variables" title="Environment Variables" class="md-nav__link">
+    Environment Variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#appsettingsjson" title="appsettings.json" class="md-nav__link">
+    appsettings.json
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
       
       
       
@@ -662,6 +689,33 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#database-configuration" title="Database Configuration" class="md-nav__link">
+    Database Configuration
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#environment-variables" title="Environment Variables" class="md-nav__link">
+    Environment Variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#appsettingsjson" title="appsettings.json" class="md-nav__link">
+    appsettings.json
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
       
       
       
@@ -758,6 +812,43 @@ to overwrite the already existing package by setting <code>AllowPackageOverwrite
 <p class="admonition-title">Warning</p>
 <p>Private feeds are not supported at this time! See <a href="https://github.com/loic-sharma/BaGet/pull/69">this pull request</a> for more information.</p>
 </div>
+<h2 id="database-configuration">Database Configuration<a class="headerlink" href="#database-configuration" title="Permanent link">&para;</a></h2>
+<p>BaGet supports multiple database engines for storing package information:</p>
+<ul>
+<li>MySQL: <code>MySql</code></li>
+<li>SQLite: <code>Sqlite</code></li>
+<li>SQL Server: <code>SqlServer</code></li>
+<li>PostgreSQL: <code>PostgreSql</code></li>
+<li>Azure Table Storage: <code>AzureTable</code></li>
+</ul>
+<p>Each database engine requires a connection string to configure the connection. Please refer to <a href="https://www.connectionstrings.com/">ConnectionStrings.com</a> to learn how to create the proper connection string for each database engine.</p>
+<p>You may configure the chosen database engine either using environment variables or by editing the <code>appsettings.json</code> file.</p>
+<h3 id="environment-variables">Environment Variables<a class="headerlink" href="#environment-variables" title="Permanent link">&para;</a></h3>
+<p>There are two environment variables related to database configuration. These are:</p>
+<ul>
+<li><strong>Database__Type</strong>: The database engine to use, this should be one of the strings from the above list such as <code>PostgreSql</code> or <code>Sqlite</code>.</li>
+<li><strong>Database__ConnectionString</strong>: The connection string for your database engine.</li>
+</ul>
+<h3 id="appsettingsjson"><code>appsettings.json</code><a class="headerlink" href="#appsettingsjson" title="Permanent link">&para;</a></h3>
+<p>The database settings are located under the <code>Database</code> key in the <code>appsettings.json</code> configuration file:</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+    <span class="err">...</span>
+
+    <span class="nt">&quot;Database&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;Sqlite&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;ConnectionString&quot;</span><span class="p">:</span> <span class="s2">&quot;Data Source=baget.db&quot;</span>
+    <span class="p">},</span>
+
+    <span class="err">...</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>There are two settings related to the database configuration:</p>
+<ul>
+<li><strong>Type</strong>: The database engine to use, this should be one of the strings from the above list such as <code>PostgreSql</code> or <code>Sqlite</code>.</li>
+<li><strong>ConnectionString</strong>: The connection string for your database engine.</li>
+</ul>
                 
                   
                 
