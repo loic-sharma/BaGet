@@ -88,7 +88,8 @@ A private feed requires users to authenticate before accessing packages.
 
 ## Database Configuration
 
-BaGet supports multiple database engines for storing package information. The supported database engines at the moment are:
+BaGet supports multiple database engines for storing package information:
+
 
 - MySQL: `MySql`
 - SQLite: `Sqlite`
@@ -96,11 +97,9 @@ BaGet supports multiple database engines for storing package information. The su
 - PostgreSQL: `PostgreSql`
 - Azure Table Storage: `AzureTable`
 
-Each database engine requires a connection string to configure the connection.
-The connection string format for each database engine is slightly different, a handy resource that can help figure the
-correct connection string out is available at [ConnectionStrings.com](https://www.connectionstrings.com/).
+Each database engine requires a connection string to configure the connection. Please refer to [ConnectionStrings.com](https://www.connectionstrings.com/) to learn how to create the proper connection string for each database engine.
 
-You may configure the chosen database engine either using environment variables or by editing the `appsettings.json` file:
+You may configure the chosen database engine either using environment variables or by editing the `appsettings.json` file.
 
 ### Environment Variables
 
@@ -116,15 +115,17 @@ The database settings are located under the `Database` key in the `appsettings.j
 ```json
 {
     ...
+
     "Database": {
         "Type": "Sqlite",
         "ConnectionString": "Data Source=baget.db"
     },
+
     ...
 }
 ```
 
-There are two settings related to the database configuration. These are:
+There are two settings related to the database configuration:
 
 - **Type**: The database engine to use, this should be one of the strings from the above list such as `PostgreSql` or `Sqlite`.
 - **ConnectionString**: The connection string for your database engine.
