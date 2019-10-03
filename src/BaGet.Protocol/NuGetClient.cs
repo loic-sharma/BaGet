@@ -63,7 +63,7 @@ namespace BaGet.Protocol
             string packageId,
             CancellationToken cancellationToken = default)
         {
-            var client = await _clientFactory.CreatePackageContentClientAsync(cancellationToken);
+            var client = await _clientFactory.GetPackageContentClientAsync(cancellationToken);
             var versions = await client.GetPackageVersionsOrNullAsync(packageId, cancellationToken);
 
             return (versions != null && versions.Versions.Any());
@@ -81,7 +81,7 @@ namespace BaGet.Protocol
             NuGetVersion packageVersion,
             CancellationToken cancellationToken = default)
         {
-            var client = await _clientFactory.CreatePackageContentClientAsync(cancellationToken);
+            var client = await _clientFactory.GetPackageContentClientAsync(cancellationToken);
             var versions = await client.GetPackageVersionsOrNullAsync(packageId, cancellationToken);
 
             if (versions == null)
@@ -106,7 +106,7 @@ namespace BaGet.Protocol
         /// </exception>
         public virtual async Task<Stream> GetPackageStreamAsync(string packageId, NuGetVersion packageVersion, CancellationToken cancellationToken = default)
         {
-            var client = await _clientFactory.CreatePackageContentClientAsync(cancellationToken);
+            var client = await _clientFactory.GetPackageContentClientAsync(cancellationToken);
             var stream = await client.GetPackageContentStreamOrNullAsync(packageId, packageVersion, cancellationToken);
 
             if (stream == null)
@@ -129,7 +129,7 @@ namespace BaGet.Protocol
         /// </exception>
         public virtual async Task<Stream> GetPackageManifestStreamAsync(string packageId, NuGetVersion packageVersion, CancellationToken cancellationToken = default)
         {
-            var client = await _clientFactory.CreatePackageContentClientAsync(cancellationToken);
+            var client = await _clientFactory.GetPackageContentClientAsync(cancellationToken);
             var stream = await client.GetPackageManifestStreamOrNullAsync(packageId, packageVersion, cancellationToken);
 
             if (stream == null)
@@ -171,7 +171,7 @@ namespace BaGet.Protocol
                 return await ListPackageVersionsAsync(packageId, cancellationToken);
             }
 
-            var client = await _clientFactory.CreatePackageContentClientAsync(cancellationToken);
+            var client = await _clientFactory.GetPackageContentClientAsync(cancellationToken);
             var response = await client.GetPackageVersionsOrNullAsync(packageId, cancellationToken);
 
             if (response == null)
@@ -192,7 +192,7 @@ namespace BaGet.Protocol
         {
             var result = new List<PackageMetadata>();
 
-            var client = await _clientFactory.CreatePackageMetadataClientAsync(cancellationToken);
+            var client = await _clientFactory.GetPackageMetadataClientAsync(cancellationToken);
             var registrationIndex = await client.GetRegistrationIndexOrNullAsync(packageId, cancellationToken);
 
             if (registrationIndex == null)
@@ -236,7 +236,7 @@ namespace BaGet.Protocol
         /// </exception>
         public virtual async Task<PackageMetadata> GetPackageMetadataAsync(string packageId, NuGetVersion packageVersion, CancellationToken cancellationToken = default)
         {
-            var client = await _clientFactory.CreatePackageMetadataClientAsync(cancellationToken);
+            var client = await _clientFactory.GetPackageMetadataClientAsync(cancellationToken);
             var registrationIndex = await client.GetRegistrationIndexOrNullAsync(packageId, cancellationToken);
 
             if (registrationIndex == null)
@@ -295,7 +295,7 @@ namespace BaGet.Protocol
             string query = null,
             CancellationToken cancellationToken = default)
         {
-            var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
+            var client = await _clientFactory.GetSearchClientAsync(cancellationToken);
             var response = await client.SearchAsync(query, cancellationToken: cancellationToken);
 
             return response.Data;
@@ -315,7 +315,7 @@ namespace BaGet.Protocol
             bool includePrerelease,
             CancellationToken cancellationToken = default)
         {
-            var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
+            var client = await _clientFactory.GetSearchClientAsync(cancellationToken);
             var response = await client.SearchAsync(
                 query,
                 includePrerelease: includePrerelease,
@@ -340,7 +340,7 @@ namespace BaGet.Protocol
             int take,
             CancellationToken cancellationToken = default)
         {
-            var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
+            var client = await _clientFactory.GetSearchClientAsync(cancellationToken);
             var response =  await client.SearchAsync(
                 query,
                 skip,
@@ -368,7 +368,7 @@ namespace BaGet.Protocol
             int take,
             CancellationToken cancellationToken = default)
         {
-            var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
+            var client = await _clientFactory.GetSearchClientAsync(cancellationToken);
             var response = await client.SearchAsync(
                 query,
                 skip,
@@ -392,7 +392,7 @@ namespace BaGet.Protocol
             string query = null,
             CancellationToken cancellationToken = default)
         {
-            var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
+            var client = await _clientFactory.GetSearchClientAsync(cancellationToken);
             var response = await client.AutocompleteAsync(query, cancellationToken: cancellationToken);
 
             return response.Data;
@@ -410,7 +410,7 @@ namespace BaGet.Protocol
         /// <returns>The package IDs that matched the query.</returns>
         public virtual async Task<IReadOnlyList<string>> AutocompleteAsync(string query, int skip, int take, CancellationToken cancellationToken = default)
         {
-            var client = await _clientFactory.CreateSearchClientAsync(cancellationToken);
+            var client = await _clientFactory.GetSearchClientAsync(cancellationToken);
             var response = await client.AutocompleteAsync(
                 query,
                 skip: skip,

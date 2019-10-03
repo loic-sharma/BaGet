@@ -6,7 +6,7 @@ namespace BaGet.Protocol.Tests
 {
     public class ServiceIndexClientTests : IClassFixture<ProtocolFixture>
     {
-        private readonly ServiceIndexClient _target;
+        private readonly RawServiceIndexClient _target;
 
         public ServiceIndexClientTests(ProtocolFixture fixture)
         {

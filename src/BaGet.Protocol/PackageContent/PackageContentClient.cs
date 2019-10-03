@@ -21,7 +21,7 @@ namespace BaGet.Protocol.Internal
             NuGetVersion packageVersion,
             CancellationToken cancellationToken = default)
         {
-            var client = await _clientfactory.CreatePackageContentClientAsync(cancellationToken);
+            var client = await _clientfactory.GetPackageContentClientAsync(cancellationToken);
 
             return await client.GetPackageContentStreamOrNullAsync(packageId, packageVersion, cancellationToken);
         }
@@ -31,7 +31,7 @@ namespace BaGet.Protocol.Internal
             NuGetVersion packageVersion,
             CancellationToken cancellationToken = default)
         {
-            var client = await _clientfactory.CreatePackageContentClientAsync(cancellationToken);
+            var client = await _clientfactory.GetPackageContentClientAsync(cancellationToken);
 
             return await client.GetPackageManifestStreamOrNullAsync(packageId, packageVersion, cancellationToken);
         }
@@ -40,7 +40,7 @@ namespace BaGet.Protocol.Internal
             string packageId,
             CancellationToken cancellationToken = default)
         {
-            var client = await _clientfactory.CreatePackageContentClientAsync(cancellationToken);
+            var client = await _clientfactory.GetPackageContentClientAsync(cancellationToken);
 
             return await client.GetPackageVersionsOrNullAsync(packageId, cancellationToken);
         }

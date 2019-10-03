@@ -19,7 +19,7 @@ namespace BaGet.Protocol.Internal
             string packageId,
             CancellationToken cancellationToken = default)
         {
-            var client = await _clientfactory.CreatePackageMetadataClientAsync(cancellationToken);
+            var client = await _clientfactory.GetPackageMetadataClientAsync(cancellationToken);
 
             return await client.GetRegistrationIndexOrNullAsync(packageId, cancellationToken);
         }
@@ -28,7 +28,7 @@ namespace BaGet.Protocol.Internal
             string pageUrl,
             CancellationToken cancellationToken = default)
         {
-            var client = await _clientfactory.CreatePackageMetadataClientAsync(cancellationToken);
+            var client = await _clientfactory.GetPackageMetadataClientAsync(cancellationToken);
 
             return await client.GetRegistrationPageAsync(pageUrl, cancellationToken);
         }
@@ -38,7 +38,7 @@ namespace BaGet.Protocol.Internal
             NuGetVersion packageVersion,
             CancellationToken cancellationToken = default)
         {
-            var client = await _clientfactory.CreatePackageMetadataClientAsync(cancellationToken);
+            var client = await _clientfactory.GetPackageMetadataClientAsync(cancellationToken);
 
             return await client.GetRegistrationLeafOrNullAsync(packageId, packageVersion, cancellationToken);
         }

@@ -26,7 +26,7 @@ namespace BaGet.Protocol
             ILogger<CatalogProcessor> logger,
             CancellationToken cancellationToken = default)
         {
-            var catalogClient = await clientFactory.CreateCatalogClientAsync(cancellationToken);
+            var catalogClient = await clientFactory.GetCatalogClientAsync(cancellationToken);
 
             return new CatalogProcessor(
                 cursor,

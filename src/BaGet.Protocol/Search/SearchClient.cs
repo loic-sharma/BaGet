@@ -25,7 +25,7 @@ namespace BaGet.Protocol.Internal
         {
             // TODO: Support search failover.
             // See: https://github.com/loic-sharma/BaGet/issues/314
-            var client = await _clientfactory.CreateSearchClientAsync(cancellationToken);
+            var client = await _clientfactory.GetSearchClientAsync(cancellationToken);
 
             return await client.AutocompleteAsync(query, type, skip, take, includePrerelease, includeSemVer2);
         }
@@ -40,7 +40,7 @@ namespace BaGet.Protocol.Internal
         {
             // TODO: Support search failover.
             // See: https://github.com/loic-sharma/BaGet/issues/314
-            var client = await _clientfactory.CreateSearchClientAsync(cancellationToken);
+            var client = await _clientfactory.GetSearchClientAsync(cancellationToken);
 
             return await client.SearchAsync(query, skip, take, includePrerelease, includeSemVer2);
         }
