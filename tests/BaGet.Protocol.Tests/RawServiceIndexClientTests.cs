@@ -4,11 +4,11 @@ using Xunit;
 
 namespace BaGet.Protocol.Tests
 {
-    public class ServiceIndexClientTests : IClassFixture<ProtocolFixture>
+    public class RawServiceIndexClientTests : IClassFixture<ProtocolFixture>
     {
         private readonly RawServiceIndexClient _target;
 
-        public ServiceIndexClientTests(ProtocolFixture fixture)
+        public RawServiceIndexClientTests(ProtocolFixture fixture)
         {
             _target = fixture.ServiceIndexClient;
         }

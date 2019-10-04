@@ -5,44 +5,47 @@ using System.Threading.Tasks;
 using BaGet.Protocol.Models;
 using NuGet.Versioning;
 
-namespace BaGet.Protocol.Internal
+namespace BaGet.Protocol
 {
-    public class PackageContentClient : IPackageContentClient
+    public partial class NuGetClientFactory
     {
-        private readonly NuGetClientFactory _clientfactory;
-
-        public PackageContentClient(NuGetClientFactory clientFactory)
+        private class PackageContentClient : IPackageContentClient
         {
-            _clientfactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
-        }
+            private readonly NuGetClientFactory _clientfactory;
 
-        public async Task<Stream> GetPackageContentStreamOrNullAsync(
-            string packageId,
-            NuGetVersion packageVersion,
-            CancellationToken cancellationToken = default)
-        {
-            var client = await _clientfactory.GetPackageContentClientAsync(cancellationToken);
+            public PackageContentClient(NuGetClientFactory clientFactory)
+            {
+                _clientfactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
+            }
 
-            return await client.GetPackageContentStreamOrNullAsync(packageId, packageVersion, cancellationToken);
-        }
+            public async Task<Stream> GetPackageContentStreamOrNullAsync(
+                string packageId,
+                NuGetVersion packageVersion,
+                CancellationToken cancellationToken = default)
+            {
+                var client = await _clientfactory.GetPackageContentClientAsync(cancellationToken);
 
-        public async Task<Stream> GetPackageManifestStreamOrNullAsync(
-            string packageId,
-            NuGetVersion packageVersion,
-            CancellationToken cancellationToken = default)
-        {
-            var client = await _clientfactory.GetPackageContentClientAsync(cancellationToken);
+                return await client.GetPackageContentStreamOrNullAsync(packageId, packageVersion, cancellationToken);
+            }
 
-            return await client.GetPackageManifestStreamOrNullAsync(packageId, packageVersion, cancellationToken);
-        }
+            public async Task<Stream> GetPackageManifestStreamOrNullAsync(
+                string packageId,
+                NuGetVersion packageVersion,
+                CancellationToken cancellationToken = default)
+            {
+                var client = await _clientfactory.GetPackageContentClientAsync(cancellationToken);
 
-        public async Task<PackageVersionsResponse> GetPackageVersionsOrNullAsync(
-            string packageId,
-            CancellationToken cancellationToken = default)
-        {
-            var client = await _clientfactory.GetPackageContentClientAsync(cancellationToken);
+                return await client.GetPackageManifestStreamOrNullAsync(packageId, packageVersion, cancellationToken);
+            }
 
-            return await client.GetPackageVersionsOrNullAsync(packageId, cancellationToken);
+            public async Task<PackageVersionsResponse> GetPackageVersionsOrNullAsync(
+                string packageId,
+                CancellationToken cancellationToken = default)
+            {
+                var client = await _clientfactory.GetPackageContentClientAsync(cancellationToken);
+
+                return await client.GetPackageVersionsOrNullAsync(packageId, cancellationToken);
+            }
         }
     }
 }

@@ -16,7 +16,9 @@ namespace BaGet.Protocol
     /// </summary>
     public class NuGetClient
     {
-        private readonly NuGetClientFactory _clientFactory;
+        private readonly IPackageContentClient _contentClient;
+        private readonly IPackageMetadataClient _metadataClient;
+        private readonly ISearchClient _searchClient;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NuGetClient"/> class
@@ -41,7 +43,11 @@ namespace BaGet.Protocol
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
             });
 
-            _clientFactory = new NuGetClientFactory(httpClient, serviceIndexUrl);
+            var clientFactory = new NuGetClientFactory(httpClient, serviceIndexUrl);
+
+            _contentClient = clientFactory.CreatePackageContentClient();
+            _metadataClient = clientFactory.CreatePackageMetadataClient();
+            _searchClient = clientFactory.CreateSearchClient();
         }
 
         /// <summary>
@@ -50,7 +56,11 @@ namespace BaGet.Protocol
         /// <param name="clientFactory">The factory used to create NuGet clients.</param>
         public NuGetClient(NuGetClientFactory clientFactory)
         {
-            _clientFactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
+            if (clientFactory == null) throw new ArgumentNullException(nameof(clientFactory));
+
+            _contentClient = clientFactory.CreatePackageContentClient();
+            _metadataClient = clientFactory.CreatePackageMetadataClient();
+            _searchClient = clientFactory.CreateSearchClient();
         }
 
         /// <summary>
@@ -63,8 +73,7 @@ namespace BaGet.Protocol
             string packageId,
             CancellationToken cancellationToken = default)
         {
-            var client = await _clientFactory.GetPackageContentClientAsync(cancellationToken);
-            var versions = await client.GetPackageVersionsOrNullAsync(packageId, cancellationToken);
+            var versions = await _contentClient.GetPackageVersionsOrNullAsync(packageId, cancellationToken);
 
             return (versions != null && versions.Versions.Any());
         }
@@ -81,8 +90,7 @@ namespace BaGet.Protocol
             NuGetVersion packageVersion,
             CancellationToken cancellationToken = default)
         {
-            var client = await _clientFactory.GetPackageContentClientAsync(cancellationToken);
-            var versions = await client.GetPackageVersionsOrNullAsync(packageId, cancellationToken);
+            var versions = await _contentClient.GetPackageVersionsOrNullAsync(packageId, cancellationToken);
 
             if (versions == null)
             {
@@ -106,8 +114,7 @@ namespace BaGet.Protocol
         /// </exception>
         public virtual async Task<Stream> GetPackageStreamAsync(string packageId, NuGetVersion packageVersion, CancellationToken cancellationToken = default)
         {
-            var client = await _clientFactory.GetPackageContentClientAsync(cancellationToken);
-            var stream = await client.GetPackageContentStreamOrNullAsync(packageId, packageVersion, cancellationToken);
+            var stream = await _contentClient.GetPackageContentStreamOrNullAsync(packageId, packageVersion, cancellationToken);
 
             if (stream == null)
             {
@@ -129,8 +136,7 @@ namespace BaGet.Protocol
         /// </exception>
         public virtual async Task<Stream> GetPackageManifestStreamAsync(string packageId, NuGetVersion packageVersion, CancellationToken cancellationToken = default)
         {
-            var client = await _clientFactory.GetPackageContentClientAsync(cancellationToken);
-            var stream = await client.GetPackageManifestStreamOrNullAsync(packageId, packageVersion, cancellationToken);
+            var stream = await _contentClient.GetPackageManifestStreamOrNullAsync(packageId, packageVersion, cancellationToken);
 
             if (stream == null)
             {
@@ -171,8 +177,7 @@ namespace BaGet.Protocol
                 return await ListPackageVersionsAsync(packageId, cancellationToken);
             }
 
-            var client = await _clientFactory.GetPackageContentClientAsync(cancellationToken);
-            var response = await client.GetPackageVersionsOrNullAsync(packageId, cancellationToken);
+            var response = await _contentClient.GetPackageVersionsOrNullAsync(packageId, cancellationToken);
 
             if (response == null)
             {
@@ -192,8 +197,7 @@ namespace BaGet.Protocol
         {
             var result = new List<PackageMetadata>();
 
-            var client = await _clientFactory.GetPackageMetadataClientAsync(cancellationToken);
-            var registrationIndex = await client.GetRegistrationIndexOrNullAsync(packageId, cancellationToken);
+            var registrationIndex = await _metadataClient.GetRegistrationIndexOrNullAsync(packageId, cancellationToken);
 
             if (registrationIndex == null)
             {
@@ -208,7 +212,7 @@ namespace BaGet.Protocol
                 var items = registrationIndexPage.ItemsOrNull;
                 if (items == null)
                 {
-                    var externalRegistrationPage = await client.GetRegistrationPageAsync(
+                    var externalRegistrationPage = await _metadataClient.GetRegistrationPageAsync(
                         registrationIndexPage.RegistrationPageUrl,
                         cancellationToken);
 
@@ -236,8 +240,7 @@ namespace BaGet.Protocol
         /// </exception>
         public virtual async Task<PackageMetadata> GetPackageMetadataAsync(string packageId, NuGetVersion packageVersion, CancellationToken cancellationToken = default)
         {
-            var client = await _clientFactory.GetPackageMetadataClientAsync(cancellationToken);
-            var registrationIndex = await client.GetRegistrationIndexOrNullAsync(packageId, cancellationToken);
+            var registrationIndex = await _metadataClient.GetRegistrationIndexOrNullAsync(packageId, cancellationToken);
 
             if (registrationIndex == null)
             {
@@ -259,7 +262,7 @@ namespace BaGet.Protocol
                 var items = registrationIndexPage.ItemsOrNull;
                 if (items == null)
                 {
-                    var externalRegistrationPage = await client.GetRegistrationPageAsync(
+                    var externalRegistrationPage = await _metadataClient.GetRegistrationPageAsync(
                         registrationIndexPage.RegistrationPageUrl,
                         cancellationToken);
 
@@ -295,8 +298,7 @@ namespace BaGet.Protocol
             string query = null,
             CancellationToken cancellationToken = default)
         {
-            var client = await _clientFactory.GetSearchClientAsync(cancellationToken);
-            var response = await client.SearchAsync(query, cancellationToken: cancellationToken);
+            var response = await _searchClient.SearchAsync(query, cancellationToken: cancellationToken);
 
             return response.Data;
         }
@@ -315,8 +317,7 @@ namespace BaGet.Protocol
             bool includePrerelease,
             CancellationToken cancellationToken = default)
         {
-            var client = await _clientFactory.GetSearchClientAsync(cancellationToken);
-            var response = await client.SearchAsync(
+            var response = await _searchClient.SearchAsync(
                 query,
                 includePrerelease: includePrerelease,
                 cancellationToken: cancellationToken);
@@ -340,8 +341,7 @@ namespace BaGet.Protocol
             int take,
             CancellationToken cancellationToken = default)
         {
-            var client = await _clientFactory.GetSearchClientAsync(cancellationToken);
-            var response =  await client.SearchAsync(
+            var response =  await _searchClient.SearchAsync(
                 query,
                 skip,
                 take,
@@ -368,8 +368,7 @@ namespace BaGet.Protocol
             int take,
             CancellationToken cancellationToken = default)
         {
-            var client = await _clientFactory.GetSearchClientAsync(cancellationToken);
-            var response = await client.SearchAsync(
+            var response = await _searchClient.SearchAsync(
                 query,
                 skip,
                 take,
@@ -392,8 +391,7 @@ namespace BaGet.Protocol
             string query = null,
             CancellationToken cancellationToken = default)
         {
-            var client = await _clientFactory.GetSearchClientAsync(cancellationToken);
-            var response = await client.AutocompleteAsync(query, cancellationToken: cancellationToken);
+            var response = await _searchClient.AutocompleteAsync(query, cancellationToken: cancellationToken);
 
             return response.Data;
         }
@@ -408,10 +406,13 @@ namespace BaGet.Protocol
         /// <param name="take">The number of results to include.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The package IDs that matched the query.</returns>
-        public virtual async Task<IReadOnlyList<string>> AutocompleteAsync(string query, int skip, int take, CancellationToken cancellationToken = default)
+        public virtual async Task<IReadOnlyList<string>> AutocompleteAsync(
+            string query,
+            int skip,
+            int take,
+            CancellationToken cancellationToken = default)
         {
-            var client = await _clientFactory.GetSearchClientAsync(cancellationToken);
-            var response = await client.AutocompleteAsync(
+            var response = await _searchClient.AutocompleteAsync(
                 query,
                 skip: skip,
                 take: take,

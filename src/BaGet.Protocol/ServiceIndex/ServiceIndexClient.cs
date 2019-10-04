@@ -3,20 +3,23 @@ using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Protocol.Models;
 
-namespace BaGet.Protocol.Internal
+namespace BaGet.Protocol
 {
-    public class ServiceIndexClient : IServiceIndexClient
+    public partial class NuGetClientFactory
     {
-        private readonly NuGetClientFactory _clientFactory;
-
-        public ServiceIndexClient(NuGetClientFactory clientFactory)
+        private class ServiceIndexClient : IServiceIndexClient
         {
-            _clientFactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
-        }
+            private readonly NuGetClientFactory _clientFactory;
 
-        public async Task<ServiceIndexResponse> GetAsync(CancellationToken cancellationToken = default)
-        {
-            return await _clientFactory.GetServiceIndexAsync(cancellationToken);
+            public ServiceIndexClient(NuGetClientFactory clientFactory)
+            {
+                _clientFactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
+            }
+
+            public async Task<ServiceIndexResponse> GetAsync(CancellationToken cancellationToken = default)
+            {
+                return await _clientFactory.GetServiceIndexAsync(cancellationToken);
+            }
         }
     }
 }

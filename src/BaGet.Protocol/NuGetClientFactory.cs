@@ -11,7 +11,7 @@ namespace BaGet.Protocol
     /// The <see cref="NuGetClientFactory"/> creates clients to interact with a NuGet server.
     /// Use this for advanced scenarios. For most scenarios, consider using <see cref="NuGetClient"/> instead.
     /// </summary>
-    public class NuGetClientFactory
+    public partial class NuGetClientFactory
     {
         private readonly HttpClient _httpClient;
         private readonly string _serviceIndexUrl;
@@ -101,31 +101,27 @@ namespace BaGet.Protocol
         }
 
 
-        internal Task<ServiceIndexResponse> GetServiceIndexAsync(CancellationToken cancellationToken = default)
+        private Task<ServiceIndexResponse> GetServiceIndexAsync(CancellationToken cancellationToken = default)
         {
             return GetAsync(c => c.ServiceIndex, cancellationToken);
         }
 
-
-        internal Task<IPackageContentClient> GetPackageContentClientAsync(CancellationToken cancellationToken = default)
+        private Task<IPackageContentClient> GetPackageContentClientAsync(CancellationToken cancellationToken = default)
         {
             return GetAsync(c => c.PackageContentClient, cancellationToken);
         }
 
-
-        internal Task<IPackageMetadataClient> GetPackageMetadataClientAsync(CancellationToken cancellationToken = default)
+        private Task<IPackageMetadataClient> GetPackageMetadataClientAsync(CancellationToken cancellationToken = default)
         {
             return GetAsync(c => c.PackageMetadataClient, cancellationToken);
         }
 
-
-        internal Task<ISearchClient> GetSearchClientAsync(CancellationToken cancellationToken = default)
+        private Task<ISearchClient> GetSearchClientAsync(CancellationToken cancellationToken = default)
         {
             return GetAsync(c => c.SearchClient, cancellationToken);
         }
 
-
-        internal Task<ICatalogClient> GetCatalogClientAsync(CancellationToken cancellationToken = default)
+        private Task<ICatalogClient> GetCatalogClientAsync(CancellationToken cancellationToken = default)
         {
             return GetAsync(c => c.CatalogClient, cancellationToken);
         }
