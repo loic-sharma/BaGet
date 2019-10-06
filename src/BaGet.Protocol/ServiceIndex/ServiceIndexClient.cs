@@ -1,40 +1,25 @@
 using System;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Protocol.Models;
 
-namespace BaGet.Protocol.Internal
+namespace BaGet.Protocol
 {
-    /// <summary>
-    /// The NuGet Service Index client, used to discover other resources.
-    /// 
-    /// See https://docs.microsoft.com/en-us/nuget/api/service-index
-    /// </summary>
-    public class ServiceIndexClient : IServiceIndexClient
+    public partial class NuGetClientFactory
     {
-        private readonly HttpClient _httpClient;
-        private readonly string _serviceIndexUrl;
-
-        /// <summary>
-        /// Create a service index for the upstream source.
-        /// </summary>
-        /// <param name="httpClient">The HTTP client used to send requests.</param>
-        /// <param name="serviceIndexUrl">The NuGet server's service index URL.</param>
-        public ServiceIndexClient(HttpClient httpClient, string serviceIndexUrl)
+        private class ServiceIndexClient : IServiceIndexClient
         {
-            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-            _serviceIndexUrl = serviceIndexUrl ?? throw new ArgumentNullException(nameof(serviceIndexUrl));
-        }
+            private readonly NuGetClientFactory _clientFactory;
 
-        /// <inheritdoc />
-        public async Task<ServiceIndexResponse> GetAsync(CancellationToken cancellationToken = default)
-        {
-            var response = await _httpClient.DeserializeUrlAsync<ServiceIndexResponse>(
-                _serviceIndexUrl,
-                cancellationToken);
+            public ServiceIndexClient(NuGetClientFactory clientFactory)
+            {
+                _clientFactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
+            }
 
-            return response.GetResultOrThrow();
+            public async Task<ServiceIndexResponse> GetAsync(CancellationToken cancellationToken = default)
+            {
+                return await _clientFactory.GetServiceIndexAsync(cancellationToken);
+            }
         }
     }
 }

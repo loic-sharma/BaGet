@@ -4,43 +4,46 @@ using System.Threading.Tasks;
 using BaGet.Protocol.Models;
 using NuGet.Versioning;
 
-namespace BaGet.Protocol.Internal
+namespace BaGet.Protocol
 {
-    public class PackageMetadataClient : IPackageMetadataClient
+    public partial class NuGetClientFactory
     {
-        private readonly NuGetClientFactory _clientfactory;
-
-        public PackageMetadataClient(NuGetClientFactory clientFactory)
+        private class PackageMetadataClient : IPackageMetadataClient
         {
-            _clientfactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
-        }
+            private readonly NuGetClientFactory _clientfactory;
 
-        public async Task<RegistrationIndexResponse> GetRegistrationIndexOrNullAsync(
-            string packageId,
-            CancellationToken cancellationToken = default)
-        {
-            var client = await _clientfactory.CreatePackageMetadataClientAsync(cancellationToken);
+            public PackageMetadataClient(NuGetClientFactory clientFactory)
+            {
+                _clientfactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
+            }
 
-            return await client.GetRegistrationIndexOrNullAsync(packageId, cancellationToken);
-        }
+            public async Task<RegistrationIndexResponse> GetRegistrationIndexOrNullAsync(
+                string packageId,
+                CancellationToken cancellationToken = default)
+            {
+                var client = await _clientfactory.GetPackageMetadataClientAsync(cancellationToken);
 
-        public async Task<RegistrationPageResponse> GetRegistrationPageAsync(
-            string pageUrl,
-            CancellationToken cancellationToken = default)
-        {
-            var client = await _clientfactory.CreatePackageMetadataClientAsync(cancellationToken);
+                return await client.GetRegistrationIndexOrNullAsync(packageId, cancellationToken);
+            }
 
-            return await client.GetRegistrationPageAsync(pageUrl, cancellationToken);
-        }
+            public async Task<RegistrationPageResponse> GetRegistrationPageAsync(
+                string pageUrl,
+                CancellationToken cancellationToken = default)
+            {
+                var client = await _clientfactory.GetPackageMetadataClientAsync(cancellationToken);
 
-        public async Task<RegistrationLeafResponse> GetRegistrationLeafOrNullAsync(
-            string packageId,
-            NuGetVersion packageVersion,
-            CancellationToken cancellationToken = default)
-        {
-            var client = await _clientfactory.CreatePackageMetadataClientAsync(cancellationToken);
+                return await client.GetRegistrationPageAsync(pageUrl, cancellationToken);
+            }
 
-            return await client.GetRegistrationLeafOrNullAsync(packageId, packageVersion, cancellationToken);
+            public async Task<RegistrationLeafResponse> GetRegistrationLeafOrNullAsync(
+                string packageId,
+                NuGetVersion packageVersion,
+                CancellationToken cancellationToken = default)
+            {
+                var client = await _clientfactory.GetPackageMetadataClientAsync(cancellationToken);
+
+                return await client.GetRegistrationLeafOrNullAsync(packageId, packageVersion, cancellationToken);
+            }
         }
     }
 }

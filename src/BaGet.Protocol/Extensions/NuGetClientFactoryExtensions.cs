@@ -1,5 +1,3 @@
-using System.Threading;
-using System.Threading.Tasks;
 using BaGet.Protocol.Catalog;
 using Microsoft.Extensions.Logging;
 
@@ -16,17 +14,15 @@ namespace BaGet.Protocol
         /// <param name="leafProcessor">The leaf processor.</param>
         /// <param name="options">The options to configure catalog processing.</param>
         /// <param name="logger">The logger used for telemetry.</param>
-        /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The catalog processor.</returns>
-        public static async Task<CatalogProcessor> CreateCatalogProcessorAsync(
+        public static CatalogProcessor CreateCatalogProcessor(
             this NuGetClientFactory clientFactory,
             ICursor cursor,
             ICatalogLeafProcessor leafProcessor,
             CatalogProcessorOptions options,
-            ILogger<CatalogProcessor> logger,
-            CancellationToken cancellationToken = default)
+            ILogger<CatalogProcessor> logger)
         {
-            var catalogClient = await clientFactory.CreateCatalogClientAsync(cancellationToken);
+            var catalogClient = clientFactory.CreateCatalogClient();
 
             return new CatalogProcessor(
                 cursor,

@@ -3,43 +3,46 @@ using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Protocol.Models;
 
-namespace BaGet.Protocol.Internal
+namespace BaGet.Protocol
 {
-    public class CatalogClient : ICatalogClient
+    public partial class NuGetClientFactory
     {
-        private readonly NuGetClientFactory _clientfactory;
-
-        public CatalogClient(NuGetClientFactory clientFactory)
+        private class CatalogClient : ICatalogClient
         {
-            _clientfactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
-        }
+            private readonly NuGetClientFactory _clientfactory;
 
-        public async Task<CatalogIndex> GetIndexAsync(CancellationToken cancellationToken = default)
-        {
-            var client = await _clientfactory.CreateCatalogClientAsync(cancellationToken);
+            public CatalogClient(NuGetClientFactory clientFactory)
+            {
+                _clientfactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
+            }
 
-            return await client.GetIndexAsync(cancellationToken);
-        }
+            public async Task<CatalogIndex> GetIndexAsync(CancellationToken cancellationToken = default)
+            {
+                var client = await _clientfactory.GetCatalogClientAsync(cancellationToken);
 
-        public async Task<CatalogPage> GetPageAsync(string pageUrl, CancellationToken cancellationToken = default)
-        {
-            var client = await _clientfactory.CreateCatalogClientAsync(cancellationToken);
+                return await client.GetIndexAsync(cancellationToken);
+            }
 
-            return await client.GetPageAsync(pageUrl, cancellationToken);
-        }
+            public async Task<CatalogPage> GetPageAsync(string pageUrl, CancellationToken cancellationToken = default)
+            {
+                var client = await _clientfactory.GetCatalogClientAsync(cancellationToken);
 
-        public async Task<PackageDetailsCatalogLeaf> GetPackageDetailsLeafAsync(string leafUrl, CancellationToken cancellationToken = default)
-        {
-            var client = await _clientfactory.CreateCatalogClientAsync(cancellationToken);
+                return await client.GetPageAsync(pageUrl, cancellationToken);
+            }
 
-            return await client.GetPackageDetailsLeafAsync(leafUrl, cancellationToken);
-        }
+            public async Task<PackageDetailsCatalogLeaf> GetPackageDetailsLeafAsync(string leafUrl, CancellationToken cancellationToken = default)
+            {
+                var client = await _clientfactory.GetCatalogClientAsync(cancellationToken);
 
-        public async Task<PackageDeleteCatalogLeaf> GetPackageDeleteLeafAsync(string leafUrl, CancellationToken cancellationToken = default)
-        {
-            var client = await _clientfactory.CreateCatalogClientAsync(cancellationToken);
+                return await client.GetPackageDetailsLeafAsync(leafUrl, cancellationToken);
+            }
 
-            return await client.GetPackageDeleteLeafAsync(leafUrl, cancellationToken);
+            public async Task<PackageDeleteCatalogLeaf> GetPackageDeleteLeafAsync(string leafUrl, CancellationToken cancellationToken = default)
+            {
+                var client = await _clientfactory.GetCatalogClientAsync(cancellationToken);
+
+                return await client.GetPackageDeleteLeafAsync(leafUrl, cancellationToken);
+            }
         }
     }
 }

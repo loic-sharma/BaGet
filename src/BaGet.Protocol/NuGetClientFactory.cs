@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Protocol.Internal;
+using BaGet.Protocol.Models;
 
 namespace BaGet.Protocol
 {
@@ -10,7 +11,7 @@ namespace BaGet.Protocol
     /// The <see cref="NuGetClientFactory"/> creates clients to interact with a NuGet server.
     /// Use this for advanced scenarios. For most scenarios, consider using <see cref="NuGetClient"/> instead.
     /// </summary>
-    public class NuGetClientFactory
+    public partial class NuGetClientFactory
     {
         private readonly HttpClient _httpClient;
         private readonly string _serviceIndexUrl;
@@ -50,9 +51,9 @@ namespace BaGet.Protocol
         /// See https://docs.microsoft.com/en-us/nuget/api/service-index
         /// </summary>
         /// <returns>A client to interact with the NuGet Service Index resource.</returns>
-        public virtual Task<IServiceIndexClient> CreateServiceIndexClientAsync(CancellationToken cancellationToken = default)
+        public virtual IServiceIndexClient CreateServiceIndexClient()
         {
-            return GetClientAsync(c => c.ServiceIndexClient, cancellationToken);
+            return new ServiceIndexClient(this);
         }
 
         /// <summary>
@@ -61,9 +62,9 @@ namespace BaGet.Protocol
         /// See https://docs.microsoft.com/en-us/nuget/api/package-base-address-resource
         /// </summary>
         /// <returns>A client to interact with the NuGet Package Content resource.</returns>
-        public virtual Task<IPackageContentClient> CreatePackageContentClientAsync(CancellationToken cancellationToken = default)
+        public virtual IPackageContentClient CreatePackageContentClient()
         {
-            return GetClientAsync(c => c.PackageContentClient, cancellationToken);
+            return new PackageContentClient(this);
         }
 
         /// <summary>
@@ -72,9 +73,9 @@ namespace BaGet.Protocol
         /// See https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
         /// </summary>
         /// <returns>A client to interact with the NuGet Package Metadata resource.</returns>
-        public virtual Task<IPackageMetadataClient> CreatePackageMetadataClientAsync(CancellationToken cancellationToken = default)
+        public virtual IPackageMetadataClient CreatePackageMetadataClient()
         {
-            return GetClientAsync(c => c.PackageMetadataClient, cancellationToken);
+            return new PackageMetadataClient(this);
         }
 
         /// <summary>
@@ -83,9 +84,9 @@ namespace BaGet.Protocol
         /// See https://docs.microsoft.com/en-us/nuget/api/search-query-service-resource
         /// </summary>
         /// <returns>A client to interact with the NuGet Search resource.</returns>
-        public virtual Task<ISearchClient> CreateSearchClientAsync(CancellationToken cancellationToken = default)
+        public virtual ISearchClient CreateSearchClient()
         {
-            return GetClientAsync(c => c.SearchClient, cancellationToken);
+            return new SearchClient(this);
         }
 
         /// <summary>
@@ -94,12 +95,38 @@ namespace BaGet.Protocol
         /// See https://docs.microsoft.com/en-us/nuget/api/catalog-resource
         /// </summary>
         /// <returns>A client to interact with the Catalog resource.</returns>
-        public virtual Task<ICatalogClient> CreateCatalogClientAsync(CancellationToken cancellationToken = default)
+        public virtual ICatalogClient CreateCatalogClient()
         {
-            return GetClientAsync(c => c.CatalogClient, cancellationToken);
+            return new CatalogClient(this);
         }
 
-        private async Task<T> GetClientAsync<T>(Func<NuGetClients, T> clientFactory, CancellationToken cancellationToken)
+
+        private Task<ServiceIndexResponse> GetServiceIndexAsync(CancellationToken cancellationToken = default)
+        {
+            return GetAsync(c => c.ServiceIndex, cancellationToken);
+        }
+
+        private Task<IPackageContentClient> GetPackageContentClientAsync(CancellationToken cancellationToken = default)
+        {
+            return GetAsync(c => c.PackageContentClient, cancellationToken);
+        }
+
+        private Task<IPackageMetadataClient> GetPackageMetadataClientAsync(CancellationToken cancellationToken = default)
+        {
+            return GetAsync(c => c.PackageMetadataClient, cancellationToken);
+        }
+
+        private Task<ISearchClient> GetSearchClientAsync(CancellationToken cancellationToken = default)
+        {
+            return GetAsync(c => c.SearchClient, cancellationToken);
+        }
+
+        private Task<ICatalogClient> GetCatalogClientAsync(CancellationToken cancellationToken = default)
+        {
+            return GetAsync(c => c.CatalogClient, cancellationToken);
+        }
+
+        private async Task<T> GetAsync<T>(Func<NuGetClients, T> clientFactory, CancellationToken cancellationToken)
         {
             if (_clients == null)
             {
@@ -109,7 +136,7 @@ namespace BaGet.Protocol
                 {
                     if (_clients == null)
                     {
-                        var serviceIndexClient = new ServiceIndexClient(_httpClient, _serviceIndexUrl);
+                        var serviceIndexClient = new RawServiceIndexClient(_httpClient, _serviceIndexUrl);
 
                         var serviceIndex = await serviceIndexClient.GetAsync(cancellationToken);
 
@@ -122,7 +149,8 @@ namespace BaGet.Protocol
 
                         _clients = new NuGetClients
                         {
-                            ServiceIndexClient = serviceIndexClient,
+                            ServiceIndex = serviceIndex,
+
                             PackageContentClient = contentClient,
                             PackageMetadataClient = metadataClient,
                             SearchClient = searchClient,
@@ -142,7 +170,8 @@ namespace BaGet.Protocol
 
         private class NuGetClients
         {
-            public IServiceIndexClient ServiceIndexClient { get; set; }
+            public ServiceIndexResponse ServiceIndex { get; set; }
+
             public IPackageContentClient PackageContentClient { get; set; }
             public IPackageMetadataClient PackageMetadataClient { get; set; }
             public ISearchClient SearchClient { get; set; }
