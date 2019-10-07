@@ -129,41 +129,46 @@ namespace BaGet.Azure
                     results.Last().Add(result);
                 }
             }
-            while (token != null && results.Count <= take + skip);
+            while (token != null && results.Count < take + skip);
 
-            return results.Skip(skip).ToList();
+            return results.Skip(skip).Take(take).ToList();
         }
 
         private string GenerateSearchFilter(string searchText, bool includePrerelease, bool includeSemVer2)
         {
-            // Filter to rows where the "searchText" prefix matches on the partition key.
-            var prefix = searchText?.TrimEnd().Split(separator: null).Last() ?? string.Empty;
+            var result = "";
 
-            var prefixLower = prefix;
-            var prefixUpper = prefix + "~";
+            if (!string.IsNullOrWhiteSpace(searchText))
+            {
+                // Filter to rows where the "searchText" prefix matches on the partition key.
+                var prefix = searchText?.TrimEnd().Split(separator: null).Last() ?? string.Empty;
 
-            var partitionLowerFilter = TableQuery.GenerateFilterCondition(
-                "PartitionKey",
-                QueryComparisons.GreaterThanOrEqual,
-                prefixLower);
+                var prefixLower = prefix;
+                var prefixUpper = prefix + "~";
 
-            var partitionUpperFilter = TableQuery.GenerateFilterCondition(
-                "PartitionKey",
-                QueryComparisons.LessThanOrEqual,
-                prefixUpper);
+                var partitionLowerFilter = TableQuery.GenerateFilterCondition(
+                    "PartitionKey",
+                    QueryComparisons.GreaterThanOrEqual,
+                    prefixLower);
 
-            var partitionFilter = GenerateAnd(partitionLowerFilter, partitionUpperFilter);
+                var partitionUpperFilter = TableQuery.GenerateFilterCondition(
+                    "PartitionKey",
+                    QueryComparisons.LessThanOrEqual,
+                    prefixUpper);
+
+                result = GenerateAnd(partitionLowerFilter, partitionUpperFilter);
+            }
 
             // Filter to rows that are listed.
-            var result = GenerateAnd(
-                partitionFilter,
+            result = GenerateAnd(
+                result,
                 GenerateIsTrue(nameof(TablePackageService.PackageEntity.Listed)));
 
             if (!includePrerelease)
             {
                 result = GenerateAnd(
                     result,
-                    GenerateIsTrue(nameof(TablePackageService.PackageEntity.IsPrerelease)));
+                    GenerateIsFalse(nameof(TablePackageService.PackageEntity.IsPrerelease)));
             }
 
             if (!includeSemVer2)
@@ -180,6 +185,8 @@ namespace BaGet.Azure
 
             string GenerateAnd(string left, string right)
             {
+                if (string.IsNullOrEmpty(left)) return right;
+
                 return TableQuery.CombineFilters(left, TableOperators.And, right);
             }
 
@@ -189,6 +196,14 @@ namespace BaGet.Azure
                     propertyName,
                     QueryComparisons.Equal,
                     givenValue: true);
+            }
+
+            string GenerateIsFalse(string propertyName)
+            {
+                return TableQuery.GenerateFilterConditionForBool(
+                    propertyName,
+                    QueryComparisons.Equal,
+                    givenValue: false);
             }
         }
 
