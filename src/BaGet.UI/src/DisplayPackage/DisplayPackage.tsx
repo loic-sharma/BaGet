@@ -25,6 +25,8 @@ interface IDisplayPackageProps {
 interface IPackage {
   id: string;
   latestVersion: string;
+  hasReadme: boolean;
+  description: string;
   readme: string;
   lastUpdate: Date;
   iconUrl: string;
@@ -205,8 +207,20 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
 
             <InstallationInfo id={this.state.package.id} version={this.state.package.normalizedVersion} isDotnetTool={this.state.package.isDotnetTool} />
 
-            {/* TODO: Fix this */}
-            <div dangerouslySetInnerHTML={{ __html: this.state.package.readme }} />
+            {(() => {
+              if (this.state.package.hasReadme) {
+                // TODO: Fix this
+                return (
+                  <div dangerouslySetInnerHTML={{ __html: this.state.package.readme }} />
+                );
+              } else {
+                return (
+                  <div className="package-description">
+                    {this.state.package.description}
+                  </div>
+                );
+              }
+            })()}
 
             <Dependents packageId={this.id} />
             <Dependencies dependencyGroups={this.state.package.dependencyGroups} />
