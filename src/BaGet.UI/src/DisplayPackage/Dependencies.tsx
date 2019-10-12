@@ -1,8 +1,8 @@
+import { Link } from 'react-router-dom';
 import * as React from 'react';
 import * as Registration from './Registration';
 
 import './Dependencies.css';
-import { Link } from 'react-router-dom';
 
 interface IDependenciesProps {
   dependencyGroups: Registration.IDependencyGroup[];
