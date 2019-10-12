@@ -41,7 +41,7 @@ class Dependencies extends React.Component<IDependenciesProps> {
     // This uses heuristics and may produce incorrect results.
     // This ignores portable class libraries.
     if (Dependencies.netFrameworkRegex.test(group.targetFramework)) {
-      const version = group.targetFramework.substring(3);
+      const version = group.targetFramework.substring("net".length);
       const prettyVersion = version.length == 2
         ? `${version[0]}.${version[1]}`
         : `${version[0]}.${version[1]}.${version[2]}`;
@@ -51,13 +51,13 @@ class Dependencies extends React.Component<IDependenciesProps> {
     }
 
     if (Dependencies.netCoreRegex.test(group.targetFramework)) {
-      const version = group.targetFramework.substring(10);
+      const version = group.targetFramework.substring("netcoreapp".length);
       group.targetFramework = `.NET Core ${version}`;
       return;
     }
 
     if (Dependencies.netStandardRegex.test(group.targetFramework)) {
-      const version = group.targetFramework.substring(11);
+      const version = group.targetFramework.substring("netstandard".length);
       group.targetFramework = `.NET Standard ${version}`;
       return;
     }
