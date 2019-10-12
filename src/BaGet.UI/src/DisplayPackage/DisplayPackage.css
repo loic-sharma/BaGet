@@ -12,6 +12,10 @@
   font-size: 45%;
 }
 
+.display-package .package-description {
+  white-space: pre-wrap;
+}
+
 .package-details-info {
   margin-top: -25px;
 }
