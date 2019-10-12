@@ -35,8 +35,6 @@ class Dependents extends React.Component<IDependentsProps, IDependentsState> {
     fetch(url, {signal: this.controller.signal}).then(response => {
       return response.json();
     }).then(json => {
-      // tslint:disable-next-line:no-console
-      console.log(json as IDependentsState);
       this.setState(json as IDependentsState);
     // tslint:disable-next-line:no-console
     }).catch((e) => console.log("Failed to load dependents.", e));

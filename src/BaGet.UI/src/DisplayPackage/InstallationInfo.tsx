@@ -29,8 +29,6 @@ class InstallationInfo extends React.Component<IInstallationInfoProps, IInstalla
   constructor(props: IInstallationInfoProps) {
     super(props);
 
-    // tslint:disable-next-line:no-console
-    console.log(props);
     this.state = props.isDotnetTool
       ? this.buildState(Tab.DotnetTool)
       : this.buildState(Tab.Dotnet);
