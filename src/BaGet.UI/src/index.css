@@ -24,6 +24,12 @@ h2, h3 {
   margin-top: 40px;
 }
 
+h4 {
+  margin-top: 11px;
+  margin-bottom: 11px;
+  font-size: 20px;
+}
+
 .img-responsive {
   display: block;
   max-width: 100%;

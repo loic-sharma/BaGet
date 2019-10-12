@@ -1,6 +1,9 @@
 import * as React from 'react';
 import * as Registration from './Registration';
 
+import './Dependencies.css';
+import { Link } from 'react-router-dom';
+
 interface IDependenciesProps {
   dependencyGroups: Registration.IDependencyGroup[];
 }
@@ -36,10 +39,12 @@ class Dependencies extends React.Component<IDependenciesProps> {
         <div>
           <h3>Dependencies</h3>
 
-          <div>
+          <div className="dependency-groups">
             {this.props.dependencyGroups.map(group => (
               <div key={group.targetFramework}>
-                <h4>{group.targetFramework}</h4>
+                <h4>
+                  <span>{group.targetFramework}</span>
+                </h4>
 
                 <PackageDependencies dependencies={group.dependencies} />
               </div>
@@ -59,10 +64,12 @@ class PackageDependencies extends React.Component<IPackageDependenciesProps> {
     }
 
     return (
-      <ul>
+      <ul className="list-unstyled dependency-group">
         {this.props.dependencies.map(dependency => (
           <li key={dependency.id}>
-            {dependency.id} {dependency.range}
+            <Link to={`/packages/${dependency.id}`}>{dependency.id}</Link>
+
+            <span> {dependency.range}</span>
           </li>
         ))}
       </ul>
