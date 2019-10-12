@@ -139,10 +139,6 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
 
       if (currentItem && lastUpdate) {
         let readme = "";
-        if (!currentItem.catalogEntry.hasReadme) {
-          readme = currentItem.catalogEntry.description;
-        }
-
         const isDotnetTool = (currentItem.catalogEntry.packageTypes &&
           currentItem.catalogEntry.packageTypes.indexOf("DotnetTool") !== -1);
 
