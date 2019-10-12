@@ -58,7 +58,7 @@ class Dependents extends React.Component<IDependentsProps, IDependentsState> {
         <div>
           <h3>Dependents</h3>
 
-          <div>No packages depend on {this.props.packageId}</div>
+          <div>No packages depend on {this.props.packageId}.</div>
         </div>
       );
     }
