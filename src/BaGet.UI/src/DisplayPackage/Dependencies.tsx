@@ -14,14 +14,60 @@ interface IPackageDependenciesProps {
 
 class Dependencies extends React.Component<IDependenciesProps> {
 
-  constructor(props: IDependenciesProps) {
-    props.dependencyGroups.forEach(group => {
-      if (!group.dependencies) {
-        group.dependencies = [];
-      }
-    });
+  static readonly netFrameworkRegex : RegExp = /net[0-9]{2,3}$/;
+  static readonly netCoreRegex : RegExp = /netcoreapp[0-9].[0-9]$/;
+  static readonly netStandardRegex : RegExp = /netstandard[0-9].[0-9]$/;
+  static readonly versionRangeRegex : RegExp = /\[[0-9](.[0-9])*, \)$/;
 
+  constructor(props: IDependenciesProps) {
     super(props);
+
+    props.dependencyGroups.forEach(Dependencies.prettifyDependencyGroup);
+  }
+
+  private static prettifyDependencyGroup(group: Registration.IDependencyGroup) {
+    if (!group.dependencies) {
+      group.dependencies = [];
+    }
+
+    Dependencies.prettifyTargetFramework(group);
+
+    if (group.dependencies !== undefined) {
+      group.dependencies.forEach(Dependencies.prettifyDepency);
+    }
+  }
+
+  private static prettifyTargetFramework(group: Registration.IDependencyGroup) {
+    // This uses heuristics and may produce incorrect results.
+    // This ignores portable class libraries.
+    if (Dependencies.netFrameworkRegex.test(group.targetFramework)) {
+      const version = group.targetFramework.substring(3);
+      const prettyVersion = version.length == 2
+        ? `${version[0]}.${version[1]}`
+        : `${version[0]}.${version[1]}.${version[2]}`;
+
+      group.targetFramework = `.NET Framework ${prettyVersion}`;
+      return;
+    }
+
+    if (Dependencies.netCoreRegex.test(group.targetFramework)) {
+      const version = group.targetFramework.substring(10);
+      group.targetFramework = `.NET Core ${version}`;
+      return;
+    }
+
+    if (Dependencies.netStandardRegex.test(group.targetFramework)) {
+      const version = group.targetFramework.substring(11);
+      group.targetFramework = `.NET Standard ${version}`;
+      return;
+    }
+  }
+
+  private static prettifyDepency(dependency: Registration.IDependency) {
+    // This uses heuristics and may produce incorrect results.
+    if (Dependencies.versionRangeRegex.test(dependency.range)) {
+      dependency.range = `(>= ${dependency.range.slice(1, -3)})`;
+    }
   }
 
   public render() {
