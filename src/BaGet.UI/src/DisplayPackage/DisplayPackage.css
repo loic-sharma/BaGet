@@ -23,3 +23,14 @@
 .package-details-info .ms-Icon-ul li {
   margin-bottom: 15px;
 }
+
+.display-package .expandable-section h2 button {
+  text-decoration: none;
+}
+
+.display-package .expandable-section h2 .ms-Icon {
+  font-size: 0.6em;
+  position: relative;
+  top: -2px;
+  margin-right: 5px;
+}
