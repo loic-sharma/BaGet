@@ -160,8 +160,6 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
             ? PackageType.DotnetTemplate
             : PackageType.Dependency;
 
-        console.log(packageType);
-
         this.setState({
           loading: false,
           showAllVersions: false,
