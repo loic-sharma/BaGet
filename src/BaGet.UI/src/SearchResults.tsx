@@ -87,7 +87,8 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                 options={[
                   {key: 'any', text: 'Any'},
                   {key: 'dependency', text: 'Dependency'},
-                  {key: 'dotnettool', text: '.NET Tool'}
+                  {key: 'dotnettool', text: '.NET Tool'},
+                  {key: 'template', text: '.NET Template'},
                 ]}
               />
             </div>

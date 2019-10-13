@@ -1,12 +1,13 @@
-import { config } from '../config';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as React from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
 import timeago from 'timeago.js';
+
+import { config } from '../config';
 import Dependencies from './Dependencies';
 import Dependents from './Dependents';
-import InstallationInfo from './InstallationInfo';
+import { PackageType, InstallationInfo } from './InstallationInfo';
 import LicenseInfo from './LicenseInfo';
 import * as Registration from './Registration';
 import SourceRepository from './SourceRepository';
@@ -36,7 +37,7 @@ interface IPackage {
   repositoryUrl: string;
   repositoryType: string;
   totalDownloads: number;
-  isDotnetTool: boolean;
+  packageType: PackageType;
   downloads: number;
   authors: string;
   tags: string[];
@@ -143,15 +144,25 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
 
       if (currentItem && lastUpdate) {
         let readme = "";
+
         const isDotnetTool = (currentItem.catalogEntry.packageTypes &&
           currentItem.catalogEntry.packageTypes.indexOf("DotnetTool") !== -1);
+        const isDotnetTemplate = (currentItem.catalogEntry.packageTypes &&
+            currentItem.catalogEntry.packageTypes.indexOf("Template") !== -1);
+        const packageType = isDotnetTool
+          ? PackageType.DotnetTool
+          : isDotnetTemplate
+            ? PackageType.DotnetTemplate
+            : PackageType.Dependency;
+
+        console.log(packageType);
 
         this.setState({
           loading: false,
           package: {
             ...currentItem.catalogEntry,
             downloadUrl: currentItem.packageContent,
-            isDotnetTool,
+            packageType,
             lastUpdate,
             latestVersion,
             normalizedVersion: this.normalizeVersion(currentItem.catalogEntry.version),
@@ -209,7 +220,10 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
 
             </div>
 
-            <InstallationInfo id={this.state.package.id} version={this.state.package.normalizedVersion} isDotnetTool={this.state.package.isDotnetTool} />
+            <InstallationInfo
+              id={this.state.package.id}
+              version={this.state.package.normalizedVersion}
+              packageType={this.state.package.packageType} />
 
             {(() => {
               if (this.state.package.hasReadme) {

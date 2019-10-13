@@ -4,10 +4,16 @@ import CopyText from 'copy-text-to-clipboard';
 
 import './InstallationInfo.css';
 
+export enum PackageType {
+  Dependency,
+  DotnetTool,
+  DotnetTemplate
+}
+
 interface IInstallationInfoProps {
   id: string;
   version: string;
-  isDotnetTool: boolean;
+  packageType: PackageType;
 }
 
 interface IInstallationInfoState {
@@ -19,51 +25,87 @@ interface IInstallationInfoState {
 enum Tab {
   Dotnet,
   DotnetTool,
+  DotnetTemplate,
   PackageReference,
   Paket,
   PackageManager,
 }
 
-class InstallationInfo extends React.Component<IInstallationInfoProps, IInstallationInfoState> {
+export class InstallationInfo extends React.Component<IInstallationInfoProps, IInstallationInfoState> {
 
   constructor(props: IInstallationInfoProps) {
     super(props);
 
-    this.state = props.isDotnetTool
-      ? this.buildState(Tab.DotnetTool)
-      : this.buildState(Tab.Dotnet);
+    console.log("constructor: " + props.packageType);
+
+    switch (props.packageType) {
+      case PackageType.Dependency:
+        this.state = this.buildState(Tab.Dotnet);
+        break;
+
+      case PackageType.DotnetTool:
+        this.state = this.buildState(Tab.DotnetTool);
+        break;
+
+      case PackageType.DotnetTemplate:
+        this.state = this.buildState(Tab.DotnetTemplate);
+        break;
+    }
   }
 
   public render() {
     return (
       <div className="installation-info">
         <ul className="nav">
-          <InstallationInfoTab
-            type={Tab.Dotnet}
-            hidden={this.props.isDotnetTool}
-            selected={this.state.selected}
-            onSelect={this.handleSelect} />
-          <InstallationInfoTab
-            type={Tab.PackageReference}
-            hidden={this.props.isDotnetTool}
-            selected={this.state.selected}
-            onSelect={this.handleSelect} />
-          <InstallationInfoTab
-            type={Tab.Paket}
-            hidden={this.props.isDotnetTool}
-            selected={this.state.selected}
-            onSelect={this.handleSelect} />
-          <InstallationInfoTab
-            type={Tab.PackageManager}
-            hidden={this.props.isDotnetTool}
-            selected={this.state.selected}
-            onSelect={this.handleSelect} />
+          {(() =>
+          {
+            console.log(this.props);
+            console.log(this.state);
 
-          <InstallationInfoTab
-            type={Tab.DotnetTool}
-            hidden={!this.props.isDotnetTool}
-            selected={this.state.selected}
-            onSelect={this.handleSelect} />
+            switch (this.props.packageType) {
+              case PackageType.Dependency:
+                return (
+                  <ul className="nav">
+                    <InstallationInfoTab
+                      type={Tab.Dotnet}
+                      selected={this.state.selected}
+                      onSelect={this.handleSelect} />
+                    <InstallationInfoTab
+                      type={Tab.PackageReference}
+                      selected={this.state.selected}
+                      onSelect={this.handleSelect} />
+                    <InstallationInfoTab
+                      type={Tab.Paket}
+                      selected={this.state.selected}
+                      onSelect={this.handleSelect} />
+                    <InstallationInfoTab
+                      type={Tab.PackageManager}
+                      selected={this.state.selected}
+                      onSelect={this.handleSelect} />
+                  </ul>
+                );
+
+              case PackageType.DotnetTool:
+                return (
+                  <ul className="nav">
+                    <InstallationInfoTab
+                      type={Tab.DotnetTool}
+                      selected={this.state.selected}
+                      onSelect={this.handleSelect} />
+                  </ul>
+                );
+
+              case PackageType.DotnetTemplate:
+                return (
+                  <ul className="nav">
+                    <InstallationInfoTab
+                      type={Tab.DotnetTemplate}
+                      selected={this.state.selected}
+                      onSelect={this.handleSelect} />
+                  </ul>
+                );
+            }
+          })()}
         </ul>
 
         <div className="content">
@@ -101,6 +143,11 @@ class InstallationInfo extends React.Component<IInstallationInfoProps, IInstalla
         prefix = ">";
         break;
 
+      case Tab.DotnetTemplate:
+        content = `dotnet new --install ${this.props.id}::${this.props.version}`;
+        prefix = ">";
+        break;
+
       case Tab.PackageReference:
         content = `<PackageReference Include="${this.props.id}" Version="${this.props.version}" />`;
         prefix = "";
@@ -128,7 +175,6 @@ class InstallationInfo extends React.Component<IInstallationInfoProps, IInstalla
 
 interface IInstallationInfoTabProps {
   type: Tab;
-  hidden: boolean;
   selected: Tab;
   onSelect(value: Tab): void;
 }
@@ -144,6 +190,7 @@ class InstallationInfoTab extends React.Component<IInstallationInfoTabProps> {
     switch (props.type) {
       case Tab.Dotnet: this.title = ".NET CLI"; break;
       case Tab.DotnetTool: this.title = ".NET CLI"; break;
+      case Tab.DotnetTemplate: this.title = ".NET CLI"; break;
       case Tab.PackageReference: this.title = "PackageReference"; break;
       case Tab.Paket: this.title = "Paket CLI"; break;
       case Tab.PackageManager: this.title = "Package Manager"; break;
@@ -152,10 +199,6 @@ class InstallationInfoTab extends React.Component<IInstallationInfoTabProps> {
   }
 
   public render() {
-    if (this.props.hidden) {
-      return null;
-    }
-
     if (this.props.type === this.props.selected) {
       // eslint-disable-next-line
       return <li className="active"><a href="#">{this.title}</a></li>
@@ -165,7 +208,7 @@ class InstallationInfoTab extends React.Component<IInstallationInfoTabProps> {
     return <li><a href="#" onClick={this.onSelect}>{this.title}</a></li>
   }
 
-  private onSelect = (e: React.MouseEvent<HTMLAnchorElement>) => this.props.onSelect(this.props.type);
+  private onSelect = () => this.props.onSelect(this.props.type);
 }
 
 export default InstallationInfo;
