@@ -128,7 +128,7 @@ namespace BaGet.Azure
             }
             while (token != null);
 
-            return results;
+            return results.OrderBy(p => p.Version).ToList();
         }
 
         public async Task<Package> FindOrNullAsync(
