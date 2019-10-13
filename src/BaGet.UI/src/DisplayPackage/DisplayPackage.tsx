@@ -49,7 +49,6 @@ interface IPackage {
 
 interface IDisplayPackageState {
   loading: boolean;
-  showAllVersions: boolean;
   package?: IPackage;
 }
 
@@ -57,8 +56,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
 
   private static readonly initialState: IDisplayPackageState = {
     loading: true,
-    showAllVersions: false,
-    package: undefined
+    package: undefined,
   };
 
   private readonly defaultIconUrl: string = 'https://www.nuget.org/Content/gallery/img/default-package-icon-256x256.png';
@@ -160,7 +158,6 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
 
         this.setState({
           loading: false,
-          showAllVersions: false,
           package: {
             ...currentItem.catalogEntry,
             downloadUrl: currentItem.packageContent,
