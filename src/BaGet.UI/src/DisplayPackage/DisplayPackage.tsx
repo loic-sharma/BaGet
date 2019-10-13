@@ -225,22 +225,22 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
               }
             })()}
 
-            <DisplayPackageSection title="Dependents" expanded={false}>
+            <ExpandableSection title="Dependents" expanded={false}>
               <Dependents packageId={this.state.package.id} />
-            </DisplayPackageSection>
+            </ExpandableSection>
 
-            <DisplayPackageSection title="Dependencies" expanded={false}>
+            <ExpandableSection title="Dependencies" expanded={false}>
               <Dependencies dependencyGroups={this.state.package.dependencyGroups} />
-            </DisplayPackageSection>
+            </ExpandableSection>
 
-            <DisplayPackageSection title="Versions">
+            <ExpandableSection title="Versions">
               {this.state.package.versions.map(value => (
                 <div key={value.version}>
                   <span><Link to={`/packages/${this.state.package!.id}/${value.version}`}>{value.version}</Link>: </span>
                   <span>{this.dateToString(value.date)}</span>
                 </div>
               ))}
-            </DisplayPackageSection>
+            </ExpandableSection>
           </article>
           <aside className="col-sm-3 package-details-info">
             <div>
@@ -308,17 +308,17 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
   }
 }
 
-interface IDisplayPackageSectionProps {
+interface IExpandableSectionProps {
   title: string;
   expanded?: boolean;
 }
 
-interface IDisplayPackageSectionState {
+interface IExpandableSectionState {
   expanded: boolean;
 }
 
-class DisplayPackageSection extends React.Component<IDisplayPackageSectionProps, IDisplayPackageSectionState> {
-  constructor(props: IDisplayPackageSectionProps) {
+class ExpandableSection extends React.Component<IExpandableSectionProps, IExpandableSectionState> {
+  constructor(props: IExpandableSectionProps) {
     super(props);
 
     this.state = {
@@ -331,7 +331,7 @@ class DisplayPackageSection extends React.Component<IDisplayPackageSectionProps,
   public render() {
     if (this.state.expanded) {
       return (
-        <div className="package-section">
+        <div className="expandable-section">
           <h2>
             <button type="button" onClick={this.collapse} className="link-button">
               <Icon iconName="ChevronDown" className="ms-Icon" />
@@ -344,7 +344,7 @@ class DisplayPackageSection extends React.Component<IDisplayPackageSectionProps,
       );
     } else {
       return (
-        <div className="package-section">
+        <div className="expandable-section">
           <h2>
             <button type="button" onClick={this.expand} className="link-button">
               <Icon iconName="ChevronRight" className="ms-Icon" />

@@ -24,11 +24,11 @@
   margin-bottom: 15px;
 }
 
-.display-package .package-section h2 button {
+.display-package .expandable-section h2 button {
   text-decoration: none;
 }
 
-.display-package .package-section h2 .ms-Icon {
+.display-package .expandable-section h2 .ms-Icon {
   font-size: 0.6em;
   position: relative;
   top: -2px;
