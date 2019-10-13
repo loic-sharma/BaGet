@@ -233,7 +233,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
               <Dependencies dependencyGroups={this.state.package.dependencyGroups} />
             </ExpandableSection>
 
-            <ExpandableSection title="Versions">
+            <ExpandableSection title="Versions" expanded={true}>
               {this.state.package.versions.map(value => (
                 <div key={value.version}>
                   <span><Link to={`/packages/${this.state.package!.id}/${value.version}`}>{value.version}</Link>: </span>
@@ -310,7 +310,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
 
 interface IExpandableSectionProps {
   title: string;
-  expanded?: boolean;
+  expanded: boolean;
 }
 
 interface IExpandableSectionState {
@@ -321,11 +321,7 @@ class ExpandableSection extends React.Component<IExpandableSectionProps, IExpand
   constructor(props: IExpandableSectionProps) {
     super(props);
 
-    this.state = {
-      expanded: props.expanded !== undefined
-        ? props.expanded
-        : true
-    };
+    this.state = { ...props };
   }
 
   public render() {
