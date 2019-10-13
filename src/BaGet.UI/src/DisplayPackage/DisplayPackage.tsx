@@ -1,7 +1,6 @@
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as React from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Link } from 'react-router-dom';
 import timeago from 'timeago.js';
 
 import { config } from '../config';
@@ -11,6 +10,7 @@ import { PackageType, InstallationInfo } from './InstallationInfo';
 import LicenseInfo from './LicenseInfo';
 import * as Registration from './Registration';
 import SourceRepository from './SourceRepository';
+import { Versions, IPackageVersion } from './Versions';
 
 import './DisplayPackage.css';
 
@@ -47,18 +47,21 @@ interface IPackage {
   dependencyGroups: Registration.IDependencyGroup[];
 }
 
-interface IPackageVersion {
-  version: string;
-  downloads: number;
-  date: Date;
-}
+
 
 interface IDisplayPackageState {
-  package?: IPackage;
   loading: boolean;
+  showAllVersions: boolean;
+  package?: IPackage;
 }
 
 class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPackageState> {
+
+  private static readonly initialState: IDisplayPackageState = {
+    loading: true,
+    showAllVersions: false,
+    package: undefined
+  };
 
   private readonly defaultIconUrl: string = 'https://www.nuget.org/Content/gallery/img/default-package-icon-256x256.png';
 
@@ -76,7 +79,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
 
     this.id = props.match.params.id.toLowerCase();
     this.version = props.match.params.version;
-    this.state = {package: undefined, loading: true};
+    this.state = DisplayPackage.initialState;
   }
 
   public componentWillUnmount() {
@@ -96,7 +99,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
 
       this.id = this.props.match.params.id.toLowerCase();
       this.version = this.props.match.params.version;
-      this.setState({package: undefined});
+      this.setState(DisplayPackage.initialState);
       this.componentDidMount();
     }
   }
@@ -124,6 +127,8 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
       const versions: IPackageVersion[] = [];
 
       for (const entry of results.items[0].items) {
+        if (!entry.catalogEntry.listed) continue;
+
         const normalizedVersion = this.normalizeVersion(entry.catalogEntry.version);
         versions.push({
           date: new Date(entry.catalogEntry.published),
@@ -159,6 +164,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
 
         this.setState({
           loading: false,
+          showAllVersions: false,
           package: {
             ...currentItem.catalogEntry,
             downloadUrl: currentItem.packageContent,
@@ -217,7 +223,6 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
                 {this.state.package.id}
                 <small className="text-nowrap">{this.state.package.version}</small>
               </h1>
-
             </div>
 
             <InstallationInfo
@@ -228,7 +233,9 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
             {(() => {
               if (this.state.package.hasReadme) {
                 return (
-                  <ReactMarkdown source={this.state.package.readme} />
+                  <ExpandableSection title="Documentation" expanded={true}>
+                    <ReactMarkdown source={this.state.package.readme} />
+                  </ExpandableSection>
                 );
               } else {
                 return (
@@ -248,12 +255,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
             </ExpandableSection>
 
             <ExpandableSection title="Versions" expanded={true}>
-              {this.state.package.versions.map(value => (
-                <div key={value.version}>
-                  <span><Link to={`/packages/${this.state.package!.id}/${value.version}`}>{value.version}</Link>: </span>
-                  <span>{this.dateToString(value.date)}</span>
-                </div>
-              ))}
+              <Versions packageId={this.id} versions={this.state.package.versions} />
             </ExpandableSection>
           </article>
           <aside className="col-sm-3 package-details-info">
@@ -310,9 +312,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
     e.currentTarget.src = this.defaultIconUrl;
   }
 
-  private dateToString(date: Date): string {
-    return `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`;
-  }
+
 
   private normalizeVersion(version: string): string {
     const buildMetadataStart = version.indexOf('+');
