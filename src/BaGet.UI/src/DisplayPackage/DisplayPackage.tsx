@@ -305,8 +305,6 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
     e.currentTarget.src = this.defaultIconUrl;
   }
 
-
-
   private normalizeVersion(version: string): string {
     const buildMetadataStart = version.indexOf('+');
     return buildMetadataStart === -1
