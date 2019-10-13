@@ -36,8 +36,6 @@ export class InstallationInfo extends React.Component<IInstallationInfoProps, II
   constructor(props: IInstallationInfoProps) {
     super(props);
 
-    console.log("constructor: " + props.packageType);
-
     switch (props.packageType) {
       case PackageType.Dependency:
         this.state = this.buildState(Tab.Dotnet);
@@ -59,9 +57,6 @@ export class InstallationInfo extends React.Component<IInstallationInfoProps, II
         <ul className="nav">
           {(() =>
           {
-            console.log(this.props);
-            console.log(this.state);
-
             switch (this.props.packageType) {
               case PackageType.Dependency:
                 return (
