@@ -1,7 +1,7 @@
-import { HtmlRenderer, Parser } from 'commonmark';
 import { config } from '../config';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as React from 'react';
+import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
 import timeago from 'timeago.js';
 import Dependencies from './Dependencies';
@@ -63,17 +63,12 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
 
   private id: string;
   private version?: string;
-  private parser: Parser;
-  private htmlRenderer: HtmlRenderer;
 
   private registrationController: AbortController;
   private readmeController: AbortController;
 
   constructor(props: IDisplayPackageProps) {
     super(props);
-
-    this.parser = new Parser();
-    this.htmlRenderer = new HtmlRenderer();
 
     this.registrationController = new AbortController();
     this.readmeController = new AbortController();
@@ -174,9 +169,8 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
           }).then(result => {
             this.setState(prevState => {
               const state = {...prevState};
-              const markdown = this.parser.parse(result);
 
-              state.package!.readme = this.htmlRenderer.render(markdown);
+              state.package!.readme = result;
 
               return state;
             });
@@ -219,9 +213,8 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
 
             {(() => {
               if (this.state.package.hasReadme) {
-                // TODO: Fix this
                 return (
-                  <div dangerouslySetInnerHTML={{ __html: this.state.package.readme }} />
+                  <ReactMarkdown source={this.state.package.readme} />
                 );
               } else {
                 return (
