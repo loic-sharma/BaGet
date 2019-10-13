@@ -42,7 +42,7 @@ class Dependencies extends React.Component<IDependenciesProps> {
     // This ignores portable class libraries.
     if (Dependencies.netFrameworkRegex.test(group.targetFramework)) {
       const version = group.targetFramework.substring("net".length);
-      const prettyVersion = version.length == 2
+      const prettyVersion = version.length === 2
         ? `${version[0]}.${version[1]}`
         : `${version[0]}.${version[1]}.${version[2]}`;
 
