@@ -54,6 +54,7 @@ interface IPackageVersion {
 
 interface IDisplayPackageState {
   package?: IPackage;
+  loading: boolean;
 }
 
 class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPackageState> {
@@ -79,7 +80,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
 
     this.id = props.match.params.id.toLowerCase();
     this.version = props.match.params.version;
-    this.state = {package: undefined};
+    this.state = {package: undefined, loading: true};
   }
 
   public componentWillUnmount() {
@@ -108,8 +109,16 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
     const url = `${config.apiUrl}/v3/registration/${this.id}/index.json`;
 
     fetch(url, {signal: this.registrationController.signal}).then(response => {
-      return response.json();
+      return (response.ok) ? response.json() : null;
     }).then(json => {
+      if (!json) {
+        this.setState(prevState => {
+          return { ...prevState, loading: false };
+        });
+
+        return;
+      }
+
       const results = json as Registration.IRegistrationIndex;
 
       const latestVersion = results.items[0].upper;
@@ -143,6 +152,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
           currentItem.catalogEntry.packageTypes.indexOf("DotnetTool") !== -1);
 
         this.setState({
+          loading: false,
           package: {
             ...currentItem.catalogEntry,
             downloadUrl: currentItem.packageContent,
@@ -178,10 +188,14 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
   }
 
   public render() {
-    if (!this.state.package) {
-        return (
-          <div>...</div>
-        );
+    if (this.state.loading) {
+      return (
+        <div>...</div>
+      );
+    } else if (!this.state.package) {
+      return (
+        <div>Could not find package '{this.id}'.</div>
+      );
     } else {
       return (
         <div className="row display-package">
