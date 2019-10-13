@@ -73,30 +73,22 @@ class Dependencies extends React.Component<IDependenciesProps> {
   public render() {
     if (this.props.dependencyGroups.length === 0) {
       return (
-        <div>
-          <h3>Dependencies</h3>
-
-          <div>This package has no dependencies.</div>
-        </div>
+        <div>This package has no dependencies.</div>
       );
     }
 
     return (
-        <div>
-          <h3>Dependencies</h3>
+      <div className="dependency-groups">
+        {this.props.dependencyGroups.map(group => (
+          <div key={group.targetFramework}>
+            <h4>
+              <span>{group.targetFramework}</span>
+            </h4>
 
-          <div className="dependency-groups">
-            {this.props.dependencyGroups.map(group => (
-              <div key={group.targetFramework}>
-                <h4>
-                  <span>{group.targetFramework}</span>
-                </h4>
-
-                <PackageDependencies dependencies={group.dependencies} />
-              </div>
-            ))}
+            <PackageDependencies dependencies={group.dependencies} />
           </div>
-        </div>
+        ))}
+      </div>
     );
   }
 }

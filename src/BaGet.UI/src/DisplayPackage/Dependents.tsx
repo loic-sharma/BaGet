@@ -43,28 +43,18 @@ class Dependents extends React.Component<IDependentsProps, IDependentsState> {
   public render() {
     if (!this.state.data) {
       return (
-        <div>
-          <h3>Dependents</h3>
-
-          <div>...</div>
-        </div>
+        <div>...</div>
       );
     }
 
     if (this.state.totalHits === 0) {
       return (
-        <div>
-          <h3>Dependents</h3>
-
-          <div>No packages depend on {this.props.packageId}.</div>
-        </div>
+        <div>No packages depend on {this.props.packageId}.</div>
       );
     }
 
     return (
         <div>
-          <h3>Dependents</h3>
-
           <p>{this.state.totalHits} {this.state.totalHits === 1 ? 'package depends' : 'packages depend' } on {this.props.packageId}:</p>
           <div>
             <ul>

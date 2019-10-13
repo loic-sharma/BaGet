@@ -225,8 +225,22 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
               }
             })()}
 
-            <Dependents packageId={this.id} />
-            <Dependencies dependencyGroups={this.state.package.dependencyGroups} />
+            <DisplayPackageSection title="Dependents" expanded={false}>
+              <Dependents packageId={this.state.package.id} />
+            </DisplayPackageSection>
+
+            <DisplayPackageSection title="Dependencies" expanded={false}>
+              <Dependencies dependencyGroups={this.state.package.dependencyGroups} />
+            </DisplayPackageSection>
+
+            <DisplayPackageSection title="Versions">
+              {this.state.package.versions.map(value => (
+                <div key={value.version}>
+                  <span><Link to={`/packages/${this.state.package!.id}/${value.version}`}>{value.version}</Link>: </span>
+                  <span>{this.dateToString(value.date)}</span>
+                </div>
+              ))}
+            </DisplayPackageSection>
           </article>
           <aside className="col-sm-3 package-details-info">
             <div>
@@ -268,17 +282,6 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
             </div>
 
             <div>
-              <h2>Versions</h2>
-
-              {this.state.package.versions.map(value => (
-                <div key={value.version}>
-                  <span><Link to={`/packages/${this.state.package!.id}/${value.version}`}>{value.version}</Link>: </span>
-                  <span>{this.dateToString(value.date)}</span>
-                </div>
-              ))}
-            </div>
-
-            <div>
               <h1>Authors</h1>
 
               <p>{(!this.state.package.authors) ? 'Unknown' : this.state.package.authors}</p>
@@ -303,6 +306,58 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
       ? version
       : version.substring(0, buildMetadataStart);
   }
+}
+
+interface IDisplayPackageSectionProps {
+  title: string;
+  expanded?: boolean;
+}
+
+interface IDisplayPackageSectionState {
+  expanded: boolean;
+}
+
+class DisplayPackageSection extends React.Component<IDisplayPackageSectionProps, IDisplayPackageSectionState> {
+  constructor(props: IDisplayPackageSectionProps) {
+    super(props);
+
+    this.state = {
+      expanded: props.expanded !== undefined
+        ? props.expanded
+        : true
+    };
+  }
+
+  public render() {
+    if (this.state.expanded) {
+      return (
+        <div className="package-section">
+          <h2>
+            <button type="button" onClick={this.collapse} className="link-button">
+              <Icon iconName="ChevronDown" className="ms-Icon" />
+              <span>{this.props.title}</span>
+            </button>
+          </h2>
+
+          {this.props.children}
+        </div>
+      );
+    } else {
+      return (
+        <div className="package-section">
+          <h2>
+            <button type="button" onClick={this.expand} className="link-button">
+              <Icon iconName="ChevronRight" className="ms-Icon" />
+              <span>{this.props.title}</span>
+            </button>
+          </h2>
+        </div>
+      );
+    }
+  }
+
+  private collapse = () => this.setState({expanded: false});
+  private expand = () => this.setState({expanded: true});
 }
 
 export default DisplayPackage;
