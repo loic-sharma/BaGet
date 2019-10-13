@@ -217,8 +217,14 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     const url = this.buildUrl(query, includePrerelease, packageType, targetFramework);
 
     fetch(url, {signal: this.resultsController.signal}).then(response => {
-      return response.json();
+      return response.ok
+        ? response.json()
+        : null;
     }).then(resultsJson => {
+      if (!resultsJson) {
+        return;
+      }
+
       const results = resultsJson as ISearchResponse;
 
       this.setState({
@@ -226,6 +232,12 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         items: results.data,
         targetFramework,
       });
+    })
+    .catch((e) => {
+      var ex = e as DOMException;
+      if (!ex || ex.code !== DOMException.ABORT_ERR) {
+        console.log("Unexpected error on search", e);
+      }
     });
   }
 
