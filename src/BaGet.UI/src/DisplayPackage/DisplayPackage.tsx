@@ -47,8 +47,6 @@ interface IPackage {
   dependencyGroups: Registration.IDependencyGroup[];
 }
 
-
-
 interface IDisplayPackageState {
   loading: boolean;
   showAllVersions: boolean;
