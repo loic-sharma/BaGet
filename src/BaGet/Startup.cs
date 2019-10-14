@@ -1,6 +1,7 @@
 using System;
 using BaGet.Configuration;
 using BaGet.Core;
+using BaGet.Core.Server.Extensions;
 using BaGet.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -58,6 +59,7 @@ namespace BaGet
             app.UseSpaStaticFiles();
 
             app.UseCors(ConfigureCorsOptions.CorsPolicy);
+            app.UseOperationCancelledMiddleware();
 
             app.UseMvc(routes =>
             {
