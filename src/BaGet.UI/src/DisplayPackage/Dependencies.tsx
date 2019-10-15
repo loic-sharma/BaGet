@@ -14,10 +14,12 @@ interface IPackageDependenciesProps {
 
 class Dependencies extends React.Component<IDependenciesProps> {
 
-  static readonly netFrameworkRegex : RegExp = /net[0-9]{2,3}$/;
-  static readonly netCoreRegex : RegExp = /netcoreapp[0-9].[0-9]$/;
-  static readonly netStandardRegex : RegExp = /netstandard[0-9].[0-9]$/;
-  static readonly versionRangeRegex : RegExp = /\[[0-9](.[0-9])*, \)$/;
+  static readonly netFrameworkRegex = /^net[0-9]{2,3}$/;
+  static readonly netCoreRegex = /^netcoreapp[0-9].[0-9]$/;
+  static readonly netStandardRegex = /^netstandard[0-9].[0-9]$/;
+  static readonly semVerRegex = '(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?';
+
+  static readonly versionRangeRegex : RegExp = new RegExp(`^\\[${Dependencies.semVerRegex}, \\)$`);
 
   constructor(props: IDependenciesProps) {
     super(props);
