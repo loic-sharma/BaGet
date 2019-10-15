@@ -183,12 +183,14 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                     Latest version: {value.version}
                   </span>
                 </li>
-                <li>
-                  <span className="tags">
-                    <Icon iconName="Tag" className="ms-Icon" />
-                    {value.tags.join(' ')}
-                  </span>
-                </li>
+                {value.tags.length > 0 &&
+                  <li>
+                    <span className="tags">
+                      <Icon iconName="Tag" className="ms-Icon" />
+                      {value.tags.join(' ')}
+                    </span>
+                  </li>
+                }
               </ul>
               <div>
                 {value.description}
