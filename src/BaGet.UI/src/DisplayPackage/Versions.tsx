@@ -8,6 +8,7 @@ export interface IPackageVersion {
   version: string;
   downloads: number;
   date: Date;
+  selected: boolean;
 }
 
 interface IVersionsProps {
@@ -59,8 +60,12 @@ export class Versions extends React.Component<IVersionsProps, IVersionsState> {
   }
 
   private renderVersion = (packageVersion: IPackageVersion) => {
+    const className = packageVersion.selected
+      ? "bg-info"
+      : "";
+
     return (
-      <tr key={packageVersion.version}>
+      <tr key={packageVersion.version} className={className}>
         <td><Link to={`/packages/${this.props.packageId}/${packageVersion.version}`}>{packageVersion.version}</Link></td>
         <td>{packageVersion.downloads}</td>
         <td>{this.dateToString(packageVersion.date)}</td>
@@ -69,7 +74,7 @@ export class Versions extends React.Component<IVersionsProps, IVersionsState> {
   }
 
   private renderShowAllOrLessButton = () => {
-    if (this.props.versions.length < Versions.defaultVisible) {
+    if (this.props.versions.length <= Versions.defaultVisible) {
       return null;
     }
 

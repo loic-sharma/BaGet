@@ -126,14 +126,18 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
         if (!entry.catalogEntry.listed) continue;
 
         const normalizedVersion = this.normalizeVersion(entry.catalogEntry.version);
+        const isCurrent = !!this.version
+          ? normalizedVersion === this.version
+          : normalizedVersion === latestVersion;
+
         versions.push({
           date: new Date(entry.catalogEntry.published),
           downloads: entry.catalogEntry.downloads,
           version: normalizedVersion,
+          selected: isCurrent,
         });
 
-        if ((!currentItem && normalizedVersion === latestVersion) ||
-          (this.version && normalizedVersion === this.version)) {
+        if (isCurrent) {
           currentItem = entry;
         }
 
