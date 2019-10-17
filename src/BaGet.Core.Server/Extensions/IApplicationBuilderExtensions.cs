@@ -30,18 +30,26 @@ namespace BaGet.Core.Server.Extensions
                 }
             }
             SpaRootPath = SpaRootPath.TrimEnd('/');
+
             Console.WriteLine("BaGet is configured to be hosted under: " + (string.IsNullOrEmpty(pathBase) ? "/" : pathBase));
-            var indexContent = File.ReadAllText(SpaRootPath+"/index.html");
-            indexContent = indexContent.Replace("__BAGET_PATH_BASE_PLACEHOLDER__", pathBase);
-            File.WriteAllText(SpaRootPath+"/index.html", indexContent);
-            string[] files = Directory.GetFiles(SpaRootPath +"/static/js/");
-            
-            foreach(var file in files)
+            if (Directory.Exists(SpaRootPath))
             {
-                var content = File.ReadAllText(file);
-                //__BAGET_PLACEHOLDER_API_URL__
-                content = content.Replace("__BAGET_PATH_BASE_PLACEHOLDER__", pathBase).Replace("__BAGET_PLACEHOLDER_API_URL__", pathBase);
-                File.WriteAllText(file, content);
+                var indexContent = File.ReadAllText(SpaRootPath + "/index.html");
+                indexContent = indexContent.Replace("__BAGET_PATH_BASE_PLACEHOLDER__", pathBase);
+                File.WriteAllText(SpaRootPath + "/index.html", indexContent);
+                string[] files = Directory.GetFiles(SpaRootPath + "/static/js/");
+
+                foreach (var file in files)
+                {
+                    var content = File.ReadAllText(file);
+                    //__BAGET_PLACEHOLDER_API_URL__
+                    content = content.Replace("__BAGET_PATH_BASE_PLACEHOLDER__", pathBase).Replace("__BAGET_PLACEHOLDER_API_URL__", pathBase);
+                    File.WriteAllText(file, content);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Could not find React files");
             }
             return app;
         }
