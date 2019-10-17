@@ -54,7 +54,17 @@ namespace BaGet
                 }
             }
 
-            app.UsePathBase(options.PathBase);
+            //only rewrite the path values of react files in production
+            //in dev mode please change config.tsx and the package.json homepage value before building react
+            if (env.IsDevelopment())
+            {
+                app.UsePathBase(options.PathBase);
+            }
+            else
+            {
+                app.UsePathBase(options, "BaGet.UI/build");
+            }
+            
             app.UseForwardedHeaders();
             app.UseSpaStaticFiles();
 
