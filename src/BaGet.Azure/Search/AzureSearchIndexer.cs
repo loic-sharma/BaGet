@@ -43,7 +43,7 @@ namespace BaGet.Azure.Search
 
             foreach (var action in actions)
             {
-                await _batchIndexer.EnqueueIndexActionAsync(action, cancellationToken);
+                _batchIndexer.EnqueueAction(action);
             }
 
             await _batchIndexer.PushBatchesAsync(cancellationToken);
