@@ -36,32 +36,9 @@ namespace BaGet.Azure.Search
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public virtual bool TryEnqueueIndexAction(IndexAction<KeyedDocument> action)
+        public virtual void EnqueueAction(IndexAction<KeyedDocument> action)
         {
-            if (_pendingActions.Count > (MaxBatchSize * 2))
-            {
-                return false;
-            }
-
             _pendingActions.Enqueue(action);
-            return true;
-        }
-
-        public virtual async Task EnqueueIndexActionAsync(
-            IndexAction<KeyedDocument> action,
-            CancellationToken cancellationToken = default)
-        {
-            for (var attempt = 0; attempt < MaxEnqueueAttempts; attempt++)
-            {
-                if (TryEnqueueIndexAction(action)) return;
-
-                // Push pending batches of pending actions to Azure Search
-                // so that more actions can be enqueued.
-                await PushBatchesAsync(onlyFull: true, cancellationToken);
-            }
-
-            throw new InvalidOperationException(
-                $"Failed to enqueue index action after {MaxEnqueueAttempts} attempts");
         }
 
         public virtual async Task PushBatchesAsync(CancellationToken cancellationToken = default)
