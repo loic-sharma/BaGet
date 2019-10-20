@@ -7,12 +7,9 @@ namespace BaGet.Azure.Search
 {
     // See: https://docs.microsoft.com/en-us/nuget/api/search-query-service-resource#search-for-packages
     [SerializePropertyNamesAsCamelCase]
-    public class PackageDocument
+    public class PackageDocument : KeyedDocument
     {
         public const string IndexName = "packages";
-
-        [Key]
-        public string Key { get; set; }
 
         [IsSearchable, IsFilterable, IsSortable]
         public string Id { get; set; }
@@ -66,5 +63,17 @@ namespace BaGet.Azure.Search
 
         [IsFilterable]
         public string SearchFilters { get; set; }
+    }
+
+    [SerializePropertyNamesAsCamelCase]
+    public class KeyedDocument : IKeyedDocument
+    {
+        [Key]
+        public string Key { get; set; }
+    }
+
+    public interface IKeyedDocument
+    {
+        string Key { get; set; }
     }
 }

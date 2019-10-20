@@ -74,8 +74,9 @@ namespace BaGet.Azure.Extensions
 
         public static IServiceCollection AddAzureSearch(this IServiceCollection services)
         {
-            services.AddTransient<BatchIndexer>();
+            services.AddTransient<AzureSearchBatchIndexer>();
             services.AddTransient<AzureSearchService>();
+            services.AddTransient<AzureSearchIndexer>();
 
             services.AddSingleton(provider =>
             {

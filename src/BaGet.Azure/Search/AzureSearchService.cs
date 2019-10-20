@@ -16,26 +16,18 @@ namespace BaGet.Azure.Search
 
     public class AzureSearchService : ISearchService
     {
-        private readonly BatchIndexer _indexer;
         private readonly SearchIndexClient _searchClient;
         private readonly IUrlGenerator _url;
         private readonly IFrameworkCompatibilityService _frameworks;
 
         public AzureSearchService(
-            BatchIndexer indexer,
             SearchIndexClient searchClient,
             IUrlGenerator url,
             IFrameworkCompatibilityService frameworks)
         {
-            _indexer = indexer ?? throw new ArgumentNullException(nameof(indexer));
             _searchClient = searchClient ?? throw new ArgumentNullException(nameof(searchClient));
             _url = url ?? throw new ArgumentNullException(nameof(url));
             _frameworks = frameworks ?? throw new ArgumentNullException(nameof(frameworks));
-        }
-
-        public async Task IndexAsync(Package package, CancellationToken cancellationToken)
-        {
-            await _indexer.IndexAsync(package.Id);
         }
 
         public async Task<SearchResponse> SearchAsync(

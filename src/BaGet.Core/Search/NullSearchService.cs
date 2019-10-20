@@ -55,11 +55,6 @@ namespace BaGet.Core
             return EmptyDependentsResponseTask;
         }
 
-        public Task IndexAsync(Package package, CancellationToken cancellationToken = default)
-        {
-            return Task.CompletedTask;
-        }
-
         public Task<SearchResponse> SearchAsync(
             string query = null,
             int skip = 0,
