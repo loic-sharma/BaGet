@@ -77,6 +77,7 @@ namespace BaGet.Azure.Extensions
             services.AddTransient<AzureSearchBatchIndexer>();
             services.AddTransient<AzureSearchService>();
             services.AddTransient<AzureSearchIndexer>();
+            services.AddTransient<IndexActionBuilder>();
 
             services.AddSingleton(provider =>
             {

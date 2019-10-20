@@ -51,23 +51,17 @@ namespace BaGet.Azure.Search
             IndexAction<KeyedDocument> action,
             CancellationToken cancellationToken = default)
         {
-            var attempts = 0;
-            while (true)
+            for (var attempt = 0; attempt < MaxEnqueueAttempts; attempt++)
             {
-                if (TryEnqueueIndexAction(action))
-                {
-                    break;
-                }
+                if (TryEnqueueIndexAction(action)) return;
 
-                attempts++;
-                if (attempts >= MaxEnqueueAttempts)
-                {
-                    throw new InvalidOperationException(
-                        $"Failed to enqueue index action after {MaxEnqueueAttempts} attempts");
-                }
-
+                // Push pending batches of pending actions to Azure Search
+                // so that more actions can be enqueued.
                 await PushBatchesAsync(onlyFull: true, cancellationToken);
             }
+
+            throw new InvalidOperationException(
+                $"Failed to enqueue index action after {MaxEnqueueAttempts} attempts");
         }
 
         public virtual async Task PushBatchesAsync(CancellationToken cancellationToken = default)
