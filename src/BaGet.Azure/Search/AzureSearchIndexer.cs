@@ -41,12 +41,7 @@ namespace BaGet.Azure.Search
                 package.Id,
                 packages));
 
-            foreach (var action in actions)
-            {
-                _batchIndexer.EnqueueAction(action);
-            }
-
-            await _batchIndexer.PushBatchesAsync(cancellationToken);
+            await _batchIndexer.IndexAsync(actions, cancellationToken);
         }
     }
 }

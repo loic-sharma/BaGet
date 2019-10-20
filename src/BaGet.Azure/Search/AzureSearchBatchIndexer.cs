@@ -18,10 +18,8 @@ namespace BaGet.Azure.Search
         /// Azure Search accepts batches of up to 1000 documents.
         /// </summary>
         private const int MaxBatchSize = 1000;
-        private const int MaxEnqueueAttempts = 5;
 
         private readonly ISearchIndexClient _indexClient;
-        private readonly ConcurrentQueue<IndexAction<KeyedDocument>> _pendingActions;
         private readonly ILogger<AzureSearchBatchIndexer> _logger;
 
         public AzureSearchBatchIndexer(
@@ -31,41 +29,27 @@ namespace BaGet.Azure.Search
             if (searchClient == null) throw new ArgumentNullException(nameof(searchClient));
 
             _indexClient = searchClient.Indexes.GetClient(PackageDocument.IndexName);
-            _pendingActions = new ConcurrentQueue<IndexAction<KeyedDocument>>();
-
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public virtual void EnqueueAction(IndexAction<KeyedDocument> action)
+        public async Task IndexAsync(
+            IReadOnlyList<IndexAction<KeyedDocument>> batch,
+            CancellationToken cancellationToken)
         {
-            _pendingActions.Enqueue(action);
-        }
-
-        public virtual async Task PushBatchesAsync(CancellationToken cancellationToken = default)
-        {
-            await PushBatchesAsync(onlyFull: false, cancellationToken);
-        }
-
-        public virtual async Task PushBatchesAsync(
-            bool onlyFull,
-            CancellationToken cancellationToken = default)
-        {
-            while ((onlyFull && _pendingActions.Count >= MaxBatchSize)
-                || (!onlyFull && _pendingActions.Count > 0))
+            if (batch.Count < MaxBatchSize)
             {
-                var batch = new List<IndexAction<KeyedDocument>>();
+                await IndexBatchAsync(batch, cancellationToken);
+                return;
+            }
 
-                while (batch.Count < MaxBatchSize
-                    && _pendingActions.TryDequeue(out var pendingAction))
-                {
-                    batch.Add(pendingAction);
-                }
-
-                await PushBatchAsync(batch, cancellationToken);
+            for (var i = 0; i < batch.Count; i += MaxBatchSize)
+            {
+                var batchSegment = batch.Skip(i).Take(MaxBatchSize).ToList();
+                await IndexBatchAsync(batchSegment, cancellationToken);
             }
         }
 
-        private async Task PushBatchAsync(
+        private async Task IndexBatchAsync(
             IReadOnlyList<IndexAction<KeyedDocument>> batch,
             CancellationToken cancellationToken)
         {
@@ -102,8 +86,8 @@ namespace BaGet.Azure.Search
                     halfA.Count,
                     halfB.Count);
 
-                await PushBatchAsync(halfA, cancellationToken);
-                await PushBatchAsync(halfB, cancellationToken);
+                await IndexAsync(halfA, cancellationToken);
+                await IndexAsync(halfB, cancellationToken);
             }
 
             if (indexingResults != null && indexingResults.Any(result => !result.Succeeded))
