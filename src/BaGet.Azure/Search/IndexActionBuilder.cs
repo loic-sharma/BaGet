@@ -9,8 +9,21 @@ namespace BaGet.Azure.Search
 {
     public class IndexActionBuilder
     {
-        public virtual IReadOnlyList<IndexAction<KeyedDocument>> BuildActions(
+        public virtual IReadOnlyList<IndexAction<KeyedDocument>> AddPackage(
             PackageRegistration registration)
+        {
+            return AddOrUpdatePackage(registration, isUpdate: false);
+        }
+
+        public virtual IReadOnlyList<IndexAction<KeyedDocument>> UpdatePackage(
+            PackageRegistration registration)
+        {
+            return AddOrUpdatePackage(registration, isUpdate: true);
+        }
+
+        public virtual IReadOnlyList<IndexAction<KeyedDocument>> AddOrUpdatePackage(
+            PackageRegistration registration,
+            bool isUpdate)
         {
             var encodedId = EncodePackageId(registration.PackageId.ToLowerInvariant());
             var result = new List<IndexAction<KeyedDocument>>();
@@ -37,13 +50,16 @@ namespace BaGet.Azure.Search
                 var versions = filtered.OrderBy(p => p.Version).ToList();
                 if (versions.Count == 0)
                 {
-                    var action = IndexAction.Delete(
-                        new KeyedDocument
-                        {
-                            Key = documentKey
-                        });
+                    if (isUpdate)
+                    {
+                        var action = IndexAction.Delete(
+                            new KeyedDocument
+                            {
+                                Key = documentKey
+                            });
 
-                    result.Add(action);
+                        result.Add(action);
+                    }
 
                     continue;
                 }
@@ -79,7 +95,10 @@ namespace BaGet.Azure.Search
                 document.Frameworks = latest.TargetFrameworks.Select(f => f.Moniker.ToLowerInvariant()).ToArray();
                 document.SearchFilters = searchFilters.ToString();
 
-                result.Add(IndexAction.MergeOrUpload<KeyedDocument>(document));
+                result.Add(
+                    isUpdate
+                        ? IndexAction.MergeOrUpload<KeyedDocument>(document)
+                        : IndexAction.Upload<KeyedDocument>(document));
             }
 
             return result;

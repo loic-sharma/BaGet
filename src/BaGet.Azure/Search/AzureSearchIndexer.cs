@@ -36,7 +36,7 @@ namespace BaGet.Azure.Search
                 throw new ArgumentException($"Package '{package.Id}' does not exist", nameof(package));
             }
 
-            var actions = _actionBuilder.BuildActions(
+            var actions = _actionBuilder.UpdatePackage(
                 new PackageRegistration(
                 package.Id,
                 packages));
