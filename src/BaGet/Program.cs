@@ -48,6 +48,7 @@ namespace BaGet
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+                .UseSentry()
                 .UseKestrel(options =>
                 {
                     // Remove the upload limit from Kestrel. If needed, an upload limit can
