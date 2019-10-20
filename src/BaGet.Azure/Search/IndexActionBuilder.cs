@@ -21,7 +21,7 @@ namespace BaGet.Azure.Search
             return AddOrUpdatePackage(registration, isUpdate: true);
         }
 
-        public virtual IReadOnlyList<IndexAction<KeyedDocument>> AddOrUpdatePackage(
+        private IReadOnlyList<IndexAction<KeyedDocument>> AddOrUpdatePackage(
             PackageRegistration registration,
             bool isUpdate)
         {
