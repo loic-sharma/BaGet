@@ -29,13 +29,6 @@ namespace BaGet.Azure.Search
         {
             var packages = await _packages.FindAsync(package.Id, includeUnlisted: false);
 
-            if (packages.Count == 0)
-            {
-                _logger.LogError("Could not find package with id {PackageId}", package.Id);
-
-                throw new ArgumentException($"Package '{package.Id}' does not exist", nameof(package));
-            }
-
             var actions = _actionBuilder.UpdatePackage(
                 new PackageRegistration(
                 package.Id,
