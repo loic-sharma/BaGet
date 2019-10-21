@@ -35,23 +35,13 @@ namespace BaGet.Azure.Search
             IReadOnlyList<IndexAction<KeyedDocument>> batch,
             CancellationToken cancellationToken)
         {
-            if (batch.Count < MaxBatchSize)
+            if (batch.Count > MaxBatchSize)
             {
-                await IndexBatchAsync(batch, cancellationToken);
-                return;
+                throw new ArgumentException(
+                    $"Batch cannot have more than {MaxBatchSize} elements",
+                    nameof(batch));
             }
 
-            for (var i = 0; i < batch.Count; i += MaxBatchSize)
-            {
-                var batchSegment = batch.Skip(i).Take(MaxBatchSize).ToList();
-                await IndexBatchAsync(batchSegment, cancellationToken);
-            }
-        }
-
-        private async Task IndexBatchAsync(
-            IReadOnlyList<IndexAction<KeyedDocument>> batch,
-            CancellationToken cancellationToken)
-        {
             IList<IndexingResult> indexingResults = null;
             Exception innerException = null;
 
