@@ -35,7 +35,7 @@ namespace BaGet.Azure.Search
                 var searchFilters = (SearchFilters)i;
 
                 var documentKey = $"{encodedId}-{searchFilters}";
-                IEnumerable<Package> filtered = registration.Packages;
+                var filtered = registration.Packages.Where(p => p.Listed);
 
                 if (!includePrerelease)
                 {

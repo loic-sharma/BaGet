@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -17,7 +16,7 @@ namespace BaGet.Azure.Search
         /// <summary>
         /// Azure Search accepts batches of up to 1000 documents.
         /// </summary>
-        private const int MaxBatchSize = 1000;
+        public const int MaxBatchSize = 1000;
 
         private readonly ISearchIndexClient _indexClient;
         private readonly ILogger<AzureSearchBatchIndexer> _logger;
