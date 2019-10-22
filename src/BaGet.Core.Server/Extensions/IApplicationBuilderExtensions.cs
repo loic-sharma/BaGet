@@ -13,6 +13,7 @@ namespace BaGet.Core.Server.Extensions
             return app.UseMiddleware<OperationCancelledMiddleware>();
         }
 
+        /*
         public static IApplicationBuilder UsePathBase(this IApplicationBuilder app, BaGetOptions options, string SpaRootPath)
         {
             
@@ -53,5 +54,6 @@ namespace BaGet.Core.Server.Extensions
             }
             return app;
         }
+        */
     }
 }

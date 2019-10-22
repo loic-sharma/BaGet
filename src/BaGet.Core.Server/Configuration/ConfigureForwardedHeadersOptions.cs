@@ -1,28 +1,33 @@
+using System;
+using System.Collections.Generic;
 using BaGet.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
+
 
 namespace BaGet.Configuration
 {
     public class ConfigureForwardedHeadersOptions : IConfigureOptions<ForwardedHeadersOptions>
     {
-        private BaGetOptions bagetOptions;
-        public ConfigureForwardedHeadersOptions(IOptions<BaGetOptions> bagetOptions)
+        private IOptions<BaGetOptions> _options;
+        private ILogger<ConfigureForwardedHeadersOptions> _logger;
+        public ConfigureForwardedHeadersOptions(IOptions<BaGetOptions> bagetOptions, ILogger<ConfigureForwardedHeadersOptions> logger)
         {
-            this.bagetOptions = bagetOptions.Value;
+            _options = bagetOptions;
+            _logger = logger;
         }
 
         public void Configure(ForwardedHeadersOptions options)
         {
-            if (!string.IsNullOrEmpty(bagetOptions.HostUrl))
+            if (!string.IsNullOrEmpty(_options.Value.HostUrl))
             {
-                Console.WriteLine("Host Url: " + bagetOptions.HostUrl);
+                _logger.LogDebug("Host Url: " + _options.Value.HostUrl);
                 options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost;
-                options.AllowedHosts = new List<string>() { bagetOptions.HostUrl};
-            }else
+                options.AllowedHosts = new List<string>() { _options.Value.HostUrl};
+            }
+            else
             {
                 options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             }
