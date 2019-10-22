@@ -8,7 +8,6 @@ import App from './App';
 
 import DisplayPackage from './DisplayPackage/DisplayPackage';
 import Upload from './Upload';
-import createBrowserHistory from 'history/createBrowserHistory';
 
 import './index.css';
 
