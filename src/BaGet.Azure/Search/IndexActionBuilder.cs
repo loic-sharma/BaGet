@@ -114,18 +114,4 @@ namespace BaGet.Azure.Search
             return base64.Replace('+', '-').Replace('/', '_');
         }
     }
-
-    public class PackageRegistration
-    {
-        public PackageRegistration(
-            string packageId,
-            IReadOnlyList<Package> packages)
-        {
-            PackageId = packageId ?? throw new ArgumentNullException(nameof(packageId));
-            Packages = packages ?? throw new ArgumentNullException(nameof(packages));
-        }
-
-        public string PackageId { get; }
-        public IReadOnlyList<Package> Packages { get; }
-    }
 }
