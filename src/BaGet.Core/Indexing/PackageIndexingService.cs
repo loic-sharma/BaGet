@@ -12,14 +12,14 @@ namespace BaGet.Core
     {
         private readonly IPackageService _packages;
         private readonly IPackageStorageService _storage;
-        private readonly ISearchService _search;
+        private readonly ISearchIndexer _search;
         private readonly IOptionsSnapshot<BaGetOptions> _options;
         private readonly ILogger<PackageIndexingService> _logger;
 
         public PackageIndexingService(
             IPackageService packages,
             IPackageStorageService storage,
-            ISearchService search,
+            ISearchIndexer search,
             IOptionsSnapshot<BaGetOptions> options,
             ILogger<PackageIndexingService> logger)
         {

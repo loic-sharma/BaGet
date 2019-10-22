@@ -263,8 +263,28 @@ namespace BaGet.Extensions
                 }
             });
 
+            services.AddTransient<ISearchIndexer>(provider =>
+            {
+                var searchOptions = provider.GetRequiredService<IOptionsSnapshot<SearchOptions>>();
+
+                switch (searchOptions.Value.Type)
+                {
+                    case SearchType.Null:
+                    case SearchType.Database:
+                        return provider.GetRequiredService<NullSearchIndexer>();
+
+                    case SearchType.Azure:
+                        return provider.GetRequiredService<AzureSearchIndexer>();
+
+                    default:
+                        throw new InvalidOperationException(
+                            $"Unsupported search service: {searchOptions.Value.Type}");
+                }
+            });
+
             services.AddTransient<DatabaseSearchService>();
             services.AddSingleton<NullSearchService>();
+            services.AddSingleton<NullSearchIndexer>();
             services.AddAzureSearch();
             services.AddAzureTableSearch();
 
