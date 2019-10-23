@@ -15,12 +15,13 @@ namespace BaGet.Core.Server.FileProvider
     {
 
         private readonly IServiceProvider _serviceProvider;
-        private ILogger<BaGetStaticFileProvider> logger;
+        private ILogger<BaGetStaticFileProvider> _logger;
         private IFileProvider _fileProvider;
-        public BaGetStaticFileProvider(IServiceProvider serviceProvider, string RootPath)
+        public BaGetStaticFileProvider(IServiceProvider serviceProvider, string RootPath, ILogger<BaGetStaticFileProvider> logger)
         {
             _serviceProvider = serviceProvider;
             ConfigureRootPath(RootPath);
+            _logger = logger;
         }
 
         public void ConfigureRootPath(string RootPath)
@@ -35,11 +36,11 @@ namespace BaGet.Core.Server.FileProvider
             {
                 if (env.IsDevelopment())
                 {
-                    logger.LogWarning("It seems like you are in Development environment.\nIf you want to Test with static files please adjust the root path e.g. ../BaGet.UI/build");
+                    _logger.LogWarning("It seems like you are in Development environment.\nIf you want to Test with static files please adjust the root path e.g. ../BaGet.UI/build");
                 }
                 else
                 {
-                    logger.LogError($"Please verify that {combinedRootPath} exists.");
+                    _logger.LogError($"Please verify that {combinedRootPath} exists.");
                     throw e;
                 }
             }

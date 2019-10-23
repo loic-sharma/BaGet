@@ -3,6 +3,7 @@ using BaGet.Configuration;
 using BaGet.Core.Server.FileProvider;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.StaticFiles;
@@ -40,16 +41,20 @@ namespace BaGet.Core.Server.Extensions
             return services;
         }
 
-        public static IServiceCollection AddBagetSpaStatics(this IServiceCollection services, string RootPath)
+        public static IServiceCollection AddBagetSpaStatics(this IServiceCollection services)
         {
-            if(string.IsNullOrEmpty(RootPath))
-            {
-                throw new ArgumentException("The RootPath for BaGet UI files must not be emtpy");
-            }
-            else
-            {
-                services.AddSingleton<ISpaStaticFileProvider>(serviceProvider => new BaGetStaticFileProvider(serviceProvider, RootPath));
-            }
+           
+                services.AddSingleton<ISpaStaticFileProvider>(serviceProvider => {
+
+                    var env = serviceProvider.GetRequiredService<IHostingEnvironment>();
+                    var RootPath = "BaGet.UI/build";
+                    if(env.IsDevelopment())
+                    {
+                        RootPath = "../" + RootPath;
+                    }
+
+                    return new BaGetStaticFileProvider(serviceProvider, RootPath, serviceProvider.GetRequiredService<ILogger<BaGetStaticFileProvider>>());
+                    });
             
             return services;
         }

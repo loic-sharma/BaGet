@@ -89,7 +89,7 @@ namespace BaGet.Extensions
             services.AddStorageProviders();
             services.AddSearchProviders();
             services.AddAuthenticationProviders();
-            services.AddBagetSpaStatics("../BaGet.UI/build");
+            services.AddBagetSpaStatics();
             return services;
         }
 
