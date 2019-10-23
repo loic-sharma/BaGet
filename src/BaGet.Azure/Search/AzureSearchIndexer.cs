@@ -31,8 +31,8 @@ namespace BaGet.Azure.Search
 
             var actions = _actionBuilder.UpdatePackage(
                 new PackageRegistration(
-                package.Id,
-                packages));
+                    package.Id,
+                    packages));
 
             await _batchIndexer.IndexAsync(actions, cancellationToken);
         }

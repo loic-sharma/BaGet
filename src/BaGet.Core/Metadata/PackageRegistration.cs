@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using BaGet.Core;
 
-namespace BaGet.Azure.Search
+namespace BaGet.Core
 {
     /// <summary>
     /// The information on all versions of a package.

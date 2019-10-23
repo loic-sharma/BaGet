@@ -57,25 +57,7 @@ namespace BaGet.Core
                 return null;
             }
 
-            var upstreamPackages = items.Select(ToPackage);
-
-            // Return the upstream packages if there are no local packages matching the package id.
-            var localPackages = await _localPackages.FindAsync(id, includeUnlisted: true);
-            if (!localPackages.Any())
-            {
-                return upstreamPackages.ToList();
-            }
-
-            // Otherwise, merge the local packages into the upstream packages.
-            var result = upstreamPackages.ToDictionary(p => new PackageIdentity(p.Id, p.Version));
-            var local = localPackages.ToDictionary(p => new PackageIdentity(p.Id, p.Version));
-
-            foreach (var localPackage in local)
-            {
-                result[localPackage.Key] = localPackage.Value;
-            }
-
-            return result.Values.ToList();
+            return items.Select(ToPackage).ToList();
         }
 
         public async Task MirrorAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
