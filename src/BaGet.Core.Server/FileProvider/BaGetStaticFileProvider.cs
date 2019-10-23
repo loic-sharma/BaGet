@@ -20,8 +20,9 @@ namespace BaGet.Core.Server.FileProvider
         public BaGetStaticFileProvider(IServiceProvider serviceProvider, string RootPath, ILogger<BaGetStaticFileProvider> logger)
         {
             _serviceProvider = serviceProvider;
-            ConfigureRootPath(RootPath);
             _logger = logger;
+            ConfigureRootPath(RootPath);
+            
         }
 
         public void ConfigureRootPath(string RootPath)
@@ -41,7 +42,7 @@ namespace BaGet.Core.Server.FileProvider
                 else
                 {
                     _logger.LogError($"Please verify that {combinedRootPath} exists.");
-                    throw e;
+                    _logger.LogError("UI Files not found. This results in a not working UI");
                 }
             }
         }
