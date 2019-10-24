@@ -1,84 +1,50 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using BaGet.Protocol.Models;
-using NuGet.Versioning;
 
 namespace BaGet.Core
 {
-    /// <inheritdoc />
-    public class DatabasePackageMetadataService : IPackageMetadataService
+    public class RegistrationBuilder
     {
-        private readonly IMirrorService _mirror;
-        private readonly IPackageService _packages;
         private readonly IUrlGenerator _url;
 
-        public DatabasePackageMetadataService(IMirrorService mirror, IPackageService packages, IUrlGenerator url)
+        public RegistrationBuilder(IUrlGenerator url)
         {
-            _mirror = mirror ?? throw new ArgumentNullException(nameof(mirror));
-            _packages = packages ?? throw new ArgumentNullException(nameof(packages));
             _url = url ?? throw new ArgumentNullException(nameof(url));
         }
 
-        public async Task<BaGetRegistrationIndexResponse> GetRegistrationIndexOrNullAsync(
-            string id,
-            CancellationToken cancellationToken = default)
+        public virtual BaGetRegistrationIndexResponse BuildIndex(PackageRegistration registration)
         {
-            // Find the packages that match the given package id from the upstream, if
-            // one is configured. If these packages cannot be found on the upstream,
-            // we'll return the local packages instead.
-            var packages = await _mirror.FindPackagesOrNullAsync(id, cancellationToken);
-
-            if (packages == null)
-            {
-                packages = await _packages.FindAsync(id, includeUnlisted: true);
-            }
-
-            if (!packages.Any())
-            {
-                return null;
-            }
-
-            var versions = packages.Select(p => p.Version).ToList();
+            var versions = registration.Packages.Select(p => p.Version).ToList();
 
             // TODO: Paging of registration items.
             // "Un-paged" example: https://api.nuget.org/v3/registration3/newtonsoft.json/index.json
             // Paged example: https://api.nuget.org/v3/registration3/fake/index.json
             return new BaGetRegistrationIndexResponse
             {
-                RegistrationIndexUrl = _url.GetRegistrationIndexUrl(id),
+                RegistrationIndexUrl = _url.GetRegistrationIndexUrl(registration.PackageId),
                 Type = RegistrationIndexResponse.DefaultType,
                 Count = 1,
-                TotalDownloads = packages.Sum(p => p.Downloads),
+                TotalDownloads = registration.Packages.Sum(p => p.Downloads),
                 Pages = new[]
                 {
                     new RegistrationIndexPage
                     {
-                        RegistrationPageUrl = _url.GetRegistrationIndexUrl(packages.First().Id),
-                        Count = packages.Count(),
+                        RegistrationPageUrl = _url.GetRegistrationIndexUrl(registration.PackageId),
+                        Count = registration.Packages.Count(),
                         Lower = versions.Min().ToNormalizedString().ToLowerInvariant(),
                         Upper = versions.Max().ToNormalizedString().ToLowerInvariant(),
-                        ItemsOrNull = packages.Select(ToRegistrationIndexPageItem).ToList(),
+                        ItemsOrNull = registration.Packages.Select(ToRegistrationIndexPageItem).ToList(),
                     }
                 }
             };
         }
 
-        public async Task<BaGetRegistrationLeafResponse> GetRegistrationLeafOrNullAsync(
-            string id,
-            NuGetVersion version,
-            CancellationToken cancellationToken = default)
+        public virtual BaGetRegistrationLeafResponse BuildLeaf(Package package)
         {
-            // Allow read-through caching to happen if it is configured.
-            await _mirror.MirrorAsync(id, version, cancellationToken);
-
-            var package = await _packages.FindOrNullAsync(id, version, includeUnlisted: true, cancellationToken);
-            if (package == null)
-            {
-                return null;
-            }
+            var id = package.Id;
+            var version = package.Version;
 
             return new BaGetRegistrationLeafResponse
             {

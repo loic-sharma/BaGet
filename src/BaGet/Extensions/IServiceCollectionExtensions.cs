@@ -81,9 +81,10 @@ namespace BaGet.Extensions
             services.AddTransient<IPackageDeletionService, PackageDeletionService>();
             services.AddTransient<ISymbolIndexingService, SymbolIndexingService>();
             services.AddTransient<IServiceIndexService, BaGetServiceIndex>();
-            services.AddTransient<IPackageContentService, DatabasePackageContentService>();
-            services.AddTransient<IPackageMetadataService, DatabasePackageMetadataService>();
+            services.AddTransient<IPackageContentService, DefaultPackageContentService>();
+            services.AddTransient<IPackageMetadataService, DefaultPackageMetadataService>();
             services.AddSingleton<IFrameworkCompatibilityService, FrameworkCompatibilityService>();
+            services.AddSingleton<RegistrationBuilder>();
             services.AddMirrorServices();
 
             services.AddStorageProviders();

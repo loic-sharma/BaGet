@@ -13,13 +13,13 @@ namespace BaGet.Core.Content
     /// Tracks state in a database (<see cref="IPackageService"/>) and stores packages
     /// using <see cref="IPackageStorageService"/>.
     /// </summary>
-    public class DatabasePackageContentService : IPackageContentService
+    public class DefaultPackageContentService : IPackageContentService
     {
         private readonly IMirrorService _mirror;
         private readonly IPackageService _packages;
         private readonly IPackageStorageService _storage;
 
-        public DatabasePackageContentService(
+        public DefaultPackageContentService(
             IMirrorService mirror,
             IPackageService packages,
             IPackageStorageService storage)
