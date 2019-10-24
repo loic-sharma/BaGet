@@ -122,8 +122,8 @@ namespace BaGet.Protocol.Models
         /// <summary>
         /// If true, the package requires its license to be accepted.
         /// </summary>
-        [JsonProperty("requireLicenseAgreement")]
-        public bool? RequireLicenseAgreement { get; set; }
+        [JsonProperty("requireLicenseAcceptance")]
+        public bool? RequireLicenseAcceptance { get; set; }
 
         /// <summary>
         /// The package's summary.
