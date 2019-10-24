@@ -84,6 +84,7 @@ namespace BaGet.Extensions
             services.AddTransient<IPackageContentService, DefaultPackageContentService>();
             services.AddTransient<IPackageMetadataService, DefaultPackageMetadataService>();
             services.AddSingleton<IFrameworkCompatibilityService, FrameworkCompatibilityService>();
+            services.AddSingleton<RegistrationBuilder>();
             services.AddMirrorServices();
 
             services.AddStorageProviders();
