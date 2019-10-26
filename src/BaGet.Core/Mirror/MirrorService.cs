@@ -17,13 +17,13 @@ namespace BaGet.Core
     {
         private readonly IPackageService _localPackages;
         private readonly NuGetClient _upstreamClient;
-        private readonly IPackageIndexingService _indexer;
+        private readonly PackageIndexingService _indexer;
         private readonly ILogger<MirrorService> _logger;
 
         public MirrorService(
             IPackageService localPackages,
             NuGetClient upstreamClient,
-            IPackageIndexingService indexer,
+            PackageIndexingService indexer,
             ILogger<MirrorService> logger)
         {
             _localPackages = localPackages ?? throw new ArgumentNullException(nameof(localPackages));

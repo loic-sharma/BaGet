@@ -17,12 +17,12 @@ namespace BaGet.Core.Content
     {
         private readonly IMirrorService _mirror;
         private readonly IPackageService _packages;
-        private readonly IPackageStorageService _storage;
+        private readonly PackageStorageService _storage;
 
         public PackageContentService(
             IMirrorService mirror,
             IPackageService packages,
-            IPackageStorageService storage)
+            PackageStorageService storage)
         {
             _mirror = mirror ?? throw new ArgumentNullException(nameof(mirror));
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));
@@ -36,11 +36,11 @@ namespace BaGet.Core.Content
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The package's versions, or null if the package does not exist.</returns>
         public virtual async Task<PackageVersionsResponse> GetPackageVersionsOrNullAsync(
-            string id,
+            string packageId,
             CancellationToken cancellationToken = default)
         {
             // First, attempt to find all package versions using the upstream source.
-            var versions = await _mirror.FindPackageVersionsOrNullAsync(id, cancellationToken);
+            var versions = await _mirror.FindPackageVersionsOrNullAsync(packageId, cancellationToken);
 
             if (versions == null)
             {
@@ -74,19 +74,19 @@ namespace BaGet.Core.Content
         /// The package's content stream, or null if the package does not exist. The stream may not be seekable.
         /// </returns>
         public virtual async Task<Stream> GetPackageContentStreamOrNullAsync(
-            string id,
-            NuGetVersion version,
+            string packageId,
+            NuGetVersion packageVersion,
             CancellationToken cancellationToken = default)
         {
             // Allow read-through caching if it is configured.
-            await _mirror.MirrorAsync(id, version, cancellationToken);
+            await _mirror.MirrorAsync(packageId, packageVersion, cancellationToken);
 
             if (!await _packages.AddDownloadAsync(id, version, cancellationToken))
             {
                 return null;
             }
 
-            return await _storage.GetPackageStreamAsync(id, version, cancellationToken);
+            return await _storage.GetPackageStreamAsync(packageId, packageVersion, cancellationToken);
         }
         /// <summary>
         /// Download a package's manifest (nuspec), or null if the package does not exist.
@@ -98,39 +98,39 @@ namespace BaGet.Core.Content
         /// <returns>
         /// The package's manifest stream, or null if the package does not exist. The stream may not be seekable.
         /// </returns>
-        public virtual async Task<Stream> GetPackageManifestStreamOrNullAsync(string id, NuGetVersion version, CancellationToken cancellationToken = default)
+        public virtual async Task<Stream> GetPackageManifestStreamOrNullAsync(string packageId, NuGetVersion packageVersion, CancellationToken cancellationToken = default)
         {
             // Allow read-through caching if it is configured.
-            await _mirror.MirrorAsync(id, version, cancellationToken);
+            await _mirror.MirrorAsync(packageId, packageVersion, cancellationToken);
 
             if (!await _packages.ExistsAsync(id, version, cancellationToken))
             {
                 return null;
             }
 
-            return await _storage.GetNuspecStreamAsync(id, version, cancellationToken);
+            return await _storage.GetNuspecStreamAsync(packageId, packageVersion, cancellationToken);
         }
         /// <summary>
         /// Download a package's readme, or null if the package or readme does not exist.
         /// </summary>
-        /// <param name="id">The package id.</param>
-        /// <param name="version">The package's version.</param>
+        /// <param name="packageId">The package id.</param>
+        /// <param name="packageVersion">The package's version.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>
         /// The package's readme stream, or null if the package or readme does not exist. The stream may not be seekable.
         /// </returns>
-        public virtual async Task<Stream> GetPackageReadmeStreamOrNullAsync(string id, NuGetVersion version, CancellationToken cancellationToken = default)
+        public virtual async Task<Stream> GetPackageReadmeStreamOrNullAsync(string packageId, NuGetVersion packageVersion, CancellationToken cancellationToken = default)
         {
             // Allow read-through caching if it is configured.
-            await _mirror.MirrorAsync(id, version, cancellationToken);
+            await _mirror.MirrorAsync(packageId, packageVersion, cancellationToken);
 
-            var package = await _packages.FindOrNullAsync(id, version, includeUnlisted: true, cancellationToken);
+            var package = await _packages.FindOrNullAsync(packageId, packageVersion, includeUnlisted: true, cancellationToken);
             if (!package.HasReadme)
             {
                 return null;
             }
 
-            return await _storage.GetReadmeStreamAsync(id, version, cancellationToken);
+            return await _storage.GetReadmeStreamAsync(packageId, packageVersion, cancellationToken);
         }
     }
 }

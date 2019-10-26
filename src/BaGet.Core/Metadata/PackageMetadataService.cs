@@ -58,14 +58,14 @@ namespace BaGet.Core
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The registration leaf, or null if the package does not exist.</returns>
         public virtual async Task<BaGetRegistrationLeafResponse> GetRegistrationLeafOrNullAsync(
-            string id,
-            NuGetVersion version,
+            string packageId,
+            NuGetVersion packageVersion,
             CancellationToken cancellationToken = default)
         {
             // Allow read-through caching to happen if it is configured.
-            await _mirror.MirrorAsync(id, version, cancellationToken);
+            await _mirror.MirrorAsync(packageId, packageVersion, cancellationToken);
 
-            var package = await _packages.FindOrNullAsync(id, version, includeUnlisted: true, cancellationToken);
+            var package = await _packages.FindOrNullAsync(packageId, packageVersion, includeUnlisted: true, cancellationToken);
             if (package == null)
             {
                 return null;

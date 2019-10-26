@@ -7,16 +7,16 @@ using NuGet.Versioning;
 
 namespace BaGet.Core
 {
-    public class PackageDeletionService : IPackageDeletionService
+    public class PackageDeletionService
     {
         private readonly IPackageService _packages;
-        private readonly IPackageStorageService _storage;
+        private readonly PackageStorageService _storage;
         private readonly BaGetOptions _options;
         private readonly ILogger<PackageDeletionService> _logger;
 
         public PackageDeletionService(
             IPackageService packages,
-            IPackageStorageService storage,
+            PackageStorageService storage,
             IOptionsSnapshot<BaGetOptions> options,
             ILogger<PackageDeletionService> logger)
         {
@@ -25,8 +25,14 @@ namespace BaGet.Core
             _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-
-        public async Task<bool> TryDeletePackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
+        /// <summary>
+        /// Attempt to delete a package.
+        /// </summary>
+        /// <param name="id">The id of the package to delete.</param>
+        /// <param name="version">The version of the package to delete.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>False if the package does not exist.</returns>
+        public virtual async Task<bool> TryDeletePackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
             switch (_options.PackageDeletionBehavior)
             {

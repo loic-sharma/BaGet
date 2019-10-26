@@ -6,9 +6,11 @@ using NuGet.Frameworks;
 
 namespace BaGet.Core
 {
-    using static NuGet.Frameworks.FrameworkConstants;
-
-    public class FrameworkCompatibilityService : IFrameworkCompatibilityService
+    using static FrameworkConstants;
+    /// <summary>
+    /// Used to determine the compatibility matrix between frameworks.
+    /// </summary>
+    public class FrameworkCompatibilityService
     {
         private const string AnyFramework = "any";
 
@@ -39,11 +41,16 @@ namespace BaGet.Core
             KnownFrameworks["net471"] = new NuGetFramework(FrameworkIdentifiers.Net, new Version(4, 7, 1, 0));
         }
 
-        public IReadOnlyList<string> FindAllCompatibleFrameworks(string name)
+        /// <summary>
+        /// Given a framework, find all other compatible frameworks.
+        /// </summary>
+        /// <param name="frameworkName">The input framework.</param>
+        /// <returns>The list of compatible frameworks.</returns>
+        public virtual IReadOnlyList<string> FindAllCompatibleFrameworks(string frameworkName)
         {
-            if (!KnownFrameworks.TryGetValue(name, out var framework))
+            if (!KnownFrameworks.TryGetValue(frameworkName, out var framework))
             {
-                return new List<string> { name, AnyFramework };
+                return new List<string> { frameworkName, AnyFramework };
             }
 
             return CompatibleFrameworks.GetOrAdd(framework, FindAllCompatibleFrameworks);

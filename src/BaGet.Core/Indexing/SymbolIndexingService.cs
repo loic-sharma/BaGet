@@ -10,10 +10,36 @@ using NuGet.Packaging;
 
 namespace BaGet.Core
 {
+    /// <summary>
+    /// The result of attempting to index a symbol package.
+    /// See <see cref="SymbolIndexingService.IndexAsync(Stream, CancellationToken)"/>.
+    /// </summary>
+    public enum SymbolIndexingResult
+    {
+        /// <summary>
+        /// The symbol package is malformed.
+        /// </summary>
+        InvalidSymbolPackage,
+
+        /// <summary>
+        /// A corresponding package with the provided ID and version does not exist.
+        /// </summary>
+        PackageNotFound,
+
+        /// <summary>
+        /// The symbol package has been indexed successfully.
+        /// </summary>
+        Success,
+    }
+    /// <summary>
+    /// The service used to accept new symbol packages.
+    /// </summary>
     // Based off: https://github.com/NuGet/NuGetGallery/blob/master/src/NuGetGallery/Services/SymbolPackageUploadService.cs
     // Based off: https://github.com/NuGet/NuGet.Jobs/blob/master/src/Validation.Symbols/SymbolsValidatorService.cs#L44
-    public class SymbolIndexingService : ISymbolIndexingService
+
+    public class SymbolIndexingService
     {
+        
         private static readonly HashSet<string> ValidSymbolPackageContentExtensions = new HashSet<string>
         {
             ".pdb",
@@ -25,20 +51,25 @@ namespace BaGet.Core
         };
 
         private readonly IPackageService _packages;
-        private readonly ISymbolStorageService _storage;
+        private readonly SymbolStorageService _storage;
         private readonly ILogger<SymbolIndexingService> _logger;
 
         public SymbolIndexingService(
             IPackageService packages,
-            ISymbolStorageService storage,
+            SymbolStorageService storage,
             ILogger<SymbolIndexingService> logger)
         {
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-
-        public async Task<SymbolIndexingResult> IndexAsync(Stream stream, CancellationToken cancellationToken)
+        /// <summary>
+        /// Attempt to index a new symbol package.
+        /// </summary>
+        /// <param name="stream">The stream containing the symbol package's content.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>The result of the attempted indexing operation.</returns>
+        public virtual async Task<SymbolIndexingResult> IndexAsync(Stream stream, CancellationToken cancellationToken)
         {
             try
             {
@@ -110,10 +141,9 @@ namespace BaGet.Core
 
                 return files.Where(p => Path.GetExtension(p) == ".pdb").ToList();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                // TODO: ValidatePackageEntries throws PackagingException.
-                // Add better logging.
+                _logger.LogError(e, "Unable to get symbol package Pdb paths due to exception");
                 return null;
             }
         }
@@ -147,7 +177,7 @@ namespace BaGet.Core
             {
                 using (var rawPdbStream = await symbolPackage.GetStreamAsync(pdbPath, cancellationToken))
                 {
-                    pdbStream = await rawPdbStream.AsTemporaryFileStreamAsync();
+                    pdbStream = await rawPdbStream.AsTemporaryFileStreamAsync(cancellationToken);
 
                     string signature;
                     using (var pdbReaderProvider = MetadataReaderProvider.FromPortablePdbStream(pdbStream, MetadataStreamOptions.LeaveOpen))
@@ -158,7 +188,7 @@ namespace BaGet.Core
                         signature = id.Guid.ToString("N").ToUpperInvariant();
                     }
 
-                    var fileName = Path.GetFileName(pdbPath).ToLowerInvariant();
+                    var fileName = Path.GetFileName(pdbPath)?.ToLowerInvariant();
                     var key = $"{signature}ffffffff";
 
                     pdbStream.Position = 0;

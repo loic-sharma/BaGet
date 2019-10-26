@@ -6,10 +6,15 @@ using BaGet.Protocol.Models;
 
 namespace BaGet.Core
 {
-    public class BaGetServiceIndex : IServiceIndexService
+    /// <summary>
+    /// The NuGet Service Index service, used to discover other resources.
+    /// 
+    /// See https://docs.microsoft.com/en-us/nuget/api/service-index
+    /// </summary>
+    public class BaGetServiceIndex
     {
         private readonly IUrlGenerator _url;
-
+        
         public BaGetServiceIndex(IUrlGenerator url)
         {
             _url = url ?? throw new ArgumentNullException(nameof(url));
@@ -28,8 +33,12 @@ namespace BaGet.Core
                 };
             }
         }
-
-        public Task<ServiceIndexResponse> GetAsync(CancellationToken cancellationToken = default)
+        /// <summary>
+        /// Get the resources available on this package feed.
+        /// See: https://docs.microsoft.com/en-us/nuget/api/service-index#resources
+        /// </summary>
+        /// <returns>The resources available on this package feed.</returns>
+        public virtual Task<ServiceIndexResponse> GetAsync(CancellationToken cancellationToken = default)
         {
             var resources = new List<ServiceIndexItem>();
 

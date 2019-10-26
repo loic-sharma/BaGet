@@ -18,12 +18,12 @@ namespace BaGet.Azure
     {
         private readonly SearchIndexClient _searchClient;
         private readonly IUrlGenerator _url;
-        private readonly IFrameworkCompatibilityService _frameworks;
+        private readonly FrameworkCompatibilityService _frameworks;
 
         public AzureSearchService(
             SearchIndexClient searchClient,
             IUrlGenerator url,
-            IFrameworkCompatibilityService frameworks)
+            FrameworkCompatibilityService frameworks)
         {
             _searchClient = searchClient ?? throw new ArgumentNullException(nameof(searchClient));
             _url = url ?? throw new ArgumentNullException(nameof(url));

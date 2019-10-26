@@ -12,9 +12,9 @@ namespace BaGet.Controllers
     /// </summary>
     public class ServiceIndexController : Controller
     {
-        private readonly IServiceIndexService _serviceIndex;
+        private readonly BaGetServiceIndex _serviceIndex;
 
-        public ServiceIndexController(IServiceIndexService serviceIndex)
+        public ServiceIndexController(BaGetServiceIndex serviceIndex)
         {
             _serviceIndex = serviceIndex ?? throw new ArgumentNullException(nameof(serviceIndex));
         }

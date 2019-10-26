@@ -11,10 +11,10 @@ namespace BaGet.Core
     public class DatabaseSearchService : ISearchService
     {
         private readonly IContext _context;
-        private readonly IFrameworkCompatibilityService _frameworks;
+        private readonly FrameworkCompatibilityService _frameworks;
         private readonly IUrlGenerator _url;
 
-        public DatabaseSearchService(IContext context, IFrameworkCompatibilityService frameworks, IUrlGenerator url)
+        public DatabaseSearchService(IContext context, FrameworkCompatibilityService frameworks, IUrlGenerator url)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _frameworks = frameworks ?? throw new ArgumentNullException(nameof(frameworks));

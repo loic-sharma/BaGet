@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace BaGet.Core
 {
-    public class SymbolStorageService : ISymbolStorageService
+    /// <summary>
+    /// Stores the content of symbols, also known as PDBs.
+    /// </summary>
+    public class SymbolStorageService
     {
         private const string SymbolsPathPrefix = "symbols";
         private const string PdbContentType = "binary/octet-stream";
@@ -17,25 +20,38 @@ namespace BaGet.Core
         {
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
         }
-
-        public async Task SavePortablePdbContentAsync(
-            string filename,
+        /// <summary>
+        /// Persist a portable PDB's content to storage. This operation MUST fail if a PDB
+        /// with the same key but different content has already been stored.
+        /// </summary>
+        /// <param name="fileName">The portable PDB's file name.</param>
+        /// <param name="key">The portable PDB's Signature GUID followed by its age.</param>
+        /// <param name="pdbStream">The PDB's content stream.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public virtual async Task SavePortablePdbContentAsync(
+            string fileName,
             string key,
             Stream pdbStream,
             CancellationToken cancellationToken)
         {
-            var path = GetPathForKey(filename, key);
+            var path = GetPathForKey(fileName, key);
             var result = await _storage.PutAsync(path, pdbStream, PdbContentType, cancellationToken);
 
             if (result == StoragePutResult.Conflict)
             {
-                throw new InvalidOperationException($"Could not save PDB {filename} {key} due to conflict");
+                throw new InvalidOperationException($"Could not save PDB {fileName} {key} due to conflict");
             }
         }
-
-        public async Task<Stream> GetPortablePdbContentStreamOrNullAsync(string filename, string key)
+        /// <summary>
+        /// Retrieve a portable PDB's content stream.
+        /// </summary>
+        /// <param name="fileName">The portable PDB's file name.</param>
+        /// <param name="key">The portable PDB's Signature GUID followed by its age.</param>
+        /// <returns>The portable PDB's stream, or null if it does not exist.</returns>
+        public virtual async Task<Stream> GetPortablePdbContentStreamOrNullAsync(string fileName, string key)
         {
-            var path = GetPathForKey(filename, key);
+            var path = GetPathForKey(fileName, key);
 
             try
             {

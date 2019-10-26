@@ -74,13 +74,13 @@ namespace BaGet.Extensions
                 }
             });
 
-            services.AddTransient<IPackageIndexingService, PackageIndexingService>();
-            services.AddTransient<IPackageDeletionService, PackageDeletionService>();
-            services.AddTransient<ISymbolIndexingService, SymbolIndexingService>();
-            services.AddTransient<IServiceIndexService, BaGetServiceIndex>();
+            services.AddTransient<PackageIndexingService>();
+            services.AddTransient<PackageDeletionService>();
+            services.AddTransient<SymbolIndexingService>();
+            services.AddTransient<BaGetServiceIndex>();
             services.AddTransient<PackageContentService>();
             services.AddTransient<PackageMetadataService>();
-            services.AddSingleton<IFrameworkCompatibilityService, FrameworkCompatibilityService>();
+            services.AddSingleton<FrameworkCompatibilityService>();
             services.AddSingleton<RegistrationBuilder>();
             services.AddMirrorServices();
 
@@ -183,8 +183,8 @@ namespace BaGet.Extensions
         {
             services.AddSingleton<NullStorageService>();
             services.AddTransient<FileStorageService>();
-            services.AddTransient<IPackageStorageService, PackageStorageService>();
-            services.AddTransient<ISymbolStorageService, SymbolStorageService>();
+            services.AddTransient<PackageStorageService>();
+            services.AddTransient<SymbolStorageService>();
 
             services.AddTableStorageService();
             services.AddBlobStorageService();

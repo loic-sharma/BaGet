@@ -13,17 +13,17 @@ namespace BaGet.Controllers
     public class PackagePublishController : Controller
     {
         private readonly IAuthenticationService _authentication;
-        private readonly IPackageIndexingService _indexer;
+        private readonly PackageIndexingService _indexer;
         private readonly IPackageService _packages;
-        private readonly IPackageDeletionService _deleteService;
+        private readonly PackageDeletionService _deleteService;
         private readonly IOptionsSnapshot<BaGetOptions> _options;
         private readonly ILogger<PackagePublishController> _logger;
 
         public PackagePublishController(
             IAuthenticationService authentication,
-            IPackageIndexingService indexer,
+            PackageIndexingService indexer,
             IPackageService packages,
-            IPackageDeletionService deletionService,
+            PackageDeletionService deletionService,
             IOptionsSnapshot<BaGetOptions> options,
             ILogger<PackagePublishController> logger)
         {

@@ -12,15 +12,15 @@ namespace BaGet.Controllers
     public class SymbolController : Controller
     {
         private readonly IAuthenticationService _authentication;
-        private readonly ISymbolIndexingService _indexer;
-        private readonly ISymbolStorageService _storage;
+        private readonly SymbolIndexingService _indexer;
+        private readonly SymbolStorageService _storage;
         private readonly IOptionsSnapshot<BaGetOptions> _options;
         private readonly ILogger<SymbolController> _logger;
 
         public SymbolController(
             IAuthenticationService authentication,
-            ISymbolIndexingService indexer,
-            ISymbolStorageService storage,
+            SymbolIndexingService indexer,
+            SymbolStorageService storage,
             IOptionsSnapshot<BaGetOptions> options,
             ILogger<SymbolController> logger)
         {

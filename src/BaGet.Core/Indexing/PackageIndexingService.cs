@@ -8,17 +8,41 @@ using NuGet.Packaging;
 
 namespace BaGet.Core
 {
-    public class PackageIndexingService : IPackageIndexingService
+    /// <summary>
+    /// The result of attempting to index a package.
+    /// See <see cref="BaGet.Core.PackageIndexingService.IndexAsync(Stream, CancellationToken)"/>.
+    /// </summary>
+    public enum PackageIndexingResult
+    {
+        /// <summary>
+        /// The package is malformed. This may also happen if BaGet is in a corrupted state.
+        /// </summary>
+        InvalidPackage,
+
+        /// <summary>
+        /// The package has already been indexed.
+        /// </summary>
+        PackageAlreadyExists,
+
+        /// <summary>
+        /// The package has been indexed successfully.
+        /// </summary>
+        Success,
+    }
+    /// <summary>
+    /// The service used to accept new packages.
+    /// </summary>
+    public class PackageIndexingService
     {
         private readonly IPackageService _packages;
-        private readonly IPackageStorageService _storage;
+        private readonly PackageStorageService _storage;
         private readonly ISearchIndexer _search;
         private readonly IOptionsSnapshot<BaGetOptions> _options;
         private readonly ILogger<PackageIndexingService> _logger;
-
+        
         public PackageIndexingService(
             IPackageService packages,
-            IPackageStorageService storage,
+            PackageStorageService storage,
             ISearchIndexer search,
             IOptionsSnapshot<BaGetOptions> options,
             ILogger<PackageIndexingService> logger)
@@ -29,8 +53,13 @@ namespace BaGet.Core
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-
-        public async Task<PackageIndexingResult> IndexAsync(Stream packageStream, CancellationToken cancellationToken)
+        /// <summary>
+        /// Attempt to index a new package.
+        /// </summary>
+        /// <param name="stream">The stream containing the package's content.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>The result of the attempted indexing operation.</returns>
+        public virtual async Task<PackageIndexingResult> IndexAsync(Stream packageStream, CancellationToken cancellationToken)
         {
             // Try to extract all the necessary information from the package.
             Package package;
