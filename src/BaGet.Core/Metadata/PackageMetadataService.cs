@@ -8,14 +8,18 @@ using NuGet.Versioning;
 
 namespace BaGet.Core
 {
-    /// <inheritdoc />
-    public class DefaultPackageMetadataService : IPackageMetadataService
+    /// <summary>
+    /// The Package Metadata client, used to fetch packages' metadata.
+    /// 
+    /// See https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
+    /// </summary>
+    public class PackageMetadataService
     {
         private readonly IMirrorService _mirror;
         private readonly IPackageService _packages;
         private readonly RegistrationBuilder _builder;
 
-        public DefaultPackageMetadataService(
+        public PackageMetadataService(
             IMirrorService mirror,
             IPackageService packages,
             RegistrationBuilder builder)
@@ -24,8 +28,14 @@ namespace BaGet.Core
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));
             _builder = builder ?? throw new ArgumentNullException(nameof(builder));
         }
-
-        public async Task<BaGetRegistrationIndexResponse> GetRegistrationIndexOrNullAsync(
+        /// <summary>
+        /// Attempt to get a package's registration index, if it exists.
+        /// See: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource#registration-page
+        /// </summary>
+        /// <param name="packageId">The package's ID.</param>
+        /// <param name="cancellationToken">A token to cancel the task.</param>
+        /// <returns>The package's registration index, or null if the package does not exist</returns>
+        public virtual async Task<BaGetRegistrationIndexResponse> GetRegistrationIndexOrNullAsync(
             string packageId,
             CancellationToken cancellationToken = default)
         {
@@ -40,8 +50,14 @@ namespace BaGet.Core
                     packageId,
                     packages));
         }
-
-        public async Task<BaGetRegistrationLeafResponse> GetRegistrationLeafOrNullAsync(
+        /// <summary>
+        /// Get the metadata for a single package version, if the package exists.
+        /// </summary>
+        /// <param name="packageId">The package's id.</param>
+        /// <param name="packageVersion">The package's version.</param>
+        /// <param name="cancellationToken">A token to cancel the task.</param>
+        /// <returns>The registration leaf, or null if the package does not exist.</returns>
+        public virtual async Task<BaGetRegistrationLeafResponse> GetRegistrationLeafOrNullAsync(
             string id,
             NuGetVersion version,
             CancellationToken cancellationToken = default)

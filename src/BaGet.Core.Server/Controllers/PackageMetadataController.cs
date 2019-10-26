@@ -14,9 +14,9 @@ namespace BaGet.Controllers
     /// </summary>
     public class PackageMetadataController : Controller
     {
-        private readonly IPackageMetadataService _metadata;
+        private readonly PackageMetadataService _metadata;
 
-        public PackageMetadataController(IPackageMetadataService metadata)
+        public PackageMetadataController(PackageMetadataService metadata)
         {
             _metadata = metadata ?? throw new ArgumentNullException(nameof(metadata));
         }
