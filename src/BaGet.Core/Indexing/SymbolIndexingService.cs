@@ -31,12 +31,12 @@ namespace BaGet.Core
         /// </summary>
         Success,
     }
+
     /// <summary>
     /// The service used to accept new symbol packages.
     /// </summary>
     // Based off: https://github.com/NuGet/NuGetGallery/blob/master/src/NuGetGallery/Services/SymbolPackageUploadService.cs
     // Based off: https://github.com/NuGet/NuGet.Jobs/blob/master/src/Validation.Symbols/SymbolsValidatorService.cs#L44
-
     public class SymbolIndexingService
     {
         
@@ -63,6 +63,7 @@ namespace BaGet.Core
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
+
         /// <summary>
         /// Attempt to index a new symbol package.
         /// </summary>

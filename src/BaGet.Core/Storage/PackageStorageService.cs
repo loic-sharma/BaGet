@@ -127,6 +127,7 @@ namespace BaGet.Core
                 lowercasedId,
                 lowercasedNormalizedVersion);
         }
+
         /// <summary>
         /// Retrieve a package's nupkg stream.
         /// </summary>
@@ -138,6 +139,7 @@ namespace BaGet.Core
         {
             return await GetStreamAsync(id, version, PackagePath, cancellationToken);
         }
+
         /// <summary>
         /// Retrieve a package's nuspec stream.
         /// </summary>
@@ -149,6 +151,7 @@ namespace BaGet.Core
         {
             return await GetStreamAsync(id, version, NuspecPath, cancellationToken);
         }
+
         /// <summary>
         /// Retrieve a package's readme stream.
         /// </summary>
@@ -160,6 +163,7 @@ namespace BaGet.Core
         {
             return await GetStreamAsync(id, version, ReadmePath, cancellationToken);
         }
+
         /// <summary>
         /// Remove a package's content from storage. This operation SHOULD succeed
         /// even if the package does not exist.

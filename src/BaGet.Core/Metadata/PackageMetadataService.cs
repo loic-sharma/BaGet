@@ -28,6 +28,7 @@ namespace BaGet.Core
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));
             _builder = builder ?? throw new ArgumentNullException(nameof(builder));
         }
+
         /// <summary>
         /// Attempt to get a package's registration index, if it exists.
         /// See: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource#registration-page
@@ -50,6 +51,7 @@ namespace BaGet.Core
                     packageId,
                     packages));
         }
+
         /// <summary>
         /// Get the metadata for a single package version, if the package exists.
         /// </summary>

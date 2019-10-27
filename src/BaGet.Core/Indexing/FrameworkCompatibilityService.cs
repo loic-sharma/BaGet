@@ -7,6 +7,7 @@ using NuGet.Frameworks;
 namespace BaGet.Core
 {
     using static FrameworkConstants;
+
     /// <summary>
     /// Used to determine the compatibility matrix between frameworks.
     /// </summary>

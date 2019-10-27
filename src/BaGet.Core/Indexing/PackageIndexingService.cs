@@ -29,6 +29,7 @@ namespace BaGet.Core
         /// </summary>
         Success,
     }
+
     /// <summary>
     /// The service used to accept new packages.
     /// </summary>
@@ -53,6 +54,7 @@ namespace BaGet.Core
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
+
         /// <summary>
         /// Attempt to index a new package.
         /// </summary>

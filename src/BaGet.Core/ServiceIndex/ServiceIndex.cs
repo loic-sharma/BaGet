@@ -11,11 +11,11 @@ namespace BaGet.Core
     /// 
     /// See https://docs.microsoft.com/en-us/nuget/api/service-index
     /// </summary>
-    public class BaGetServiceIndex
+    public class ServiceIndex
     {
         private readonly IUrlGenerator _url;
-        
-        public BaGetServiceIndex(IUrlGenerator url)
+
+        public ServiceIndex(IUrlGenerator url)
         {
             _url = url ?? throw new ArgumentNullException(nameof(url));
         }
@@ -33,6 +33,7 @@ namespace BaGet.Core
                 };
             }
         }
+
         /// <summary>
         /// Get the resources available on this package feed.
         /// See: https://docs.microsoft.com/en-us/nuget/api/service-index#resources
