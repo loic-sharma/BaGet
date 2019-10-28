@@ -14,7 +14,7 @@ namespace BaGet.Core.Tests.Services
         private static readonly NuGetVersion PackageVersion = new NuGetVersion("1.0.0");
 
         private readonly Mock<IPackageService> _packages;
-        private readonly Mock<IPackageStorageService> _storage;
+        private readonly Mock<PackageStorageService> _storage;
 
         private readonly BaGetOptions _options;
         private readonly PackageDeletionService _target;
@@ -22,7 +22,7 @@ namespace BaGet.Core.Tests.Services
         public PackageDeletionServiceTests()
         {
             _packages = new Mock<IPackageService>();
-            _storage = new Mock<IPackageStorageService>();
+            _storage = new Mock<PackageStorageService>();
             _options = new BaGetOptions();
 
             var optionsSnapshot = new Mock<IOptionsSnapshot<BaGetOptions>>();
