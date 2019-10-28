@@ -144,6 +144,7 @@ namespace BaGet.Core
             }
             catch (Exception e)
             {
+                // TODO: ValidatePackageEntries throws PackagingException.
                 _logger.LogError(e, "Unable to get symbol package Pdb paths due to exception");
                 return null;
             }
