@@ -43,6 +43,11 @@ namespace BaGet.Azure.Extensions
             {
                 var options = provider.GetRequiredService<IOptions<BlobStorageOptions>>().Value;
 
+                if (!string.IsNullOrEmpty(options.ConnectionString))
+                {
+                    return CloudStorageAccount.Parse(options.ConnectionString);
+                }
+
                 return new CloudStorageAccount(
                     new StorageCredentials(
                         options.AccountName,
