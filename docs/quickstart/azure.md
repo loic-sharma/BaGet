@@ -42,9 +42,14 @@ Update the `appsettings.json` file:
 
     "Storage": {
         "Type": "AzureBlobStorage",
+
         "AccountName": "my-account",
-        "Container": "my-container",
-        "AccessKey": "abcd1234"
+        "AccessKey": "abcd1234",
+        "Container": "my-container"
+
+        // You can also use a connection string:
+        // "ConnectionString": "AccountName=my-account;AccountKey=abcd1234;...",
+        // "Container": "my-container"
     },
 
     ...
