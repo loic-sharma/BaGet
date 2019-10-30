@@ -46,10 +46,23 @@ Update the `appsettings.json` file:
         "AccountName": "my-account",
         "AccessKey": "abcd1234",
         "Container": "my-container"
+    },
 
-        // You can also use a connection string:
-        // "ConnectionString": "AccountName=my-account;AccountKey=abcd1234;...",
-        // "Container": "my-container"
+    ...
+}
+```
+
+Alternatively, you can use a full Azure Storage connection string:
+
+```json
+{
+    ...
+
+    "Storage": {
+        "Type": "AzureBlobStorage",
+
+        "ConnectionString": "AccountName=my-account;AccountKey=abcd1234;...",
+        "Container": "my-container"
     },
 
     ...
