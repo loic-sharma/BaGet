@@ -10,7 +10,8 @@ namespace BaGet.Azure.Configuration
     public class BlobStorageOptions : IValidatableObject
     {
         /// <summary>
-        /// The full Azure Blob Storage connection string. If provided, all other values are ignored.
+        /// The Azure Blob Storage connection string.
+        /// If provided, ignores <see cref="AccountName"/> and <see cref="AccessKey"/>.
         /// </summary>
         public string ConnectionString { get; set; }
 
@@ -25,7 +26,7 @@ namespace BaGet.Azure.Configuration
         public string AccessKey { get; set; }
 
         /// <summary>
-        /// The Azure Blob Storage container name. Ignored if <see cref="ConnectionString"/> is provided.
+        /// The Azure Blob Storage container name.
         /// </summary>
         public string Container { get; set; }
 
@@ -48,13 +49,13 @@ namespace BaGet.Azure.Configuration
                         $"The {nameof(AccessKey)} configuration is required. See {helpUrl}",
                         new[] { nameof(AccessKey) });
                 }
+            }
 
-                if (string.IsNullOrEmpty(Container))
-                {
-                    yield return new ValidationResult(
-                        $"The {nameof(Container)} configuration is required. See {helpUrl}",
-                        new[] { nameof(Container) });
-                }
+            if (string.IsNullOrEmpty(Container))
+            {
+                yield return new ValidationResult(
+                    $"The {nameof(Container)} configuration is required. See {helpUrl}",
+                    new[] { nameof(Container) });
             }
         }
     }
