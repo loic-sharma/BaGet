@@ -127,10 +127,10 @@ namespace BaGet.Core
 
             var results = await search.Where(p => p.Listed)
                 .OrderByDescending(p => p.Downloads)
+                .Distinct()
                 .Skip(skip)
                 .Take(take)
                 .Select(p => p.Id)
-                .Distinct()
                 .ToListAsync(cancellationToken);
 
             return new AutocompleteResponse
@@ -227,9 +227,9 @@ namespace BaGet.Core
                 search = _context.Packages.Where(p => packageIdResults.Contains(p.Id));
             }
 
-            return (await search.ToListAsync(cancellationToken))
-                .GroupBy(p => p.Id)
-                .ToList();
+            var results = await search.Where(p => p.Listed).ToListAsync(cancellationToken);
+
+            return results.GroupBy(p => p.Id).ToList();
         }
 
         private IReadOnlyList<string> GetCompatibleFrameworksOrNull(string framework)
