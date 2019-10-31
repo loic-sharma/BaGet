@@ -2,6 +2,7 @@ import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as React from 'react';
 import ReactMarkdown from 'react-markdown';
 import timeago from 'timeago.js';
+import { gt } from 'semver';
 
 import { config } from '../config';
 import Dependencies from './Dependencies';
@@ -116,10 +117,10 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
 
       const results = json as Registration.IRegistrationIndex;
 
-      const latestVersion = results.items[0].upper;
       let currentItem: Registration.IRegistrationPageItem | undefined;
       let lastUpdate: Date | undefined;
 
+      const latestVersion = this.latestVersion(results);
       const versions: IPackageVersion[] = [];
 
       for (const entry of results.items[0].items) {
@@ -147,7 +148,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
         }
       }
 
-      if (currentItem && lastUpdate) {
+      if (latestVersion && currentItem && lastUpdate) {
         let readme = "";
 
         const isDotnetTool = (currentItem.catalogEntry.packageTypes &&
@@ -314,6 +315,19 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
     return buildMetadataStart === -1
       ? version
       : version.substring(0, buildMetadataStart);
+  }
+
+  private latestVersion(index: Registration.IRegistrationIndex): string | null {
+    let latestVersion: string | null = null;
+    for (const entry of index.items[0].items) {
+      if (!entry.catalogEntry.listed) continue;
+
+      if (latestVersion === null || gt(entry.catalogEntry.version, latestVersion)) {
+        latestVersion = entry.catalogEntry.version;
+      }
+    }
+
+    return latestVersion;
   }
 }
 
