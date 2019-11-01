@@ -43,7 +43,7 @@ namespace BaGet.Core
             }
 
             // Merge the local package versions into the upstream package versions.
-            var localPackages = await _localPackages.FindAsync(id, includeUnlisted: true);
+            var localPackages = await _localPackages.FindAsync(id, includeUnlisted: true, cancellationToken);
             var localVersions = localPackages.Select(p => p.Version);
 
             return upstreamVersions.Concat(localVersions).Distinct().ToList();
@@ -62,7 +62,7 @@ namespace BaGet.Core
 
         public async Task MirrorAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
-            if (await _localPackages.ExistsAsync(id, version))
+            if (await _localPackages.ExistsAsync(id, version, cancellationToken))
             {
                 return;
             }

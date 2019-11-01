@@ -9,7 +9,7 @@ using BaGet.Protocol.Models;
 using Microsoft.Azure.Search;
 using NuGet.Versioning;
 
-namespace BaGet.Azure.Search
+namespace BaGet.Azure
 {
     using QueryType = Microsoft.Azure.Search.Models.QueryType;
     using SearchParameters = Microsoft.Azure.Search.Models.SearchParameters;

@@ -9,7 +9,7 @@ using Microsoft.Azure.Search.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Rest.Azure;
 
-namespace BaGet.Azure.Search
+namespace BaGet.Azure
 {
     public class AzureSearchBatchIndexer
     {

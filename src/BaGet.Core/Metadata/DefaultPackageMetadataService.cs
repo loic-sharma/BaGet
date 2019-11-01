@@ -63,7 +63,7 @@ namespace BaGet.Core
             CancellationToken cancellationToken)
         {
             var upstreamPackages = await _mirror.FindPackagesOrNullAsync(packageId, cancellationToken);
-            var localPackages = await _packages.FindAsync(packageId, includeUnlisted: true);
+            var localPackages = await _packages.FindAsync(packageId, includeUnlisted: true, cancellationToken);
 
             if (upstreamPackages == null)
             {

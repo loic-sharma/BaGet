@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -25,7 +26,7 @@ namespace BaGet.Core
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task ImportAsync()
+        public async Task ImportAsync(CancellationToken cancellationToken)
         {
             var packageDownloads = await _downloadsSource.GetPackageDownloadsAsync();
             var packages = await _context.Packages.CountAsync();
@@ -35,7 +36,7 @@ namespace BaGet.Core
             {
                 _logger.LogInformation("Importing batch {Batch}...", batch);
 
-                foreach (var package in await GetBatch(batch))
+                foreach (var package in await GetBatchAsync(batch, cancellationToken))
                 {
                     var packageId = package.Id.ToLowerInvariant();
                     var packageVersion = package.NormalizedVersionString.ToLowerInvariant();
@@ -49,17 +50,17 @@ namespace BaGet.Core
                     package.Downloads = packageDownloads[packageId][packageVersion];
                 }
 
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
 
                 _logger.LogInformation("Imported batch {Batch}", batch);
             }
         }
 
-        private Task<List<Package>> GetBatch(int batch)
+        private Task<List<Package>> GetBatchAsync(int batch, CancellationToken cancellationToken)
             => _context.Packages
                 .OrderBy(p => p.Key)
                 .Skip(batch * BatchSize)
                 .Take(BatchSize)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
     }
 }

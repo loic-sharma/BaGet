@@ -5,7 +5,7 @@ using System.Text;
 using BaGet.Core;
 using Microsoft.Azure.Search.Models;
 
-namespace BaGet.Azure.Search
+namespace BaGet.Azure
 {
     public class IndexActionBuilder
     {

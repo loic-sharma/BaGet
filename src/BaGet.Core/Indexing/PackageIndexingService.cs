@@ -64,14 +64,14 @@ namespace BaGet.Core
             }
 
             // The package is well-formed. Ensure this is a new package.
-            if (await _packages.ExistsAsync(package.Id, package.Version))
+            if (await _packages.ExistsAsync(package.Id, package.Version, cancellationToken))
             {
                 if (!_options.Value.AllowPackageOverwrites)
                 {
                     return PackageIndexingResult.PackageAlreadyExists;
                 }
 
-                await _packages.HardDeletePackageAsync(package.Id, package.Version);
+                await _packages.HardDeletePackageAsync(package.Id, package.Version, cancellationToken);
                 await _storage.DeleteAsync(package.Id, package.Version, cancellationToken);
             }
 
@@ -112,7 +112,7 @@ namespace BaGet.Core
                 package.Id,
                 package.NormalizedVersionString);
 
-            var result = await _packages.AddAsync(package);
+            var result = await _packages.AddAsync(package, cancellationToken);
             if (result == PackageAddResult.PackageAlreadyExists)
             {
                 _logger.LogWarning(

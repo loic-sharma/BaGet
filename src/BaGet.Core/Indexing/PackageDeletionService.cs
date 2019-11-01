@@ -31,7 +31,7 @@ namespace BaGet.Core
             switch (_options.PackageDeletionBehavior)
             {
                 case PackageDeletionBehavior.Unlist:
-                    return await TryUnlistPackageAsync(id, version);
+                    return await TryUnlistPackageAsync(id, version, cancellationToken);
 
                 case PackageDeletionBehavior.HardDelete:
                     return await TryHardDeletePackageAsync(id, version, cancellationToken);
@@ -41,11 +41,11 @@ namespace BaGet.Core
             }
         }
 
-        private async Task<bool> TryUnlistPackageAsync(string id, NuGetVersion version)
+        private async Task<bool> TryUnlistPackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Unlisting package {PackageId} {PackageVersion}...", id, version);
 
-            if (!await _packages.UnlistPackageAsync(id, version))
+            if (!await _packages.UnlistPackageAsync(id, version, cancellationToken))
             {
                 _logger.LogWarning("Could not find package {PackageId} {PackageVersion}", id, version);
 
@@ -64,7 +64,7 @@ namespace BaGet.Core
                 id,
                 version);
 
-            var found = await _packages.HardDeletePackageAsync(id, version);
+            var found = await _packages.HardDeletePackageAsync(id, version, cancellationToken);
             if (!found)
             {
                 _logger.LogWarning(
