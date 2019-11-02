@@ -27,7 +27,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "homepage": "__BAGET_PATH_BASE_PLACEHOLDER__",
+  "homepage": "",
   "devDependencies": {
     "@types/commonmark": "^0.27.0",
     "@types/jest": "^23.3.14",

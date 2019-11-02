@@ -25,14 +25,6 @@ namespace BaGet
         public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigureBaGet(Configuration, httpServices: true);
-
-            // In production, the UI files will be served from this directory
-            /*
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "BaGet.UI/build";
-            });
-            */
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -85,7 +77,7 @@ namespace BaGet
                 spa.Options.DefaultPageStaticFileOptions.FileProvider = spaStaticFilesService.FileProvider;
                 if (env.IsDevelopment())
                 {
-                    //spa.UseReactDevelopmentServer(npmScript: "start");
+                    spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
             
