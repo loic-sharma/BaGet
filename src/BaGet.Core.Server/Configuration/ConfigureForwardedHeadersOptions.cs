@@ -23,7 +23,7 @@ namespace BaGet.Configuration
         {
             if (!string.IsNullOrEmpty(_options.Value.HostUrl))
             {
-                _logger.LogDebug("Host Url: " + _options.Value.HostUrl);
+                _logger.LogDebug("Allowing host URL {HostUrl}", _options.Value.HostUrl);
                 options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost;
                 options.AllowedHosts = new List<string>() { _options.Value.HostUrl};
             }
