@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using BaGet.Core;
 using BaGet.Extensions;
 using McMaster.Extensions.CommandLineUtils;
@@ -32,7 +33,7 @@ namespace BaGet
 
                         await provider
                             .GetRequiredService<DownloadsImporter>()
-                            .ImportAsync();
+                            .ImportAsync(CancellationToken.None);
                     });
                 });
             });

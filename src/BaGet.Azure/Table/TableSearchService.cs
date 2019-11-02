@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using BaGet.Core;
 using BaGet.Protocol.Models;
 using Microsoft.Azure.Cosmos.Table;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using NuGet.Versioning;
 
@@ -96,7 +95,7 @@ namespace BaGet.Azure
             return Task.CompletedTask;
         }
 
-        private async Task<List<List<TablePackageService.PackageEntity>>> SearchInternalAsync(
+        private async Task<List<List<PackageEntity>>> SearchInternalAsync(
             string searchText,
             int skip,
             int take,
@@ -104,12 +103,12 @@ namespace BaGet.Azure
             bool includeSemVer2,
             CancellationToken cancellationToken)
         {
-            var query = new TableQuery<TablePackageService.PackageEntity>();
+            var query = new TableQuery<PackageEntity>();
             query = query.Where(GenerateSearchFilter(searchText, includePrerelease, includeSemVer2));
             query.TakeCount = 500;
 
             string lastPartitionKey = null;
-            var results = new List<List<TablePackageService.PackageEntity>>();
+            var results = new List<List<PackageEntity>>();
 
             TableContinuationToken token = null;
             do
@@ -122,7 +121,7 @@ namespace BaGet.Azure
                 {
                     if (lastPartitionKey != result.PartitionKey)
                     {
-                        results.Add(new List<TablePackageService.PackageEntity>());
+                        results.Add(new List<PackageEntity>());
                         lastPartitionKey = result.PartitionKey;
                     }
 
@@ -162,23 +161,23 @@ namespace BaGet.Azure
             // Filter to rows that are listed.
             result = GenerateAnd(
                 result,
-                GenerateIsTrue(nameof(TablePackageService.PackageEntity.Listed)));
+                GenerateIsTrue(nameof(PackageEntity.Listed)));
 
             if (!includePrerelease)
             {
                 result = GenerateAnd(
                     result,
-                    GenerateIsFalse(nameof(TablePackageService.PackageEntity.IsPrerelease)));
+                    GenerateIsFalse(nameof(PackageEntity.IsPrerelease)));
             }
 
             if (!includeSemVer2)
             {
                 result = GenerateAnd(
                     result,
-                    TableQuery.GenerateFilterCondition(
-                        nameof(TablePackageService.PackageEntity.SemVerLevel),
+                    TableQuery.GenerateFilterConditionForInt(
+                        nameof(PackageEntity.SemVerLevel),
                         QueryComparisons.Equal,
-                        "0"));
+                        0));
             }
 
             return result;
@@ -207,16 +206,16 @@ namespace BaGet.Azure
             }
         }
 
-        private string ToAutocompleteResult(IReadOnlyList<TablePackageService.PackageEntity> packages)
+        private string ToAutocompleteResult(IReadOnlyList<PackageEntity> packages)
         {
             // TODO: This should find the latest version and return its package Id.
             return packages.Last().Id;
         }
 
-        private SearchResult ToSearchResult(IReadOnlyList<TablePackageService.PackageEntity> packages)
+        private SearchResult ToSearchResult(IReadOnlyList<PackageEntity> packages)
         {
             NuGetVersion latestVersion = null;
-            TablePackageService.PackageEntity latest = null;
+            PackageEntity latest = null;
             var versions = new List<SearchResultVersion>();
             long totalDownloads = 0;
 

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using BaGet.Core;
 using Microsoft.Extensions.Logging;
 
-namespace BaGet.Azure.Search
+namespace BaGet.Azure
 {
     public class AzureSearchIndexer : ISearchIndexer
     {
@@ -27,7 +27,7 @@ namespace BaGet.Azure.Search
 
         public async Task IndexAsync(Package package, CancellationToken cancellationToken = default)
         {
-            var packages = await _packages.FindAsync(package.Id, includeUnlisted: false);
+            var packages = await _packages.FindAsync(package.Id, includeUnlisted: false, cancellationToken);
 
             var actions = _actionBuilder.UpdatePackage(
                 new PackageRegistration(

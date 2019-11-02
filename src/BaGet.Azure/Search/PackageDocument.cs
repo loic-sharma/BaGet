@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
 
-namespace BaGet.Azure.Search
+namespace BaGet.Azure
 {
     // See: https://docs.microsoft.com/en-us/nuget/api/search-query-service-resource#search-for-packages
     [SerializePropertyNamesAsCamelCase]

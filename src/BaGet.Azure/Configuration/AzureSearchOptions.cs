@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using BaGet.Core;
 
-namespace BaGet.Azure.Configuration
+namespace BaGet.Azure
 {
     public class AzureSearchOptions : SearchOptions
     {

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace BaGet.Azure.Configuration
+namespace BaGet.Azure
 {
     /// <summary>
     /// BaGet's configurations to use Azure Blob Storage to store packages.

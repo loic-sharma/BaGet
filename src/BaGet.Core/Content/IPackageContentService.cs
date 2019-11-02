@@ -22,7 +22,7 @@ namespace BaGet.Core.Content
         /// <returns>The package's versions, or null if the package does not exist.</returns>
         Task<PackageVersionsResponse> GetPackageVersionsOrNullAsync(
             string packageId,
-            CancellationToken cancellationToken = default);
+            CancellationToken cancellationToken);
 
         /// <summary>
         /// Download a package, or null if the package does not exist.
@@ -37,7 +37,7 @@ namespace BaGet.Core.Content
         Task<Stream> GetPackageContentStreamOrNullAsync(
             string packageId,
             NuGetVersion packageVersion,
-            CancellationToken cancellationToken = default);
+            CancellationToken cancellationToken);
 
         /// <summary>
         /// Download a package's manifest (nuspec), or null if the package does not exist.
@@ -52,7 +52,7 @@ namespace BaGet.Core.Content
         Task<Stream> GetPackageManifestStreamOrNullAsync(
             string packageId,
             NuGetVersion packageVersion,
-            CancellationToken cancellationToken = default);
+            CancellationToken cancellationToken);
 
         /// <summary>
         /// Download a package's readme, or null if the package or readme does not exist.
@@ -66,6 +66,6 @@ namespace BaGet.Core.Content
         Task<Stream> GetPackageReadmeStreamOrNullAsync(
             string id,
             NuGetVersion version,
-            CancellationToken cancellationToken = default);
+            CancellationToken cancellationToken);
     }
 }

@@ -39,7 +39,7 @@ namespace BaGet.Controllers
         public async Task Upload(CancellationToken cancellationToken)
         {
             if (_options.Value.IsReadOnlyMode ||
-                !await _authentication.AuthenticateAsync(Request.GetApiKey()))
+                !await _authentication.AuthenticateAsync(Request.GetApiKey(), cancellationToken))
             {
                 HttpContext.Response.StatusCode = 401;
                 return;
@@ -94,7 +94,7 @@ namespace BaGet.Controllers
                 return NotFound();
             }
 
-            if (!await _authentication.AuthenticateAsync(Request.GetApiKey()))
+            if (!await _authentication.AuthenticateAsync(Request.GetApiKey(), cancellationToken))
             {
                 return Unauthorized();
             }
@@ -110,7 +110,7 @@ namespace BaGet.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Relist(string id, string version)
+        public async Task<IActionResult> Relist(string id, string version, CancellationToken cancellationToken)
         {
             if (_options.Value.IsReadOnlyMode)
             {
@@ -122,12 +122,12 @@ namespace BaGet.Controllers
                 return NotFound();
             }
 
-            if (!await _authentication.AuthenticateAsync(Request.GetApiKey()))
+            if (!await _authentication.AuthenticateAsync(Request.GetApiKey(), cancellationToken))
             {
                 return Unauthorized();
             }
 
-            if (await _packages.RelistPackageAsync(id, nugetVersion))
+            if (await _packages.RelistPackageAsync(id, nugetVersion, cancellationToken))
             {
                 return Ok();
             }

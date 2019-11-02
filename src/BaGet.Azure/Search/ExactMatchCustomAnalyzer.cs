@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.Azure.Search.Models;
 
-namespace BaGet.Azure.Search
+namespace BaGet.Azure
 {
     /// <summary>
     /// A custom analyzer for case insensitive exact match.
