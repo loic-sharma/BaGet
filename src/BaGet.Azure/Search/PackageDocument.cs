@@ -65,7 +65,8 @@ namespace BaGet.Azure
         public string SearchFilters { get; set; }
     }
 
-    public class UpdateDownloads : IDownloadCountDocument
+    [SerializePropertyNamesAsCamelCase]
+    public class UpdateDownloads : KeyedDocument, IDownloadCountDocument
     {
         public long TotalDownloads { get; set; }
         public int DownloadsMagnitude { get; set; }
