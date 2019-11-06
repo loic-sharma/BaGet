@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using BaGet.Core;
 using Microsoft.Azure.Search.Models;
-using NuGet.Versioning;
 
 namespace BaGet.Azure
 {
