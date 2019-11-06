@@ -69,7 +69,9 @@ namespace BaGet.Azure
     public class UpdateDownloads : KeyedDocument, IDownloadCountDocument
     {
         public long TotalDownloads { get; set; }
+
         public int DownloadsMagnitude { get; set; }
+
         public string[] VersionDownloads { get; set; }
     }
 
