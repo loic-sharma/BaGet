@@ -178,31 +178,38 @@ namespace BaGet.Core
             var frameworks = GetCompatibleFrameworksOrNull(framework);
             var search = (IQueryable<Package>)_context.Packages.Where(p => p.Listed);
 
-            if (!string.IsNullOrEmpty(query))
+            IQueryable<Package> ComposePackageQuery(IQueryable<Package> packageQuery)
             {
-                query = query.ToLower();
-                search = search.Where(p => p.Id.ToLower().Contains(query));
+                if (!string.IsNullOrEmpty(query))
+                {
+                    query = query.ToLower();
+                    packageQuery = packageQuery.Where(p => p.Id.ToLower().Contains(query));
+                }
+
+                if (!includePrerelease)
+                {
+                    packageQuery = packageQuery.Where(p => !p.IsPrerelease);
+                }
+
+                if (!includeSemVer2)
+                {
+                    packageQuery = packageQuery.Where(p => p.SemVerLevel != SemVerLevel.SemVer2);
+                }
+
+                if (!string.IsNullOrEmpty(packageType))
+                {
+                    packageQuery = packageQuery.Where(p => p.PackageTypes.Any(t => t.Name == packageType));
+                }
+
+                if (frameworks != null)
+                {
+                    packageQuery = packageQuery.Where(p => p.TargetFrameworks.Any(f => frameworks.Contains(f.Moniker)));
+                }
+
+                return packageQuery;
             }
 
-            if (!includePrerelease)
-            {
-                search = search.Where(p => !p.IsPrerelease);
-            }
-
-            if (!includeSemVer2)
-            {
-                search = search.Where(p => p.SemVerLevel != SemVerLevel.SemVer2);
-            }
-
-            if (!string.IsNullOrEmpty(packageType))
-            {
-                search = search.Where(p => p.PackageTypes.Any(t => t.Name == packageType));
-            }
-
-            if (frameworks != null)
-            {
-                search = search.Where(p => p.TargetFrameworks.Any(f => frameworks.Contains(f.Moniker)));
-            }
+            search = ComposePackageQuery(search);
 
             var packageIds = search.Select(p => p.Id)
                 .OrderBy(id => id)
@@ -226,6 +233,8 @@ namespace BaGet.Core
 
                 search = _context.Packages.Where(p => packageIdResults.Contains(p.Id));
             }
+
+            search = ComposePackageQuery(search);
 
             var results = await search.Where(p => p.Listed).ToListAsync(cancellationToken);
 
