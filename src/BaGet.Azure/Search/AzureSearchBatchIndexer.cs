@@ -79,9 +79,37 @@ namespace BaGet.Azure
                 await IndexAsync(halfB, cancellationToken);
             }
 
-            if (indexingResults != null && indexingResults.Any(result => !result.Succeeded))
+            if (indexingResults != null)
             {
-                throw new InvalidOperationException("Failed to pushed batch of documents documents");
+                const int errorsToLog = 5;
+                var errorCount = 0;
+                foreach (var result in indexingResults)
+                {
+                    if (!result.Succeeded)
+                    {
+                        if (errorCount < errorsToLog)
+                        {
+                            _logger.LogError(
+                                "Indexing document with key {Key} failed. {StatusCode}: {ErrorMessage}",
+                                result.Key,
+                                result.StatusCode,
+                                result.ErrorMessage);
+                        }
+
+                        errorCount++;
+                    }
+                }
+
+                if (errorCount > 0)
+                {
+                    _logger.LogError(
+                        "{ErrorCount} errors were found when indexing a batch. {LoggedErrors} were logged.",
+                        errorCount,
+                        Math.Min(errorCount, errorsToLog));
+                    throw new InvalidOperationException(
+                        $"Errors were found when indexing a batch. Up to {errorsToLog} errors get logged.",
+                        innerException);
+                }
             }
         }
     }
