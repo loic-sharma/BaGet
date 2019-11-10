@@ -209,7 +209,7 @@ namespace BaGet.Core
                 return packageQuery;
             }
 
-            search = ComposePackageQuery(search);
+            search = AddSearchFilters(search);
 
             var packageIds = search.Select(p => p.Id)
                 .OrderBy(id => id)
@@ -234,7 +234,7 @@ namespace BaGet.Core
                 search = _context.Packages.Where(p => packageIdResults.Contains(p.Id));
             }
 
-            search = ComposePackageQuery(search);
+            search = AddSearchFilters(search);
 
             var results = await search.Where(p => p.Listed).ToListAsync(cancellationToken);
 
