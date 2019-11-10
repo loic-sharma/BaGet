@@ -206,6 +206,8 @@ namespace BaGet.Core
                     packageQuery = packageQuery.Where(p => p.TargetFrameworks.Any(f => frameworks.Contains(f.Moniker)));
                 }
 
+                packageQuery = packageQuery.Where(p => p.Listed);
+
                 return packageQuery;
             }
 
@@ -236,7 +238,7 @@ namespace BaGet.Core
 
             search = AddSearchFilters(search);
 
-            var results = await search.Where(p => p.Listed).ToListAsync(cancellationToken);
+            var results = await search.ToListAsync(cancellationToken);
 
             return results.GroupBy(p => p.Id).ToList();
         }
