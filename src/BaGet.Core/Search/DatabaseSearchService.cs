@@ -178,7 +178,7 @@ namespace BaGet.Core
             var frameworks = GetCompatibleFrameworksOrNull(framework);
             var search = (IQueryable<Package>)_context.Packages.Where(p => p.Listed);
 
-            IQueryable<Package> ComposePackageQuery(IQueryable<Package> packageQuery)
+            IQueryable<Package> AddSearchFilters(IQueryable<Package> packageQuery)
             {
                 if (!string.IsNullOrEmpty(query))
                 {
