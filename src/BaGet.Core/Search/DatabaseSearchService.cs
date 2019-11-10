@@ -176,16 +176,10 @@ namespace BaGet.Core
             CancellationToken cancellationToken)
         {
             var frameworks = GetCompatibleFrameworksOrNull(framework);
-            var search = (IQueryable<Package>)_context.Packages.Where(p => p.Listed);
+            IQueryable<Package> search = _context.Packages;
 
             IQueryable<Package> AddSearchFilters(IQueryable<Package> packageQuery)
             {
-                if (!string.IsNullOrEmpty(query))
-                {
-                    query = query.ToLower();
-                    packageQuery = packageQuery.Where(p => p.Id.ToLower().Contains(query));
-                }
-
                 if (!includePrerelease)
                 {
                     packageQuery = packageQuery.Where(p => !p.IsPrerelease);
@@ -212,6 +206,12 @@ namespace BaGet.Core
             }
 
             search = AddSearchFilters(search);
+
+            if (!string.IsNullOrEmpty(query))
+            {
+                query = query.ToLower();
+                search = search.Where(p => p.Id.ToLower().Contains(query));
+            }
 
             var packageIds = search.Select(p => p.Id)
                 .OrderBy(id => id)
