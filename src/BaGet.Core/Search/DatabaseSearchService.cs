@@ -77,7 +77,7 @@ namespace BaGet.Core
                     Version = latest.Version.ToFullString(),
                     Description = latest.Description,
                     Authors = latest.Authors,
-                    IconUrl = latest.IconUrlString,
+                    IconUrl = !string.IsNullOrEmpty(latest.IconUrlString) ? latest.IconUrlString : _url.GetPackageIconDownloadUrl(latest.Id, latest.Version),
                     LicenseUrl = latest.LicenseUrlString,
                     ProjectUrl = latest.ProjectUrlString,
                     RegistrationIndexUrl = _url.GetRegistrationIndexUrl(latest.Id),

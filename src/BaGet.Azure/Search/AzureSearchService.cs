@@ -102,7 +102,7 @@ namespace BaGet.Azure
                     Version = document.Version,
                     Description = document.Description,
                     Authors = document.Authors,
-                    IconUrl = document.IconUrl,
+                    IconUrl = !string.IsNullOrEmpty(document.IconUrl) ? document.IconUrl : _url.GetPackageIconDownloadUrl(document.Id, new NuGetVersion(document.Version)),
                     LicenseUrl = document.LicenseUrl,
                     ProjectUrl = document.ProjectUrl,
                     RegistrationIndexUrl = _url.GetRegistrationIndexUrl(document.Id),

@@ -71,7 +71,7 @@ namespace BaGet.Core
                     Description = package.Description,
                     Downloads = package.Downloads,
                     HasReadme = package.HasReadme,
-                    IconUrl = package.IconUrlString,
+                    IconUrl = !string.IsNullOrEmpty(package.IconUrlString) ? package.IconUrlString : _url.GetPackageIconDownloadUrl(package.Id, package.Version),
                     Language = package.Language,
                     LicenseUrl = package.LicenseUrlString,
                     Listed = package.Listed,

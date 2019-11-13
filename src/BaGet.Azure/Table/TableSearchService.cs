@@ -243,7 +243,7 @@ namespace BaGet.Azure
                 Version = latest.NormalizedVersion,
                 Description = latest.Description,
                 Authors = JsonConvert.DeserializeObject<string[]>(latest.Authors),
-                IconUrl = latest.IconUrl,
+                IconUrl = !string.IsNullOrEmpty(latest.IconUrl) ? latest.IconUrl : _url.GetPackageIconDownloadUrl(latest.Id, new NuGetVersion(versions.FirstOrDefault()?.Version)),
                 LicenseUrl = latest.LicenseUrl,
                 ProjectUrl = latest.ProjectUrl,
                 RegistrationIndexUrl = _url.GetRegistrationIndexUrl(latest.Id),
