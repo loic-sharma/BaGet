@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="NuGet.Protocol" Version="5.0.0-rtm.5856" />
+    <PackageReference Include="NuGet.Protocol" Version="5.3.1" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.2.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
