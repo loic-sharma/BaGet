@@ -26,6 +26,7 @@ namespace BaGet.Core
             Stream packageStream,
             Stream nuspecStream,
             Stream readmeStream,
+            Stream iconStream,
             CancellationToken cancellationToken);
 
         /// <summary>

@@ -36,6 +36,7 @@ namespace BaGet.Core
             Package package;
             Stream nuspecStream;
             Stream readmeStream;
+            Stream iconStream;
 
             try
             {
@@ -53,6 +54,16 @@ namespace BaGet.Core
                     else
                     {
                         readmeStream = null;
+                    }
+
+                    if (package.HasIcon)
+                    {
+                        iconStream = await packageReader.GetIconAsync(cancellationToken);
+                        iconStream = await iconStream.AsTemporaryFileStreamAsync();
+                    }
+                    else
+                    {
+                        iconStream = null;
                     }
                 }
             }
@@ -91,6 +102,7 @@ namespace BaGet.Core
                     packageStream,
                     nuspecStream,
                     readmeStream,
+                    iconStream,
                     cancellationToken);
             }
             catch (Exception e)
