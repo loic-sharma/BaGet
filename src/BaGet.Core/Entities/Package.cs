@@ -34,6 +34,7 @@ namespace BaGet.Core
         public string Description { get; set; }
         public long Downloads { get; set; }
         public bool HasReadme { get; set; }
+        public bool HasIcon { get; set; }
         public bool IsPrerelease { get; set; }
         public string Language { get; set; }
         public bool Listed { get; set; }
