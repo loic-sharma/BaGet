@@ -155,6 +155,11 @@ namespace BaGet.Core
             return await GetStreamAsync(id, version, ReadmePath, cancellationToken);
         }
 
+        public async Task<Stream> GetIconStreamAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
+        {
+            return await GetStreamAsync(id, version, IconPath, cancellationToken);
+        }
+
         public async Task DeleteAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
             var lowercasedId = id.ToLowerInvariant();

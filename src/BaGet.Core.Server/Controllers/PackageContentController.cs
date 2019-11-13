@@ -79,5 +79,21 @@ namespace BaGet.Controllers
 
             return File(readmeStream, "text/markdown");
         }
+
+        public async Task<IActionResult> DownloadIconAsync(string id, string version, CancellationToken cancellationToken)
+        {
+            if (!NuGetVersion.TryParse(version, out var nugetVersion))
+            {
+                return NotFound();
+            }
+
+            var iconStream = await _content.GetPackageIconStreamOrNullAsync(id, nugetVersion, cancellationToken);
+            if (iconStream == null)
+            {
+                return NotFound();
+            }
+
+            return File(iconStream, "image/png");
+        }
     }
 }

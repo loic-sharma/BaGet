@@ -49,7 +49,7 @@ namespace BaGet.Extensions
                 name: Routes.SymbolDownloadRouteName,
                 template: "api/download/symbols/{file}/{key}/{file2}",
                 defaults: new { controller = "Symbol", action = "Get" });
-            
+
             routes.MapRoute(
                 name: Routes.SymbolDownloadRouteName,
                 template: "api/download/symbols/{prefix}/{file}/{key}/{file2}",
@@ -115,6 +115,11 @@ namespace BaGet.Extensions
                 name: Routes.PackageDownloadReadmeRouteName,
                 template: "v3/package/{id}/{version}/readme",
                 defaults: new { controller = "PackageContent", action = "DownloadReadmeAsync" });
+
+            routes.MapRoute(
+                name: Routes.PackageDownloadIconRouteName,
+                template: "v3/package/{id}/{version}/icon",
+                defaults: new { controller = "PackageContent", action = "DownloadIconAsync" });
 
             return routes;
         }
