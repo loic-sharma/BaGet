@@ -8,7 +8,7 @@ namespace BaGet.Core.Tests.Mirror
 {
     public class MirrorServiceTests
     {
-        public class FindPackageVersionsOrNullAsync : FactsBase
+        public class jjFindPackageVersionsOrNullAsync : FactsBase
         {
             [Fact]
             public async Task MergesLocalAndUpstream()

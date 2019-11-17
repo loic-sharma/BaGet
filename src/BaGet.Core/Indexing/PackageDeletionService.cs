@@ -26,6 +26,9 @@ namespace BaGet.Core
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+        protected PackageDeletionService()
+        { }
+
         /// <summary>
         /// Attempt to delete a package.
         /// </summary>

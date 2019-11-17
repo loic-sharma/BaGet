@@ -31,6 +31,9 @@ namespace BaGet.Core
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+        protected PackageStorageService()
+        { }
+
         /// <summary>
         /// Persist a package's content to storage. This operation MUST fail if a package
         /// with the same id/version but different content has already been stored.

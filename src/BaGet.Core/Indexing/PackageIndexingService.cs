@@ -55,6 +55,10 @@ namespace BaGet.Core
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+        protected PackageIndexingService()
+        {
+        }
+
         /// <summary>
         /// Attempt to index a new package.
         /// </summary>
