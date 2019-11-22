@@ -45,7 +45,7 @@ namespace BaGet.Core.Content
             if (versions == null)
             {
                 // Fallback to the local packages if mirroring is disabled.
-                var packages = await _packages.FindAsync(id, includeUnlisted: true, cancellationToken);
+                var packages = await _packages.FindAsync(packageId, includeUnlisted: true, cancellationToken);
 
                 if (!packages.Any())
                 {
@@ -81,7 +81,7 @@ namespace BaGet.Core.Content
             // Allow read-through caching if it is configured.
             await _mirror.MirrorAsync(packageId, packageVersion, cancellationToken);
 
-            if (!await _packages.AddDownloadAsync(id, version, cancellationToken))
+            if (!await _packages.AddDownloadAsync(packageId, packageVersion, cancellationToken))
             {
                 return null;
             }
@@ -103,7 +103,7 @@ namespace BaGet.Core.Content
             // Allow read-through caching if it is configured.
             await _mirror.MirrorAsync(packageId, packageVersion, cancellationToken);
 
-            if (!await _packages.ExistsAsync(id, version, cancellationToken))
+            if (!await _packages.ExistsAsync(packageId, packageVersion, cancellationToken))
             {
                 return null;
             }
