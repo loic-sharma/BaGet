@@ -37,7 +37,7 @@
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0-preview.2" />
   </ItemGroup>
 
-  <ItemGroup Condition="$(DOTNET_RUNNING_IN_CONTAINER) == ''">
+  <ItemGroup Condition="'$(CI)' == 'true' AND '$(DOTNET_RUNNING_IN_CONTAINER)' == ''">
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
   </ItemGroup>
 
