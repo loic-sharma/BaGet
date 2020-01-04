@@ -2,7 +2,7 @@ import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as React from 'react';
 import ReactMarkdown from 'react-markdown';
 import timeago from 'timeago.js';
-import { gt } from 'semver';
+import { coerce, gt, SemVer } from 'semver';
 
 import { config } from '../config';
 import Dependencies from './Dependencies';
@@ -317,16 +317,21 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
   }
 
   private latestVersion(index: Registration.IRegistrationIndex): string | null {
-    let latestVersion: string | null = null;
+    let latestVersionString: string | null = null;
+    let latestVersion: SemVer | null = null;
     for (const entry of index.items[0].items) {
       if (!entry.catalogEntry.listed) continue;
 
-      if (latestVersion === null || gt(entry.catalogEntry.version, latestVersion)) {
-        latestVersion = entry.catalogEntry.version;
+      let entryVersion = coerce(entry.catalogEntry.version);
+      if (!!entryVersion) {
+        if (latestVersion === null || gt(entryVersion, latestVersion)) {
+          latestVersionString = entry.catalogEntry.version;
+          latestVersion = entryVersion;
+        }
       }
     }
 
-    return latestVersion;
+    return latestVersionString;
   }
 }
 
