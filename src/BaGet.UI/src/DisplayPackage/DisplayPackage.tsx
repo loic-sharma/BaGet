@@ -14,6 +14,7 @@ import SourceRepository from './SourceRepository';
 import { Versions, IPackageVersion } from './Versions';
 
 import './DisplayPackage.css';
+import DefaultPackageIcon from "../default-package-icon-256x256.png";
 
 interface IDisplayPackageProps {
   match: {
@@ -59,8 +60,6 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
     loading: true,
     package: undefined,
   };
-
-  private readonly defaultIconUrl: string = 'https://www.nuget.org/Content/gallery/img/default-package-icon-256x256.png';
 
   private id: string;
   private version?: string;
@@ -210,7 +209,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
         <div className="row display-package">
           <aside className="col-sm-1 package-icon">
             <img
-              src={this.state.package.iconUrl}
+              src={this.state.package.iconUrl || DefaultPackageIcon}
               className="img-responsive"
               onError={this.loadDefaultIcon}
               alt="The package icon" />
@@ -307,7 +306,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
   }
 
   private loadDefaultIcon = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    e.currentTarget.src = this.defaultIconUrl;
+    e.currentTarget.src = DefaultPackageIcon;
   }
 
   private normalizeVersion(version: string): string {
