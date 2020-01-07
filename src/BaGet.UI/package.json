@@ -28,6 +28,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "homepage": "",
   "devDependencies": {
     "@types/commonmark": "^0.27.0",
     "@types/jest": "^23.3.14",

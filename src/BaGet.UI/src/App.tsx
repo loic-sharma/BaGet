@@ -1,5 +1,4 @@
 import * as React from 'react';
-
 import { Action, Location } from 'history';
 import { withRouter } from 'react-router';
 import { NavLink, Route, RouteComponentProps } from 'react-router-dom';

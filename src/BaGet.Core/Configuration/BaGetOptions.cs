@@ -17,6 +17,10 @@ namespace BaGet.Core
         public string PathBase { get; set; }
 
         /// <summary>
+        /// The application Host without port number. If not set all hosts will be allowed. See https://github.com/aspnet/Announcements/issues/295
+        /// </summary>
+        public string HostUrl { get; set; }
+        /// <summary>
         /// If enabled, the database will be updated at app startup by running
         /// Entity Framework migrations. This is not recommended in production.
         /// </summary>
