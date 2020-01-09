@@ -59,6 +59,7 @@ namespace BaGet.Core
                 HasReadme = packageReader.HasReadme(),
                 IsPrerelease = nuspec.GetVersion().IsPrerelease,
                 Language = nuspec.GetLanguage() ?? string.Empty,
+                ReleaseNotes = nuspec.GetReleaseNotes() ?? string.Empty,
                 Listed = true,
                 MinClientVersion = nuspec.GetMinClientVersion()?.ToNormalizedString() ?? string.Empty,
                 Published = DateTime.UtcNow,

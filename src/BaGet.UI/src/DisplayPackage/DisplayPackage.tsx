@@ -38,6 +38,7 @@ interface IPackage {
   downloadUrl: string;
   repositoryUrl: string;
   repositoryType: string;
+  releaseNotes: string;
   totalDownloads: number;
   packageType: PackageType;
   downloads: number;
@@ -245,6 +246,10 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
 
             <ExpandableSection title="Dependents" expanded={false}>
               <Dependents packageId={this.state.package.id} />
+            </ExpandableSection>
+
+            <ExpandableSection title="Release Notes" expanded={false}>
+              <div style={{ whiteSpace: 'pre-wrap' }} >{this.state.package.releaseNotes}</div>
             </ExpandableSection>
 
             <ExpandableSection title="Dependencies" expanded={false}>

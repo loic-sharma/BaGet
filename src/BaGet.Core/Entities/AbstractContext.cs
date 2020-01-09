@@ -63,6 +63,10 @@ namespace BaGet.Core
                 .HasColumnName("OriginalVersion")
                 .HasMaxLength(MaxPackageVersionLength);
 
+            package.Property(p => p.ReleaseNotes)
+                .HasColumnName("ReleaseNotes")
+                .HasMaxLength(DefaultMaxStringLength);
+
             package.Property(p => p.Authors)
                 .HasConversion(StringArrayToJsonConverter.Instance)
                 .HasMaxLength(DefaultMaxStringLength);
