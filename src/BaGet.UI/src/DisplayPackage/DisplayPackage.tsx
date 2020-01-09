@@ -249,7 +249,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
             </ExpandableSection>
 
             <ExpandableSection title="Release Notes" expanded={false}>
-              <div style={{ whiteSpace: 'pre-wrap' }} >{this.state.package.releaseNotes}</div>
+              <div className="package-release-notes" >{this.state.package.releaseNotes}</div>
             </ExpandableSection>
 
             <ExpandableSection title="Dependencies" expanded={false}>
