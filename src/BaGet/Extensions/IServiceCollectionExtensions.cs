@@ -9,6 +9,7 @@ using BaGet.Azure;
 using BaGet.Core;
 using BaGet.Core.Content;
 using BaGet.Core.Server.Extensions;
+using BaGet.Core.Server.Transformers;
 using BaGet.Database.MySql;
 using BaGet.Database.PostgreSql;
 using BaGet.Database.Sqlite;
@@ -20,6 +21,7 @@ using BaGet.Protocol;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 
 namespace BaGet.Extensions
@@ -49,8 +51,19 @@ namespace BaGet.Extensions
                 services.ConfigureHttpServices();
             }
 
+            services.AddHealthChecks()
+            .AddCheck("Example", () =>
+                HealthCheckResult.Healthy("Example is OK!"), tags: new[] { "example" });
+
             services.AddBaGetContext();
 
+            services.AddSingleton<NugetServiceIndexRoutesTransformer>();
+            services.AddSingleton<NugetPackagePublishRoutesTransformer>();
+            services.AddSingleton<NugetSymbolRoutesTransformer>();
+            services.AddSingleton<NugetSearchRoutesTransformer>();
+            services.AddSingleton<NugetPackageMetadataRoutesTransformer>();
+            services.AddSingleton<NugetPackageContentRoutesTransformer>();
+            
             services.AddTransient<IUrlGenerator, BaGetUrlGenerator>();
 
             services.AddTransient<IPackageService>(provider =>

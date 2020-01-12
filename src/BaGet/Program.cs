@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.Threading;
 using BaGet.Core;
 using BaGet.Extensions;
@@ -27,7 +28,7 @@ namespace BaGet
             {
                 import.Command("downloads", downloads =>
                 {
-                    downloads.OnExecute(async () =>
+                    downloads.OnExecuteAsync(async cancellationToken =>
                     {
                         var provider = CreateHostBuilder(args).Build().Services;
 
@@ -60,7 +61,8 @@ namespace BaGet
                     var root = Environment.GetEnvironmentVariable("BAGET_CONFIG_ROOT");
                     if (!string.IsNullOrEmpty(root))
                         config.SetBasePath(root);
-                });
+                })
+            .UseSetting(WebHostDefaults.ApplicationKey, Assembly.GetExecutingAssembly().GetName().Name);
 
         public static IHostBuilder CreateHostBuilder(string[] args)
         {

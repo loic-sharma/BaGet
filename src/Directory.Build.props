@@ -27,10 +27,10 @@
 
   <!-- NuGet dependencies shared across projects -->
   <PropertyGroup>
-    <MicrosoftAspNetCorePackageVersion>2.2.0</MicrosoftAspNetCorePackageVersion>
-    <MicrosoftEntityFrameworkCorePackageVersion>2.2.2</MicrosoftEntityFrameworkCorePackageVersion>
-    <MicrosoftExtensionsPackageVersion>2.2.0</MicrosoftExtensionsPackageVersion>
-    <NuGetPackageVersion>5.0.0-rtm.5856</NuGetPackageVersion>
+    <MicrosoftAspNetCorePackageVersion>3.1.0</MicrosoftAspNetCorePackageVersion>
+    <MicrosoftEntityFrameworkCorePackageVersion>3.1.0</MicrosoftEntityFrameworkCorePackageVersion>
+    <MicrosoftExtensionsPackageVersion>3.1.0</MicrosoftExtensionsPackageVersion>
+    <NuGetPackageVersion>5.4.0</NuGetPackageVersion>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
