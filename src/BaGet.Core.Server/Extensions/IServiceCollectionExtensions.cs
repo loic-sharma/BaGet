@@ -1,4 +1,5 @@
 using BaGet.Configuration;
+using BaGet.Controllers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Http.Features;
@@ -19,7 +20,7 @@ namespace BaGet.Core.Server.Extensions
             // See: options => options.EnableEndpointRouting = false
             services
                 .AddControllers(options => options.EnableEndpointRouting = false)
-                .AddApplicationPart(typeof(BaGet.Controllers.PackageContentController).Assembly)
+                .AddApplicationPart(typeof(PackageContentController).Assembly)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddNewtonsoftJson(options =>
                 {
