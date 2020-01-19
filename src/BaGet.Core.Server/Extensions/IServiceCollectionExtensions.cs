@@ -13,15 +13,18 @@ namespace BaGet.Core.Server.Extensions
     {
         public static IServiceCollection ConfigureHttpServices(this IServiceCollection services)
         {
+            // TODO: Consider replacing "AddMvc" with "AddControllers".
+            // See: https://docs.microsoft.com/en-us/aspnet/core/migration/22-to-30?view=aspnetcore-3.1&tabs=visual-studio#mvc-service-registration
+            // TODO: Consider replacing "AddMvc" with Endpoint Routing
+            // See: options => options.EnableEndpointRouting = false
             services
-                .AddMvc()
+                .AddControllers(options => options.EnableEndpointRouting = false)
                 .AddApplicationPart(typeof(BaGet.Controllers.PackageContentController).Assembly)
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                .AddJsonOptions(options =>
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+                .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
                 });
-
 
             services.AddCors();
             services.AddHttpContextAccessor();
