@@ -347,8 +347,8 @@ namespace BaGet.Extensions
                 return client;
             });
 
-            services.AddSingleton<DownloadsImporter>();
-            services.AddSingleton<IPackageDownloadsSource, PackageDownloadsJsonSource>();
+            services.AddScoped<DownloadsImporter>();
+            services.AddScoped<IPackageDownloadsSource, PackageDownloadsJsonSource>();
 
             return services;
         }

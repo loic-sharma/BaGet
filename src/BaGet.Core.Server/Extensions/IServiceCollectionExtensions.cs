@@ -1,4 +1,5 @@
 using BaGet.Configuration;
+using BaGet.Controllers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Http.Features;
@@ -14,17 +15,16 @@ namespace BaGet.Core.Server.Extensions
     public static class IServiceCollectionExtensions
     {
         public static IServiceCollection ConfigureHttpServices(this IServiceCollection services)
-        {
-            services.AddMvc(option => option.EnableEndpointRouting = false);
-
-            var controllersAssembly = Assembly.GetAssembly(typeof(BaGet.Controllers.ServiceIndexController));
-            var part = new AssemblyPart(controllersAssembly);
+        {                
+            // TODO: Consider replacing "AddMvc" with "AddControllers".
+            // See: https://docs.microsoft.com/en-us/aspnet/core/migration/22-to-30?view=aspnetcore-3.1&tabs=visual-studio#mvc-service-registration
+            // TODO: Consider replacing "AddMvc" with Endpoint Routing
+            // See: options => options.EnableEndpointRouting = false
             services
                 .AddControllers(options => options.EnableEndpointRouting = false)
-                .ConfigureApplicationPartManager(apm => apm.ApplicationParts.Add(part))
-                .AddApplicationPart(controllersAssembly)
-                .AddControllersAsServices()
+                .AddApplicationPart(typeof(PackageContentController).Assembly)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+                //.AddControllersAsServices()
                 .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;

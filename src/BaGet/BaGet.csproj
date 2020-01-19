@@ -2,23 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <!-- TODO: Remove once replaced MVC with Endpoint Routing -->
+    <NoWarn>$(NoWarn);MVC1005</NoWarn>
 
     <SpaRoot>..\BaGet.UI\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Entities\**" />
-    <Content Remove="Entities\**" />
-    <EmbeddedResource Remove="Entities\**" />
-    <None Remove="Entities\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.5.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices" Version="3.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="$(MicrosoftAspNetCorePackageVersion)" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,9 +20,9 @@
     <ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
     <ProjectReference Include="..\BaGet.Core.Server\BaGet.Core.Server.csproj" />
     <ProjectReference Include="..\BaGet.Database.MySql\BaGet.Database.MySql.csproj" />
+    <ProjectReference Include="..\BaGet.Database.PostgreSql\BaGet.Database.PostgreSql.csproj" />
     <ProjectReference Include="..\BaGet.Database.Sqlite\BaGet.Database.Sqlite.csproj" />
     <ProjectReference Include="..\BaGet.Database.SqlServer\BaGet.Database.SqlServer.csproj" />
-    <ProjectReference Include="..\BaGet.Database.PostgreSql\BaGet.Database.PostgreSql.csproj" />
     <ProjectReference Include="..\BaGet.Gcp\BaGet.Gcp.csproj" />
     <ProjectReference Include="..\BaGet.Protocol\BaGet.Protocol.csproj" />
   </ItemGroup>

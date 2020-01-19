@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -39,24 +38,15 @@ namespace BaGet
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var options = Configuration.Get<BaGetOptions>();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseStatusCodePages();
             }
 
-            // Run migrations if necessary.
-            var options = Configuration.Get<BaGetOptions>();
-            if (options.RunMigrationsAtStartup && options.Database.Type != DatabaseType.AzureTable)
-            {
-                using (var scope = app.ApplicationServices.CreateScope())
-                {
-                    scope.ServiceProvider
-                        .GetRequiredService<IContext>()
-                        .Database
-                        .Migrate();
-                }
-            }
+            app.UseRouting();
 
             app.UsePathBase(options.PathBase);
             app.UseForwardedHeaders();
