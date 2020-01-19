@@ -71,8 +71,6 @@ namespace BaGet
                     if (!string.IsNullOrEmpty(root))
                     {
                         config.SetBasePath(root);
-                })
-            .UseSetting(WebHostDefaults.ApplicationKey, Assembly.GetExecutingAssembly().GetName().Name);
                     }
                 });
 
