@@ -1,0 +1,20 @@
+# REST Client tests on https://github.com/tronalddump-io/tronald-app
+@baseUrl = http://localhost:50561
+
+### PUT package
+PUT {{baseUrl}}/api/v2/symbol
+Accept: application/json
+content-type: application/octet-stream'
+
+< C:\Source\GitHub\bagetcore3\src\BaGet.Database.Sqlite\bin\Debug\BaGet.Database.Sqlite.0.1.0-prerelease.nupkg
+
+
+### DELETE package
+GET {{baseUrl}}/api/download/symbols/{file}/{key}/{file2}
+Accept: application/json
+content-type: application/json
+
+{
+    "name": "sample",
+    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+}

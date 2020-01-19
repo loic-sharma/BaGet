@@ -15,10 +15,12 @@ namespace BaGet.Core.Server.Extensions
     {
         public static IServiceCollection ConfigureHttpServices(this IServiceCollection services)
         {
+            services.AddMvc(option => option.EnableEndpointRouting = false);
+
             var controllersAssembly = Assembly.GetAssembly(typeof(BaGet.Controllers.ServiceIndexController));
             var part = new AssemblyPart(controllersAssembly);
             services
-                .AddControllers()
+                .AddControllers(options => options.EnableEndpointRouting = false)
                 .ConfigureApplicationPartManager(apm => apm.ApplicationParts.Add(part))
                 .AddApplicationPart(controllersAssembly)
                 .AddControllersAsServices()
@@ -27,7 +29,6 @@ namespace BaGet.Core.Server.Extensions
                 {
                     options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
                 });
-
 
             services.AddCors();
             services.AddHttpContextAccessor();

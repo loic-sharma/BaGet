@@ -1,0 +1,33 @@
+# REST Client tests on https://github.com/tronalddump-io/tronald-app
+@baseUrl = http://localhost:50561
+
+### Simple Search packages
+GET {{baseUrl}}/v3/search?q=log
+Accept: application/json
+content-type: application/octet-stream'
+
+### Complex Search packages
+GET {{baseUrl}}/v3/search?q=log&skip=1&take=5&prerelease=true&semVerLevel=2.0.0
+Accept: application/json
+content-type: application/octet-stream'
+
+
+### GET autocomplete results
+GET {{baseUrl}}/v3/autocomplete?q=log
+Accept: application/json
+content-type: application/json
+
+{
+    "name": "sample",
+    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+}
+
+### Relist package
+GET {{baseUrl}}/v3/dependents?packageId=MsgReader
+Accept: application/json
+content-type: application/json
+
+{
+    "name": "sample",
+    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+}

@@ -17,6 +17,6 @@ namespace BaGet
         public const string PackageDownloadManifestRouteName = "package-download-manifest";
         public const string PackageDownloadReadmeRouteName = "package-download-readme";
         public const string SymbolDownloadRouteName = "symbol-download";
-        public const string SymbolDownloadRouteNamePrefix = "symbol-download-prefix";
+        public const string SymbolDownloadPrefixRouteName = "symbol-download-prefix";
     }
 }

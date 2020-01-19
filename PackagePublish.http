@@ -1,0 +1,37 @@
+# REST Client tests on https://github.com/tronalddump-io/tronald-app
+@baseUrl = http://localhost:50561
+
+### Get index json
+GET {{baseUrl}}/v3/index.json
+Accept: application/json
+
+
+### PUT package
+PUT {{baseUrl}}/api/v2/package
+Accept: application/json
+content-type: application/json
+
+{
+    "name": "sample",
+    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+}
+
+### DELETE package
+DELETE {{baseUrl}}/api/v2/package/MyPackage/1.0.0.2
+Accept: application/json
+content-type: application/json
+
+{
+    "name": "sample",
+    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+}
+
+### Relist package
+POST {{baseUrl}}/api/v2/package
+Accept: application/json
+content-type: application/json
+
+{
+    "name": "sample",
+    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+}

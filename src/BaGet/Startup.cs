@@ -45,8 +45,6 @@ namespace BaGet
                 app.UseStatusCodePages();
             }
 
-            app.UseRouting();
-
             // Run migrations if necessary.
             var options = Configuration.Get<BaGetOptions>();
             if (options.RunMigrationsAtStartup && options.Database.Type != DatabaseType.AzureTable)
@@ -60,9 +58,6 @@ namespace BaGet
                 }
             }
 
-            //var rewOptions = new RewriteOptions().AddRewrite("api/v2/symbol", "/Symbol/Upload", true);
-            //app.UseRewriter(rewOptions);
-
             app.UsePathBase(options.PathBase);
             app.UseForwardedHeaders();
             app.UseSpaStaticFiles();
@@ -70,17 +65,15 @@ namespace BaGet
             app.UseCors(ConfigureCorsOptions.CorsPolicy);
             app.UseOperationCancelledMiddleware();
 
-            app.UseEndpoints(endpoints =>
+            app.UseMvc(routes =>
             {
-                endpoints.MapServiceIndexRoutes();
-                endpoints.MapPackagePublishRoutes();
-                endpoints.MapSymbolRoutes();
-                endpoints.MapSearchRoutes();
-                endpoints.MapPackageMetadataRoutes();
-                endpoints.MapPackageContentRoutes();
-                endpoints.MapControllers();
-                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapHealthChecks("/health");
+                routes
+                    .MapServiceIndexRoutes()   
+                    .MapPackagePublishRoutes() 
+                    .MapSymbolRoutes()         
+                    .MapSearchRoutes()         
+                    .MapPackageMetadataRoutes()
+                    .MapPackageContentRoutes();
             });
 
             app.UseSpa(spa =>
