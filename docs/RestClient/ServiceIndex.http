@@ -1,6 +1,0 @@
-# REST Client tests
-@baseUrl = http://localhost:50561
-
-### Get index json
-GET {{baseUrl}}/v3/index.json
-Accept: application/json
