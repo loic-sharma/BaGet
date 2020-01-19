@@ -1,4 +1,4 @@
-# REST Client tests on https://github.com/tronalddump-io/tronald-app
+# REST Client tests
 @baseUrl = http://localhost:50561
 
 ### Get package
