@@ -15,7 +15,7 @@ namespace BaGet
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var app = new CommandLineApplication
             {
@@ -29,26 +29,26 @@ namespace BaGet
             {
                 import.Command("downloads", downloads =>
                 {
-                    downloads.OnExecute(async () =>
+                    downloads.OnExecuteAsync(async cancellationToken =>
                     {
                         var provider = CreateHostBuilder(args).Build().Services;
 
                         await provider
                             .GetRequiredService<DownloadsImporter>()
-                            .ImportAsync(CancellationToken.None);
+                            .ImportAsync(cancellationToken);
                     });
                 });
             });
 
-            app.OnExecute(() =>
+            app.OnExecuteAsync(async cancellationToken =>
             {
                 var host = CreateWebHostBuilder(args).Build();
 
-                RunMigrationsAsync(host).GetAwaiter().GetResult();
-                host.Run();
+                await RunMigrationsAsync(host, cancellationToken);
+                await host.RunAsync(cancellationToken);
             });
 
-            app.Execute(args);
+            await app.ExecuteAsync(args);
         }
 
         public static IHostBuilder CreateWebHostBuilder(string[] args) =>
@@ -83,7 +83,7 @@ namespace BaGet
                 .ConfigureBaGetLogging();
         }
 
-        private static async Task RunMigrationsAsync(IHost host)
+        private static async Task RunMigrationsAsync(IHost host, CancellationToken cancellationToken)
         {
             // Run migrations if necessary.
             var options = host.Services.GetRequiredService<IOptions<BaGetOptions>>();
@@ -94,7 +94,10 @@ namespace BaGet
                 {
                     var ctx = scope.ServiceProvider.GetRequiredService<IContext>();
 
-                    await ctx.Database.MigrateAsync();
+                    // TODO: An "InvalidOperationException" is thrown and caught due to a bug
+                    // in EF Core 3.0. This is fixed in 3.1.
+                    // See: https://github.com/dotnet/efcore/issues/18307
+                    await ctx.Database.MigrateAsync(cancellationToken);
                 }
             }
         }

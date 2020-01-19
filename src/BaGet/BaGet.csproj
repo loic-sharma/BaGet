@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.2" />
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="$(MicrosoftAspNetCorePackageVersion)" />
   </ItemGroup>
 
