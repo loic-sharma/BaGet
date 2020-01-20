@@ -19,7 +19,7 @@ namespace BaGet.Core.Server.Extensions
             // TODO: Consider replacing "AddMvc" with Endpoint Routing
             // See: options => options.EnableEndpointRouting = false
             services
-                .AddControllers(options => options.EnableEndpointRouting = false)
+                .AddControllers()
                 .AddApplicationPart(typeof(PackageContentController).Assembly)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddNewtonsoftJson(options =>

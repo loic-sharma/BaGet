@@ -43,24 +43,23 @@ namespace BaGet
                 app.UseStatusCodePages();
             }
 
-            app.UseRouting();
-
-            app.UsePathBase(options.PathBase);
-            app.UseForwardedHeaders();
             app.UseSpaStaticFiles();
 
+            app.UseRouting();
+
+            app.UseForwardedHeaders();
+            app.UsePathBase(options.PathBase);
             app.UseCors(ConfigureCorsOptions.CorsPolicy);
             app.UseOperationCancelledMiddleware();
 
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes
-                    .MapServiceIndexRoutes()
-                    .MapPackagePublishRoutes()
-                    .MapSymbolRoutes()
-                    .MapSearchRoutes()
-                    .MapPackageMetadataRoutes()
-                    .MapPackageContentRoutes();
+                endpoints.MapServiceIndexRoutes();
+                endpoints.MapPackagePublishRoutes();
+                endpoints.MapSymbolRoutes();
+                endpoints.MapSearchRoutes();
+                endpoints.MapPackageMetadataRoutes();
+                endpoints.MapPackageContentRoutes();
             });
 
             app.UseSpa(spa =>
