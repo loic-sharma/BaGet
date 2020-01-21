@@ -3,9 +3,6 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
 
-    <!-- TODO: Remove once replaced MVC with Endpoint Routing -->
-    <NoWarn>$(NoWarn);MVC1005</NoWarn>
-
     <SpaRoot>..\BaGet.UI\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
   </PropertyGroup>
