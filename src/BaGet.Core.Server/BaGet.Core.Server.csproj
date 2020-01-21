@@ -1,8 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
 
+    <PackageTags>NuGet</PackageTags>
     <Description>BaGet's NuGet server implementation</Description>
   </PropertyGroup>
 
