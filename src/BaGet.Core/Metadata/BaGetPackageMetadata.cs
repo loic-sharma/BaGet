@@ -24,5 +24,11 @@ namespace BaGet.Core
 
         [JsonProperty("repositoryType")]
         public string RepositoryType { get; set; }
+
+        /// <summary>
+        /// The package's release notes.
+        /// </summary>
+        [JsonProperty("releaseNotes")]
+        public string ReleaseNotes { get; set; }
     }
 }

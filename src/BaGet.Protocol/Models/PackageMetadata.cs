@@ -115,12 +115,6 @@ namespace BaGet.Protocol.Models
         public string Title { get; set; }
 
         /// <summary>
-        /// The package's release notes.
-        /// </summary>
-        [JsonProperty("releaseNotes")]
-        public string ReleaseNotes { get; set; }
-
-        /// <summary>
         /// The dependencies of the package, grouped by target framework.
         /// </summary>
         [JsonProperty("dependencyGroups")]
