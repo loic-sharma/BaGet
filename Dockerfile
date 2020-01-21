@@ -2,7 +2,7 @@ FROM microsoft/dotnet:3.0-aspnetcore-runtime AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM microsoft/dotnet:3.0-sdk AS build
+FROM microsoft/dotnet:3.1-sdk AS build
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get install -y nodejs
 WORKDIR /src
