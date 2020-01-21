@@ -214,8 +214,8 @@ namespace BaGet.Core
             }
 
             var packageIds = search.Select(p => p.Id)
-                .OrderBy(id => id)
                 .Distinct()
+                .OrderBy(id => id)
                 .Skip(skip)
                 .Take(take);
 
