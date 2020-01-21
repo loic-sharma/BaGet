@@ -1,4 +1,5 @@
 using BaGet.Configuration;
+using BaGet.Controllers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Http.Features;
@@ -14,14 +15,13 @@ namespace BaGet.Core.Server.Extensions
         public static IServiceCollection ConfigureHttpServices(this IServiceCollection services)
         {
             services
-                .AddMvc()
-                .AddApplicationPart(typeof(BaGet.Controllers.PackageContentController).Assembly)
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                .AddJsonOptions(options =>
+                .AddControllers()
+                .AddApplicationPart(typeof(PackageContentController).Assembly)
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+                .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
                 });
-
 
             services.AddCors();
             services.AddHttpContextAccessor();

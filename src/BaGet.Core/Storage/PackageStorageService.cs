@@ -62,7 +62,7 @@ namespace BaGet.Core
                     lowercasedNormalizedVersion,
                     packagePath);
 
-                throw new InvalidOperationException($"Failed to store package {lowercasedId} {lowercasedNormalizedVersion}");
+                throw new InvalidOperationException($"Failed to store package {lowercasedId} {lowercasedNormalizedVersion} due to conflict");
             }
 
             // Store the package's nuspec.
@@ -82,7 +82,7 @@ namespace BaGet.Core
                     lowercasedNormalizedVersion,
                     nuspecPath);
 
-                throw new InvalidOperationException($"Failed to store package {lowercasedId} {lowercasedNormalizedVersion} nuspec");
+                throw new InvalidOperationException($"Failed to store package {lowercasedId} {lowercasedNormalizedVersion} nuspec due to conflict");
             }
 
             // Store the package's readme, if one exists.
@@ -104,7 +104,7 @@ namespace BaGet.Core
                         lowercasedNormalizedVersion,
                         readmePath);
 
-                    throw new InvalidOperationException($"Failed to store package {lowercasedId} {lowercasedNormalizedVersion} readme");
+                    throw new InvalidOperationException($"Failed to store package {lowercasedId} {lowercasedNormalizedVersion} readme due to conflict");
                 }
             }
 
