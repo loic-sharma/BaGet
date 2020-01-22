@@ -248,9 +248,11 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
               <Dependents packageId={this.state.package.id} />
             </ExpandableSection>
 
-            <ExpandableSection title="Release Notes" expanded={false}>
-              <div className="package-release-notes" >{this.state.package.releaseNotes}</div>
-            </ExpandableSection>
+            {this.state.package.releaseNotes &&
+              <ExpandableSection title="Release Notes" expanded={false}>
+                <div className="package-release-notes" >{this.state.package.releaseNotes}</div>
+              </ExpandableSection>
+            }
 
             <ExpandableSection title="Dependencies" expanded={false}>
               <Dependencies dependencyGroups={this.state.package.dependencyGroups} />
