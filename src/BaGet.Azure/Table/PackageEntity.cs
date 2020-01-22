@@ -29,6 +29,7 @@ namespace BaGet.Azure
         public DateTime Published { get; set; }
         public bool RequireLicenseAcceptance { get; set; }
         public int SemVerLevel { get; set; }
+        public string ReleaseNotes { get; set; }
         public string Summary { get; set; }
         public string Title { get; set; }
 

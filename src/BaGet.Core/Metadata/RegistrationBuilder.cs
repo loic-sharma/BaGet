@@ -76,6 +76,7 @@ namespace BaGet.Core
                     LicenseUrl = package.LicenseUrlString,
                     Listed = package.Listed,
                     MinClientVersion = package.MinClientVersion,
+                    ReleaseNotes = package.ReleaseNotes,
                     PackageContentUrl = _url.GetPackageDownloadUrl(package.Id, package.Version),
                     PackageTypes = package.PackageTypes.Select(t => t.Name).ToList(),
                     ProjectUrl = package.ProjectUrlString,
