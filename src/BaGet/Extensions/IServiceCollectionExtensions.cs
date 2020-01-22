@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
@@ -39,7 +40,7 @@ namespace BaGet.Extensions
             services.ConfigureAndValidate<FileSystemStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
             services.ConfigureAndValidate<BlobStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
             services.ConfigureAndValidate<AzureSearchOptions>(configuration.GetSection(nameof(BaGetOptions.Search)));
-
+            
             services.ConfigureAzure(configuration);
             services.ConfigureAws(configuration);
             services.ConfigureGcp(configuration);
@@ -49,6 +50,11 @@ namespace BaGet.Extensions
                 services.ConfigureHttpServices();
             }
 
+            services.AddSingleton<IValidatableObject>(resolver =>
+                resolver.GetRequiredService<IOptions<BaGetOptions>>().Value);
+            services.AddSingleton<IValidatableObject>(resolver =>
+                resolver.GetRequiredService<IOptions<MirrorOptions>>().Value);
+                
             services.AddBaGetContext();
 
             services.AddTransient<IUrlGenerator, BaGetUrlGenerator>();

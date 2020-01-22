@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace BaGet.Core
 {
-    public class BaGetOptions
+    public class BaGetOptions : IValidatableObject
     {
          /// <summary>
         /// The API Key required to authenticate package
@@ -49,5 +50,10 @@ namespace BaGet.Core
 
         [Required]
         public MirrorOptions Mirror { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            return Enumerable.Empty<ValidationResult>();
+        }
     }
 }

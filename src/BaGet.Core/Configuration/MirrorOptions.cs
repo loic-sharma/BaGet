@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 namespace BaGet.Core
 {
     public class MirrorOptions : IValidatableObject
-    {
+    { 
         /// <summary>
         /// If true, packages that aren't found locally will be indexed
         /// using the upstream source.
@@ -25,10 +25,12 @@ namespace BaGet.Core
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
+            const string helpUrl = "https://loic-sharma.github.io/BaGet/configuration/#Enable-Read-Through-Caching";
+
             if (Enabled && PackageSource == null)
             {
                 yield return new ValidationResult(
-                    $"The {nameof(PackageSource)} configuration is required if mirroring is enabled",
+                    $"The {nameof(PackageSource)} configuration is required if mirroring is enabled. See {helpUrl}",
                     new[] { nameof(PackageSource) });
             }
         }

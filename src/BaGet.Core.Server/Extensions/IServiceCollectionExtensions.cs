@@ -1,6 +1,8 @@
 using BaGet.Configuration;
+using BaGet.Core.Filters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +23,8 @@ namespace BaGet.Core.Server.Extensions
                 {
                     options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
                 });
+
+            services.AddTransient<IStartupFilter, SettingValidationStartupFilter>();
 
 
             services.AddCors();
