@@ -64,8 +64,9 @@ namespace BaGet.Core
                 .HasMaxLength(MaxPackageVersionLength);
 
             package.Property(p => p.Authors)
+                .HasMaxLength(DefaultMaxStringLength)
                 .HasConversion(StringArrayToJsonConverter.Instance)
-                .HasMaxLength(DefaultMaxStringLength);
+                .Metadata.SetValueComparer(StringArrayComparer.Instance);
 
             package.Property(p => p.IconUrl)
                 .HasConversion(UriToStringConverter.Instance)
@@ -84,8 +85,9 @@ namespace BaGet.Core
                 .HasMaxLength(DefaultMaxStringLength);
 
             package.Property(p => p.Tags)
+                .HasMaxLength(DefaultMaxStringLength)
                 .HasConversion(StringArrayToJsonConverter.Instance)
-                .HasMaxLength(DefaultMaxStringLength);
+                .Metadata.SetValueComparer(StringArrayComparer.Instance);
 
             package.Property(p => p.Description).HasMaxLength(DefaultMaxStringLength);
             package.Property(p => p.Language).HasMaxLength(MaxPackageLanguageLength);

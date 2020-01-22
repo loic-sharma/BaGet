@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
 
     <PackageTags>NuGet;Amazon;Cloud</PackageTags>
     <Description>The libraries to host BaGet on AWS.</Description>
