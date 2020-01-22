@@ -239,6 +239,7 @@ namespace BaGet.Azure
                 SemVerLevel = (SemVerLevel)entity.SemVerLevel,
                 Summary = entity.Summary,
                 Title = entity.Title,
+                ReleaseNotes = entity.ReleaseNotes,
                 IconUrl = ParseUri(entity.IconUrl),
                 LicenseUrl = ParseUri(entity.LicenseUrl),
                 ProjectUrl = ParseUri(entity.ProjectUrl),

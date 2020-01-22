@@ -40,6 +40,7 @@ namespace BaGet.Azure
                 Title = package.Title,
                 IconUrl = package.IconUrlString,
                 LicenseUrl = package.LicenseUrlString,
+                ReleaseNotes = package.ReleaseNotes,
                 ProjectUrl = package.ProjectUrlString,
                 RepositoryUrl = package.RepositoryUrlString,
                 RepositoryType = package.RepositoryType,

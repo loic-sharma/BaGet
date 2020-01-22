@@ -16,6 +16,10 @@
   white-space: pre-wrap;
 }
 
+.display-package .package-release-notes {
+  white-space: pre-wrap;
+}
+
 .package-details-info {
   margin-top: -25px;
 }

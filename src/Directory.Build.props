@@ -27,9 +27,9 @@
 
   <!-- NuGet dependencies shared across projects -->
   <PropertyGroup>
-    <MicrosoftAspNetCorePackageVersion>2.2.0</MicrosoftAspNetCorePackageVersion>
-    <MicrosoftEntityFrameworkCorePackageVersion>2.2.2</MicrosoftEntityFrameworkCorePackageVersion>
-    <MicrosoftExtensionsPackageVersion>2.2.0</MicrosoftExtensionsPackageVersion>
+    <MicrosoftAspNetCorePackageVersion>3.1.1</MicrosoftAspNetCorePackageVersion>
+    <MicrosoftEntityFrameworkCorePackageVersion>3.1.1</MicrosoftEntityFrameworkCorePackageVersion>
+    <MicrosoftExtensionsPackageVersion>3.1.1</MicrosoftExtensionsPackageVersion>
     <NuGetPackageVersion>5.0.0-rtm.5856</NuGetPackageVersion>
   </PropertyGroup>
 
