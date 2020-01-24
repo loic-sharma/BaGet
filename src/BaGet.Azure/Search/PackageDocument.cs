@@ -7,7 +7,7 @@ namespace BaGet.Azure
 {
     // See: https://docs.microsoft.com/en-us/nuget/api/search-query-service-resource#search-for-packages
     [SerializePropertyNamesAsCamelCase]
-    public class PackageDocument : KeyedDocument
+    public class PackageDocument : KeyedDocument, IDownloadCountDocument
     {
         public const string IndexName = "packages";
 
@@ -66,10 +66,29 @@ namespace BaGet.Azure
     }
 
     [SerializePropertyNamesAsCamelCase]
+    public class UpdateDownloads : KeyedDocument, IDownloadCountDocument
+    {
+        public long TotalDownloads { get; set; }
+
+        public int DownloadsMagnitude { get; set; }
+
+        public string[] VersionDownloads { get; set; }
+    }
+
+    [SerializePropertyNamesAsCamelCase]
     public class KeyedDocument : IKeyedDocument
     {
         [Key]
         public string Key { get; set; }
+    }
+
+    public interface IDownloadCountDocument
+    {
+        long TotalDownloads { get; set; }
+
+        int DownloadsMagnitude { get; set; }
+
+        string[] VersionDownloads { get; set; }
     }
 
     public interface IKeyedDocument

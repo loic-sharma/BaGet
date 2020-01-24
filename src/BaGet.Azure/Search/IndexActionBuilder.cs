@@ -12,29 +12,83 @@ namespace BaGet.Azure
         public virtual IReadOnlyList<IndexAction<KeyedDocument>> AddPackage(
             PackageRegistration registration)
         {
-            return AddOrUpdatePackage(registration, isUpdate: false);
+            var encodedId = EncodePackageId(registration.PackageId.ToLowerInvariant());
+            var result = new List<IndexAction<KeyedDocument>>();
+
+            foreach (var (searchFilters, packages) in PrepareFilters(registration))
+            {
+                if (!packages.Any()) continue;
+
+                var documentKey = $"{encodedId}-{searchFilters}";
+                var action = IndexAction.Upload<KeyedDocument>(
+                    BuildFullDocument(documentKey, searchFilters, packages));
+
+                result.Add(action);
+            }
+
+            return result;
         }
 
         public virtual IReadOnlyList<IndexAction<KeyedDocument>> UpdatePackage(
             PackageRegistration registration)
         {
-            return AddOrUpdatePackage(registration, isUpdate: true);
+            var encodedId = EncodePackageId(registration.PackageId.ToLowerInvariant());
+            var result = new List<IndexAction<KeyedDocument>>();
+
+            foreach (var (searchFilters, packages) in PrepareFilters(registration))
+            {
+                var documentKey = $"{encodedId}-{searchFilters}";
+                IndexAction<KeyedDocument> action;
+
+                if (!packages.Any())
+                {
+                    action = IndexAction.Delete(
+                        new KeyedDocument
+                        {
+                            Key = documentKey
+                        });
+                }
+                else
+                {
+                    action = IndexAction.MergeOrUpload<KeyedDocument>(
+                        BuildFullDocument(documentKey, searchFilters, packages));
+                }
+
+                result.Add(action);
+            }
+
+            return result;
         }
 
-        private IReadOnlyList<IndexAction<KeyedDocument>> AddOrUpdatePackage(
-            PackageRegistration registration,
-            bool isUpdate)
+        public virtual IReadOnlyList<IndexAction<KeyedDocument>> UpdateDownloads(
+            PackageRegistration registration)
         {
             var encodedId = EncodePackageId(registration.PackageId.ToLowerInvariant());
             var result = new List<IndexAction<KeyedDocument>>();
 
+            foreach (var (searchFilters, packages) in PrepareFilters(registration))
+            {
+                if (!packages.Any()) continue;
+
+                var documentKey = $"{encodedId}-{searchFilters}";
+                var action = IndexAction.Merge<KeyedDocument>(
+                    BuildDownloadsDocument(documentKey, packages));
+
+                result.Add(action);
+            }
+
+            return result;
+        }
+
+        private IEnumerable<(SearchFilters, List<Package>)> PrepareFilters(
+            PackageRegistration registration)
+        {
             for (var i = 0; i < 4; i++)
             {
                 var includePrerelease = (i & 1) != 0;
                 var includeSemVer2 = (i & 2) != 0;
                 var searchFilters = (SearchFilters)i;
 
-                var documentKey = $"{encodedId}-{searchFilters}";
                 var filtered = registration.Packages.Where(p => p.Listed);
 
                 if (!includePrerelease)
@@ -47,61 +101,10 @@ namespace BaGet.Azure
                     filtered = filtered.Where(p => p.SemVerLevel != SemVerLevel.SemVer2);
                 }
 
-                var versions = filtered.OrderBy(p => p.Version).ToList();
-                if (versions.Count == 0)
-                {
-                    if (isUpdate)
-                    {
-                        var action = IndexAction.Delete(
-                            new KeyedDocument
-                            {
-                                Key = documentKey
-                            });
+                var packages = filtered.OrderBy(p => p.Version).ToList();
 
-                        result.Add(action);
-                    }
-
-                    continue;
-                }
-
-                var latest = versions.Last();
-                var dependencies = latest
-                    .Dependencies
-                    .Select(d => d.Id?.ToLowerInvariant())
-                    .Where(d => d != null)
-                    .Distinct()
-                    .ToArray();
-
-                var document = new PackageDocument();
-
-                document.Key = $"{encodedId}-{searchFilters}";
-                document.Id = latest.Id;
-                document.Version = latest.Version.ToFullString();
-                document.Description = latest.Description;
-                document.Authors = latest.Authors;
-                document.IconUrl = latest.IconUrlString;
-                document.LicenseUrl = latest.LicenseUrlString;
-                document.ProjectUrl = latest.ProjectUrlString;
-                document.Published = latest.Published;
-                document.Summary = latest.Summary;
-                document.Tags = latest.Tags;
-                document.Title = latest.Title;
-                document.TotalDownloads = versions.Sum(p => p.Downloads);
-                document.DownloadsMagnitude = document.TotalDownloads.ToString().Length;
-                document.Versions = versions.Select(p => p.Version.ToFullString()).ToArray();
-                document.VersionDownloads = versions.Select(p => p.Downloads.ToString()).ToArray();
-                document.Dependencies = dependencies;
-                document.PackageTypes = latest.PackageTypes.Select(t => t.Name).ToArray();
-                document.Frameworks = latest.TargetFrameworks.Select(f => f.Moniker.ToLowerInvariant()).ToArray();
-                document.SearchFilters = searchFilters.ToString();
-
-                result.Add(
-                    isUpdate
-                        ? IndexAction.MergeOrUpload<KeyedDocument>(document)
-                        : IndexAction.Upload<KeyedDocument>(document));
+                yield return (searchFilters, packages);
             }
-
-            return result;
         }
 
         private string EncodePackageId(string key)
@@ -112,6 +115,59 @@ namespace BaGet.Azure
             var base64 = Convert.ToBase64String(bytes);
 
             return base64.Replace('+', '-').Replace('/', '_');
+        }
+
+        private PackageDocument BuildFullDocument(
+            string documentKey,
+            SearchFilters searchFilters,
+            List<Package> packages)
+        {
+            var latest = packages.Last();
+            var dependencies = latest
+                .Dependencies
+                .Select(d => d.Id?.ToLowerInvariant())
+                .Where(d => d != null)
+                .Distinct()
+                .ToArray();
+
+            var document = new PackageDocument();
+
+            document.Key = documentKey;
+            document.Id = latest.Id;
+            document.Version = latest.Version.ToFullString();
+            document.Description = latest.Description;
+            document.Authors = latest.Authors;
+            document.IconUrl = latest.IconUrlString;
+            document.LicenseUrl = latest.LicenseUrlString;
+            document.ProjectUrl = latest.ProjectUrlString;
+            document.Published = latest.Published;
+            document.Summary = latest.Summary;
+            document.Tags = latest.Tags;
+            document.Title = latest.Title;
+            document.TotalDownloads = packages.Sum(p => p.Downloads);
+            document.DownloadsMagnitude = document.TotalDownloads.ToString().Length;
+            document.Versions = packages.Select(p => p.Version.ToFullString()).ToArray();
+            document.VersionDownloads = packages.Select(p => p.Downloads.ToString()).ToArray();
+            document.Dependencies = dependencies;
+            document.PackageTypes = latest.PackageTypes.Select(t => t.Name).ToArray();
+            document.Frameworks = latest.TargetFrameworks.Select(f => f.Moniker.ToLowerInvariant()).ToArray();
+            document.SearchFilters = searchFilters.ToString();
+
+            return document;
+        }
+
+        private UpdateDownloads BuildDownloadsDocument(
+            string documentKey,
+            List<Package> packages)
+        {
+            var document = new UpdateDownloads();
+
+            document.Key = documentKey;
+            document.TotalDownloads = packages.Sum(p => p.Downloads);
+            document.DownloadsMagnitude = document.TotalDownloads.ToString().Length;
+            document.VersionDownloads = packages.Select(p => p.Downloads.ToString()).ToArray();
+
+            return document;
         }
     }
 }
