@@ -66,11 +66,13 @@ namespace BaGet.Core.Content
             // Allow read-through caching if it is configured.
             await _mirror.MirrorAsync(id, version, cancellationToken);
 
-            if (!await _packages.AddDownloadAsync(id, version, cancellationToken))
+            var package = await _packages.FindOrNullAsync(id, version, includeUnlisted: true, cancellationToken);
+            if (package == null)
             {
                 return null;
             }
 
+            await _packages.AddDownloadAsync(package, cancellationToken);
             return await _storage.GetPackageStreamAsync(id, version, cancellationToken);
         }
 

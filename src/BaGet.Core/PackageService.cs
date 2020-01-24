@@ -97,9 +97,10 @@ namespace BaGet.Core
             return TryUpdatePackageAsync(id, version, p => p.Listed = true, cancellationToken);
         }
 
-        public Task<bool> AddDownloadAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
+        public async Task AddDownloadAsync(Package package, CancellationToken cancellationToken)
         {
-            return TryUpdatePackageAsync(id, version, p => p.Downloads += 1, cancellationToken);
+            package.Downloads += 1;
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<bool> HardDeletePackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)

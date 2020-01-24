@@ -50,10 +50,7 @@ namespace BaGet.Azure
             return PackageAddResult.Success;
         }
 
-        public async Task<bool> AddDownloadAsync(
-            string id,
-            NuGetVersion version,
-            CancellationToken cancellationToken)
+        public async Task AddDownloadAsync(Package package, CancellationToken cancellationToken)
         {
             var attempt = 0;
 
@@ -62,21 +59,24 @@ namespace BaGet.Azure
                 try
                 {
                     var operation = TableOperation.Retrieve<PackageDownloadsEntity>(
-                        id.ToLowerInvariant(),
-                        version.ToNormalizedString().ToLowerInvariant());
+                        package.Id.ToLowerInvariant(),
+                        package.NormalizedVersionString.ToLowerInvariant());
 
                     var result = await _table.ExecuteAsync(operation);
                     var entity = result.Result as PackageDownloadsEntity;
 
                     if (entity == null)
                     {
-                        return false;
+                        _logger.LogWarning(
+                            "Could not add download to package {PackageId} {PackageVersion} because it does not exist",
+                            package.Id,
+                            package.NormalizedVersionString);
+                        return;
                     }
 
                     entity.Downloads += 1;
 
                     await _table.ExecuteAsync(TableOperation.Merge(entity), cancellationToken);
-                    return true;
                 }
                 catch (StorageException e)
                     when (attempt < MaxPreconditionFailures && e.IsPreconditionFailedException())

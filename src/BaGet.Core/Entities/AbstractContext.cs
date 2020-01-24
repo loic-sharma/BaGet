@@ -29,8 +29,6 @@ namespace BaGet.Core
         public DbSet<PackageType> PackageTypes { get; set; }
         public DbSet<TargetFramework> TargetFrameworks { get; set; }
 
-        public Task<int> SaveChangesAsync() => SaveChangesAsync(default);
-
         public abstract bool IsUniqueConstraintViolationException(DbUpdateException exception);
 
         public virtual bool SupportsLimitInSubqueries => true;
