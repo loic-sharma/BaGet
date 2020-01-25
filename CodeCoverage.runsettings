@@ -9,7 +9,7 @@
           <ExcludeByAttribute>Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
           <SingleHit>false</SingleHit>
           <UseSourceLink>true</UseSourceLink>
-          <IncludeTestAssembly>true<IncludeTestAssembly>
+          <IncludeTestAssembly>true</IncludeTestAssembly>
         </Configuration>
       </DataCollector>
     </DataCollectors>
