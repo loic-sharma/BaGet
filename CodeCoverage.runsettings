@@ -5,7 +5,6 @@
       <DataCollector friendlyName="XPlat code coverage">
         <Configuration>
           <Format>json,cobertura</Format>          
-          <Include>[Baget.*]*</Include> <!-- [Assembly-Filter]Type-Filter -->
           <ExcludeByAttribute>Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
           <SingleHit>false</SingleHit>
           <UseSourceLink>true</UseSourceLink>
