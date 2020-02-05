@@ -38,11 +38,9 @@ namespace BaGet.Aliyun
         {
             try
             {
-                return await Task.Run<Stream>(() =>
-                 {
-                     var ossObject = _client.GetObject(_bucket, PrepareKey(path));
-                     return ossObject.ResponseStream;
-                 });
+                var ossObject = await Task.Factory.FromAsync(_client.BeginGetObject(_bucket, PrepareKey(path), null, null), _client.EndGetObject);
+
+                return ossObject.ResponseStream;
             }
             catch (Exception)
             {
@@ -63,28 +61,34 @@ namespace BaGet.Aliyun
             // TODO: Uploads should be idempotent. This should fail if and only if the blob
             // already exists but has different content.
 
-            return await Task<StoragePutResult>.Run(() =>
+            var metadata = new ObjectMetadata
             {
-                var rst = _client.PutObject(_bucket, PrepareKey(path), content, new ObjectMetadata
-                {
-                    ContentType = contentType,
-                });
+                ContentType = contentType,
+            };
 
-                if (rst.HttpStatusCode == System.Net.HttpStatusCode.OK)
-                {
+            var putResult = await Task.Factory.FromAsync(_client.BeginPutObject(_bucket, PrepareKey(path), content, metadata, null, null), _client.EndPutObject);
+
+            switch (putResult.HttpStatusCode)
+            {
+                case System.Net.HttpStatusCode.OK:
                     return StoragePutResult.Success;
-                }
 
-                return StoragePutResult.Success;
-            });
+                // TODO: check sdk documents
+                //case System.Net.HttpStatusCode.Conflict:
+                //    return StoragePutResult.Conflict;
+
+                //case System.Net.HttpStatusCode.Found:
+                //    return StoragePutResult.AlreadyExists;
+
+                default:
+                    return StoragePutResult.Success;
+            }
         }
 
-        public async Task DeleteAsync(string path, CancellationToken cancellationToken = default)
+        public Task DeleteAsync(string path, CancellationToken cancellationToken = default)
         {
-            await Task.Run(() =>
-            {
-                _client.DeleteObject(_bucket, PrepareKey(path));
-            });
+            _client.DeleteObject(_bucket, PrepareKey(path));
+            return Task.CompletedTask;
         }
     }
 }
