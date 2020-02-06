@@ -6,7 +6,7 @@
 We're open source and accept contributions!
 [Fork us on GitHub](https://github.com/loic-sharma/BaGet).
 
-Before you begin, you should decide [which AppEngine region](https://cloud.google.com/appengine/docs/locations)
+Before you begin, you should decide which [AppEngine region](https://cloud.google.com/appengine/docs/locations)
 you will use. For best performance, Cloud Storage and Cloud SQL should be located
 in the same region as your AppEngine deployment.
 
