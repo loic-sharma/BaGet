@@ -15,6 +15,7 @@ You can run BaGet on your preferred platform:
 * [Azure](quickstart/azure.md)
 * [AWS](quickstart/aws.md)
 * [Google Cloud](quickstart/gcp.md)
+* [Alibaba Cloud(Aliyun)](quickstart/aliyun.md)
 
 ## BaGet SDK
 

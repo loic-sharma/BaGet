@@ -2,6 +2,9 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
+using BaGet.Aliyun;
+using BaGet.Aliyun.Configuration;
+using BaGet.Aliyun.Extensions;
 using BaGet.Aws;
 using BaGet.Aws.Configuration;
 using BaGet.Aws.Extensions;
@@ -43,6 +46,7 @@ namespace BaGet.Extensions
             services.ConfigureAzure(configuration);
             services.ConfigureAws(configuration);
             services.ConfigureGcp(configuration);
+            services.ConfigureAliyunOSS(configuration);
 
             if (httpServices)
             {
@@ -170,6 +174,15 @@ namespace BaGet.Extensions
             return services;
         }
 
+        public static IServiceCollection ConfigureAliyunOSS(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            services.ConfigureAndValidate<AliyunStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
+
+            return services;
+        }
+
         public static IServiceCollection ConfigureGcp(
             this IServiceCollection services,
             IConfiguration configuration)
@@ -190,6 +203,7 @@ namespace BaGet.Extensions
             services.AddBlobStorageService();
             services.AddS3StorageService();
             services.AddGoogleCloudStorageService();
+            services.AddAliyunStorageService();
 
             services.AddTransient<IStorageService>(provider =>
             {
@@ -211,6 +225,9 @@ namespace BaGet.Extensions
 
                     case StorageType.Null:
                         return provider.GetRequiredService<NullStorageService>();
+
+                    case StorageType.AliyunOss:
+                        return provider.GetRequiredService<AliyunStorageService>();
 
                     default:
                         throw new InvalidOperationException(
