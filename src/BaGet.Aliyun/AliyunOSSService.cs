@@ -38,7 +38,7 @@ namespace BaGet.Aliyun
         {
             try
             {
-                var ossObject = await Task.Factory.FromAsync(_client.BeginGetObject(_bucket, PrepareKey(path), null, null), _client.EndGetObject);
+                var ossObject = await Task.Factory.FromAsync(_client.BeginGetObject, _client.EndGetObject, _bucket, PrepareKey(path), null);
 
                 return ossObject.ResponseStream;
             }
@@ -66,7 +66,7 @@ namespace BaGet.Aliyun
                 ContentType = contentType,
             };
 
-            var putResult = await Task.Factory.FromAsync(_client.BeginPutObject(_bucket, PrepareKey(path), content, metadata, null, null), _client.EndPutObject);
+            var putResult = await Task<PutObjectResult>.Factory.FromAsync(_client.BeginPutObject, _client.EndPutObject, _bucket, PrepareKey(path), content, metadata);
 
             switch (putResult.HttpStatusCode)
             {
