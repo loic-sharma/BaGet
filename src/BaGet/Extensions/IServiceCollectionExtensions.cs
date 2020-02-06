@@ -178,7 +178,7 @@ namespace BaGet.Extensions
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.ConfigureAndValidate<AliyunOSSOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
+            services.ConfigureAndValidate<AliyunStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
 
             return services;
         }
@@ -203,7 +203,7 @@ namespace BaGet.Extensions
             services.AddBlobStorageService();
             services.AddS3StorageService();
             services.AddGoogleCloudStorageService();
-            services.AddAliyunOssStorageService();
+            services.AddAliyunStorageService();
 
             services.AddTransient<IStorageService>(provider =>
             {
@@ -226,8 +226,8 @@ namespace BaGet.Extensions
                     case StorageType.Null:
                         return provider.GetRequiredService<NullStorageService>();
 
-                    case StorageType.AliyunOSS:
-                        return provider.GetRequiredService<AliyunOSSService>();
+                    case StorageType.AliyunOss:
+                        return provider.GetRequiredService<AliyunStorageService>();
 
                     default:
                         throw new InvalidOperationException(

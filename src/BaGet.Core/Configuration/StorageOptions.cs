@@ -12,6 +12,6 @@ namespace BaGet.Core
         AwsS3 = 2,
         GoogleCloud = 3,
         Null = 4,
-        AliyunOSS = 5,
+        AliyunOss = 5,
     }
 }

@@ -8,16 +8,16 @@ namespace BaGet.Aliyun.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddAliyunOssStorageService(this IServiceCollection services)
+        public static IServiceCollection AddAliyunStorageService(this IServiceCollection services)
         {
             services.AddSingleton(provider =>
             {
-                var options = provider.GetRequiredService<IOptions<AliyunOSSOptions>>().Value;
+                var options = provider.GetRequiredService<IOptions<AliyunStorageOptions>>().Value;
 
                 return new OssClient(options.Endpoint, options.AccessKey, options.AccessKeySecret);
             });
 
-            services.AddTransient<AliyunOSSService>();
+            services.AddTransient<AliyunStorageService>();
 
             return services;
         }
