@@ -28,7 +28,7 @@ caching to:
 1. Speed up your builds if restores from [nuget.org](https://nuget.org) are slow
 1. Enable package restores in offline scenarios
 
-The following `Mirror` settings configures BaGet to index packages from [nuget.org](https://nuget.org):
+The following `Mirror` setting configures BaGet to index packages from [nuget.org](https://nuget.org):
 
 ```json
 {
@@ -66,7 +66,7 @@ downloaded if you know the package's id and version. You can override this behav
 
 ## Enable Package Overwrites
 
-Normally, BaGet will reject a package upload if the id and version is already taken. You can configure BaGet
+Normally, BaGet will reject a package upload if the id and version are already taken. You can configure BaGet
 to overwrite the already existing package by setting `AllowPackageOverwrites`:
 
 ```json
