@@ -32,7 +32,7 @@ namespace BaGet.Database.Sqlite.Migrations
                     RepositoryType = table.Column<string>(maxLength: 100, nullable: true),
                     Tags = table.Column<string>(maxLength: 4000, nullable: true),
                     RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
-                    Version = table.Column<string>(maxLength: 64, nullable: false)
+                    Version = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 64, nullable: false)
                 },
                 constraints: table =>
                 {

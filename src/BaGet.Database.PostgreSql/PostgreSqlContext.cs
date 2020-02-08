@@ -34,6 +34,10 @@ namespace BaGet.Database.PostgreSql
                 .Property(p => p.Id)
                 .HasColumnType("citext");
 
+            builder.Entity<Package>()
+                .Property(p => p.NormalizedVersionString)
+                .HasColumnType("citext");
+
             builder.Entity<PackageDependency>()
                 .Property(p => p.Id)
                 .HasColumnType("citext");
