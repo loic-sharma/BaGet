@@ -140,12 +140,18 @@ namespace BaGet.Protocol
 
                         var serviceIndex = await serviceIndexClient.GetAsync(cancellationToken);
 
-                        var contentClient = new RawPackageContentClient(_httpClient, serviceIndex.GetPackageContentResourceUrl());
-                        var metadataClient = new RawPackageMetadataClient(_httpClient, serviceIndex.GetPackageMetadataResourceUrl());
-                        var catalogClient = new RawCatalogClient(_httpClient, serviceIndex.GetCatalogResourceUrl());
-                        var searchClient = new RawSearchClient(_httpClient,
-                            serviceIndex.GetSearchQueryResourceUrl(),
-                            serviceIndex.GetSearchAutocompleteResourceUrl());
+                        var contentResourceUrl = serviceIndex.GetPackageContentResourceUrl();
+                        var metadataResourceUrl = serviceIndex.GetPackageMetadataResourceUrl();
+                        var catalogResourceUrl = serviceIndex.GetCatalogResourceUrl();
+                        var searchResourceUrl = serviceIndex.GetSearchQueryResourceUrl();
+                        var autocompleteResourceUrl = serviceIndex.GetSearchAutocompleteResourceUrl();
+
+                        var contentClient = new RawPackageContentClient(_httpClient, contentResourceUrl);
+                        var metadataClient = new RawPackageMetadataClient(_httpClient, metadataResourceUrl);
+                        var searchClient = new RawSearchClient(_httpClient, searchResourceUrl, autocompleteResourceUrl);
+                        var catalogClient = catalogResourceUrl == null
+                            ? new NullCatalogClient() as ICatalogClient
+                            : new RawCatalogClient(_httpClient, catalogResourceUrl);
 
                         _clients = new NuGetClients
                         {
