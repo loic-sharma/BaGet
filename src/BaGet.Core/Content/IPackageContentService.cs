@@ -8,7 +8,7 @@ namespace BaGet.Core.Content
 {
     /// <summary>
     /// The Package Content resource, used to download NuGet packages and to fetch other metadata.
-    /// 
+    ///
     /// See: https://docs.microsoft.com/en-us/nuget/api/package-base-address-resource
     /// </summary>
     public interface IPackageContentService
@@ -64,6 +64,20 @@ namespace BaGet.Core.Content
         /// The package's readme stream, or null if the package or readme does not exist. The stream may not be seekable.
         /// </returns>
         Task<Stream> GetPackageReadmeStreamOrNullAsync(
+            string id,
+            NuGetVersion version,
+            CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Download a package's icon, or null if the package or icon does not exist.
+        /// </summary>
+        /// <param name="id">The package id.</param>
+        /// <param name="version">The package's version.</param>
+        /// <param name="cancellationToken">A token to cancel the task.</param>
+        /// <returns>
+        /// The package's icon stream, or null if the package or icon does not exist. The stream may not be seekable.
+        /// </returns>
+        Task<Stream> GetPackageIconStreamOrNullAsync(
             string id,
             NuGetVersion version,
             CancellationToken cancellationToken);

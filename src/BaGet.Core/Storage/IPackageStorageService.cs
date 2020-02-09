@@ -19,6 +19,7 @@ namespace BaGet.Core
         /// <param name="packageStream">The package's nupkg stream.</param>
         /// <param name="nuspecStream">The package's nuspec stream.</param>
         /// <param name="readmeStream">The package's readme stream, or null if none.</param>
+        /// <param name="iconStream">The package's icon stream, or null if none.</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task SavePackageContentAsync(
@@ -26,6 +27,7 @@ namespace BaGet.Core
             Stream packageStream,
             Stream nuspecStream,
             Stream readmeStream,
+            Stream iconStream,
             CancellationToken cancellationToken);
 
         /// <summary>
@@ -54,6 +56,8 @@ namespace BaGet.Core
         /// <param name="cancellationToken"></param>
         /// <returns>The package's readme stream.</returns>
         Task<Stream> GetReadmeStreamAsync(string id, NuGetVersion version, CancellationToken cancellationToken);
+
+        Task<Stream> GetIconStreamAsync(string id, NuGetVersion version, CancellationToken cancellationToken);
 
         /// <summary>
         /// Remove a package's content from storage. This operation SHOULD succeed

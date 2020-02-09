@@ -23,7 +23,8 @@ namespace BaGet.Core.Tests.Services
                         null,
                         packageStream: Stream.Null,
                         nuspecStream: Stream.Null,
-                        readmeStream: Stream.Null));
+                        readmeStream: Stream.Null,
+                        iconStream: Stream.Null));
             }
 
             [Fact]
@@ -34,7 +35,8 @@ namespace BaGet.Core.Tests.Services
                         _package,
                         packageStream: null,
                         nuspecStream: Stream.Null,
-                        readmeStream: Stream.Null));
+                        readmeStream: Stream.Null,
+                        iconStream: Stream.Null));
             }
 
             [Fact]
@@ -45,7 +47,8 @@ namespace BaGet.Core.Tests.Services
                         _package,
                         packageStream: Stream.Null,
                         nuspecStream: null,
-                        readmeStream: Stream.Null));
+                        readmeStream: Stream.Null,
+                        iconStream: Stream.Null));
             }
 
             [Fact]
@@ -57,13 +60,15 @@ namespace BaGet.Core.Tests.Services
                 using (var packageStream = StringStream("My package"))
                 using (var nuspecStream = StringStream("My nuspec"))
                 using (var readmeStream = StringStream("My readme"))
+                using (var iconStream = StringStream("My icon"))
                 {
                     // Act
                     await _target.SavePackageContentAsync(
                         _package,
                         packageStream: packageStream,
                         nuspecStream: nuspecStream,
-                        readmeStream: readmeStream);
+                        readmeStream: readmeStream,
+                        iconStream: iconStream);
 
                     // Assert
                     Assert.True(_puts.ContainsKey(PackagePath));
@@ -77,6 +82,10 @@ namespace BaGet.Core.Tests.Services
                     Assert.True(_puts.ContainsKey(ReadmePath));
                     Assert.Equal("My readme", await ToStringAsync(_puts[ReadmePath].Content));
                     Assert.Equal("text/markdown", _puts[ReadmePath].ContentType);
+
+                    Assert.True(_puts.ContainsKey(IconPath));
+                    Assert.Equal("My icon", await ToStringAsync(_puts[IconPath].Content));
+                    Assert.Equal("image/png", _puts[IconPath].ContentType);
                 }
             }
 
@@ -94,7 +103,8 @@ namespace BaGet.Core.Tests.Services
                         _package,
                         packageStream: packageStream,
                         nuspecStream: nuspecStream,
-                        readmeStream: null);
+                        readmeStream: null,
+                        iconStream: null);
                 }
 
                 // Assert
@@ -111,13 +121,15 @@ namespace BaGet.Core.Tests.Services
                 using (var packageStream = StringStream("My package"))
                 using (var nuspecStream = StringStream("My nuspec"))
                 using (var readmeStream = StringStream("My readme"))
+                using (var iconStream = StringStream("My icon"))
                 {
                     // Act
                     await _target.SavePackageContentAsync(
                         _package,
                         packageStream: packageStream,
                         nuspecStream: nuspecStream,
-                        readmeStream: readmeStream);
+                        readmeStream: readmeStream,
+                        iconStream: iconStream);
                 }
 
                 // Assert
@@ -135,12 +147,14 @@ namespace BaGet.Core.Tests.Services
                 using (var packageStream = StringStream("My package"))
                 using (var nuspecStream = StringStream("My nuspec"))
                 using (var readmeStream = StringStream("My readme"))
+                using (var iconStream = StringStream("My icon"))
                 {
                     await _target.SavePackageContentAsync(
                         _package,
                         packageStream: packageStream,
                         nuspecStream: nuspecStream,
-                        readmeStream: readmeStream);
+                        readmeStream: readmeStream,
+                        iconStream: iconStream);
 
                     // Assert
                     Assert.True(_puts.ContainsKey(PackagePath));
@@ -154,6 +168,10 @@ namespace BaGet.Core.Tests.Services
                     Assert.True(_puts.ContainsKey(ReadmePath));
                     Assert.Equal("My readme", await ToStringAsync(_puts[ReadmePath].Content));
                     Assert.Equal("text/markdown", _puts[ReadmePath].ContentType);
+
+                    Assert.True(_puts.ContainsKey(IconPath));
+                    Assert.Equal("My icon", await ToStringAsync(_puts[IconPath].Content));
+                    Assert.Equal("image/icon", _puts[IconPath].ContentType);
                 }
             }
 
@@ -166,6 +184,7 @@ namespace BaGet.Core.Tests.Services
                 using (var packageStream = StringStream("My package"))
                 using (var nuspecStream = StringStream("My nuspec"))
                 using (var readmeStream = StringStream("My readme"))
+                using (var iconStream = StringStream("My icon"))
                 {
                     // Act
                     await Assert.ThrowsAsync<InvalidOperationException>(() =>
@@ -173,7 +192,8 @@ namespace BaGet.Core.Tests.Services
                             _package,
                             packageStream: packageStream,
                             nuspecStream: nuspecStream,
-                            readmeStream: readmeStream));
+                            readmeStream: readmeStream,
+                            iconStream: iconStream));
                 }
             }
         }
@@ -331,6 +351,8 @@ namespace BaGet.Core.Tests.Services
             protected string PackagePath => Path.Combine("packages", "my.package", "1.2.3", "my.package.1.2.3.nupkg");
             protected string NuspecPath => Path.Combine("packages", "my.package", "1.2.3", "my.package.nuspec");
             protected string ReadmePath => Path.Combine("packages", "my.package", "1.2.3", "readme");
+
+            protected string IconPath => Path.Combine("packages", "my.package", "1.2.3", "icon");
 
             protected Stream StringStream(string input)
             {

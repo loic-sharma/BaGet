@@ -15,7 +15,7 @@ namespace BaGet.Database.SqlServer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
+                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -32,6 +32,8 @@ namespace BaGet.Database.SqlServer.Migrations
                         .HasMaxLength(4000);
 
                     b.Property<long>("Downloads");
+
+                    b.Property<bool>("HasIcon");
 
                     b.Property<bool>("HasReadme");
 

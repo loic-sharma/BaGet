@@ -29,6 +29,7 @@ namespace BaGet.Azure
                 Description = package.Description,
                 Downloads = package.Downloads,
                 HasReadme = package.HasReadme,
+                HasIcon = package.HasIcon,
                 IsPrerelease = package.IsPrerelease,
                 Language = package.Language,
                 Listed = package.Listed,
