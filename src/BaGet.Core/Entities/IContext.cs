@@ -24,5 +24,13 @@ namespace BaGet.Core
         bool SupportsLimitInSubqueries { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Applies any pending migrations for the context to the database.
+        /// Creates the database if it does not already exist.
+        /// </summary>
+        /// <param name="cancellationToken">A token to cancel the task.</param>
+        /// <returns>A task that completes once migrations are applied.</returns>
+        Task RunMigrationsAsync(CancellationToken cancellationToken);
     }
 }

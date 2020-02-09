@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -30,6 +31,9 @@ namespace BaGet.Core
         public DbSet<TargetFramework> TargetFrameworks { get; set; }
 
         public Task<int> SaveChangesAsync() => SaveChangesAsync(default);
+
+        public virtual async Task RunMigrationsAsync(CancellationToken cancellationToken)
+            => await Database.MigrateAsync(cancellationToken);
 
         public abstract bool IsUniqueConstraintViolationException(DbUpdateException exception);
 
