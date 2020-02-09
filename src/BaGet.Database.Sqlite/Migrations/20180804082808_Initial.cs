@@ -32,7 +32,13 @@ namespace BaGet.Database.Sqlite.Migrations
                     RepositoryType = table.Column<string>(maxLength: 100, nullable: true),
                     Tags = table.Column<string>(maxLength: 4000, nullable: true),
                     RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
-                    Version = table.Column<string>(maxLength: 64, nullable: false)
+
+                    // HACK - This migration was retroactively modified by: https://github.com/loic-sharma/BaGet/pull/466
+                    // The version column used to be case sensitive:
+                    //   Version = table.Column<string>(maxLength: 64, nullable: false)
+                    // This hack is necessary as SQLite cannot alter columns.
+                    // See: https://docs.microsoft.com/en-us/ef/core/providers/sqlite/limitations#migrations-limitations
+                    Version = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 64, nullable: false)
                 },
                 constraints: table =>
                 {
