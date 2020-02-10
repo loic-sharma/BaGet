@@ -351,7 +351,6 @@ namespace BaGet.Core.Tests.Services
             protected string PackagePath => Path.Combine("packages", "my.package", "1.2.3", "my.package.1.2.3.nupkg");
             protected string NuspecPath => Path.Combine("packages", "my.package", "1.2.3", "my.package.nuspec");
             protected string ReadmePath => Path.Combine("packages", "my.package", "1.2.3", "readme");
-
             protected string IconPath => Path.Combine("packages", "my.package", "1.2.3", "icon");
 
             protected Stream StringStream(string input)
