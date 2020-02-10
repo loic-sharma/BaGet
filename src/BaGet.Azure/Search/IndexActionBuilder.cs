@@ -79,6 +79,7 @@ namespace BaGet.Azure
                 document.Version = latest.Version.ToFullString();
                 document.Description = latest.Description;
                 document.Authors = latest.Authors;
+                document.HasIcon = latest.HasIcon;
                 document.IconUrl = latest.IconUrlString;
                 document.LicenseUrl = latest.LicenseUrlString;
                 document.ProjectUrl = latest.ProjectUrlString;

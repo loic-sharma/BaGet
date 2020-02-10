@@ -237,13 +237,17 @@ namespace BaGet.Azure
                 }
             }
 
+            var iconUrl = latest.HasIcon
+                ? _url.GetPackageIconDownloadUrl(latest.Id, latestVersion)
+                : latest.IconUrl;
+
             return new SearchResult
             {
                 PackageId = latest.Id,
                 Version = latest.NormalizedVersion,
                 Description = latest.Description,
                 Authors = JsonConvert.DeserializeObject<string[]>(latest.Authors),
-                IconUrl = !string.IsNullOrEmpty(latest.IconUrl) ? latest.IconUrl : _url.GetPackageIconDownloadUrl(latest.Id, new NuGetVersion(versions.FirstOrDefault()?.Version)),
+                IconUrl = iconUrl,
                 LicenseUrl = latest.LicenseUrl,
                 ProjectUrl = latest.ProjectUrl,
                 RegistrationIndexUrl = _url.GetRegistrationIndexUrl(latest.Id),

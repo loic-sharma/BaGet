@@ -137,8 +137,7 @@ namespace BaGet
                 values: new
                 {
                     Id = id,
-                    Version = versionString,
-                    Id2 = id,
+                    Version = versionString
                 });
         }
 
