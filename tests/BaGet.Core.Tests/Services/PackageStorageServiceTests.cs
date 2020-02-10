@@ -85,7 +85,7 @@ namespace BaGet.Core.Tests.Services
 
                     Assert.True(_puts.ContainsKey(IconPath));
                     Assert.Equal("My icon", await ToStringAsync(_puts[IconPath].Content));
-                    Assert.Equal("", _puts[IconPath].ContentType);
+                    Assert.Equal("image/xyz", _puts[IconPath].ContentType);
                 }
             }
 
