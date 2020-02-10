@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using BaGet.Protocol.Models;
 using NuGet.Versioning;
 
-namespace BaGet.Core.Content
+namespace BaGet.Core
 {
     /// <summary>
     /// The Package Content resource, used to download NuGet packages and to fetch other metadata.

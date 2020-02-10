@@ -1,12 +1,12 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core.Content;
+using BaGet.Core;
 using BaGet.Protocol.Models;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Versioning;
 
-namespace BaGet.Controllers
+namespace BaGet.Hosting
 {
     /// <summary>
     /// The Package Content resource, used to download content from packages.

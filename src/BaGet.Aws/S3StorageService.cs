@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
-using BaGet.Aws.Configuration;
 using BaGet.Core;
 using Microsoft.Extensions.Options;
 

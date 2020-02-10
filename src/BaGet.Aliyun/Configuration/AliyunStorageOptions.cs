@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using BaGet.Core;
 
-namespace BaGet.Aliyun.Configuration
+namespace BaGet.Aliyun
 {
     public class AliyunStorageOptions
     {

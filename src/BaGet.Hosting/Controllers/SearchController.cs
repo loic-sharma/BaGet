@@ -5,7 +5,7 @@ using BaGet.Core;
 using BaGet.Protocol.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BaGet.Controllers
+namespace BaGet.Hosting
 {
     public class SearchController : Controller
     {

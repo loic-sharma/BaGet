@@ -1,10 +1,8 @@
-using System;
 using Aliyun.OSS;
-using BaGet.Aliyun.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace BaGet.Aliyun.Extensions
+namespace BaGet.Aliyun
 {
     public static class ServiceCollectionExtensions
     {

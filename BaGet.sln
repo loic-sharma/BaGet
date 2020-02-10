@@ -30,7 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		nuget.config = nuget.config
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Core.Server", "src\BaGet.Core.Server\BaGet.Core.Server.csproj", "{D68B56AC-98DD-4DA7-B4F8-1243538A8A5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Hosting", "src\BaGet.Hosting\BaGet.Hosting.csproj", "{D68B56AC-98DD-4DA7-B4F8-1243538A8A5C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Database.Sqlite", "src\BaGet.Database.Sqlite\BaGet.Database.Sqlite.csproj", "{EC5E6B2C-2494-40E8-8682-080BA580DDA7}"
 EndProject
@@ -46,7 +46,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{DDEC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Protocol.Samples.Tests", "samples\BaGet.Protocol.Samples.Tests.csproj", "{16B0D424-BB2F-4C0C-90B0-4F7955326ADF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaGet.Aliyun", "src\BaGet.Aliyun\BaGet.Aliyun.csproj", "{9F7C4F38-D598-42D9-A9F8-962490483B18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Aliyun", "src\BaGet.Aliyun\BaGet.Aliyun.csproj", "{9F7C4F38-D598-42D9-A9F8-962490483B18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

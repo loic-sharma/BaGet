@@ -6,7 +6,7 @@ using BaGet.Protocol.Models;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Versioning;
 
-namespace BaGet.Controllers
+namespace BaGet.Hosting
 {
     /// <summary>
     /// The Package Metadata resource, used to fetch packages' information.

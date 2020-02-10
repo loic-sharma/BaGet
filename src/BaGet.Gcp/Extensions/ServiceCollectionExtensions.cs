@@ -1,7 +1,6 @@
-using BaGet.Gcp.Services;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BaGet.Gcp.Extensions
+namespace BaGet.Gcp
 {
     public static class ServiceCollectionExtensions
     {

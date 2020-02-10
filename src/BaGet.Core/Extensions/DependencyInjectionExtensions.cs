@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 
 namespace BaGet.Core
 {
-    public static class ServiceCollectionExtensions
+    public static class DependencyInjectionExtensions
     {
         public static IServiceCollection ConfigureAndValidate<TOptions>(
             this IServiceCollection services,

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using NuGet.Versioning;
 
-namespace BaGet
+namespace BaGet.Hosting
 {
     // TODO: This should validate the "Host" header against known valid values
     public class BaGetUrlGenerator : IUrlGenerator
