@@ -1,3 +1,4 @@
+
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -93,7 +94,7 @@ namespace BaGet.Controllers
                 return NotFound();
             }
 
-            return File(iconStream, "image/png");
+            return File(iconStream, contentType: "");
         }
     }
 }
