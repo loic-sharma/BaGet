@@ -23,7 +23,7 @@ namespace BaGet.Azure
         [IsSearchable]
         public string Description { get; set; }
         public string[] Authors { get; set; }
-        public bool HasIcon { get; set; }
+        public bool HasEmbeddedIcon { get; set; }
         public string IconUrl { get; set; }
         public string LicenseUrl { get; set; }
         public string ProjectUrl { get; set; }

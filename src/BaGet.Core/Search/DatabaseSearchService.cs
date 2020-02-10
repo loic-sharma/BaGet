@@ -70,7 +70,7 @@ namespace BaGet.Core
             {
                 var versions = package.OrderByDescending(p => p.Version).ToList();
                 var latest = versions.First();
-                var iconUrl = latest.HasIcon
+                var iconUrl = latest.HasEmbeddedIcon
                     ? _url.GetPackageIconDownloadUrl(latest.Id, latest.Version)
                     : latest.IconUrlString;
 

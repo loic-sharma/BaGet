@@ -107,7 +107,7 @@ namespace BaGet.Core.Content
             await _mirror.MirrorAsync(id, version, cancellationToken);
 
             var package = await _packages.FindOrNullAsync(id, version, includeUnlisted: true, cancellationToken);
-            if (!package.HasIcon)
+            if (!package.HasEmbeddedIcon)
             {
                 return null;
             }

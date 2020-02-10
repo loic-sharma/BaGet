@@ -25,7 +25,7 @@ namespace BaGet.Core
         public static bool HasReadme(this PackageArchiveReader package)
             => package.GetFiles().Any(ReadmeFileNames.Contains);
 
-        public static bool HasIcon(this PackageArchiveReader package)
+        public static bool HasEmbeddedIcon(this PackageArchiveReader package)
             => !string.IsNullOrEmpty(package.NuspecReader.GetIcon());
 
         public async static Task<Stream> GetReadmeAsync(
@@ -67,7 +67,7 @@ namespace BaGet.Core
                 Authors = ParseAuthors(nuspec.GetAuthors()),
                 Description = nuspec.GetDescription(),
                 HasReadme = packageReader.HasReadme(),
-                HasIcon = packageReader.HasIcon(),
+                HasEmbeddedIcon = packageReader.HasEmbeddedIcon(),
                 IsPrerelease = nuspec.GetVersion().IsPrerelease,
                 Language = nuspec.GetLanguage() ?? string.Empty,
                 ReleaseNotes = nuspec.GetReleaseNotes() ?? string.Empty,

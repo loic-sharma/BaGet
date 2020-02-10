@@ -57,7 +57,7 @@ namespace BaGet.Core
                         readmeStream = null;
                     }
 
-                    if (package.HasIcon)
+                    if (package.HasEmbeddedIcon)
                     {
                         iconStream = await packageReader.GetIconAsync(cancellationToken);
                         iconStream = await iconStream.AsTemporaryFileStreamAsync();

@@ -96,7 +96,7 @@ namespace BaGet.Azure
                     });
                 }
 
-                var iconUrl = document.HasIcon
+                var iconUrl = document.HasEmbeddedIcon
                     ? _url.GetPackageIconDownloadUrl(document.Id, NuGetVersion.Parse(document.Version))
                     : document.IconUrl;
 

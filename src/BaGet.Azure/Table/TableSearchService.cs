@@ -237,7 +237,7 @@ namespace BaGet.Azure
                 }
             }
 
-            var iconUrl = latest.HasIcon
+            var iconUrl = latest.HasEmbeddedIcon
                 ? _url.GetPackageIconDownloadUrl(latest.Id, latestVersion)
                 : latest.IconUrl;
 
