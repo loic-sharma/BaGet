@@ -33,7 +33,7 @@ namespace BaGet.Database.Sqlite.Migrations
                     b.Property<long>("Downloads")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("HasIcon")
+                    b.Property<bool>("HasEmbeddedIcon")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("HasReadme")

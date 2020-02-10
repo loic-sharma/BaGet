@@ -1,9 +1,10 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BaGet.Database.MySql.Migrations
 {
-    public partial class AddHasIconColumn : Migration
+    public partial class AddHasEmbeddedIconColumn : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,10 +14,11 @@ namespace BaGet.Database.MySql.Migrations
                 rowVersion: true,
                 nullable: true,
                 oldClrType: typeof(DateTime),
-                oldNullable: true);
+                oldNullable: true)
+                .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn);
 
             migrationBuilder.AddColumn<bool>(
-                name: "HasIcon",
+                name: "HasEmbeddedIcon",
                 table: "Packages",
                 nullable: false,
                 defaultValue: false);
@@ -25,7 +27,7 @@ namespace BaGet.Database.MySql.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "HasIcon",
+                name: "HasEmbeddedIcon",
                 table: "Packages");
 
             migrationBuilder.AlterColumn<DateTime>(
@@ -34,7 +36,8 @@ namespace BaGet.Database.MySql.Migrations
                 nullable: true,
                 oldClrType: typeof(DateTime),
                 oldRowVersion: true,
-                oldNullable: true);
+                oldNullable: true)
+                .OldAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn);
         }
     }
 }

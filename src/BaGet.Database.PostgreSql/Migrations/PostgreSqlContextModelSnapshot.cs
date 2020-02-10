@@ -38,7 +38,7 @@ namespace BaGet.Database.PostgreSql.Migrations
                     b.Property<long>("Downloads")
                         .HasColumnType("bigint");
 
-                    b.Property<bool>("HasIcon")
+                    b.Property<bool>("HasEmbeddedIcon")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("HasReadme")

@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace BaGet.Database.PostgreSql.Migrations
+namespace BaGet.Database.SqlServer.Migrations
 {
-    public partial class AddHasIconColumn : Migration
+    public partial class AddHasEmbeddedIconColumn : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<bool>(
-                name: "HasIcon",
+                name: "HasEmbeddedIcon",
                 table: "Packages",
                 nullable: false,
                 defaultValue: false);
@@ -16,7 +16,7 @@ namespace BaGet.Database.PostgreSql.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "HasIcon",
+                name: "HasEmbeddedIcon",
                 table: "Packages");
         }
     }
