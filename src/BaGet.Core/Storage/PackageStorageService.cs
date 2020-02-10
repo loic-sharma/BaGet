@@ -15,6 +15,7 @@ namespace BaGet.Core
         private const string PackageContentType = "binary/octet-stream";
         private const string NuspecContentType = "text/plain";
         private const string ReadmeContentType = "text/markdown";
+        private const string IconContentType = "image/xyz";
 
         private readonly IStorageService _storage;
         private readonly ILogger<PackageStorageService> _logger;
@@ -32,6 +33,7 @@ namespace BaGet.Core
             Stream packageStream,
             Stream nuspecStream,
             Stream readmeStream,
+            Stream iconStream,
             CancellationToken cancellationToken = default)
         {
             package = package ?? throw new ArgumentNullException(nameof(package));
@@ -44,6 +46,7 @@ namespace BaGet.Core
             var packagePath = PackagePath(lowercasedId, lowercasedNormalizedVersion);
             var nuspecPath = NuspecPath(lowercasedId, lowercasedNormalizedVersion);
             var readmePath = ReadmePath(lowercasedId, lowercasedNormalizedVersion);
+            var iconPath = IconPath(lowercasedId, lowercasedNormalizedVersion);
 
             _logger.LogInformation(
                 "Storing package {PackageId} {PackageVersion} at {Path}...",
@@ -108,6 +111,29 @@ namespace BaGet.Core
                 }
             }
 
+            // Store the package's icon, if one exists.
+            if (iconStream != null)
+            {
+                _logger.LogInformation(
+                    "Storing package {PackageId} {PackageVersion} icon at {Path}...",
+                    lowercasedId,
+                    lowercasedNormalizedVersion,
+                    iconPath);
+
+                result = await _storage.PutAsync(iconPath, iconStream, IconContentType, cancellationToken);
+                if (result == StoragePutResult.Conflict)
+                {
+                    // TODO: This should be returned gracefully with an enum.
+                    _logger.LogInformation(
+                        "Could not store package {PackageId} {PackageVersion} icon at {Path} due to conflict",
+                        lowercasedId,
+                        lowercasedNormalizedVersion,
+                        iconPath);
+
+                    throw new InvalidOperationException($"Failed to store package {lowercasedId} {lowercasedNormalizedVersion} icon");
+                }
+            }
+
             _logger.LogInformation(
                 "Finished storing package {PackageId} {PackageVersion}",
                 lowercasedId,
@@ -129,6 +155,11 @@ namespace BaGet.Core
             return await GetStreamAsync(id, version, ReadmePath, cancellationToken);
         }
 
+        public async Task<Stream> GetIconStreamAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
+        {
+            return await GetStreamAsync(id, version, IconPath, cancellationToken);
+        }
+
         public async Task DeleteAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
             var lowercasedId = id.ToLowerInvariant();
@@ -137,10 +168,12 @@ namespace BaGet.Core
             var packagePath = PackagePath(lowercasedId, lowercasedNormalizedVersion);
             var nuspecPath = NuspecPath(lowercasedId, lowercasedNormalizedVersion);
             var readmePath = ReadmePath(lowercasedId, lowercasedNormalizedVersion);
+            var iconPath = IconPath(lowercasedId, lowercasedNormalizedVersion);
 
             await _storage.DeleteAsync(packagePath, cancellationToken);
             await _storage.DeleteAsync(nuspecPath, cancellationToken);
             await _storage.DeleteAsync(readmePath, cancellationToken);
+            await _storage.DeleteAsync(iconPath, cancellationToken);
         }
 
         private async Task<Stream> GetStreamAsync(
@@ -196,6 +229,15 @@ namespace BaGet.Core
                 lowercasedId,
                 lowercasedNormalizedVersion,
                 "readme");
+        }
+
+        private string IconPath(string lowercasedId, string lowercasedNormalizedVersion)
+        {
+            return Path.Combine(
+                PackagesPathPrefix,
+                lowercasedId,
+                lowercasedNormalizedVersion,
+                "icon");
         }
     }
 }

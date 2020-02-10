@@ -70,6 +70,9 @@ namespace BaGet.Core
             {
                 var versions = package.OrderByDescending(p => p.Version).ToList();
                 var latest = versions.First();
+                var iconUrl = latest.HasEmbeddedIcon
+                    ? _url.GetPackageIconDownloadUrl(latest.Id, latest.Version)
+                    : latest.IconUrlString;
 
                 result.Add(new SearchResult
                 {
@@ -77,7 +80,7 @@ namespace BaGet.Core
                     Version = latest.Version.ToFullString(),
                     Description = latest.Description,
                     Authors = latest.Authors,
-                    IconUrl = latest.IconUrlString,
+                    IconUrl = iconUrl,
                     LicenseUrl = latest.LicenseUrlString,
                     ProjectUrl = latest.ProjectUrlString,
                     RegistrationIndexUrl = _url.GetRegistrationIndexUrl(latest.Id),

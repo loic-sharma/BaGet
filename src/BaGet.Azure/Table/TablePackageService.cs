@@ -230,6 +230,7 @@ namespace BaGet.Azure
                 Description = entity.Description,
                 Downloads = entity.Downloads,
                 HasReadme = entity.HasReadme,
+                HasEmbeddedIcon = entity.HasEmbeddedIcon,
                 IsPrerelease = entity.IsPrerelease,
                 Language = entity.Language,
                 Listed = entity.Listed,

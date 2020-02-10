@@ -234,8 +234,13 @@ namespace BaGet.Azure
                 if (latestVersion == null || version > latestVersion)
                 {
                     latest = package;
+                    latestVersion = version;
                 }
             }
+
+            var iconUrl = latest.HasEmbeddedIcon
+                ? _url.GetPackageIconDownloadUrl(latest.Id, latestVersion)
+                : latest.IconUrl;
 
             return new SearchResult
             {
@@ -243,7 +248,7 @@ namespace BaGet.Azure
                 Version = latest.NormalizedVersion,
                 Description = latest.Description,
                 Authors = JsonConvert.DeserializeObject<string[]>(latest.Authors),
-                IconUrl = latest.IconUrl,
+                IconUrl = iconUrl,
                 LicenseUrl = latest.LicenseUrl,
                 ProjectUrl = latest.ProjectUrl,
                 RegistrationIndexUrl = _url.GetRegistrationIndexUrl(latest.Id),

@@ -18,7 +18,7 @@ namespace BaGet.Protocol.Internal
             });
         }
 
-        public async Task<CatalogPage> GetPageAsync(string pageUrl, CancellationToken cancellationToken = default)
+        public Task<CatalogPage> GetPageAsync(string pageUrl, CancellationToken cancellationToken = default)
         {
             throw new NotSupportedException($"{nameof(NullCatalogClient)} does not support loading catalog pages.");
         }

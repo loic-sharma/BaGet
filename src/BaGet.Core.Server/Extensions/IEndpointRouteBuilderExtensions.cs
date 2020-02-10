@@ -107,6 +107,11 @@ namespace BaGet.Extensions
                 name: Routes.PackageDownloadReadmeRouteName,
                 pattern: "v3/package/{id}/{version}/readme",
                 defaults: new { controller = "PackageContent", action = "DownloadReadme" });
+
+            endpoints.MapControllerRoute(
+                name: Routes.PackageDownloadIconRouteName,
+                pattern: "v3/package/{id}/{version}/icon",
+                defaults: new { controller = "PackageContent", action = "DownloadIcon" });
         }
     }
 }
