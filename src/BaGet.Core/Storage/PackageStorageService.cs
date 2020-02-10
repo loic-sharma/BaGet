@@ -15,7 +15,7 @@ namespace BaGet.Core
         private const string PackageContentType = "binary/octet-stream";
         private const string NuspecContentType = "text/plain";
         private const string ReadmeContentType = "text/markdown";
-        private const string IconContentType = "image/png";
+        private const string IconContentType = "";
 
         private readonly IStorageService _storage;
         private readonly ILogger<PackageStorageService> _logger;
