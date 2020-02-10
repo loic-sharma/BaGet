@@ -13,7 +13,6 @@ namespace BaGet.Core
         private readonly IPackageService _packages;
         private readonly IPackageStorageService _storage;
         private readonly ISearchIndexer _search;
-        private readonly IUrlGenerator _url;
         private readonly IOptionsSnapshot<BaGetOptions> _options;
         private readonly ILogger<PackageIndexingService> _logger;
 
