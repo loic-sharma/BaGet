@@ -93,7 +93,7 @@ namespace BaGet.Controllers
                 return NotFound();
             }
 
-            return File(iconStream, contentType: "");
+            return File(iconStream, "image/xyz");
         }
     }
 }

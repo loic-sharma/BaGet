@@ -52,7 +52,7 @@ namespace BaGet.Core
             CancellationToken cancellationToken = default)
         {
             if (content == null) throw new ArgumentNullException(nameof(content));
-            if (string.IsNullOrEmpty(contentType)) throw new ArgumentException("Content type is required", nameof(contentType));
+            if (contentType == null) throw new ArgumentNullException("Content type is required", nameof(contentType));
 
             cancellationToken.ThrowIfCancellationRequested();
 
