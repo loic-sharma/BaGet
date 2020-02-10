@@ -234,6 +234,7 @@ namespace BaGet.Azure
                 if (latestVersion == null || version > latestVersion)
                 {
                     latest = package;
+                    latestVersion = version;
                 }
             }
 
