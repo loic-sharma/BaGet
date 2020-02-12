@@ -36,6 +36,18 @@ namespace BaGet.Protocol.Models
         public string Authors { get; set; }
 
         /// <summary>
+        /// The dependencies of the package, grouped by target framework.
+        /// </summary>
+        [JsonProperty("dependencyGroups")]
+        public IReadOnlyList<DependencyGroupItem> DependencyGroups { get; set; }
+
+        /// <summary>
+        /// The deprecation associated with the package, if any.
+        /// </summary>
+        [JsonProperty("deprecation")]
+        public PackageDeprecation Deprecation { get; set; }
+
+        /// <summary>
         /// The package's description.
         /// </summary>
         [JsonProperty("description")]
@@ -113,11 +125,5 @@ namespace BaGet.Protocol.Models
         /// </summary>
         [JsonProperty("title")]
         public string Title { get; set; }
-
-        /// <summary>
-        /// The dependencies of the package, grouped by target framework.
-        /// </summary>
-        [JsonProperty("dependencyGroups")]
-        public IReadOnlyList<DependencyGroupItem> DependencyGroups { get; set; }
     }
 }
