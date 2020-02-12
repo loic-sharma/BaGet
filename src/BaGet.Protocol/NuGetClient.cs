@@ -19,6 +19,7 @@ namespace BaGet.Protocol
         private readonly IPackageContentClient _contentClient;
         private readonly IPackageMetadataClient _metadataClient;
         private readonly ISearchClient _searchClient;
+        private readonly IAutocompleteClient _autocompleteClient;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NuGetClient"/> class
@@ -48,6 +49,7 @@ namespace BaGet.Protocol
             _contentClient = clientFactory.CreatePackageContentClient();
             _metadataClient = clientFactory.CreatePackageMetadataClient();
             _searchClient = clientFactory.CreateSearchClient();
+            _autocompleteClient = clientFactory.CreateAutocompleteClient();
         }
 
         /// <summary>
@@ -391,7 +393,7 @@ namespace BaGet.Protocol
             string query = null,
             CancellationToken cancellationToken = default)
         {
-            var response = await _searchClient.AutocompleteAsync(query, cancellationToken: cancellationToken);
+            var response = await _autocompleteClient.AutocompleteAsync(query, cancellationToken: cancellationToken);
 
             return response.Data;
         }
@@ -412,10 +414,60 @@ namespace BaGet.Protocol
             int take,
             CancellationToken cancellationToken = default)
         {
-            var response = await _searchClient.AutocompleteAsync(
+            var response = await _autocompleteClient.AutocompleteAsync(
                 query,
                 skip: skip,
                 take: take,
+                cancellationToken: cancellationToken);
+
+            return response.Data;
+        }
+
+        /// <summary>
+        /// Search for package IDs.
+        /// </summary>
+        /// <param name="query">
+        /// The search query. If <see langword="null"/>, gets default autocomplete results.
+        /// </param>
+        /// <param name="includePrerelease">Whether to include prerelease packages.</param>
+        /// <param name="cancellationToken">A token to cancel the task.</param>
+        /// <returns>The package IDs that matched the query.</returns>
+        public virtual async Task<IReadOnlyList<string>> AutocompleteAsync(
+            string query,
+            bool includePrerelease,
+            CancellationToken cancellationToken = default)
+        {
+            var response = await _autocompleteClient.AutocompleteAsync(
+                query,
+                includePrerelease: includePrerelease,
+                cancellationToken: cancellationToken);
+
+            return response.Data;
+        }
+
+        /// <summary>
+        /// Search for package IDs.
+        /// </summary>
+        /// <param name="query">
+        /// The search query. If <see langword="null"/>, gets default autocomplete results.
+        /// </param>
+        /// <param name="skip">The number of results to skip.</param>
+        /// <param name="take">The number of results to include.</param>
+        /// <param name="includePrerelease">Whether to include prerelease packages.</param>
+        /// <param name="cancellationToken">A token to cancel the task.</param>
+        /// <returns>The package IDs that matched the query.</returns>
+        public virtual async Task<IReadOnlyList<string>> AutocompleteAsync(
+            string query,
+            int skip,
+            int take,
+            bool includePrerelease,
+            CancellationToken cancellationToken = default)
+        {
+            var response = await _autocompleteClient.AutocompleteAsync(
+                query,
+                skip: skip,
+                take: take,
+                includePrerelease: includePrerelease,
                 cancellationToken: cancellationToken);
 
             return response.Data;
