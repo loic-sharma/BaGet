@@ -15,11 +15,15 @@ namespace BaGet.Protocol.Catalog
 
         /// <summary>
         /// The absolute minimum (exclusive) commit timestamp to process in the catalog.
+        /// Use this to filter out catalog items that are "too old".
+        /// Set this to <see cref="DateTimeOffset.MinValue"/> to process all catalog items.
         /// </summary>
         public DateTimeOffset MinCommitTimestamp { get; set; }
 
         /// <summary>
         /// The absolute maximum (inclusive) commit timestamp to process in the catalog.
+        /// Use this to filter out catalog items that are "too new".
+        /// Set this to <see cref="DateTimeOffset.MaxValue"/> to process all catalog items.
         /// </summary>
         public DateTimeOffset MaxCommitTimestamp { get; set; }
 
