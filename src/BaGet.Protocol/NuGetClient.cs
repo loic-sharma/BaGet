@@ -325,6 +325,8 @@ namespace BaGet.Protocol
                 query,
                 skip,
                 take,
+                includePrerelease: true,
+                includeSemVer2: true,
                 cancellationToken: cancellationToken);
 
             return response.Data;
@@ -382,7 +384,7 @@ namespace BaGet.Protocol
         }
 
         /// <summary>
-        /// Search for package IDs.
+        /// Search for package IDs. Includes prerelease packages.
         /// </summary>
         /// <param name="query">
         /// The search query. If <see langword="null"/>, gets default autocomplete results.
@@ -399,7 +401,7 @@ namespace BaGet.Protocol
         }
 
         /// <summary>
-        /// Search for package IDs.
+        /// Search for package IDs. Includes prerelease packages.
         /// </summary>
         /// <param name="query">
         /// The search query. If <see langword="null"/>, gets default autocomplete results.
@@ -416,9 +418,11 @@ namespace BaGet.Protocol
         {
             var response = await _autocompleteClient.AutocompleteAsync(
                 query,
-                skip: skip,
-                take: take,
-                cancellationToken: cancellationToken);
+                skip,
+                take,
+                includePrerelease: true,
+                includeSemVer2: true,
+                cancellationToken);
 
             return response.Data;
         }
