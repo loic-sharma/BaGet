@@ -306,28 +306,6 @@ namespace BaGet.Protocol
         }
 
         /// <summary>
-        /// Search for packages.
-        /// </summary>
-        /// <param name="query">
-        /// The search query. If <see langword="null"/>, gets default search results.
-        /// </param>
-        /// <param name="includePrerelease">Whether to include prerelease packages.</param>
-        /// <param name="cancellationToken">A token to cancel the task.</param>
-        /// <returns>The search results.</returns>
-        public virtual async Task<IReadOnlyList<SearchResult>> SearchAsync(
-            string query,
-            bool includePrerelease,
-            CancellationToken cancellationToken = default)
-        {
-            var response = await _searchClient.SearchAsync(
-                query,
-                includePrerelease: includePrerelease,
-                cancellationToken: cancellationToken);
-
-            return response.Data;
-        }
-
-        /// <summary>
         /// Search for packages. Includes prerelease packages.
         /// </summary>
         /// <param name="query">
@@ -359,15 +337,37 @@ namespace BaGet.Protocol
         /// The search query. If <see langword="null"/>, gets default search results.
         /// </param>
         /// <param name="includePrerelease">Whether to include prerelease packages.</param>
+        /// <param name="cancellationToken">A token to cancel the task.</param>
+        /// <returns>The search results.</returns>
+        public virtual async Task<IReadOnlyList<SearchResult>> SearchAsync(
+            string query,
+            bool includePrerelease,
+            CancellationToken cancellationToken = default)
+        {
+            var response = await _searchClient.SearchAsync(
+                query,
+                includePrerelease: includePrerelease,
+                cancellationToken: cancellationToken);
+
+            return response.Data;
+        }
+
+        /// <summary>
+        /// Search for packages.
+        /// </summary>
+        /// <param name="query">
+        /// The search query. If <see langword="null"/>, gets default search results.
+        /// </param>
         /// <param name="skip">The number of results to skip.</param>
         /// <param name="take">The number of results to include.</param>
+        /// <param name="includePrerelease">Whether to include prerelease packages.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The search results, including prerelease packages.</returns>
         public virtual async Task<IReadOnlyList<SearchResult>> SearchAsync(
             string query,
-            bool includePrerelease,
             int skip,
             int take,
+            bool includePrerelease,
             CancellationToken cancellationToken = default)
         {
             var response = await _searchClient.SearchAsync(
@@ -465,10 +465,11 @@ namespace BaGet.Protocol
         {
             var response = await _autocompleteClient.AutocompleteAsync(
                 query,
-                skip: skip,
-                take: take,
-                includePrerelease: includePrerelease,
-                cancellationToken: cancellationToken);
+                skip,
+                take,
+                includePrerelease,
+                includeSemVer2: true,
+                cancellationToken);
 
             return response.Data;
         }
