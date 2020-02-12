@@ -26,15 +26,5 @@ namespace BaGet.Protocol.Tests
             Assert.Equal("Package Authors", Assert.Single(result.Authors));
             Assert.Equal(TestData.RegistrationIndexInlinedItemsUrl, result.RegistrationIndexUrl);
         }
-
-        [Fact]
-        public async Task GetDefaultAutocompleteResults()
-        {
-            var response = await _target.AutocompleteAsync();
-
-            Assert.NotNull(response);
-            Assert.Equal(1, response.TotalHits);
-            Assert.Equal("Test.Package", Assert.Single(response.Data));
-        }
     }
 }
