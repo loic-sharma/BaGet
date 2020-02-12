@@ -26,5 +26,19 @@ namespace BaGet.Protocol.Tests
             Assert.Equal("Package Authors", Assert.Single(result.Authors));
             Assert.Equal(TestData.RegistrationIndexInlinedItemsUrl, result.RegistrationIndexUrl);
         }
+
+        [Fact]
+        public async Task AddsParameters()
+        {
+            await Task.Yield();
+
+            // TODO: Assert request URL query parameters.
+            // var response = await _target.SearchAsync(
+            //     "query",
+            //     skip: 2,
+            //     take: 5,
+            //     includePrerelease: false,
+            //     includeSemVer2: false);
+        }
     }
 }
