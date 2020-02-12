@@ -28,13 +28,17 @@ namespace BaGet.Protocol.Tests
         }
 
         [Fact]
-        public async Task GetDefaultAutocompleteResults()
+        public async Task AddsParameters()
         {
-            var response = await _target.AutocompleteAsync();
+            await Task.Yield();
 
-            Assert.NotNull(response);
-            Assert.Equal(1, response.TotalHits);
-            Assert.Equal("Test.Package", Assert.Single(response.Data));
+            // TODO: Assert request URL query parameters.
+            // var response = await _target.SearchAsync(
+            //     "query",
+            //     skip: 2,
+            //     take: 5,
+            //     includePrerelease: false,
+            //     includeSemVer2: false);
         }
     }
 }
