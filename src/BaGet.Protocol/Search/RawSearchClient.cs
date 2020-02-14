@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
-using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Protocol.Models;
@@ -81,9 +80,9 @@ namespace BaGet.Protocol.Internal
             foreach (var parameter in queryString)
             {
                 builder.Append(hasQuery ? '&' : '?');
-                builder.Append(UrlEncoder.Default.Encode(parameter.Key));
+                builder.Append(Uri.EscapeDataString(parameter.Key));
                 builder.Append('=');
-                builder.Append(UrlEncoder.Default.Encode(parameter.Value));
+                builder.Append(Uri.EscapeDataString(parameter.Value));
                 hasQuery = true;
             }
 
