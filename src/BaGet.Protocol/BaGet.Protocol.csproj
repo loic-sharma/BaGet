@@ -10,7 +10,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsPackageVersion)" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Include="NuGet.Protocol" Version="$(NuGetPackageVersion)" />
+    <PackageReference Include="NuGet.Frameworks" Version="$(NuGetPackageVersion)" />
+    <PackageReference Include="NuGet.Versioning" Version="$(NuGetPackageVersion)" />
     <PackageReference Include="System.Text.Encodings.Web" Version="4.5.0" />
   </ItemGroup>
 

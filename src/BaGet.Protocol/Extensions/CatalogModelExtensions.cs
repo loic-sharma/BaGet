@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using BaGet.Protocol.Models;
 using NuGet.Frameworks;
-using NuGet.Packaging.Core;
 using NuGet.Versioning;
 
 namespace BaGet.Protocol
@@ -36,7 +35,11 @@ namespace BaGet.Protocol
             if (excludeRedundantLeaves)
             {
                 leaves = leaves
-                    .GroupBy(x => new PackageIdentity(x.PackageId, x.ParsePackageVersion()))
+                    .GroupBy(x => new
+                    {
+                        PackageId = x.PackageId.ToLowerInvariant(),
+                        PackageVersion = x.ParsePackageVersion()
+                    })
                     .Select(x => x.Last())
                     .OrderBy(x => x.CommitTimestamp);
             }
