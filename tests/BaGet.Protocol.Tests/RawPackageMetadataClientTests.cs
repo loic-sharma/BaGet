@@ -73,6 +73,13 @@ namespace BaGet.Protocol.Tests
         }
 
         [Fact]
+        public async Task GetRegistrationPageDeprecated()
+        {
+            // TODO
+            await Task.Yield();
+        }
+
+        [Fact]
         public async Task GetsRegistrationLeaf()
         {
             var version = NuGetVersion.Parse("1.0.0");
