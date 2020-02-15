@@ -198,6 +198,11 @@ namespace BaGet.Extensions
             this IServiceCollection services,
             IConfiguration configuration)
         {
+            services.Configure<IISServerOptions>(iis =>
+            {
+                iis.MaxRequestBodySize = 262144000;
+            });
+
             services.ConfigureAndValidate<IISServerOptions>(configuration.GetSection(nameof(IISServerOptions)));
 
             return services;

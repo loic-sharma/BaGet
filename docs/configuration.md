@@ -130,10 +130,10 @@ There are two settings related to the database configuration:
 - **Type**: The database engine to use, this should be one of the strings from the above list such as `PostgreSql` or `Sqlite`.
 - **ConnectionString**: The connection string for your database engine.
 
-## Maximum Published Package Size in IIS
+## IIS Server Options
 
-When BaGet is running behind an IIS proxy, the maximum size of a published package is 30MB by default, if not specified (https://github.com/aspnet/Announcements/issues/267).
-This can be modified in BaGet configuration and has an initial setting of 250MB. 
+IIS Server options can be configured under the `IISServerOptions` key. The available options are detailed at [docs.microsoft.com](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.iisserveroptions)
+Note: If not specified, the MaxRequestBodySize in BaGet defaults to 250MB (262144000 bytes), rather than the ASP.NET Core default of 30MB
 
 ```json
 {
