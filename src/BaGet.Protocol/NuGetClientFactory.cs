@@ -162,13 +162,18 @@ namespace BaGet.Protocol
                         var searchResourceUrl = serviceIndex.GetSearchQueryResourceUrl();
                         var autocompleteResourceUrl = serviceIndex.GetSearchAutocompleteResourceUrl();
 
+                        // Create clients for requires resources.
                         var contentClient = new RawPackageContentClient(_httpClient, contentResourceUrl);
                         var metadataClient = new RawPackageMetadataClient(_httpClient, metadataResourceUrl);
                         var searchClient = new RawSearchClient(_httpClient, searchResourceUrl);
-                        var autocompleteClient = new RawAutocompleteClient(_httpClient, autocompleteResourceUrl);
+
+                        // Create clients for optional resources.
                         var catalogClient = catalogResourceUrl == null
                             ? new NullCatalogClient() as ICatalogClient
                             : new RawCatalogClient(_httpClient, catalogResourceUrl);
+                        var autocompleteClient = autocompleteResourceUrl == null
+                            ? new NullAutocompleteClient() as IAutocompleteClient
+                            : new RawAutocompleteClient(_httpClient, autocompleteResourceUrl);
 
                         _clients = new NuGetClients
                         {
