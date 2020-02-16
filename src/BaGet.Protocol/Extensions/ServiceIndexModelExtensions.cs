@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using BaGet.Protocol.Models;
 
@@ -33,22 +34,22 @@ namespace BaGet.Protocol
 
         public static string GetPackageContentResourceUrl(this ServiceIndexResponse serviceIndex)
         {
-            return serviceIndex.GetResourceUrl(PackageBaseAddress);
+            return serviceIndex.GetRequiredResourceUrl(PackageBaseAddress, nameof(PackageBaseAddress));
         }
 
         public static string GetPackageMetadataResourceUrl(this ServiceIndexResponse serviceIndex)
         {
-            return serviceIndex.GetResourceUrl(RegistrationsBaseUrl);
+            return serviceIndex.GetRequiredResourceUrl(RegistrationsBaseUrl, nameof(RegistrationsBaseUrl));
+        }
+
+        public static string GetSearchQueryResourceUrl(this ServiceIndexResponse serviceIndex)
+        {
+            return serviceIndex.GetRequiredResourceUrl(SearchQueryService, nameof(SearchQueryService));
         }
 
         public static string GetCatalogResourceUrl(this ServiceIndexResponse serviceIndex)
         {
             return serviceIndex.GetResourceUrl(Catalog);
-        }
-
-        public static string GetSearchQueryResourceUrl(this ServiceIndexResponse serviceIndex)
-        {
-            return serviceIndex.GetResourceUrl(SearchQueryService);
         }
 
         public static string GetSearchAutocompleteResourceUrl(this ServiceIndexResponse serviceIndex)
@@ -61,6 +62,20 @@ namespace BaGet.Protocol
             var resource = types.SelectMany(t => serviceIndex.Resources.Where(r => r.Type == t)).FirstOrDefault();
 
             return resource?.ResourceUrl.Trim('/');
+        }
+
+        public static string GetRequiredResourceUrl(this ServiceIndexResponse serviceIndex, string[] types, string resourceName)
+        {
+            // For more information on required resources,
+            // see: https://docs.microsoft.com/en-us/nuget/api/overview#resources-and-schema
+            var resourceUrl = serviceIndex.GetResourceUrl(types);
+            if (string.IsNullOrEmpty(resourceUrl))
+            {
+                throw new InvalidOperationException(
+                    $"The service index does not have a resource named '{resourceName}'");
+            }
+
+            return resourceUrl;
         }
     }
 }
