@@ -20,6 +20,7 @@ using BaGet.Gcp.Configuration;
 using BaGet.Gcp.Extensions;
 using BaGet.Gcp.Services;
 using BaGet.Protocol;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,6 +48,7 @@ namespace BaGet.Extensions
             services.ConfigureAws(configuration);
             services.ConfigureGcp(configuration);
             services.ConfigureAliyunOSS(configuration);
+            services.ConfigureIis(configuration);
 
             if (httpServices)
             {
@@ -188,6 +190,20 @@ namespace BaGet.Extensions
             IConfiguration configuration)
         {
             services.ConfigureAndValidate<GoogleCloudStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
+
+            return services;
+        }
+        
+        public static IServiceCollection ConfigureIis(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            services.Configure<IISServerOptions>(iis =>
+            {
+                iis.MaxRequestBodySize = 262144000;
+            });
+
+            services.ConfigureAndValidate<IISServerOptions>(configuration.GetSection(nameof(IISServerOptions)));
 
             return services;
         }

@@ -129,3 +129,20 @@ There are two settings related to the database configuration:
 
 - **Type**: The database engine to use, this should be one of the strings from the above list such as `PostgreSql` or `Sqlite`.
 - **ConnectionString**: The connection string for your database engine.
+
+## IIS Server Options
+
+IIS Server options can be configured under the `IISServerOptions` key. The available options are detailed at [docs.microsoft.com](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.iisserveroptions)
+Note: If not specified, the MaxRequestBodySize in BaGet defaults to 250MB (262144000 bytes), rather than the ASP.NET Core default of 30MB
+
+```json
+{
+    ...
+
+    "IISServerOptions": {
+        "MaxRequestBodySize": 262144000
+    },
+
+    ...
+}
+```
