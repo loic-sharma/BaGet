@@ -1,0 +1,32 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Values.fullname }}
+  {{- if .Values.namespaceOverride }}
+  namespace: {{ .Values.namespaceOverride }}
+  {{- end }}
+  labels:
+    {{- include "baget.labels" . | nindent 4 }}
+spec:
+  rules:
+  - host: {{ .Values.ingress.hostName }}
+    http:
+      paths:
+      - path: /
+        backend:
+          {{- if .Values.service.serviceName }}
+          serviceName: {{ .Values.service.serviceName }}
+          {{- else }}
+          serviceName: {{ .Values.fullname }}-svc
+          {{- end }}
+          servicePort: {{ .Values.service.targetPort }}
+  {{- if .Values.ingress.tls.enabled }}
+  tls:
+  - hosts:
+  {{ range .Values.ingress.tls.hosts }}
+    - {{ .name }}
+  {{- end }}
+    secretName: {{ .Values.ingress.tls.secretName }}
+  {{- end -}}
+{{- end -}}

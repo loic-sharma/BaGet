@@ -1,0 +1,64 @@
+fullname: baget
+image: loicsharma/baget
+imageVersion: latest
+imagePullPolicy: Always
+# will deploy to context namespace unless supplied here
+namesapceOverride: ""
+
+# sets up environment variables for the container
+# as per https://loic-sharma.github.io/BaGet/quickstart/docker/
+env:
+  apiKey: "" # left blank, set at deploy time
+  storageType: "FileSystem"
+  # packages directory, should be under persistence.path
+  storagePath: "/var/baget/packages"
+  # one of the supported database types
+  databaseType: "Sqlite"
+  # connection string to database
+  databaseConnectionString: "Data Source=/var/baget/baget.db"
+  searchType: "Database"
+
+# For simple access from outside of the Kubernetes cluster
+# create an ingress. Requires existing ingress-controller
+ingress:
+  enabled: false
+  hostName: "" 
+  tls:
+    enabled: false
+    hosts: {}
+    secretName: ""
+
+
+persistence:
+  accessMode: "ReadWriteOnce"
+  enabled: false
+  # if set other settings will not take affect
+  existingClaim: ""
+  labels: {}
+  path: "/var/baget"
+  readOnly: false
+  size: 10G
+  storageClass: "-"
+  volumeName: ""
+  pv:
+    accessMode: "ReadWriteOnce"
+    capacity: 10G
+    # create if your storage class does not support dynamic provisioning
+    create: false
+    pvname: ""
+    nfs:
+      server: ""
+      path: ""
+
+
+service:
+  clusterIP: ""
+  enabled: true
+  externalPort: 80
+  externalTrafficPolicy: ""
+  loadBalancerSourceRanges: {}
+  nodePort: ""
+  serviceName: ""
+  targetPort: 80
+  # NodePort, ClusterIP or LoadBalancer
+  type: ClusterIP

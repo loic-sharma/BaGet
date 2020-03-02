@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.fullname }}
+  {{- if .Values.namespaceOverride }}
+  namespace: {{ .Values.namespaceOverride }}
+  {{- end }}
+  labels:
+    {{- include "baget.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.fullname }}
+  strategy:
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.fullname }}
+        release: {{ .Release.Name | quote }}
+    spec:
+      containers:
+      - name: baget
+        image: {{ .Values.image }}:{{ .Values.imageVersion }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        {{- if .Values.persistence.enabled }}
+        volumeMounts:
+        - name: baget-data
+          mountPath: {{ .Values.persistence.path }}
+          readOnly: {{ .Values.persistence.readOnly }}
+        {{- end }}
+        env:
+        - name: ApiKey
+          value: {{ .Values.env.apiKey }}
+        - name: Storage__Type
+          value: {{ .Values.env.storageType }}
+        - name: Storage__Path
+          value: {{ .Values.env.storagePath }}
+        - name: Database__Type
+          value: {{.Values.env.databaseType }}
+        - name: Database__ConnectionString
+          value: {{ .Values.env.databaseConnectionString}}
+        - name: Search__Type
+          value: {{ .Values.env.searchType }}
+      {{- if .Values.persistence.enabled }}
+      volumes:
+      - name: baget-data
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default .Values.fullname }}
+      {{- end }}
+        
