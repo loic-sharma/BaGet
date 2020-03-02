@@ -38,3 +38,34 @@ Stay tuned, more features are planned!
 5. Navigate to `..\BaGet`
 6. Start the service with `dotnet run`
 7. Open the URL `http://localhost:5000/v3/index.json` in your browser
+
+## Helm
+
+| Parmeter                      | Description                                             | Default                           |
+|-------------------------------|---------------------------------------------------------|-----------------------------------|
+| `fullname`                    | Name of the deployment                                  | `baget`                           |
+| `image`                       | Name of the image to deploy                             | `loicsharma/baget`                |
+| `imageVersion`                | Version of the image to deploy                          | `latest`                          |
+| `namespaceOverride`           | Override context namespace                              | ``                                |
+| `env.apiKey`                  | API key users will use to auth                          | ``                                |
+| `env.storageType`             | Type of storage to be used                              | `FileSystem`                      |
+| `env.storagePath`             | Path to use for storage                                 | `/var/baget/packages`             |
+| `env.databaseType`            | Type of database                                        | `Sqlite`                          |
+| `env.databaseConnectionString`| Connection string for db                                | `Data Source=/var/baget/baget.db` |
+| `env.searchType`              | Type of search to carry out                             | `Database`                        |
+| `ingress.enabled`             | Enable and create an ingress                            | `false`                           |
+| `ingress.hostName`            | External DNS of app                                     | ``                                |
+| `ingress.tls`                 | Ingress TLS details                                     | ``                                |
+| `persistence.acceesMode`      | Storage access mode                                     | `ReadWriteOnce`                   |
+| `persistence.enabled`         | Enable and use persistent storage                       | `false`                           |
+| `persistence.existingClaim`   | An existing pvc                                         | ``                                |
+| `persistence.labels`          | Additional labels for pvc                               | {}                                |
+| `persistence.path`            | Path to mount pvc                                       | `/var/baget`                      |
+| `persistence.size`            | Size of the pvc                                         | `10G`                             |
+| `persistence.storageClass`    | Storage class for pvc                                   | ``                                |
+| `persistence.volumeName`      | Name of existing pv                                     | ``                                |
+| `persistence.pv`              | Details of pv to create                                 | ``                                |
+| `service.enabled`             | Enable and create service                               | `true`                            |
+| `service.NodePort`            | Specify Node port (relies on `service.type: NodePort`)  | ``                                |
+| `service.serviceName`         | Name of the service                                     | `{{ .Values.fullname }}-svc`      |
+| `service.type`                | Type of service to create                               | `ClusterIP`                       |
