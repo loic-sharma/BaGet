@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: ""
+appVersion: "0.3.0"
 description: a lightweight NuGet and symbol server
 name: baget
 version: 1.0.0
