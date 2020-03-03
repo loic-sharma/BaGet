@@ -41,6 +41,34 @@ Stay tuned, more features are planned!
 
 ## Helm
 
+### Package/Install
+
+* Clone repo then run helm package
+
+```
+helm package baget
+```
+
+You can then push that chart to any helm repository you want and install from there
+
+```
+helm install -g myrepo/baget
+```
+
+* Install without package
+
+```
+helm install -g baget
+```
+
+Modify the isntallation by either editing the `values.yaml` file or passing the parameters you want to change with `--set`
+
+```
+helm install -g baget --set fullname=nuget,persistence.enabled=true,persistence.stoageClass=someclass
+```
+
+### Configure
+
 | Parmeter                      | Description                                             | Default                           |
 |-------------------------------|---------------------------------------------------------|-----------------------------------|
 | `fullname`                    | Name of the deployment                                  | `baget`                           |
@@ -65,6 +93,8 @@ Stay tuned, more features are planned!
 | `persistence.storageClass`    | Storage class for pvc                                   | ``                                |
 | `persistence.volumeName`      | Name of existing pv                                     | ``                                |
 | `persistence.pv`              | Details of pv to create                                 | ``                                |
+| `resources.requests`          | Compute resource requests                               | `mem: 100Mi, cpu: 100m`           |
+| `resources.limits`            | Compute resource limits                                 | `mem: 250Mi, cpu: 200m`           |
 | `service.enabled`             | Enable and create service                               | `true`                            |
 | `service.NodePort`            | Specify Node port (relies on `service.type: NodePort`)  | ``                                |
 | `service.serviceName`         | Name of the service                                     | `{{ .Values.fullname }}-svc`      |

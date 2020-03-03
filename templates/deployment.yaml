@@ -42,6 +42,13 @@ spec:
           value: {{ .Values.env.databaseConnectionString}}
         - name: Search__Type
           value: {{ .Values.env.searchType }}
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "100Mi"
+          limits:
+            cpu: "200m"
+            memory: "250Mi"
       {{- if .Values.persistence.enabled }}
       volumes:
       - name: baget-data

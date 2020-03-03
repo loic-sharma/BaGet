@@ -50,6 +50,13 @@ persistence:
       server: ""
       path: ""
 
+resources:
+  requests:
+    mem: "100Mi"
+    cpu: "100m"
+  limits:
+    mem: "250Mi"
+    cpu: "200m"
 
 service:
   clusterIP: ""
