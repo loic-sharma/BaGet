@@ -44,11 +44,11 @@ spec:
           value: {{ .Values.env.searchType }}
         resources:
           requests:
-            cpu: "100m"
-            memory: "100Mi"
+            cpu: {{ .Values.resources.requests.cpu }}
+            memory: {{ .Values.resources.requests.mem }}
           limits:
-            cpu: "200m"
-            memory: "250Mi"
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.mem }}
       {{- if .Values.persistence.enabled }}
       volumes:
       - name: baget-data
