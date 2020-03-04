@@ -23,10 +23,10 @@ env:
 ingress:
   enabled: false
   hostName: "" 
-  tls:
-    enabled: false
-    hosts: {}
-    secretName: ""
+  hosts:
+  - name: ""
+    tls: false
+    secret: ""
 
 
 persistence:

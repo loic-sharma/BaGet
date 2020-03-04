@@ -82,8 +82,7 @@ helm install -g baget --set fullname=nuget,persistence.enabled=true,persistence.
 | `env.databaseConnectionString`| Connection string for db                                | `Data Source=/var/baget/baget.db` |
 | `env.searchType`              | Type of search to carry out                             | `Database`                        |
 | `ingress.enabled`             | Enable and create an ingress                            | `false`                           |
-| `ingress.hostName`            | External DNS of app                                     | ``                                |
-| `ingress.tls`                 | Ingress TLS details                                     | ``                                |
+| `ingress.hosts`               | External DNS of the app                                 | `name: "", tls: false, secret: ""`|
 | `persistence.acceesMode`      | Storage access mode                                     | `ReadWriteOnce`                   |
 | `persistence.enabled`         | Enable and use persistent storage                       | `false`                           |
 | `persistence.existingClaim`   | An existing pvc                                         | ``                                |
