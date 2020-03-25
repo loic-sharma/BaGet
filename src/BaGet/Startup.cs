@@ -43,12 +43,13 @@ namespace BaGet
                 app.UseStatusCodePages();
             }
 
+            app.UseForwardedHeaders();
+            app.UsePathBase(options.PathBase);
+
             app.UseSpaStaticFiles();
 
             app.UseRouting();
 
-            app.UseForwardedHeaders();
-            app.UsePathBase(options.PathBase);
             app.UseCors(ConfigureCorsOptions.CorsPolicy);
             app.UseOperationCancelledMiddleware();
 
