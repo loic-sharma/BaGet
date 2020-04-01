@@ -55,6 +55,7 @@ spec:
       {{- else }}
       storageClassName: {{ .Values.persistence.storageClass | quote }}
       {{- end }}
+      {{- end }}
       resources:
         requests:
           storage: {{ .Values.persistence.size | quote }}
