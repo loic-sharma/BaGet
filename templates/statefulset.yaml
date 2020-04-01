@@ -1,0 +1,61 @@
+{{- if .Values.persistence.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.fullname }}
+  {{- if .Values.namespaceOverride }}
+  namespace: {{ .Values.namespaceOverride }}
+  {{- end }}
+  labels:
+    {{- include "baget.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "baget.labels" . | nindent 6 }}
+  serviceName: {{ .Values.fullname }}
+  replicas: {{ .Values.replicas }}
+  template:
+    metadata:
+      labels:
+        {{- include "baget.labels" . | nindent 8 }}
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.statefulSet.gracePerioud }}
+      containers:
+      - name: baget
+        image: {{ template "baget.image" . }}
+        ports:
+        - name: web
+          containerPort: {{ .Values.service.targetPort }}
+        env:
+        - name: ApiKey
+          value: {{ .Values.env.apiKey }}
+        - name: Storage__Type
+          value: {{ .Values.env.storageType }}
+        - name: Storage__Path
+          value: {{ .Values.env.storagePath }}
+        - name: Database__Type
+          value: {{.Values.env.databaseType }}
+        - name: Database__ConnectionString
+          value: {{ .Values.env.databaseConnectionString}}
+        - name: Search__Type
+          value: {{ .Values.env.searchType }}
+        volumeMounts:
+        - name: baget-data
+          mountPath: {{ .Values.persistence.path }}
+          readOnly: {{ .Values.persistence.readOnly }}
+  volumeClaimTemplates:
+  - metadata:
+      name: baget-data
+    spec:
+      accessModes: 
+      - {{ .Values.persistence.accessMode | quote }}
+      {{- if .Values.persistence.storageClass }}
+      {{- if (eq "-" .Values.persistence.storageClass) }}
+      storageClassName: ""
+      {{- else }}
+      storageClassName: {{ .Values.persistence.storageClass | quote }}
+      {{- end }}
+      resources:
+        requests:
+          storage: {{ .Values.persistence.size | quote }}
+{{- end -}}

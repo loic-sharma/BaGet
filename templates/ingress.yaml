@@ -7,28 +7,26 @@ metadata:
   namespace: {{ .Values.namespaceOverride }}
   {{- end }}
   labels:
-    {{- include "ui.labels" . | nindent 4 }}
+    {{- include "baget.labels" . | nindent 4 }}
 spec:
   rules:
-  {{ range .Values.ingress.hosts }}
-  - host: {{ .name }}
+  - host: {{ .Values.ingress.hostName }}
     http:
       paths:
       - path: /
         backend:
-          {{- if $.Values.service.serviceName }}
-          serviceName: {{ $.Values.service.serviceName }}
+          {{- if .Values.service.serviceName }}
+          serviceName: {{ .Values.service.serviceName }}
           {{- else }}
-          serviceName: {{ $.Values.fullname }}-svc
+          serviceName: {{ .Values.fullname }}-svc
           {{- end }}
-          servicePort: {{ $.Values.service.targetPort }}
-  {{- end }}
-  {{ range .Values.ingress.hosts }}
-  {{- if .tls }}
+          servicePort: {{ .Values.service.targetPort }}
+  {{- if .Values.ingress.tls.enabled }}
   tls:
   - hosts:
+  {{ range .Values.ingress.tls.hosts }}
     - {{ .name }}
-    secretName: {{ .secret }}
   {{- end }}
+    secretName: {{ .Values.ingress.tls.secretName }}
   {{- end -}}
 {{- end -}}

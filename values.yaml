@@ -1,9 +1,11 @@
 fullname: baget
+gracePeriod: 10
 image: loicsharma/baget
 imageVersion: latest
 imagePullPolicy: Always
 # will deploy to context namespace unless supplied here
 namesapceOverride: ""
+replicas: 1
 
 # sets up environment variables for the container
 # as per https://loic-sharma.github.io/BaGet/quickstart/docker/
@@ -19,36 +21,24 @@ env:
   searchType: "Database"
 
 # For simple access from outside of the Kubernetes cluster
-# create an ingress. Requires existing ingress-controller
+# create an ingress.
 ingress:
   enabled: false
   hostName: "" 
-  hosts:
-  - name: ""
-    tls: false
-    secret: ""
+  tls:
+    enabled: false
+    hosts: {}
+    secretName: ""
 
 
 persistence:
   accessMode: "ReadWriteOnce"
   enabled: false
-  # if set other settings will not take affect
-  existingClaim: ""
-  labels: {}
   path: "/var/baget"
   readOnly: false
   size: 10G
   storageClass: "-"
   volumeName: ""
-  pv:
-    accessMode: "ReadWriteOnce"
-    capacity: 10G
-    # create if your storage class does not support dynamic provisioning
-    create: false
-    pvname: ""
-    nfs:
-      server: ""
-      path: ""
 
 resources:
   requests:
