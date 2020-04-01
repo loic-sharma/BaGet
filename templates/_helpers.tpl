@@ -12,7 +12,7 @@ release: {{ .Release.Name | quote }}
 Build image name
 */}}
 {{- define "baget.image" -}}
-{{- $image := default "loicsharma/baget" .Values.app.image -}}
-{{- $imagetag := default "latest" .Values.app.imageVersion -}}
+{{- $image := default "loicsharma/baget" .Values.image -}}
+{{- $imagetag := default "latest" .Values.imageVersion -}}
 {{- printf "%s:%s" $image $imagetag -}}
 {{- end -}}
