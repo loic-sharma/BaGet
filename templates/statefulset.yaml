@@ -19,7 +19,7 @@ spec:
       labels:
         {{- include "baget.labels" . | nindent 8 }}
     spec:
-      terminationGracePeriodSeconds: {{ .Values.statefulSet.gracePerioud }}
+      terminationGracePeriodSeconds: {{ .Values.gracePeriod }}
       containers:
       - name: baget
         image: {{ template "baget.image" . }}
