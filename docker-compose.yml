@@ -26,7 +26,6 @@ services:
       - Mirror__Enable=true
       - Mirror__PackageSource="https://api.nuget.org/v3/index.json"
     volumes: 
-      - /tmp/bagetdata/packages:/var/baget/packages
       - /tmp/bagetdata:/var/baget
     networks:
       - nuget
