@@ -12,13 +12,13 @@
   "private": true,
   "dependencies": {
     "bootstrap": "3.3.7",
-    "copy-text-to-clipboard": "^2.1.1",
-    "office-ui-fabric-react": "^6.208.1",
-    "react": "^16.6.3",
-    "react-dom": "^16.6.3",
-    "react-markdown": "^4.2.2",
-    "react-router-dom": "^4.3.1",
-    "react-scripts": "^3.1.2",
+    "copy-text-to-clipboard": "^2.2.0",
+    "office-ui-fabric-react": "^7.110.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-markdown": "^4.3.1",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "^3.4.1",
     "semver": "^6.2.0",
     "timeago.js": "^3.0.2"
   },
@@ -29,14 +29,14 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "@types/commonmark": "^0.27.0",
+    "@types/commonmark": "^0.27.4",
     "@types/jest": "^23.3.14",
-    "@types/node": "^10.14.19",
-    "@types/react": "^16.9.3",
-    "@types/react-dom": "^16.9.1",
-    "@types/react-router-dom": "^4.3.1",
-    "@types/semver": "^6.2.0",
-    "typescript": "^3.6.3"
+    "@types/node": "^10.17.21",
+    "@types/react": "^16.9.34",
+    "@types/react-dom": "^16.9.7",
+    "@types/react-router-dom": "^5.1.5",
+    "@types/semver": "^6.2.1",
+    "typescript": "^3.8.3"
   },
   "browserslist": {
     "production": [

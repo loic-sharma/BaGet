@@ -60,13 +60,13 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     }
   }
 
-  public componentWillReceiveProps(props: Readonly<ISearchResultsProps>) {
-    if (props.input === this.props.input) {
+  public componentDidUpdate(prevProps: Readonly<ISearchResultsProps>) {
+    if (prevProps.input === this.props.input) {
       return;
     }
 
     this._loadItems(
-      props.input,
+      prevProps.input,
       this.state.includePrerelease,
       this.state.packageType,
       this.state.targetFramework);
