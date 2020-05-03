@@ -99,6 +99,6 @@ export class Versions extends React.Component<IVersionsProps, IVersionsState> {
   private showFewerVersions = () => this.setState({ showAll: false });
 
   private dateToString(date: Date): string {
-    return `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`;
+    return date.toLocaleDateString();
   }
 }
