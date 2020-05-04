@@ -1,5 +1,3 @@
-using BaGet.Configuration;
-using BaGet.Controllers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Http.Features;
@@ -8,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
-namespace BaGet.Core.Server.Extensions
+namespace BaGet.Hosting
 {
     public static class IServiceCollectionExtensions
     {

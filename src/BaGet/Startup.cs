@@ -1,8 +1,6 @@
 using System;
-using BaGet.Configuration;
 using BaGet.Core;
-using BaGet.Core.Server.Extensions;
-using BaGet.Extensions;
+using BaGet.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -23,7 +21,7 @@ namespace BaGet
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.ConfigureBaGet(Configuration, httpServices: true);
+            services.ConfigureHttpServices();
 
             // In production, the UI files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

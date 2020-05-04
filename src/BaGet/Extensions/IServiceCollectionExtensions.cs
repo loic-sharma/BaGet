@@ -3,22 +3,15 @@ using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using BaGet.Aliyun;
-using BaGet.Aliyun.Configuration;
-using BaGet.Aliyun.Extensions;
 using BaGet.Aws;
-using BaGet.Aws.Configuration;
-using BaGet.Aws.Extensions;
 using BaGet.Azure;
 using BaGet.Core;
-using BaGet.Core.Content;
-using BaGet.Core.Server.Extensions;
 using BaGet.Database.MySql;
 using BaGet.Database.PostgreSql;
 using BaGet.Database.Sqlite;
 using BaGet.Database.SqlServer;
-using BaGet.Gcp.Configuration;
-using BaGet.Gcp.Extensions;
-using BaGet.Gcp.Services;
+using BaGet.Gcp;
+using BaGet.Hosting;
 using BaGet.Protocol;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -26,14 +19,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace BaGet.Extensions
+namespace BaGet
 {
+    // TODO: Move this to BaGet.Core
     public static class IServiceCollectionExtensions
     {
-        public static IServiceCollection ConfigureBaGet(
+        public static IServiceCollection AddBaGet(
             this IServiceCollection services,
-            IConfiguration configuration,
-            bool httpServices = false)
+            IConfiguration configuration)
         {
             services.ConfigureAndValidate<BaGetOptions>(configuration);
             services.ConfigureAndValidate<SearchOptions>(configuration.GetSection(nameof(BaGetOptions.Search)));
@@ -41,6 +34,8 @@ namespace BaGet.Extensions
             services.ConfigureAndValidate<StorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
             services.ConfigureAndValidate<DatabaseOptions>(configuration.GetSection(nameof(BaGetOptions.Database)));
             services.ConfigureAndValidate<FileSystemStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
+
+            // Add options for different providers
             services.ConfigureAndValidate<BlobStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
             services.ConfigureAndValidate<AzureSearchOptions>(configuration.GetSection(nameof(BaGetOptions.Search)));
 
@@ -49,11 +44,6 @@ namespace BaGet.Extensions
             services.ConfigureGcp(configuration);
             services.ConfigureAliyunOSS(configuration);
             services.ConfigureIis(configuration);
-
-            if (httpServices)
-            {
-                services.ConfigureHttpServices();
-            }
 
             services.AddBaGetContext();
 
@@ -193,7 +183,7 @@ namespace BaGet.Extensions
 
             return services;
         }
-        
+
         public static IServiceCollection ConfigureIis(
             this IServiceCollection services,
             IConfiguration configuration)

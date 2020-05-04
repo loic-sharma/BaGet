@@ -12,7 +12,7 @@ namespace BaGet.Azure
 
     using TableStorageAccount = Microsoft.Azure.Cosmos.Table.CloudStorageAccount;
 
-    public static class IServiceCollectionExtensions
+    public static class DependencyInjectionExtensions
     {
         public static IServiceCollection AddTableStorageService(this IServiceCollection services)
         {

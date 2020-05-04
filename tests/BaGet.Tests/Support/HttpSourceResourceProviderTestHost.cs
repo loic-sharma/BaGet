@@ -8,7 +8,7 @@ using NuGet.Configuration;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 
-namespace BaGet.Tests.Support
+namespace BaGet.Tests
 {
     /// <summary>
     /// Similar to official HttpSourceResourceProvider, but uses test host.
@@ -20,17 +20,12 @@ namespace BaGet.Tests.Support
             = new ConcurrentDictionary<PackageSource, HttpSourceResource>();
         private readonly HttpClient _httpClient;
 
-        /// <summary>
-        /// The throttle to apply to all <see cref="HttpSource"/> HTTP requests.
-        /// </summary>
-        public static IThrottle Throttle { get; set; }
-
-        public HttpSourceResourceProviderTestHost(HttpClient client)
+        public HttpSourceResourceProviderTestHost(HttpClient httpClient)
             : base(typeof(HttpSourceResource),
                   nameof(HttpSourceResource),
                   NuGetResourceProviderPositions.Last)
         {
-            _httpClient = client;
+            _httpClient = httpClient;
         }
 
         public override Task<Tuple<bool, INuGetResource>> TryCreate(SourceRepository source, CancellationToken token)
@@ -43,7 +38,7 @@ namespace BaGet.Tests.Support
             {
                 curResource = _cache.GetOrAdd(
                     source.PackageSource, 
-                    packageSource => new HttpSourceResource(HttpSourceTestHost.Create(source, _httpClient)));
+                    packageSource => new HttpSourceResource(TestableHttpSource.Create(source, _httpClient)));
             }
 
             return Task.FromResult(new Tuple<bool, INuGetResource>(curResource != null, curResource));

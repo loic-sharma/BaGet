@@ -3,7 +3,6 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Aliyun.OSS;
-using BaGet.Aliyun.Configuration;
 using BaGet.Core;
 using Microsoft.Extensions.Options;
 

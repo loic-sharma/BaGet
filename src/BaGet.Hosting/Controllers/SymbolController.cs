@@ -2,12 +2,11 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core;
-using BaGet.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace BaGet.Controllers
+namespace BaGet.Hosting
 {
     public class SymbolController : Controller
     {

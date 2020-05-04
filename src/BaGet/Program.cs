@@ -1,15 +1,10 @@
-using System;
-using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core;
-using BaGet.Extensions;
+using BaGet.Hosting;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 
 namespace BaGet
 {
@@ -31,11 +26,10 @@ namespace BaGet
                 {
                     downloads.OnExecuteAsync(async cancellationToken =>
                     {
-                        var provider = CreateHostBuilder(args).Build().Services;
+                        var host = CreateHostBuilder(args).Build();
+                        var importer = host.Services.GetRequiredService<DownloadsImporter>();
 
-                        await provider
-                            .GetRequiredService<DownloadsImporter>()
-                            .ImportAsync(cancellationToken);
+                        await importer.ImportAsync(cancellationToken);
                     });
                 });
             });
@@ -52,35 +46,21 @@ namespace BaGet
         }
 
         public static IHostBuilder CreateWebHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
+            CreateHostBuilder(args)
+                .ConfigureWebHostDefaults(web =>
                 {
-                    webBuilder
-                        .ConfigureKestrel(options =>
-                        {
-                            // Remove the upload limit from Kestrel. If needed, an upload limit can
-                            // be enforced by a reverse proxy server, like IIS.
-                            options.Limits.MaxRequestBodySize = null;
-                        })
-                        .UseStartup<Startup>();
-                })
-                .ConfigureAppConfiguration((builderContext, config) =>
-                {
-                    var root = Environment.GetEnvironmentVariable("BAGET_CONFIG_ROOT");
-                    if (!string.IsNullOrEmpty(root))
+                    web.ConfigureKestrel(options =>
                     {
-                        config.SetBasePath(root);
-                    }
+                        // Remove the upload limit from Kestrel. If needed, an upload limit can
+                        // be enforced by a reverse proxy server, like IIS.
+                        options.Limits.MaxRequestBodySize = null;
+                    });
+
+                    web.UseStartup<Startup>();
                 });
 
-        public static IHostBuilder CreateHostBuilder(string[] args)
-        {
-            // TODO: Merge 'CreateWebHostBuilder' and 'CreateHostBuilder'
-            // See: https://docs.microsoft.com/en-us/aspnet/core/migration/22-to-30?view=aspnetcore-3.1&tabs=visual-studio#configuration
-            return new HostBuilder()
-                .ConfigureBaGetConfiguration(args)
-                .ConfigureBaGetServices()
-                .ConfigureBaGetLogging();
-        }
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .UseBaGet();
     }
 }
