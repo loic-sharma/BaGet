@@ -7,12 +7,12 @@ using Xunit.Abstractions;
 
 namespace BaGet.Tests
 {
-    public class ApiTest : IClassFixture<BaGetWebApplicationFactory>
+    public class ApiIntegrationTests : IClassFixture<BaGetWebApplicationFactory>
     {
         private readonly WebApplicationFactory<Startup> _factory;
         private readonly HttpClient _client;
 
-        public ApiTest(BaGetWebApplicationFactory factory, ITestOutputHelper output)
+        public ApiIntegrationTests(BaGetWebApplicationFactory factory, ITestOutputHelper output)
         {
             _factory = factory.WithOutput(output);
             _client = _factory.CreateClient();
