@@ -83,7 +83,6 @@ namespace BaGet
             services.AddStorageProviders();
             services.AddSearchProviders();
             services.AddAuthenticationProviders();
-            services.AddBagetSpaStatics();
             return services;
         }
 

@@ -58,10 +58,14 @@ namespace BaGet
 
             app.UseSpa(spa =>
             {
-                spa.Options.SourcePath = "../BaGet.UI";
                 var spaStaticFilesService = app.ApplicationServices.GetService<ISpaStaticFileProvider>();
-                spa.Options.DefaultPageStaticFileOptions = new StaticFileOptions();
-                spa.Options.DefaultPageStaticFileOptions.FileProvider = spaStaticFilesService.FileProvider;
+
+                spa.Options.SourcePath = "../BaGet.UI";
+                spa.Options.DefaultPageStaticFileOptions = new StaticFileOptions
+                {
+                    FileProvider = spaStaticFilesService.FileProvider
+                };
+
                 if (env.IsDevelopment())
                 {
                     spa.UseReactDevelopmentServer(npmScript: "start");
