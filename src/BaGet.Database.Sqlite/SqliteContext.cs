@@ -29,6 +29,10 @@ namespace BaGet.Database.Sqlite
                 .Property(p => p.Id)
                 .HasColumnType("TEXT COLLATE NOCASE");
 
+            builder.Entity<Package>()
+                .Property(p => p.NormalizedVersionString)
+                .HasColumnType("TEXT COLLATE NOCASE");
+
             builder.Entity<PackageDependency>()
                 .Property(d => d.Id)
                 .HasColumnType("TEXT COLLATE NOCASE");

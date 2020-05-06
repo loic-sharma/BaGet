@@ -4,6 +4,7 @@ import { Checkbox, Dropdown, IDropdownOption, SelectableOptionMenuItemType } fro
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import './SearchResults.css';
+import DefaultPackageIcon from "./default-package-icon-256x256.png";
 
 interface ISearchResultsProps {
   input: string;
@@ -32,7 +33,6 @@ interface ISearchResponse {
 
 class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsState> {
 
-  private readonly defaultIconUrl: string = 'https://www.nuget.org/Content/gallery/img/default-package-icon-256x256.png';
   private resultsController?: AbortController;
 
   constructor(props: ISearchResultsProps) {
@@ -60,13 +60,13 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     }
   }
 
-  public componentWillReceiveProps(props: Readonly<ISearchResultsProps>) {
-    if (props.input === this.props.input) {
+  public componentDidUpdate(prevProps: Readonly<ISearchResultsProps>) {
+    if (prevProps.input === this.props.input) {
       return;
     }
 
     this._loadItems(
-      props.input,
+      prevProps.input,
       this.state.includePrerelease,
       this.state.packageType,
       this.state.targetFramework);
@@ -160,7 +160,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
           <div key={value.id} className="row search-result">
             <div className="col-sm-1 hidden-xs hidden-sm">
               <img
-                src={value.iconUrl || this.defaultIconUrl}
+                src={value.iconUrl || DefaultPackageIcon}
                 className="package-icon img-responsive"
                 onError={this.loadDefaultIcon}
                 alt="The package icon" />
@@ -272,7 +272,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
   }
 
   private loadDefaultIcon = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    e.currentTarget.src = this.defaultIconUrl;
+    e.currentTarget.src = DefaultPackageIcon;
   }
 
   private onChangePackageType = (e: React.FormEvent<HTMLDivElement>, option?: IDropdownOption) : void => {

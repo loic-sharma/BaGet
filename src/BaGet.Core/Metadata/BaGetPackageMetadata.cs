@@ -19,10 +19,17 @@ namespace BaGet.Core
         [JsonProperty("packageTypes")]
         public IReadOnlyList<string> PackageTypes { get; set; }
 
+        /// <summary>
+        /// The package's release notes.
+        /// </summary>
+        [JsonProperty("releaseNotes")]
+        public string ReleaseNotes { get; set; }
+
         [JsonProperty("repositoryUrl")]
         public string RepositoryUrl { get; set; }
 
         [JsonProperty("repositoryType")]
         public string RepositoryType { get; set; }
+
     }
 }

@@ -19,3 +19,4 @@ These folders contain cloud-specific components of BaGet:
 * `BaGet.Azure` - BaGet's Azure provider
 * `BaGet.Aws` - BaGet's Amazon Web Services provider
 * `BaGet.Gcp` - BaGet's Google Cloud Platform provider
+* `BaGet.Aliyun` - BaGet's Alibaba Cloud(Aliyun) provider

@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -31,6 +32,9 @@ namespace BaGet.Core
 
         public Task<int> SaveChangesAsync() => SaveChangesAsync(default);
 
+        public virtual async Task RunMigrationsAsync(CancellationToken cancellationToken)
+            => await Database.MigrateAsync(cancellationToken);
+
         public abstract bool IsUniqueConstraintViolationException(DbUpdateException exception);
 
         public virtual bool SupportsLimitInSubqueries => true;
@@ -63,9 +67,14 @@ namespace BaGet.Core
                 .HasColumnName("OriginalVersion")
                 .HasMaxLength(MaxPackageVersionLength);
 
-            package.Property(p => p.Authors)
-                .HasConversion(StringArrayToJsonConverter.Instance)
+            package.Property(p => p.ReleaseNotes)
+                .HasColumnName("ReleaseNotes")
                 .HasMaxLength(DefaultMaxStringLength);
+
+            package.Property(p => p.Authors)
+                .HasMaxLength(DefaultMaxStringLength)
+                .HasConversion(StringArrayToJsonConverter.Instance)
+                .Metadata.SetValueComparer(StringArrayComparer.Instance);
 
             package.Property(p => p.IconUrl)
                 .HasConversion(UriToStringConverter.Instance)
@@ -84,8 +93,9 @@ namespace BaGet.Core
                 .HasMaxLength(DefaultMaxStringLength);
 
             package.Property(p => p.Tags)
+                .HasMaxLength(DefaultMaxStringLength)
                 .HasConversion(StringArrayToJsonConverter.Instance)
-                .HasMaxLength(DefaultMaxStringLength);
+                .Metadata.SetValueComparer(StringArrayComparer.Instance);
 
             package.Property(p => p.Description).HasMaxLength(DefaultMaxStringLength);
             package.Property(p => p.Language).HasMaxLength(MaxPackageLanguageLength);

@@ -1,45 +1,30 @@
 using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
-namespace BaGet.Extensions
+namespace BaGet
 {
-    // See https://github.com/aspnet/MetaPackages/blob/master/src/Microsoft.AspNetCore/WebHost.cs
+    // TODO: Move this to BaGet.Hosting.
     public static class IHostBuilderExtensions
     {
-        public static IHostBuilder ConfigureBaGetConfiguration(this IHostBuilder builder, string[] args)
+        public static IHostBuilder UseBaGet(this IHostBuilder host)
         {
-            return builder.ConfigureAppConfiguration((context, config) =>
+            host.ConfigureServices((context, services) =>
             {
-                config.AddEnvironmentVariables();
+                services.AddBaGet(context.Configuration);
+            });
 
-                config
-                    .SetBasePath(Environment.CurrentDirectory)
-                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            host.ConfigureAppConfiguration((context, config) =>
+            {
+                var root = Environment.GetEnvironmentVariable("BAGET_CONFIG_ROOT");
 
-                if (args != null)
+                if (!string.IsNullOrEmpty(root))
                 {
-                    config.AddCommandLine(args);
+                    config.SetBasePath(root);
                 }
             });
-        }
 
-        public static IHostBuilder ConfigureBaGetLogging(this IHostBuilder builder)
-        {
-            return builder
-                .ConfigureLogging((context, logging) =>
-                {
-                    logging.AddConfiguration(context.Configuration.GetSection("Logging"));
-                    logging.AddConsole();
-                    logging.AddDebug();
-                });
-        }
-
-        public static IHostBuilder ConfigureBaGetServices(this IHostBuilder builder)
-        {
-            return builder
-                .ConfigureServices((context, services) => services.ConfigureBaGet(context.Configuration));
+            return host;
         }
     }
 }

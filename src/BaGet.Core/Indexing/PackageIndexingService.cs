@@ -12,14 +12,14 @@ namespace BaGet.Core
     {
         private readonly IPackageService _packages;
         private readonly IPackageStorageService _storage;
-        private readonly ISearchService _search;
+        private readonly ISearchIndexer _search;
         private readonly IOptionsSnapshot<BaGetOptions> _options;
         private readonly ILogger<PackageIndexingService> _logger;
 
         public PackageIndexingService(
             IPackageService packages,
             IPackageStorageService storage,
-            ISearchService search,
+            ISearchIndexer search,
             IOptionsSnapshot<BaGetOptions> options,
             ILogger<PackageIndexingService> logger)
         {
@@ -36,6 +36,7 @@ namespace BaGet.Core
             Package package;
             Stream nuspecStream;
             Stream readmeStream;
+            Stream iconStream;
 
             try
             {
@@ -54,6 +55,16 @@ namespace BaGet.Core
                     {
                         readmeStream = null;
                     }
+
+                    if (package.HasEmbeddedIcon)
+                    {
+                        iconStream = await packageReader.GetIconAsync(cancellationToken);
+                        iconStream = await iconStream.AsTemporaryFileStreamAsync();
+                    }
+                    else
+                    {
+                        iconStream = null;
+                    }
                 }
             }
             catch (Exception e)
@@ -64,14 +75,14 @@ namespace BaGet.Core
             }
 
             // The package is well-formed. Ensure this is a new package.
-            if (await _packages.ExistsAsync(package.Id, package.Version))
+            if (await _packages.ExistsAsync(package.Id, package.Version, cancellationToken))
             {
                 if (!_options.Value.AllowPackageOverwrites)
                 {
                     return PackageIndexingResult.PackageAlreadyExists;
                 }
 
-                await _packages.HardDeletePackageAsync(package.Id, package.Version);
+                await _packages.HardDeletePackageAsync(package.Id, package.Version, cancellationToken);
                 await _storage.DeleteAsync(package.Id, package.Version, cancellationToken);
             }
 
@@ -91,6 +102,7 @@ namespace BaGet.Core
                     packageStream,
                     nuspecStream,
                     readmeStream,
+                    iconStream,
                     cancellationToken);
             }
             catch (Exception e)
@@ -112,7 +124,7 @@ namespace BaGet.Core
                 package.Id,
                 package.NormalizedVersionString);
 
-            var result = await _packages.AddAsync(package);
+            var result = await _packages.AddAsync(package, cancellationToken);
             if (result == PackageAddResult.PackageAlreadyExists)
             {
                 _logger.LogWarning(

@@ -29,26 +29,5 @@ namespace BaGet.Protocol
             bool includePrerelease = true,
             bool includeSemVer2 = true,
             CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Perform an autocomplete query.
-        /// See: https://docs.microsoft.com/en-us/nuget/api/search-autocomplete-service-resource
-        /// </summary>
-        /// <param name="query">The autocomplete query.</param>
-        /// <param name="type">The autocomplete request type.</param>
-        /// <param name="skip">How many results to skip.</param>
-        /// <param name="take">How many results to return.</param>
-        /// <param name="includePrerelease">Whether pre-release packages should be returned.</param>
-        /// <param name="includeSemVer2">Whether packages that require SemVer 2.0.0 compatibility should be returned.</param>
-        /// <param name="cancellationToken">A token to cancel the task.</param>
-        /// <returns>The autocomplete response.</returns>
-        Task<AutocompleteResponse> AutocompleteAsync(
-            string query = null,
-            AutocompleteType type = AutocompleteType.PackageIds,
-            int skip = 0,
-            int take = 20,
-            bool includePrerelease = true,
-            bool includeSemVer2 = true,
-            CancellationToken cancellationToken = default);
     }
 }

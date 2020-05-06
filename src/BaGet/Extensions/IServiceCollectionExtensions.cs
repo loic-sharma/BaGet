@@ -2,37 +2,31 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
+using BaGet.Aliyun;
 using BaGet.Aws;
-using BaGet.Aws.Configuration;
-using BaGet.Aws.Extensions;
 using BaGet.Azure;
-using BaGet.Azure.Configuration;
-using BaGet.Azure.Extensions;
-using BaGet.Azure.Search;
 using BaGet.Core;
-using BaGet.Core.Content;
-using BaGet.Core.Server.Extensions;
 using BaGet.Database.MySql;
 using BaGet.Database.PostgreSql;
 using BaGet.Database.Sqlite;
 using BaGet.Database.SqlServer;
-using BaGet.Gcp.Configuration;
-using BaGet.Gcp.Extensions;
-using BaGet.Gcp.Services;
+using BaGet.Gcp;
+using BaGet.Hosting;
 using BaGet.Protocol;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace BaGet.Extensions
+namespace BaGet
 {
+    // TODO: Move this to BaGet.Core
     public static class IServiceCollectionExtensions
     {
-        public static IServiceCollection ConfigureBaGet(
+        public static IServiceCollection AddBaGet(
             this IServiceCollection services,
-            IConfiguration configuration,
-            bool httpServices = false)
+            IConfiguration configuration)
         {
             services.ConfigureAndValidate<BaGetOptions>(configuration);
             services.ConfigureAndValidate<SearchOptions>(configuration.GetSection(nameof(BaGetOptions.Search)));
@@ -40,17 +34,16 @@ namespace BaGet.Extensions
             services.ConfigureAndValidate<StorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
             services.ConfigureAndValidate<DatabaseOptions>(configuration.GetSection(nameof(BaGetOptions.Database)));
             services.ConfigureAndValidate<FileSystemStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
+
+            // Add options for different providers
             services.ConfigureAndValidate<BlobStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
             services.ConfigureAndValidate<AzureSearchOptions>(configuration.GetSection(nameof(BaGetOptions.Search)));
 
             services.ConfigureAzure(configuration);
             services.ConfigureAws(configuration);
             services.ConfigureGcp(configuration);
-
-            if (httpServices)
-            {
-                services.ConfigureHttpServices();
-            }
+            services.ConfigureAliyunOSS(configuration);
+            services.ConfigureIis(configuration);
 
             services.AddBaGetContext();
 
@@ -81,9 +74,10 @@ namespace BaGet.Extensions
             services.AddTransient<IPackageDeletionService, PackageDeletionService>();
             services.AddTransient<ISymbolIndexingService, SymbolIndexingService>();
             services.AddTransient<IServiceIndexService, BaGetServiceIndex>();
-            services.AddTransient<IPackageContentService, DatabasePackageContentService>();
-            services.AddTransient<IPackageMetadataService, DatabasePackageMetadataService>();
+            services.AddTransient<IPackageContentService, DefaultPackageContentService>();
+            services.AddTransient<IPackageMetadataService, DefaultPackageMetadataService>();
             services.AddSingleton<IFrameworkCompatibilityService, FrameworkCompatibilityService>();
+            services.AddSingleton<RegistrationBuilder>();
             services.AddMirrorServices();
 
             services.AddStorageProviders();
@@ -172,11 +166,34 @@ namespace BaGet.Extensions
             return services;
         }
 
+        public static IServiceCollection ConfigureAliyunOSS(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            services.ConfigureAndValidate<AliyunStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
+
+            return services;
+        }
+
         public static IServiceCollection ConfigureGcp(
             this IServiceCollection services,
             IConfiguration configuration)
         {
             services.ConfigureAndValidate<GoogleCloudStorageOptions>(configuration.GetSection(nameof(BaGetOptions.Storage)));
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureIis(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            services.Configure<IISServerOptions>(iis =>
+            {
+                iis.MaxRequestBodySize = 262144000;
+            });
+
+            services.ConfigureAndValidate<IISServerOptions>(configuration.GetSection(nameof(IISServerOptions)));
 
             return services;
         }
@@ -192,6 +209,7 @@ namespace BaGet.Extensions
             services.AddBlobStorageService();
             services.AddS3StorageService();
             services.AddGoogleCloudStorageService();
+            services.AddAliyunStorageService();
 
             services.AddTransient<IStorageService>(provider =>
             {
@@ -213,6 +231,9 @@ namespace BaGet.Extensions
 
                     case StorageType.Null:
                         return provider.GetRequiredService<NullStorageService>();
+
+                    case StorageType.AliyunOss:
+                        return provider.GetRequiredService<AliyunStorageService>();
 
                     default:
                         throw new InvalidOperationException(
@@ -263,8 +284,28 @@ namespace BaGet.Extensions
                 }
             });
 
+            services.AddTransient<ISearchIndexer>(provider =>
+            {
+                var searchOptions = provider.GetRequiredService<IOptionsSnapshot<SearchOptions>>();
+
+                switch (searchOptions.Value.Type)
+                {
+                    case SearchType.Null:
+                    case SearchType.Database:
+                        return provider.GetRequiredService<NullSearchIndexer>();
+
+                    case SearchType.Azure:
+                        return provider.GetRequiredService<AzureSearchIndexer>();
+
+                    default:
+                        throw new InvalidOperationException(
+                            $"Unsupported search service: {searchOptions.Value.Type}");
+                }
+            });
+
             services.AddTransient<DatabaseSearchService>();
             services.AddSingleton<NullSearchService>();
+            services.AddSingleton<NullSearchIndexer>();
             services.AddAzureSearch();
             services.AddAzureTableSearch();
 
@@ -324,8 +365,8 @@ namespace BaGet.Extensions
                 return client;
             });
 
-            services.AddSingleton<DownloadsImporter>();
-            services.AddSingleton<IPackageDownloadsSource, PackageDownloadsJsonSource>();
+            services.AddScoped<DownloadsImporter>();
+            services.AddScoped<IPackageDownloadsSource, PackageDownloadsJsonSource>();
 
             return services;
         }

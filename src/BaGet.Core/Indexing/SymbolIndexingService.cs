@@ -54,7 +54,7 @@ namespace BaGet.Core
                     var packageId = symbolPackage.NuspecReader.GetId();
                     var packageVersion = symbolPackage.NuspecReader.GetVersion();
 
-                    var package = await _packages.FindOrNullAsync(packageId, packageVersion, includeUnlisted: true);
+                    var package = await _packages.FindOrNullAsync(packageId, packageVersion, includeUnlisted: true, cancellationToken);
                     if (package == null)
                     {
                         return SymbolIndexingResult.PackageNotFound;

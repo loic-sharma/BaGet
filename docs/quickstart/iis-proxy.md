@@ -42,3 +42,8 @@ Ensure that the configuration's storage `Path` has the appropriate forward slash
 ```
 
 Note that you will need to adjust folder permissions if the `Path` is created outside of the BaGet top-level directory. See the [BaGet Folder Permissions](#baget-folder-permissions).
+
+
+## IIS Server Options
+
+Settings such as the maximum package size can be configured for IIS in the appsettings.json file - see [IIS Server Options](../configuration.md#iis-server-options).

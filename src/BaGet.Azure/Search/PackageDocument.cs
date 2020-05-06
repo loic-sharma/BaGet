@@ -3,16 +3,13 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
 
-namespace BaGet.Azure.Search
+namespace BaGet.Azure
 {
     // See: https://docs.microsoft.com/en-us/nuget/api/search-query-service-resource#search-for-packages
     [SerializePropertyNamesAsCamelCase]
-    public class PackageDocument
+    public class PackageDocument : KeyedDocument
     {
         public const string IndexName = "packages";
-
-        [Key]
-        public string Key { get; set; }
 
         [IsSearchable, IsFilterable, IsSortable]
         public string Id { get; set; }
@@ -26,6 +23,7 @@ namespace BaGet.Azure.Search
         [IsSearchable]
         public string Description { get; set; }
         public string[] Authors { get; set; }
+        public bool HasEmbeddedIcon { get; set; }
         public string IconUrl { get; set; }
         public string LicenseUrl { get; set; }
         public string ProjectUrl { get; set; }
@@ -66,5 +64,17 @@ namespace BaGet.Azure.Search
 
         [IsFilterable]
         public string SearchFilters { get; set; }
+    }
+
+    [SerializePropertyNamesAsCamelCase]
+    public class KeyedDocument : IKeyedDocument
+    {
+        [Key]
+        public string Key { get; set; }
+    }
+
+    public interface IKeyedDocument
+    {
+        string Key { get; set; }
     }
 }

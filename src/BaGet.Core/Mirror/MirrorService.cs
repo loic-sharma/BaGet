@@ -36,14 +36,18 @@ namespace BaGet.Core
             string id,
             CancellationToken cancellationToken)
         {
-            var upstreamVersions = await _upstreamClient.ListPackageVersionsAsync(id, includeUnlisted: true, cancellationToken);
-            if (!upstreamVersions.Any())
+            var upstreamVersions = await RunOrNull(
+                id,
+                "versions",
+                () => _upstreamClient.ListPackageVersionsAsync(id, includeUnlisted: true, cancellationToken));
+
+            if (upstreamVersions == null || !upstreamVersions.Any())
             {
                 return null;
             }
 
             // Merge the local package versions into the upstream package versions.
-            var localPackages = await _localPackages.FindAsync(id, includeUnlisted: true);
+            var localPackages = await _localPackages.FindAsync(id, includeUnlisted: true, cancellationToken);
             var localVersions = localPackages.Select(p => p.Version);
 
             return upstreamVersions.Concat(localVersions).Distinct().ToList();
@@ -51,36 +55,22 @@ namespace BaGet.Core
 
         public async Task<IReadOnlyList<Package>> FindPackagesOrNullAsync(string id, CancellationToken cancellationToken)
         {
-            var items = await _upstreamClient.GetPackageMetadataAsync(id, cancellationToken);
-            if (!items.Any())
+            var items = await RunOrNull(
+                id,
+                "metadata",
+                () => _upstreamClient.GetPackageMetadataAsync(id, cancellationToken));
+
+            if (items == null || !items.Any())
             {
                 return null;
             }
 
-            var upstreamPackages = items.Select(ToPackage);
-
-            // Return the upstream packages if there are no local packages matching the package id.
-            var localPackages = await _localPackages.FindAsync(id, includeUnlisted: true);
-            if (!localPackages.Any())
-            {
-                return upstreamPackages.ToList();
-            }
-
-            // Otherwise, merge the local packages into the upstream packages.
-            var result = upstreamPackages.ToDictionary(p => new PackageIdentity(p.Id, p.Version));
-            var local = localPackages.ToDictionary(p => new PackageIdentity(p.Id, p.Version));
-
-            foreach (var localPackage in local)
-            {
-                result[localPackage.Key] = localPackage.Value;
-            }
-
-            return result.Values.ToList();
+            return items.Select(ToPackage).ToList();
         }
 
         public async Task MirrorAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
-            if (await _localPackages.ExistsAsync(id, version))
+            if (await _localPackages.ExistsAsync(id, version, cancellationToken))
             {
                 return;
             }
@@ -184,6 +174,20 @@ namespace BaGet.Core
                 VersionRange = d.Range,
                 TargetFramework = group.TargetFramework
             });
+        }
+
+        private async Task<T> RunOrNull<T>(string id, string data, Func<Task<T>> x)
+            where T : class
+        {
+            try
+            {
+                return await x();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Unable to mirror package {Package}'s upstream {Data}", id, data);
+                return null;
+            }
         }
 
         private async Task IndexFromSourceAsync(string id, NuGetVersion version, CancellationToken cancellationToken)

@@ -9,33 +9,25 @@ using BaGet.Protocol.Models;
 using Microsoft.Azure.Search;
 using NuGet.Versioning;
 
-namespace BaGet.Azure.Search
+namespace BaGet.Azure
 {
     using QueryType = Microsoft.Azure.Search.Models.QueryType;
     using SearchParameters = Microsoft.Azure.Search.Models.SearchParameters;
 
     public class AzureSearchService : ISearchService
     {
-        private readonly BatchIndexer _indexer;
         private readonly SearchIndexClient _searchClient;
         private readonly IUrlGenerator _url;
         private readonly IFrameworkCompatibilityService _frameworks;
 
         public AzureSearchService(
-            BatchIndexer indexer,
             SearchIndexClient searchClient,
             IUrlGenerator url,
             IFrameworkCompatibilityService frameworks)
         {
-            _indexer = indexer ?? throw new ArgumentNullException(nameof(indexer));
             _searchClient = searchClient ?? throw new ArgumentNullException(nameof(searchClient));
             _url = url ?? throw new ArgumentNullException(nameof(url));
             _frameworks = frameworks ?? throw new ArgumentNullException(nameof(frameworks));
-        }
-
-        public async Task IndexAsync(Package package, CancellationToken cancellationToken)
-        {
-            await _indexer.IndexAsync(package.Id);
         }
 
         public async Task<SearchResponse> SearchAsync(
@@ -104,13 +96,17 @@ namespace BaGet.Azure.Search
                     });
                 }
 
+                var iconUrl = document.HasEmbeddedIcon
+                    ? _url.GetPackageIconDownloadUrl(document.Id, NuGetVersion.Parse(document.Version))
+                    : document.IconUrl;
+
                 results.Add(new SearchResult
                 {
                     PackageId =  document.Id,
                     Version = document.Version,
                     Description = document.Description,
                     Authors = document.Authors,
-                    IconUrl = document.IconUrl,
+                    IconUrl = iconUrl,
                     LicenseUrl = document.LicenseUrl,
                     ProjectUrl = document.ProjectUrl,
                     RegistrationIndexUrl = _url.GetRegistrationIndexUrl(document.Id),

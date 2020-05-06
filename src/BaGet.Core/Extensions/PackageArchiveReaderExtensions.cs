@@ -25,6 +25,9 @@ namespace BaGet.Core
         public static bool HasReadme(this PackageArchiveReader package)
             => package.GetFiles().Any(ReadmeFileNames.Contains);
 
+        public static bool HasEmbeddedIcon(this PackageArchiveReader package)
+            => !string.IsNullOrEmpty(package.NuspecReader.GetIcon());
+
         public async static Task<Stream> GetReadmeAsync(
             this PackageArchiveReader package,
             CancellationToken cancellationToken)
@@ -44,6 +47,13 @@ namespace BaGet.Core
             throw new InvalidOperationException("Package does not have a readme!");
         }
 
+        public async static Task<Stream> GetIconAsync(
+            this PackageArchiveReader package,
+            CancellationToken cancellationToken)
+        {
+            return await package.GetStreamAsync(package.NuspecReader.GetIcon(), cancellationToken);
+        }
+
         public static Package GetPackageMetadata(this PackageArchiveReader packageReader)
         {
             var nuspec = packageReader.NuspecReader;
@@ -57,8 +67,10 @@ namespace BaGet.Core
                 Authors = ParseAuthors(nuspec.GetAuthors()),
                 Description = nuspec.GetDescription(),
                 HasReadme = packageReader.HasReadme(),
+                HasEmbeddedIcon = packageReader.HasEmbeddedIcon(),
                 IsPrerelease = nuspec.GetVersion().IsPrerelease,
                 Language = nuspec.GetLanguage() ?? string.Empty,
+                ReleaseNotes = nuspec.GetReleaseNotes() ?? string.Empty,
                 Listed = true,
                 MinClientVersion = nuspec.GetMinClientVersion()?.ToNormalizedString() ?? string.Empty,
                 Published = DateTime.UtcNow,

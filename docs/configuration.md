@@ -28,7 +28,7 @@ caching to:
 1. Speed up your builds if restores from [nuget.org](https://nuget.org) are slow
 1. Enable package restores in offline scenarios
 
-The following `Mirror` settings configures BaGet to index packages from [nuget.org](https://nuget.org):
+The following `Mirror` setting configures BaGet to index packages from [nuget.org](https://nuget.org):
 
 ```json
 {
@@ -66,7 +66,7 @@ downloaded if you know the package's id and version. You can override this behav
 
 ## Enable Package Overwrites
 
-Normally, BaGet will reject a package upload if the id and version is already taken. You can configure BaGet
+Normally, BaGet will reject a package upload if the id and version are already taken. You can configure BaGet
 to overwrite the already existing package by setting `AllowPackageOverwrites`:
 
 ```json
@@ -129,3 +129,20 @@ There are two settings related to the database configuration:
 
 - **Type**: The database engine to use, this should be one of the strings from the above list such as `PostgreSql` or `Sqlite`.
 - **ConnectionString**: The connection string for your database engine.
+
+## IIS Server Options
+
+IIS Server options can be configured under the `IISServerOptions` key. The available options are detailed at [docs.microsoft.com](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.iisserveroptions)
+Note: If not specified, the MaxRequestBodySize in BaGet defaults to 250MB (262144000 bytes), rather than the ASP.NET Core default of 30MB
+
+```json
+{
+    ...
+
+    "IISServerOptions": {
+        "MaxRequestBodySize": 262144000
+    },
+
+    ...
+}
+```

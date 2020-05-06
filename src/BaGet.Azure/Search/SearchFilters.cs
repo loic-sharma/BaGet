@@ -1,6 +1,6 @@
 using System;
 
-namespace BaGet.Azure.Search
+namespace BaGet.Azure
 {
     // Based off: https://github.com/NuGet/NuGet.Services.Metadata/blob/d3e6b7a3aa8ec9cb8b32bf860f2d4f0d6766ed92/src/NuGet.Services.AzureSearch/VersionList/SearchFilters.cs#L9
     [Flags]

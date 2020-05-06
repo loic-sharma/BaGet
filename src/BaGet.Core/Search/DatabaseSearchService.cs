@@ -70,6 +70,9 @@ namespace BaGet.Core
             {
                 var versions = package.OrderByDescending(p => p.Version).ToList();
                 var latest = versions.First();
+                var iconUrl = latest.HasEmbeddedIcon
+                    ? _url.GetPackageIconDownloadUrl(latest.Id, latest.Version)
+                    : latest.IconUrlString;
 
                 result.Add(new SearchResult
                 {
@@ -77,7 +80,7 @@ namespace BaGet.Core
                     Version = latest.Version.ToFullString(),
                     Description = latest.Description,
                     Authors = latest.Authors,
-                    IconUrl = latest.IconUrlString,
+                    IconUrl = iconUrl,
                     LicenseUrl = latest.LicenseUrlString,
                     ProjectUrl = latest.ProjectUrlString,
                     RegistrationIndexUrl = _url.GetRegistrationIndexUrl(latest.Id),
@@ -127,10 +130,10 @@ namespace BaGet.Core
 
             var results = await search.Where(p => p.Listed)
                 .OrderByDescending(p => p.Downloads)
+                .Distinct()
                 .Skip(skip)
                 .Take(take)
                 .Select(p => p.Id)
-                .Distinct()
                 .ToListAsync(cancellationToken);
 
             return new AutocompleteResponse
@@ -176,7 +179,36 @@ namespace BaGet.Core
             CancellationToken cancellationToken)
         {
             var frameworks = GetCompatibleFrameworksOrNull(framework);
-            var search = (IQueryable<Package>)_context.Packages.Where(p => p.Listed);
+            IQueryable<Package> search = _context.Packages;
+
+            IQueryable<Package> AddSearchFilters(IQueryable<Package> packageQuery)
+            {
+                if (!includePrerelease)
+                {
+                    packageQuery = packageQuery.Where(p => !p.IsPrerelease);
+                }
+
+                if (!includeSemVer2)
+                {
+                    packageQuery = packageQuery.Where(p => p.SemVerLevel != SemVerLevel.SemVer2);
+                }
+
+                if (!string.IsNullOrEmpty(packageType))
+                {
+                    packageQuery = packageQuery.Where(p => p.PackageTypes.Any(t => t.Name == packageType));
+                }
+
+                if (frameworks != null)
+                {
+                    packageQuery = packageQuery.Where(p => p.TargetFrameworks.Any(f => frameworks.Contains(f.Moniker)));
+                }
+
+                packageQuery = packageQuery.Where(p => p.Listed);
+
+                return packageQuery;
+            }
+
+            search = AddSearchFilters(search);
 
             if (!string.IsNullOrEmpty(query))
             {
@@ -184,29 +216,9 @@ namespace BaGet.Core
                 search = search.Where(p => p.Id.ToLower().Contains(query));
             }
 
-            if (!includePrerelease)
-            {
-                search = search.Where(p => !p.IsPrerelease);
-            }
-
-            if (!includeSemVer2)
-            {
-                search = search.Where(p => p.SemVerLevel != SemVerLevel.SemVer2);
-            }
-
-            if (!string.IsNullOrEmpty(packageType))
-            {
-                search = search.Where(p => p.PackageTypes.Any(t => t.Name == packageType));
-            }
-
-            if (frameworks != null)
-            {
-                search = search.Where(p => p.TargetFrameworks.Any(f => frameworks.Contains(f.Moniker)));
-            }
-
             var packageIds = search.Select(p => p.Id)
-                .OrderBy(id => id)
                 .Distinct()
+                .OrderBy(id => id)
                 .Skip(skip)
                 .Take(take);
 
@@ -227,9 +239,11 @@ namespace BaGet.Core
                 search = _context.Packages.Where(p => packageIdResults.Contains(p.Id));
             }
 
-            return (await search.ToListAsync(cancellationToken))
-                .GroupBy(p => p.Id)
-                .ToList();
+            search = AddSearchFilters(search);
+
+            var results = await search.ToListAsync(cancellationToken);
+
+            return results.GroupBy(p => p.Id).ToList();
         }
 
         private IReadOnlyList<string> GetCompatibleFrameworksOrNull(string framework)
