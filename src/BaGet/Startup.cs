@@ -71,7 +71,6 @@ namespace BaGet
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
-            
         }
     }
 }

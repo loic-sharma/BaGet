@@ -12,7 +12,6 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "Database__ConnectionString": "Data Source=/var/baget/baget.db",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
