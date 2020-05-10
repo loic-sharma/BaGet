@@ -13,7 +13,7 @@ namespace BaGet.Protocol
     /// </summary>
     public partial class NuGetClientFactory
     {
-        private readonly Func<HttpClient> _httpClientFactory;
+        private readonly HttpClient _httpClient;
         private readonly string _serviceIndexUrl;
 
         private readonly SemaphoreSlim _mutex;
@@ -37,22 +37,8 @@ namespace BaGet.Protocol
         /// For NuGet.org, use https://api.nuget.org/v3/index.json
         /// </param>
         public NuGetClientFactory(HttpClient httpClient, string serviceIndexUrl)
-            : this(() => httpClient, serviceIndexUrl)
         {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NuGetClientFactory"/> class.
-        /// </summary>
-        /// <param name="httpClientFactory">A factory to create the client used for HTTP requests.</param>
-        /// <param name="serviceIndexUrl">
-        /// The NuGet Service Index resource URL.
-        ///
-        /// For NuGet.org, use https://api.nuget.org/v3/index.json
-        /// </param>
-        public NuGetClientFactory(Func<HttpClient> httpClientFactory, string serviceIndexUrl)
-        {
-            _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             _serviceIndexUrl = serviceIndexUrl ?? throw new ArgumentNullException(nameof(serviceIndexUrl));
 
             _mutex = new SemaphoreSlim(1, 1);
@@ -166,8 +152,7 @@ namespace BaGet.Protocol
                 {
                     if (_clients == null)
                     {
-                        var httpClient = _httpClientFactory();
-                        var serviceIndexClient = new RawServiceIndexClient(httpClient, _serviceIndexUrl);
+                        var serviceIndexClient = new RawServiceIndexClient(_httpClient, _serviceIndexUrl);
 
                         var serviceIndex = await serviceIndexClient.GetAsync(cancellationToken);
 
@@ -178,17 +163,17 @@ namespace BaGet.Protocol
                         var autocompleteResourceUrl = serviceIndex.GetSearchAutocompleteResourceUrl();
 
                         // Create clients for required resources.
-                        var contentClient = new RawPackageContentClient(httpClient, contentResourceUrl);
-                        var metadataClient = new RawPackageMetadataClient(httpClient, metadataResourceUrl);
-                        var searchClient = new RawSearchClient(httpClient, searchResourceUrl);
+                        var contentClient = new RawPackageContentClient(_httpClient, contentResourceUrl);
+                        var metadataClient = new RawPackageMetadataClient(_httpClient, metadataResourceUrl);
+                        var searchClient = new RawSearchClient(_httpClient, searchResourceUrl);
 
                         // Create clients for optional resources.
                         var catalogClient = catalogResourceUrl == null
                             ? new NullCatalogClient() as ICatalogClient
-                            : new RawCatalogClient(httpClient, catalogResourceUrl);
+                            : new RawCatalogClient(_httpClient, catalogResourceUrl);
                         var autocompleteClient = autocompleteResourceUrl == null
                             ? new NullAutocompleteClient() as IAutocompleteClient
-                            : new RawAutocompleteClient(httpClient, autocompleteResourceUrl);
+                            : new RawAutocompleteClient(_httpClient, autocompleteResourceUrl);
 
                         _clients = new NuGetClients
                         {
