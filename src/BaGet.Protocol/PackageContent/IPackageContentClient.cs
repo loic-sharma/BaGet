@@ -34,7 +34,7 @@ namespace BaGet.Protocol
         /// <returns>
         /// The package's content stream, or null if the package does not exist. The stream may not be seekable.
         /// </returns>
-        Task<Stream> GetPackageContentStreamOrNullAsync(
+        Task<Stream> DownloadPackageOrNullAsync(
             string packageId,
             NuGetVersion packageVersion,
             CancellationToken cancellationToken = default);
@@ -49,7 +49,7 @@ namespace BaGet.Protocol
         /// <returns>
         /// The package's manifest stream, or null if the package does not exist. The stream may not be seekable.
         /// </returns>
-        Task<Stream> GetPackageManifestStreamOrNullAsync(
+        Task<Stream> DownloadPackageManifestOrNullAsync(
             string packageId,
             NuGetVersion packageVersion,
             CancellationToken cancellationToken = default);

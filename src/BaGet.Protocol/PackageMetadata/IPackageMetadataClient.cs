@@ -27,21 +27,19 @@ namespace BaGet.Protocol
         /// </summary>
         /// <param name="pageUrl">The URL of the page, from the <see cref="RegistrationIndexResponse"/>.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
-        /// <returns>The registration index page, or null if the page does not exist.</returns>
+        /// <returns>The registration index page.</returns>
         Task<RegistrationPageResponse> GetRegistrationPageAsync(
             string pageUrl,
             CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Get the metadata for a single package version, if the package exists.
+        /// Get the metadata for a single package version.
         /// </summary>
-        /// <param name="packageId">The package's id.</param>
-        /// <param name="packageVersion">The package's version.</param>
+        /// <param name="leafUrl">The URL of the leaf, from the <see cref="RegistrationIndexPageItem"/>.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
-        /// <returns>The registration leaf, or null if the package does not exist.</returns>
-        Task<RegistrationLeafResponse> GetRegistrationLeafOrNullAsync(
-            string packageId,
-            NuGetVersion packageVersion,
+        /// <returns>The registration leaf.</returns>
+        Task<RegistrationLeafResponse> GetRegistrationLeafAsync(
+            string leafUrl,
             CancellationToken cancellationToken = default);
     }
 }

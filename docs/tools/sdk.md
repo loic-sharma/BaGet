@@ -33,7 +33,7 @@ NuGetClient client = new NuGetClient("https://api.nuget.org/v3/index.json");
 string packageId = "Newtonsoft.Json";
 NuGetVersion packageVersion = new NuGetVersion("12.0.1");
 
-using (Stream packageStream = await client.GetPackageStreamAsync(packageId, packageVersion))
+using (Stream packageStream = await client.DownloadPackageAsync(packageId, packageVersion))
 {
     Console.WriteLine($"Downloaded package {packageId} {packageVersion}");
 }
