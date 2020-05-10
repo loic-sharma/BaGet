@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Protocol.Models;
-using NuGet.Versioning;
 
 namespace BaGet.Protocol.Internal
 {
@@ -54,16 +53,11 @@ namespace BaGet.Protocol.Internal
         }
 
         /// <inheritdoc />
-        public async Task<RegistrationLeafResponse> GetRegistrationLeafOrNullAsync(
-            string packageId,
-            NuGetVersion packageVersion,
+        public async Task<RegistrationLeafResponse> GetRegistrationLeafAsync(
+            string leafUrl,
             CancellationToken cancellationToken = default)
         {
-            var id = packageId.ToLowerInvariant();
-            var version = packageVersion.ToNormalizedString().ToLowerInvariant();
-
-            var url = $"{_packageMetadataUrl}/{id}/{version}.json";
-            var response = await _httpClient.DeserializeUrlAsync<RegistrationLeafResponse>(url, cancellationToken);
+            var response = await _httpClient.DeserializeUrlAsync<RegistrationLeafResponse>(leafUrl, cancellationToken);
 
             if (response.StatusCode == HttpStatusCode.NotFound)
             {

@@ -35,14 +35,13 @@ namespace BaGet.Protocol
                 return await client.GetRegistrationPageAsync(pageUrl, cancellationToken);
             }
 
-            public async Task<RegistrationLeafResponse> GetRegistrationLeafOrNullAsync(
-                string packageId,
-                NuGetVersion packageVersion,
+            public async Task<RegistrationLeafResponse> GetRegistrationLeafAsync(
+                string leafUrl,
                 CancellationToken cancellationToken = default)
             {
                 var client = await _clientfactory.GetPackageMetadataClientAsync(cancellationToken);
 
-                return await client.GetRegistrationLeafOrNullAsync(packageId, packageVersion, cancellationToken);
+                return await client.GetRegistrationLeafAsync(leafUrl, cancellationToken);
             }
         }
     }

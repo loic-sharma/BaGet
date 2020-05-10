@@ -17,7 +17,7 @@ namespace BaGet.Protocol.Samples.Tests
             string packageId = "Newtonsoft.Json";
             NuGetVersion packageVersion = new NuGetVersion("12.0.1");
 
-            using (Stream packageStream = await client.GetPackageStreamAsync(packageId, packageVersion))
+            using (Stream packageStream = await client.DownloadPackageAsync(packageId, packageVersion))
             {
                 Console.WriteLine($"Downloaded package {packageId} {packageVersion}");
             }
@@ -32,7 +32,7 @@ namespace BaGet.Protocol.Samples.Tests
             string packageId = "Newtonsoft.Json";
             NuGetVersion packageVersion = new NuGetVersion("12.0.1");
 
-            using (Stream manifestStream = await client.GetPackageManifestStreamAsync(packageId, packageVersion))
+            using (Stream manifestStream = await client.DownloadPackageManifestAsync(packageId, packageVersion))
             {
                 Console.WriteLine($"Downloaded package {packageId} {packageVersion}'s nuspec");
             }
