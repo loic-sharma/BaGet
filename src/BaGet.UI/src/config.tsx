@@ -1,6 +1,6 @@
 let config = {
   apiUrl: "__BAGET_PLACEHOLDER_API_URL__",
-  baseUrl: "__BAGET_PATH_BASE_PLACEHOLDER__"
+  baseUrl: "__BAGET_PLACEHOLDER_PATH_BASE__"
 };
 
 if (config.apiUrl.startsWith("__BAGET_PLACEHOLDER_")) {

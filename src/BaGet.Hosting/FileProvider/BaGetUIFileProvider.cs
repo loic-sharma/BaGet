@@ -63,7 +63,7 @@ namespace BaGet.Hosting
         private CachedFileInfo AddOrUpdate(FileInfo info, string relative)
         {
             var content = File.ReadAllText(info.FullName, Encoding.UTF8)
-                .Replace("__BAGET_PATH_BASE_PLACEHOLDER__", _pathBase)
+                .Replace("__BAGET_PLACEHOLDER_PATH_BASE__", _pathBase)
                 .Replace("__BAGET_PLACEHOLDER_API_URL__", _pathBase);
 
             var file = new CachedFileInfo(info, Encoding.UTF8.GetBytes(content));
