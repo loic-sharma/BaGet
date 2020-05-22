@@ -173,7 +173,7 @@ namespace BaGet
 
             var replacedContent = Encoding.UTF8.GetBytes(
                 rawContent
-                    .Replace("__BAGET_PLACEHOLDER_API_URL__", "")
+                    .Replace("__BAGET_PLACEHOLDER_API_URL__", "TODO")
                     .Replace("__BAGET_PLACEHOLDER_PATH_BASE__", _options.Value.PathBase));
 
             return new MemoryFileInfo(rawFile, replacedContent);
@@ -199,10 +199,12 @@ namespace BaGet
 
             public bool Exists => true;
             public long Length { get; }
-            public string PhysicalPath => null; // Prevent ASP.NET Core from loading the file from disk
             public string Name { get; }
             public DateTimeOffset LastModified { get; }
             public bool IsDirectory => false;
+
+            // Prevent ASP.NET Core from loading the file from disk
+            public string PhysicalPath => null;
 
             public Stream CreateReadStream()
             {
