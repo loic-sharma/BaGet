@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using NuGet.Common;
 using NuGet.Packaging;
 
 namespace BaGet.Core
@@ -51,7 +52,9 @@ namespace BaGet.Core
             this PackageArchiveReader package,
             CancellationToken cancellationToken)
         {
-            return await package.GetStreamAsync(package.NuspecReader.GetIcon(), cancellationToken);
+            return await package.GetStreamAsync(
+                PathUtility.StripLeadingDirectorySeparators(package.NuspecReader.GetIcon()),
+                cancellationToken);
         }
 
         public static Package GetPackageMetadata(this PackageArchiveReader packageReader)
