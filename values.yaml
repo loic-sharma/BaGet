@@ -27,7 +27,7 @@ ingress:
   hostName: "" 
   tls:
     enabled: false
-    hosts: {}
+    hosts: []
     secretName: ""
 
 
