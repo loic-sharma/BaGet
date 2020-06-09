@@ -205,7 +205,12 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
       );
     } else if (!this.state.package) {
       return (
-        <div>Could not find package '{this.id}'.</div>
+        <div>
+          <h2>Oops, package not found...</h2>
+          <p>Could not find package '{this.id}'.</p>
+          <p>You can take a look at the <a href={`https://www.nuget.org/packages/${this.id}`} target="_blank">nuget.org</a> package.</p>
+          <p>If you think there's a problem? Consider taking a look at our <a href="https://loic-sharma.github.io/BaGet/" target="_blank">Documentation</a> or ask for help at our <a href="https://github.com/loic-sharma/BaGet/issues" target="_blank">GitHub Project</a></p>
+        </div>
       );
     } else {
       return (
