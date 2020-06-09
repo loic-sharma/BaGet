@@ -4,10 +4,12 @@ using BaGet.Hosting;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore;
 
 namespace BaGet
 {
+    using Microsoft.Extensions.Options;
+
     public class Program
     {
         public static async Task Main(string[] args)
@@ -18,7 +20,7 @@ namespace BaGet
                 Description = "A light-weight NuGet service",
             };
 
-            app.HelpOption(inherited: true);
+            app.HelpOption(true);
 
             app.Command("import", import =>
             {
@@ -38,6 +40,10 @@ namespace BaGet
             {
                 var host = CreateWebHostBuilder(args).Build();
 
+                // Todo: Don't know how to get the options without rebuilding the host!
+                var baGetOptions = host.Services.GetRequiredService<IOptions<BaGetOptions>>();
+                host = CreateHostBuilder(args).UseUrls(baGetOptions.Value.Port).Build();
+
                 await host.RunMigrationsAsync(cancellationToken);
                 await host.RunAsync(cancellationToken);
             });
@@ -45,22 +51,16 @@ namespace BaGet
             await app.ExecuteAsync(args);
         }
 
-        public static IHostBuilder CreateWebHostBuilder(string[] args) =>
-            CreateHostBuilder(args)
-                .ConfigureWebHostDefaults(web =>
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+            CreateHostBuilder(args).ConfigureKestrel(options =>
                 {
-                    web.ConfigureKestrel(options =>
-                    {
-                        // Remove the upload limit from Kestrel. If needed, an upload limit can
-                        // be enforced by a reverse proxy server, like IIS.
-                        options.Limits.MaxRequestBodySize = null;
-                    });
+                    // Remove the upload limit from Kestrel. If needed, an upload limit can
+                    // be enforced by a reverse proxy server, like IIS.
+                    options.Limits.MaxRequestBodySize = null;
+                }).UseStartup<Startup>();
 
-                    web.UseStartup<Startup>();
-                });
-
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+        public static IWebHostBuilder CreateHostBuilder(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
                 .UseBaGet();
     }
 }

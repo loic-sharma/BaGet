@@ -5,7 +5,7 @@ namespace BaGet.Core
 {
     public class BaGetOptions
     {
-         /// <summary>
+        /// <summary>
         /// The API Key required to authenticate package
         /// operations. If empty, package operations do not require authentication.
         /// </summary>
@@ -37,6 +37,11 @@ namespace BaGet.Core
         /// If true, disables package pushing, deleting, and relisting.
         /// </summary>
         public bool IsReadOnlyMode { get; set; } = false;
+
+        /// <summary>
+        /// The port the baGet server will run on.
+        /// </summary>
+        public string Port { get; set; }
 
         [Required]
         public DatabaseOptions Database { get; set; }
