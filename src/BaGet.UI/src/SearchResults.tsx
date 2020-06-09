@@ -261,7 +261,6 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
   }
 
   private _renderSearch() {
-    console.log(this.state.items);
     if (this.state.items.length > 0) {
       return this.state.items.map(value => (
         <div key={value.id} className="row search-result">
@@ -315,8 +314,8 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
             It looks like there's no package here to see. Take a look below for useful links.
           </p>
           <p><Link to="/upload">Upload a package</Link></p>
-          <p><a href="https://loic-sharma.github.io/BaGet/" target="_blank">BaGet Documentation</a></p>
-          <p><a href="https://github.com/loic-sharma/BaGet/issues" target="_blank">BaGet Issues</a></p>
+          <p><a href="https://loic-sharma.github.io/BaGet/" target="_blank" rel="noopener noreferrer">BaGet documentation</a></p>
+          <p><a href="https://github.com/loic-sharma/BaGet/issues" target="_blank" rel="noopener noreferrer">BaGet issues</a></p>
         </div>
       );
     }
