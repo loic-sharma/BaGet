@@ -108,6 +108,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                   { key: 'divider1', text: '-', itemType: SelectableOptionMenuItemType.Divider },
                   { key: 'header1', text: '.NET Standard', itemType: SelectableOptionMenuItemType.Header },
 
+                  { key: 'netstandard2.1', text: '.NET Standard 2.1' },
                   { key: 'netstandard2.0', text: '.NET Standard 2.0' },
                   { key: 'netstandard1.6', text: '.NET Standard 1.6' },
                   { key: 'netstandard1.5', text: '.NET Standard 1.5' },
@@ -120,6 +121,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                   { key: 'divider2', text: '-', itemType: SelectableOptionMenuItemType.Divider },
                   { key: 'header2', text: '.NET Core', itemType: SelectableOptionMenuItemType.Header },
 
+                  { key: 'netcoreapp3.1', text: '.NET Core 3.1' },
                   { key: 'netcoreapp3.0', text: '.NET Core 3.0' },
                   { key: 'netcoreapp2.2', text: '.NET Core 2.2' },
                   { key: 'netcoreapp2.1', text: '.NET Core 2.1' },
@@ -129,6 +131,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                   { key: 'divider3', text: '-', itemType: SelectableOptionMenuItemType.Divider },
                   { key: 'header3', text: '.NET Framework', itemType: SelectableOptionMenuItemType.Header },
 
+                  { key: 'net48', text: '.NET Framework 4.8' },
                   { key: 'net472', text: '.NET Framework 4.7.2' },
                   { key: 'net471', text: '.NET Framework 4.7.1' },
                   { key: 'net463', text: '.NET Framework 4.6.3' },
