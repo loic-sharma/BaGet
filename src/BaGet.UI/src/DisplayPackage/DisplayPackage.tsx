@@ -208,8 +208,8 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
         <div>
           <h2>Oops, package not found...</h2>
           <p>Could not find package '{this.id}'.</p>
-          <p>You can take a look at the <a href={`https://www.nuget.org/packages/${this.id}`} target="_blank">nuget.org</a> package.</p>
-          <p>If you think there's a problem? Consider taking a look at our <a href="https://loic-sharma.github.io/BaGet/" target="_blank">Documentation</a> or ask for help at our <a href="https://github.com/loic-sharma/BaGet/issues" target="_blank">GitHub Project</a></p>
+          <p>You can try searching on <a href={`https://www.nuget.org/packages?q=${this.id}`} target="_blank" rel="noopener noreferrer">nuget.org</a> package.</p>
+          <p>Think there's a problem? Consider taking a look at our <a href="https://loic-sharma.github.io/BaGet/" target="_blank" rel="noopener noreferrer">documentation</a> or asking for help on our <a href="https://github.com/loic-sharma/BaGet/issues" target="_blank" rel="noopener noreferrer">GitHub project</a></p>
         </div>
       );
     } else {
