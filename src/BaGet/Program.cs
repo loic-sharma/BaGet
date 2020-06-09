@@ -42,7 +42,7 @@ namespace BaGet
 
                 // Todo: Don't know how to get the options without rebuilding the host!
                 var baGetOptions = host.Services.GetRequiredService<IOptions<BaGetOptions>>();
-                host = CreateHostBuilder(args).UseUrls(baGetOptions.Value.Port).Build();
+                host = CreateWebHostBuilder(args).UseUrls(baGetOptions.Value.Port).Build();
 
                 await host.RunMigrationsAsync(cancellationToken);
                 await host.RunAsync(cancellationToken);
