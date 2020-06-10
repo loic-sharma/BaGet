@@ -64,7 +64,13 @@ namespace BaGet
                             .AddCommandLine(args)
                             .Build();
 
-                        web.UseUrls(config["Urls"]);
+                        var urls = config["Urls"];
+
+                        if (!string.IsNullOrWhiteSpace(urls))
+                        {
+                            web.UseUrls(urls);
+                        }
+
                         web.UseStartup<Startup>();
                     });
 
