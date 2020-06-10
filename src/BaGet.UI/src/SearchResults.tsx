@@ -156,8 +156,67 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
             />
           </div>
         </form>
-
-        {this._renderSearch()}
+        
+        {(() => {
+          if (this.state.items.length > 0) {
+            return this.state.items.map(value => (
+              <div key={value.id} className="row search-result">
+                <div className="col-sm-1 hidden-xs hidden-sm">
+                  <img
+                    src={value.iconUrl || DefaultPackageIcon}
+                    className="package-icon img-responsive"
+                    onError={this.loadDefaultIcon}
+                    alt="The package icon" />
+                </div>
+                <div className="col-sm-11">
+                  <div>
+                    <Link to={`/packages/${value.id}`} className="package-title">{value.id}</Link>
+                    <span>by: {value.authors}</span>
+                  </div>
+                  <ul className="info">
+                    <li>
+                      <span>
+                        <Icon iconName="Download" className="ms-Icon" />
+                        {value.totalDownloads.toLocaleString()} total downloads
+                      </span>
+                    </li>
+                    <li>
+                      <span>
+                        <Icon iconName="Flag" className="ms-Icon" />
+                        Latest version: {value.version}
+                      </span>
+                    </li>
+                    {value.tags.length > 0 &&
+                      <li>
+                        <span className="tags">
+                          <Icon iconName="Tag" className="ms-Icon" />
+                          {value.tags.join(' ')}
+                        </span>
+                      </li>
+                    }
+                  </ul>
+                  <div>
+                    {value.description}
+                  </div>
+                </div>
+              </div>
+            ));
+          }
+          else
+          {
+            return (
+              <div>
+                <h2>Oops, nothing here...</h2>
+                <p>
+                  It looks like there's no package here to see. Take a look below for useful links.
+                </p>
+                <p><Link to="/upload">Upload a package</Link></p>
+                <p><a href="https://loic-sharma.github.io/BaGet/" target="_blank" rel="noopener noreferrer">BaGet documentation</a></p>
+                <p><a href="https://github.com/loic-sharma/BaGet/issues" target="_blank" rel="noopener noreferrer">BaGet issues</a></p>
+              </div>
+            );
+          }
+        })()}
 
       </div>
     );
@@ -258,67 +317,6 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
       !this.state.includePrerelease,
       this.state.packageType,
       this.state.targetFramework);
-  }
-
-  private _renderSearch() {
-    if (this.state.items.length > 0) {
-      return this.state.items.map(value => (
-        <div key={value.id} className="row search-result">
-          <div className="col-sm-1 hidden-xs hidden-sm">
-            <img
-              src={value.iconUrl || DefaultPackageIcon}
-              className="package-icon img-responsive"
-              onError={this.loadDefaultIcon}
-              alt="The package icon" />
-          </div>
-          <div className="col-sm-11">
-            <div>
-              <Link to={`/packages/${value.id}`} className="package-title">{value.id}</Link>
-              <span>by: {value.authors}</span>
-            </div>
-            <ul className="info">
-              <li>
-                <span>
-                  <Icon iconName="Download" className="ms-Icon" />
-                  {value.totalDownloads.toLocaleString()} total downloads
-                </span>
-              </li>
-              <li>
-                <span>
-                  <Icon iconName="Flag" className="ms-Icon" />
-                  Latest version: {value.version}
-                </span>
-              </li>
-              {value.tags.length > 0 &&
-                <li>
-                  <span className="tags">
-                    <Icon iconName="Tag" className="ms-Icon" />
-                    {value.tags.join(' ')}
-                  </span>
-                </li>
-              }
-            </ul>
-            <div>
-              {value.description}
-            </div>
-          </div>
-        </div>
-      ));
-    }
-    else
-    {
-      return (
-        <div>
-          <h2>Oops, nothing here...</h2>
-          <p>
-            It looks like there's no package here to see. Take a look below for useful links.
-          </p>
-          <p><Link to="/upload">Upload a package</Link></p>
-          <p><a href="https://loic-sharma.github.io/BaGet/" target="_blank" rel="noopener noreferrer">BaGet documentation</a></p>
-          <p><a href="https://github.com/loic-sharma/BaGet/issues" target="_blank" rel="noopener noreferrer">BaGet issues</a></p>
-        </div>
-      );
-    }
   }
 }
 
