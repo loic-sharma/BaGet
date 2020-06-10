@@ -39,9 +39,10 @@ namespace BaGet.Core
         public bool IsReadOnlyMode { get; set; } = false;
 
         /// <summary>
-        /// The port the baGet server will run on.
+        /// The URLs the BaGet server will use.
+        /// As per documentation <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/web-host?view=aspnetcore-3.1#server-urls">here (Server URLs)</a>.
         /// </summary>
-        public string Port { get; set; }
+        public string Urls { get; set; }
 
         [Required]
         public DatabaseOptions Database { get; set; }
