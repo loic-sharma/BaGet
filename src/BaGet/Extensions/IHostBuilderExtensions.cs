@@ -1,13 +1,13 @@
 using System;
 using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace BaGet
 {
     // TODO: Move this to BaGet.Hosting.
     public static class IHostBuilderExtensions
     {
-        public static IWebHostBuilder UseBaGet(this IWebHostBuilder host)
+        public static IHostBuilder UseBaGet(this IHostBuilder host)
         {
             host.ConfigureServices((context, services) =>
             {

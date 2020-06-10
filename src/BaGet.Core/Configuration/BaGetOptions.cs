@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BaGet.Core
@@ -34,7 +33,7 @@ namespace BaGet.Core
         public bool AllowPackageOverwrites { get; set; } = false;
 
         /// <summary>
-        /// If true, disables package pushing, deleting, and relisting.
+        /// If true, disables package pushing, deleting, and re-listing.
         /// </summary>
         public bool IsReadOnlyMode { get; set; } = false;
 

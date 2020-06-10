@@ -4,63 +4,73 @@ using BaGet.Hosting;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore;
+using System.IO;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 namespace BaGet
 {
-    using Microsoft.Extensions.Options;
-
-    public class Program
+    namespace BaGet
     {
-        public static async Task Main(string[] args)
+        public class Program
         {
-            var app = new CommandLineApplication
+            public static async Task Main(string[] args)
             {
-                Name = "baget",
-                Description = "A light-weight NuGet service",
-            };
-
-            app.HelpOption(true);
-
-            app.Command("import", import =>
-            {
-                import.Command("downloads", downloads =>
+                var app = new CommandLineApplication
                 {
-                    downloads.OnExecuteAsync(async cancellationToken =>
-                    {
-                        var host = CreateHostBuilder(args).Build();
-                        var importer = host.Services.GetRequiredService<DownloadsImporter>();
+                    Name = "baget",
+                    Description = "A light-weight NuGet service",
+                };
 
-                        await importer.ImportAsync(cancellationToken);
+                app.HelpOption(true);
+
+                app.Command("import", import =>
+                {
+                    import.Command("downloads", downloads =>
+                    {
+                        downloads.OnExecuteAsync(async cancellationToken =>
+                        {
+                            var host = CreateHostBuilder(args).Build();
+                            var importer = host.Services.GetRequiredService<DownloadsImporter>();
+                            await importer.ImportAsync(cancellationToken);
+                        });
                     });
                 });
-            });
 
-            app.OnExecuteAsync(async cancellationToken =>
-            {
-                var host = CreateWebHostBuilder(args).Build();
-
-                // Todo: Don't know how to get the options without rebuilding the host!
-                var baGetOptions = host.Services.GetRequiredService<IOptions<BaGetOptions>>();
-                host = CreateWebHostBuilder(args).UseUrls(baGetOptions.Value.Urls).Build();
-
-                await host.RunMigrationsAsync(cancellationToken);
-                await host.RunAsync(cancellationToken);
-            });
-
-            await app.ExecuteAsync(args);
-        }
-
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            CreateHostBuilder(args).ConfigureKestrel(options =>
+                app.OnExecuteAsync(async cancellationToken =>
                 {
-                    // Remove the upload limit from Kestrel. If needed, an upload limit can
-                    // be enforced by a reverse proxy server, like IIS.
-                    options.Limits.MaxRequestBodySize = null;
-                }).UseStartup<Startup>();
+                    var host = CreateWebHostBuilder(args).Build();
+                    await host.RunMigrationsAsync(cancellationToken);
+                    await host.RunAsync(cancellationToken);
+                });
 
-        public static IWebHostBuilder CreateHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseBaGet();
+                await app.ExecuteAsync(args);
+            }
+
+            public static IHostBuilder CreateWebHostBuilder(string[] args) =>
+                CreateHostBuilder(args)
+                    .ConfigureWebHostDefaults(web =>
+                    {
+                        web.ConfigureKestrel(options =>
+                        {
+                            // Remove the upload limit from Kestrel. If needed, an upload limit can
+                            // be enforced by a reverse proxy server, like IIS.
+                            options.Limits.MaxRequestBodySize = null;
+                        });
+
+                        var config = new ConfigurationBuilder()
+                            .SetBasePath(Directory.GetCurrentDirectory())
+                            .AddJsonFile("appsettings.json", true)
+                            .AddCommandLine(args)
+                            .Build();
+
+                        web.UseUrls(config["Urls"]);
+                        web.UseStartup<Startup>();
+                    });
+
+            public static IHostBuilder CreateHostBuilder(string[] args) =>
+                Host.CreateDefaultBuilder(args)
+                    .UseBaGet();
+        }
     }
 }
