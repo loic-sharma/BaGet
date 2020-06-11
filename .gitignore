@@ -276,6 +276,3 @@ __pycache__/
 
 # Ignore database file
 **/baget.db 
-
-## Ignore package log
-package-lock.json
