@@ -25,6 +25,7 @@ interface ISearchResultsState {
   packageType: string;
   targetFramework: string;
   items: IPackage[];
+  loading: boolean;
 }
 
 interface ISearchResponse {
@@ -42,7 +43,8 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
       includePrerelease: true,
       items: [],
       packageType: 'any',
-      targetFramework: 'any'
+      targetFramework: 'any',
+      loading: false
     };
   }
 
@@ -66,7 +68,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     }
 
     this._loadItems(
-      prevProps.input,
+      this.props.input,
       this.state.includePrerelease,
       this.state.packageType,
       this.state.targetFramework);
@@ -158,7 +160,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         </form>
         
         {(() => {
-          if (this.state.items.length > 0) {
+          if (this.state.loading || this.state.items.length > 0) {
             return this.state.items.map(value => (
               <div key={value.id} className="row search-result">
                 <div className="col-sm-1 hidden-xs hidden-sm">
@@ -234,6 +236,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
       items: [],
       packageType,
       targetFramework,
+      loading: true
     });
 
     const url = this.buildUrl(query, includePrerelease, packageType, targetFramework);
@@ -253,6 +256,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         includePrerelease,
         items: results.data,
         targetFramework,
+        loading: false
       });
     })
     .catch((e) => {
