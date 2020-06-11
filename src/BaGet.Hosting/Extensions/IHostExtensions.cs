@@ -2,9 +2,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace BaGet.Hosting
 {
