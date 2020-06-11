@@ -1,15 +1,14 @@
 using BaGet.Core;
 using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Azure.Search;
+using Microsoft.Azure.Storage.Blob;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace BaGet.Azure
 {
-    using CloudStorageAccount = Microsoft.WindowsAzure.Storage.CloudStorageAccount;
-    using StorageCredentials = Microsoft.WindowsAzure.Storage.Auth.StorageCredentials;
-
+    using CloudStorageAccount = Microsoft.Azure.Storage.CloudStorageAccount;
+    using StorageCredentials = Microsoft.Azure.Storage.Auth.StorageCredentials;
     using TableStorageAccount = Microsoft.Azure.Cosmos.Table.CloudStorageAccount;
 
     public static class DependencyInjectionExtensions
