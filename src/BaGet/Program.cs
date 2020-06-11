@@ -20,7 +20,7 @@ namespace BaGet
                 Description = "A light-weight NuGet service",
             };
 
-            app.HelpOption(true);
+            app.HelpOption(inherited: true);
 
             app.Command("import", import =>
             {
