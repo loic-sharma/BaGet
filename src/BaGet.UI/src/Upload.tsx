@@ -55,7 +55,7 @@ class Upload extends React.Component<{}, IUploadState> {
             <div className="script">
               {this.state.content.map(value => (
                 <div key={value}>
-                  > {value}
+                  {'> ' + value}
                 </div>
               ))}
             </div>
