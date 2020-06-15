@@ -22,6 +22,8 @@ namespace BaGet
                 {
                     config.SetBasePath(root);
                 }
+
+                config.AddKeyPerFile("/run/secrets", optional: true);
             });
 
             return host;
