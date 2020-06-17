@@ -7,6 +7,9 @@ imagePullPolicy: Always
 namesapceOverride: ""
 replicas: 1
 
+annotations: {}
+resources: {}
+
 # sets up environment variables for the container
 # as per https://loic-sharma.github.io/BaGet/quickstart/docker/
 env:
@@ -23,6 +26,7 @@ env:
 # For simple access from outside of the Kubernetes cluster
 # create an ingress.
 ingress:
+  annotations: {}
   enabled: false
   hostName: "" 
   tls:
@@ -40,9 +44,8 @@ persistence:
   storageClass: "-"
   volumeName: ""
 
-resources: {}
-
 service:
+  annotations: {}
   clusterIP: ""
   enabled: true
   externalPort: 80

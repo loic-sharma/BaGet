@@ -10,6 +10,10 @@ metadata:
   {{- if .Values.namespaceOverride }}
   namespace: {{ .Values.namespaceOverride }}
   {{- end }}
+  {{- if .Values.service.annotations }}
+  annotations:
+    {{ toYaml .Values.service.annotations | nindent 4 }}
+  {{- end }}
   labels:
     {{- include "baget.labels" . | nindent 4 }}
 spec:

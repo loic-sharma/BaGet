@@ -6,6 +6,10 @@ metadata:
   {{- if .Values.namespaceOverride }}
   namespace: {{ .Values.namespaceOverride }}
   {{- end }}
+  {{- if .Values.ingress.annotations }}
+  annotations:
+    {{ toYaml .Values.ingress.annotations | nindent 4 }}
+  {{- end }}
   labels:
     {{- include "baget.labels" . | nindent 4 }}
 spec:
