@@ -6,7 +6,7 @@ site_url: https://loic-sharma.github.io/BaGet/
 repo_name: loic-sharma/BaGet
 repo_url: https://github.com/loic-sharma/BaGet
 
-copyright: 'Copyright &copy; 2018 Loic Sharma'
+copyright: 'Copyright &copy; 2020 Loic Sharma'
 
 theme:
   name: material
