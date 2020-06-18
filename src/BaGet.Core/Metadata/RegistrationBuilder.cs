@@ -16,7 +16,7 @@ namespace BaGet.Core
 
         public virtual BaGetRegistrationIndexResponse BuildIndex(PackageRegistration registration)
         {
-            var versions = registration.Packages.Select(p => p.Version).ToList();
+            var sortedPackages = registration.Packages.OrderBy(p => p.Version).ToList();
 
             // TODO: Paging of registration items.
             // "Un-paged" example: https://api.nuget.org/v3/registration3/newtonsoft.json/index.json
@@ -33,9 +33,9 @@ namespace BaGet.Core
                     {
                         RegistrationPageUrl = _url.GetRegistrationIndexUrl(registration.PackageId),
                         Count = registration.Packages.Count(),
-                        Lower = versions.Min().ToNormalizedString().ToLowerInvariant(),
-                        Upper = versions.Max().ToNormalizedString().ToLowerInvariant(),
-                        ItemsOrNull = registration.Packages.Select(ToRegistrationIndexPageItem).ToList(),
+                        Lower = sortedPackages.First().Version.ToNormalizedString().ToLowerInvariant(),
+                        Upper = sortedPackages.Last().Version.ToNormalizedString().ToLowerInvariant(),
+                        ItemsOrNull = sortedPackages.Select(ToRegistrationIndexPageItem).ToList(),
                     }
                 }
             };
