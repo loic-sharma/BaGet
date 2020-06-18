@@ -8,6 +8,8 @@ import SearchResults from './SearchResults';
 
 import './App.css';
 
+import FooterPackageIcon from "./default-package-icon-256x256.png";
+
 interface IAppState {
   input: string;
 }
@@ -23,17 +25,48 @@ class App extends React.Component<RouteComponentProps, IAppState> {
   }
 
   public render() {
-    return (
+    return [(
       <div>
         {this._renderNavigationBar()}
 
         {this._renderContent()}
       </div>
-    );
+      ),
+      (
+        <footer className="footer">
+          {this._renderFooter()}
+        </footer>
+      )];
   }
 
   private onRouteChange = (location: Location, action: Action) =>
     this.setState({ input: "" });
+
+  private _renderFooter() {
+    return (
+      <div className="container">
+        <div className="row">
+          <div className="col-md-3 row-gap">
+            <img alt="" aria-hidden="true" src={FooterPackageIcon} width="184" height="57" />
+          </div>
+          <div className="col-md-9 row-gap">
+            <div className="row">
+              <div className="col-md-12 footer-release-info">
+                <p>
+                  © BaGet 2020 -
+                  <a href="/policies/About">About</a> -
+                  <a href="/policies/Terms">Terms of Use</a> -
+                  <a href="https://go.microsoft.com/fwlink/?LinkId=521839">Privacy Policy</a>
+                  - <a href="https://www.microsoft.com/trademarks">Trademarks</a>
+                  <br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   private _renderNavigationBar() {
     return (
