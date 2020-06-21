@@ -100,17 +100,21 @@ namespace BaGet
             app.Services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<ISearchIndexer>);
 
             // Add database providers.
-            app.AddMySql();
-            app.AddPostgreSql();
-            app.AddSqlite();
-            app.AddSqlServer();
+            app.AddAzureTableDatabase();
+            app.AddMySqlDatabase();
+            app.AddPostgreSqlDatabase();
+            app.AddSqliteDatabase();
+            app.AddSqlServerDatabase();
 
-            // Add cloud providers.
+            // Add storage providers.
+            app.AddFileStorage();
             app.AddAliyunOssStorage();
+            app.AddAwsS3Storage();
             app.AddAzureBlobStorage();
-            app.AddAzureSearch();
-            app.AddAzureTables();
             app.AddGoogleCloudStorage();
+
+            // Add search providers.
+            app.AddAzureSearch();
         }
 
         private static void ConfigureBaGetAppConfiguration(HostBuilderContext ctx, IConfigurationBuilder config)

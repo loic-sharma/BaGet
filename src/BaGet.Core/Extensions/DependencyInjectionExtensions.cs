@@ -35,7 +35,7 @@ namespace BaGet.Core
             return services;
         }
 
-        public static void AddFilesystem(this BaGetApplication app)
+        public static void AddFileStorage(this BaGetApplication app)
         {
             app.Services.TryAddTransient<IStorageService>(provider => provider.GetRequiredService<FileStorageService>());
         }

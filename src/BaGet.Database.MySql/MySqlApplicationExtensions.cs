@@ -7,7 +7,7 @@ namespace BaGet.Core
 {
     public static class MySqlApplicationExtensions
     {
-        public static void AddMySql(this BaGetApplication app)
+        public static void AddMySqlDatabase(this BaGetApplication app)
         {
             app.Services.AddBaGetDbContextProvider<MySqlContext>("MySql", (provider, options) =>
             {

@@ -16,7 +16,7 @@ namespace BaGet.Core
 
     public static class AzureApplicationExtensions
     {
-        public static void AddAzureTables(this BaGetApplication app)
+        public static void AddAzureTableDatabase(this BaGetApplication app)
         {
             app.Services.AddTransient<TablePackageService>();
             app.Services.AddTransient<TableOperationBuilder>();

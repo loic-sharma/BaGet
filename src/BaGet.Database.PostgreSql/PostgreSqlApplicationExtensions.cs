@@ -7,7 +7,7 @@ namespace BaGet.Core
 {
     public static class PostgreSqlApplicationExtensions
     {
-        public static void AddPostgreSql(this BaGetApplication app)
+        public static void AddPostgreSqlDatabase(this BaGetApplication app)
         {
             app.Services.AddBaGetDbContextProvider<PostgreSqlContext>("PostgreSql", (provider, options) =>
             {

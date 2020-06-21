@@ -7,7 +7,7 @@ namespace BaGet.Core
 {
     public static class SqlServerApplicationExtensions
     {
-        public static void AddSqlServer(this BaGetApplication app)
+        public static void AddSqlServerDatabase(this BaGetApplication app)
         {
             app.Services.AddBaGetDbContextProvider<SqlServerContext>("SqlServer", (provider, options) =>
             {
