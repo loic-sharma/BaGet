@@ -78,6 +78,12 @@ namespace BaGet.Core
             });
         }
 
+        public static void AddAzureTableDatabase(this BaGetApplication app, Action<DatabaseOptions> configure)
+        {
+            app.AddAzureTableDatabase();
+            app.Services.Configure(configure);
+        }
+
         public static void AddAzureBlobStorage(this BaGetApplication app)
         {
             app.Services.AddBaGetOptions<BlobStorageOptions>(nameof(BaGetOptions.Storage));
@@ -116,6 +122,12 @@ namespace BaGet.Core
 
                 return provider.GetRequiredService<BlobStorageService>();
             });
+        }
+
+        public static void AddAzureBlobStorage(this BaGetApplication app, Action<BlobStorageOptions> configure)
+        {
+            app.AddAzureBlobStorage();
+            app.Services.Configure(configure);
         }
 
         public static void AddAzureSearch(this BaGetApplication app)

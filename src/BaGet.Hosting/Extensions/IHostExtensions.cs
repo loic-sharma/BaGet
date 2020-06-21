@@ -16,14 +16,15 @@ namespace BaGet.Hosting
             // Run migrations if necessary.
             var options = host.Services.GetRequiredService<IOptions<BaGetOptions>>();
 
-            // TODO!!!
-            if (options.Value.RunMigrationsAtStartup && options.Value.Database.Type != DatabaseType.AzureTable)
+            if (options.Value.RunMigrationsAtStartup)
             {
                 using (var scope = host.Services.CreateScope())
                 {
-                    var ctx = scope.ServiceProvider.GetRequiredService<IContext>();
-
-                    await ctx.RunMigrationsAsync(cancellationToken);
+                    var ctx = scope.ServiceProvider.GetService<IContext>();
+                    if (ctx != null)
+                    {
+                        await ctx.RunMigrationsAsync(cancellationToken);
+                    }
                 }
             }
         }
