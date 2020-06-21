@@ -14,6 +14,7 @@ namespace BaGet.Hosting
             // Run migrations if necessary.
             var options = host.Services.GetRequiredService<IOptions<BaGetOptions>>();
 
+            // TODO!!!
             if (options.Value.RunMigrationsAtStartup && options.Value.Database.Type != DatabaseType.AzureTable)
             {
                 using (var scope = host.Services.CreateScope())

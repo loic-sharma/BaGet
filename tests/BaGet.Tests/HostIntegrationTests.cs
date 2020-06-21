@@ -62,15 +62,15 @@ namespace BaGet.Tests
 
         private IServiceProvider BuildServiceProvider(Dictionary<string, string> configs = null)
         {
-            var hostBuilder = Host.CreateDefaultBuilder();
+            var host = Program
+                .CreateHostBuilder(new string[0])
+                .ConfigureAppConfiguration((ctx, config) =>
+                {
+                    config.AddInMemoryCollection(configs ?? new Dictionary<string, string>());
+                })
+                .Build();
 
-            hostBuilder.UseBaGet();
-            hostBuilder.ConfigureAppConfiguration((ctx, config) =>
-            {
-                config.AddInMemoryCollection(configs ?? new Dictionary<string, string>());
-            });
-
-            return hostBuilder.Build().Services;
+            return host.Services;
         }
     }
 }

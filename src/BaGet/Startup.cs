@@ -21,8 +21,6 @@ namespace BaGet
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.ConfigureHttpServices();
-
             // In production, the UI files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {

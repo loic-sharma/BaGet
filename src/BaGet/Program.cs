@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using BaGet.Core;
@@ -28,7 +29,7 @@ namespace BaGet
                 {
                     downloads.OnExecuteAsync(async cancellationToken =>
                     {
-                        var host = CreateHostBuilder(args).Build();
+                        var host = CreatCmdHostBuilder(args).Build();
                         var importer = host.Services.GetRequiredService<DownloadsImporter>();
                         await importer.ImportAsync(cancellationToken);
                     });
@@ -37,7 +38,8 @@ namespace BaGet
 
             app.OnExecuteAsync(async cancellationToken =>
             {
-                var host = CreateWebHostBuilder(args).Build();
+                var host = CreateHostBuilder(args).Build();
+
                 await host.RunMigrationsAsync(cancellationToken);
                 await host.RunAsync(cancellationToken);
             });
@@ -45,8 +47,13 @@ namespace BaGet
             await app.ExecuteAsync(args);
         }
 
-        public static IHostBuilder CreateWebHostBuilder(string[] args) =>
-            CreateHostBuilder(args)
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration(ConfigureBaGetAppConfiguration)
+                .ConfigureServices((ctx, services) =>
+                {
+                    services.AddBaGetWebApplication(ConfigureBaGetApplication);
+                })
                 .ConfigureWebHostDefaults(web =>
                 {
                     web.ConfigureKestrel(options =>
@@ -72,8 +79,48 @@ namespace BaGet
                     web.UseStartup<Startup>();
                 });
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
+        public static IHostBuilder CreatCmdHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .UseBaGet();
+                .ConfigureAppConfiguration(ConfigureBaGetAppConfiguration)
+                .ConfigureServices((ctx, services) =>
+                {
+                    services.AddBaGetApplication(ConfigureBaGetApplication);
+                });
+
+        private static void ConfigureBaGetApplication(BaGetApplication app)
+        {
+            // You can swap between implementations of subsystems like storage and search using BaGet's configuration.
+            // Each subsystem's implementation has a provider that reads the configuration to determine if it should be
+            // activated. BaGet will run through all its providers until it finds one that is active.
+            // NOTE: Don't copy this if you are embedding BaGet into your own ASP.NET Core application.
+            app.Services.AddScoped(DependencyInjectionExtensions.GetServiceFromProviders<IContext>);
+            app.Services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<IStorageService>);
+            app.Services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<IPackageService>);
+            app.Services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<ISearchService>);
+            app.Services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<ISearchIndexer>);
+
+            // Add database providers.
+            app.AddMySql();
+            app.AddPostgreSql();
+            app.AddSqlite();
+            app.AddSqlServer();
+
+            // Add cloud providers.
+            app.AddAliyunOssStorage();
+            app.AddAzureBlobStorage();
+            app.AddAzureSearch();
+            app.AddAzureTables();
+            app.AddGoogleCloudStorage();
+        }
+
+        private static void ConfigureBaGetAppConfiguration(HostBuilderContext ctx, IConfigurationBuilder config)
+        {
+            var root = Environment.GetEnvironmentVariable("BAGET_CONFIG_ROOT");
+
+            if (!string.IsNullOrEmpty(root))
+            {
+                config.SetBasePath(root);
+            }
+        }
     }
 }
