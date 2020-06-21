@@ -14,8 +14,9 @@ namespace BaGetWebApplication
         {
             services.AddBaGetWebApplication(app =>
             {
-                app.AddFilesystem();
+                // Use Sqlite as BaGet's database and store packages on the local file system.
                 app.AddSqlite();
+                app.AddFilesystem();
             });
         }
 
