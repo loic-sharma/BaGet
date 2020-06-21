@@ -1,3 +1,4 @@
+using System;
 using BaGet.Database.MySql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,7 +8,7 @@ namespace BaGet.Core
 {
     public static class MySqlApplicationExtensions
     {
-        public static void AddMySqlDatabase(this BaGetApplication app)
+        public static BaGetApplication AddMySqlDatabase(this BaGetApplication app)
         {
             app.Services.AddBaGetDbContextProvider<MySqlContext>("MySql", (provider, options) =>
             {
@@ -15,6 +16,17 @@ namespace BaGet.Core
 
                 options.UseMySql(databaseOptions.Value.ConnectionString);
             });
+
+            return app;
+        }
+
+        public static BaGetApplication AddMySqlDatabase(
+            this BaGetApplication app,
+            Action<DatabaseOptions> configure)
+        {
+            app.AddMySqlDatabase();
+            app.Services.Configure(configure);
+            return app;
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -5,20 +6,32 @@ namespace BaGet.Core
 {
     public static class BaGetApplicationExtensions
     {
-        public static void AddFileStorage(this BaGetApplication app)
+        public static BaGetApplication AddFileStorage(this BaGetApplication app)
         {
             app.Services.TryAddTransient<IStorageService>(provider => provider.GetRequiredService<FileStorageService>());
+            return app;
         }
 
-        public static void AddNullStorage(this BaGetApplication app)
+        public static BaGetApplication AddFileStorage(
+            this BaGetApplication app,
+            Action<FileSystemStorageOptions> configure)
+        {
+            app.AddFileStorage();
+            app.Services.Configure(configure);
+            return app;
+        }
+
+        public static BaGetApplication AddNullStorage(this BaGetApplication app)
         {
             app.Services.TryAddTransient<IStorageService>(provider => provider.GetRequiredService<NullStorageService>());
+            return app;
         }
 
-        public static void AddNullSearch(this BaGetApplication app)
+        public static BaGetApplication AddNullSearch(this BaGetApplication app)
         {
             app.Services.TryAddTransient<ISearchIndexer>(provider => provider.GetRequiredService<NullSearchIndexer>());
             app.Services.TryAddTransient<ISearchService>(provider => provider.GetRequiredService<NullSearchService>());
+            return app;
         }
     }
 }

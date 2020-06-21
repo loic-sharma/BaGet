@@ -69,6 +69,13 @@ namespace BaGet.Core
             return app;
         }
 
+        public static BaGetApplication AddAwsS3Storage(this BaGetApplication app, Action<S3StorageOptions> configure)
+        {
+            app.AddAwsS3Storage();
+            app.Services.Configure(configure);
+            return app;
+        }
+
         private static async Task<AWSCredentials> AssumeRoleAsync(
             AWSCredentials credentials,
             string roleArn,

@@ -1,3 +1,4 @@
+using System;
 using BaGet.Database.PostgreSql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,7 +8,7 @@ namespace BaGet.Core
 {
     public static class PostgreSqlApplicationExtensions
     {
-        public static void AddPostgreSqlDatabase(this BaGetApplication app)
+        public static BaGetApplication AddPostgreSqlDatabase(this BaGetApplication app)
         {
             app.Services.AddBaGetDbContextProvider<PostgreSqlContext>("PostgreSql", (provider, options) =>
             {
@@ -15,6 +16,17 @@ namespace BaGet.Core
 
                 options.UseNpgsql(databaseOptions.Value.ConnectionString);
             });
+
+            return app;
+        }
+
+        public static BaGetApplication AddPostgreSqlDatabase(
+            this BaGetApplication app,
+            Action<DatabaseOptions> configure)
+        {
+            app.AddPostgreSqlDatabase();
+            app.Services.Configure(configure);
+            return app;
         }
     }
 }

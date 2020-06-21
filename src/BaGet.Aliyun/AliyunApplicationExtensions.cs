@@ -1,3 +1,4 @@
+using System;
 using Aliyun.OSS;
 using BaGet.Aliyun;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +30,15 @@ namespace BaGet.Core
                 return provider.GetRequiredService<AliyunStorageService>();
             });
 
+            return app;
+        }
+
+        public static BaGetApplication AddAliyunOssStorage(
+            this BaGetApplication app,
+            Action<AliyunStorageOptions> configure)
+        {
+            app.AddAliyunOssStorage();
+            app.Services.Configure(configure);
             return app;
         }
     }

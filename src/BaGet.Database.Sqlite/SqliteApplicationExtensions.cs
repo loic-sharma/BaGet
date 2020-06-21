@@ -1,3 +1,4 @@
+using System;
 using BaGet.Database.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,7 +8,7 @@ namespace BaGet.Core
 {
     public static class SqliteApplicationExtensions
     {
-        public static void AddSqliteDatabase(this BaGetApplication app)
+        public static BaGetApplication AddSqliteDatabase(this BaGetApplication app)
         {
             app.Services.AddBaGetDbContextProvider<SqliteContext>("Sqlite", (provider, options) =>
             {
@@ -15,6 +16,17 @@ namespace BaGet.Core
 
                 options.UseSqlite(databaseOptions.Value.ConnectionString);
             });
+
+            return app;
+        }
+
+        public static BaGetApplication AddSqliteDatabase(
+            this BaGetApplication app,
+            Action<DatabaseOptions> configure)
+        {
+            app.AddSqliteDatabase();
+            app.Services.Configure(configure);
+            return app;
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using BaGet.Database.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,7 +8,7 @@ namespace BaGet.Core
 {
     public static class SqlServerApplicationExtensions
     {
-        public static void AddSqlServerDatabase(this BaGetApplication app)
+        public static BaGetApplication AddSqlServerDatabase(this BaGetApplication app)
         {
             app.Services.AddBaGetDbContextProvider<SqlServerContext>("SqlServer", (provider, options) =>
             {
@@ -15,6 +16,17 @@ namespace BaGet.Core
 
                 options.UseSqlServer(databaseOptions.Value.ConnectionString);
             });
+
+            return app;
+        }
+
+        public static BaGetApplication AddSqlServerDatabase(
+            this BaGetApplication app,
+            Action<DatabaseOptions> configure)
+        {
+            app.AddSqlServerDatabase();
+            app.Services.Configure(configure);
+            return app;
         }
     }
 }

@@ -16,8 +16,10 @@ namespace BaGet.Core
 
     public static class AzureApplicationExtensions
     {
-        public static void AddAzureTableDatabase(this BaGetApplication app)
+        public static BaGetApplication AddAzureTableDatabase(this BaGetApplication app)
         {
+            app.Services.AddBaGetOptions<AzureTableOptions>(nameof(BaGetOptions.Database));
+
             app.Services.AddTransient<TablePackageService>();
             app.Services.AddTransient<TableOperationBuilder>();
             app.Services.AddTransient<TableSearchService>();
@@ -27,7 +29,7 @@ namespace BaGet.Core
 
             app.Services.AddSingleton(provider =>
             {
-                var options = provider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
+                var options = provider.GetRequiredService<IOptions<AzureTableOptions>>().Value;
 
                 return TableStorageAccount.Parse(options.ConnectionString);
             });
@@ -61,23 +63,28 @@ namespace BaGet.Core
 
                 return provider.GetRequiredService<NullSearchIndexer>();
             });
+
+            return app;
         }
 
-        public static void AddAzureTableDatabase(this BaGetApplication app, Action<DatabaseOptions> configure)
+        public static BaGetApplication AddAzureTableDatabase(
+            this BaGetApplication app,
+            Action<AzureTableOptions> configure)
         {
             app.AddAzureTableDatabase();
             app.Services.Configure(configure);
+            return app;
         }
 
-        public static void AddAzureBlobStorage(this BaGetApplication app)
+        public static BaGetApplication AddAzureBlobStorage(this BaGetApplication app)
         {
-            app.Services.AddBaGetOptions<BlobStorageOptions>(nameof(BaGetOptions.Storage));
+            app.Services.AddBaGetOptions<AzureBlobStorageOptions>(nameof(BaGetOptions.Storage));
             app.Services.AddTransient<BlobStorageService>();
             app.Services.TryAddTransient<IStorageService>(provider => provider.GetRequiredService<BlobStorageService>());
 
             app.Services.AddSingleton(provider =>
             {
-                var options = provider.GetRequiredService<IOptions<BlobStorageOptions>>().Value;
+                var options = provider.GetRequiredService<IOptions<AzureBlobStorageOptions>>().Value;
 
                 if (!string.IsNullOrEmpty(options.ConnectionString))
                 {
@@ -93,7 +100,7 @@ namespace BaGet.Core
 
             app.Services.AddTransient(provider =>
             {
-                var options = provider.GetRequiredService<IOptionsSnapshot<BlobStorageOptions>>().Value;
+                var options = provider.GetRequiredService<IOptionsSnapshot<AzureBlobStorageOptions>>().Value;
                 var account = provider.GetRequiredService<CloudStorageAccount>();
 
                 var client = account.CreateCloudBlobClient();
@@ -107,17 +114,23 @@ namespace BaGet.Core
 
                 return provider.GetRequiredService<BlobStorageService>();
             });
+
+            return app;
         }
 
-        public static void AddAzureBlobStorage(this BaGetApplication app, Action<BlobStorageOptions> configure)
+        public static BaGetApplication AddAzureBlobStorage(
+            this BaGetApplication app,
+            Action<AzureBlobStorageOptions> configure)
         {
             app.AddAzureBlobStorage();
             app.Services.Configure(configure);
+            return app;
         }
 
-        public static void AddAzureSearch(this BaGetApplication app)
+        public static BaGetApplication AddAzureSearch(this BaGetApplication app)
         {
             app.Services.AddBaGetOptions<AzureSearchOptions>(nameof(BaGetOptions.Search));
+
             app.Services.AddTransient<AzureSearchBatchIndexer>();
             app.Services.AddTransient<AzureSearchService>();
             app.Services.AddTransient<AzureSearchIndexer>();
@@ -154,6 +167,17 @@ namespace BaGet.Core
 
                 return provider.GetRequiredService<AzureSearchIndexer>();
             });
+
+            return app;
+        }
+
+        public static BaGetApplication AddAzureSearch(
+            this BaGetApplication app,
+            Action<AzureSearchOptions> configure)
+        {
+            app.AddAzureSearch();
+            app.Services.Configure(configure);
+            return app;
         }
     }
 }
