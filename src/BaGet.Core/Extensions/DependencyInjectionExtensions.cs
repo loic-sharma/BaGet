@@ -12,7 +12,7 @@ using Microsoft.Extensions.Options;
 
 namespace BaGet.Core
 {
-    public static class DependencyInjectionExtensions
+    public static partial class DependencyInjectionExtensions
     {
         private static readonly string DatabaseTypeKey = $"{nameof(BaGetOptions.Database)}:{nameof(DatabaseOptions.Type)}";
         private static readonly string SearchTypeKey = $"{nameof(BaGetOptions.Search)}:{nameof(SearchOptions.Type)}";
@@ -26,9 +26,9 @@ namespace BaGet.Core
         {
             var app = new BaGetApplication(services);
 
-            app.AddConfiguration();
-            app.AddBaGetServices();
-            app.AddDefaultProviders();
+            services.AddConfiguration();
+            services.AddBaGetServices();
+            services.AddDefaultProviders();
 
             configureAction(app);
 
@@ -38,24 +38,6 @@ namespace BaGet.Core
         public static void AddFilesystem(this BaGetApplication app)
         {
             app.Services.TryAddTransient<IStorageService>(provider => provider.GetRequiredService<FileStorageService>());
-        }
-
-        /// <summary>
-        /// Add a new provider to the dependency injection container. The provider may
-        /// provide an implementation of the service, or it may return null.
-        /// </summary>
-        /// <typeparam name="TService">The service that may be provided.</typeparam>
-        /// <param name="services">The dependency injection container.</param>
-        /// <param name="func">A handler that provides the service, or null.</param>
-        /// <returns>The dependency injection container.</returns>
-        public static IServiceCollection AddProvider<TService>(
-            this IServiceCollection services,
-            Func<IServiceProvider, IConfiguration, TService> func)
-            where TService : class
-        {
-            services.AddSingleton<IProvider<TService>>(new DelegateProvider<TService>(func));
-
-            return services;
         }
 
         /// <summary>
@@ -149,68 +131,68 @@ namespace BaGet.Core
             return config[StorageTypeKey].Equals(value, StringComparison.OrdinalIgnoreCase);
         }
 
-        private static void AddConfiguration(this BaGetApplication app)
+        private static void AddConfiguration(this IServiceCollection services)
         {
-            app.Services.AddBaGetOptions<BaGetOptions>();
-            app.Services.AddBaGetOptions<DatabaseOptions>(nameof(BaGetOptions.Database));
-            app.Services.AddBaGetOptions<FileSystemStorageOptions>(nameof(BaGetOptions.Storage));
-            app.Services.AddBaGetOptions<MirrorOptions>(nameof(BaGetOptions.Mirror));
-            app.Services.AddBaGetOptions<SearchOptions>(nameof(BaGetOptions.Search));
-            app.Services.AddBaGetOptions<StorageOptions>(nameof(BaGetOptions.Storage));
+            services.AddBaGetOptions<BaGetOptions>();
+            services.AddBaGetOptions<DatabaseOptions>(nameof(BaGetOptions.Database));
+            services.AddBaGetOptions<FileSystemStorageOptions>(nameof(BaGetOptions.Storage));
+            services.AddBaGetOptions<MirrorOptions>(nameof(BaGetOptions.Mirror));
+            services.AddBaGetOptions<SearchOptions>(nameof(BaGetOptions.Search));
+            services.AddBaGetOptions<StorageOptions>(nameof(BaGetOptions.Storage));
         }
 
-        private static void AddBaGetServices(this BaGetApplication app)
+        private static void AddBaGetServices(this IServiceCollection services)
         {
-            app.Services.TryAddSingleton<IFrameworkCompatibilityService, FrameworkCompatibilityService>();
-            app.Services.TryAddSingleton<IPackageDownloadsSource, PackageDownloadsJsonSource>();
+            services.TryAddSingleton<IFrameworkCompatibilityService, FrameworkCompatibilityService>();
+            services.TryAddSingleton<IPackageDownloadsSource, PackageDownloadsJsonSource>();
 
-            app.Services.TryAddSingleton<NuGetClient>();
-            app.Services.TryAddSingleton<NullSearchIndexer>();
-            app.Services.TryAddSingleton<NullSearchService>();
-            app.Services.TryAddSingleton<RegistrationBuilder>();
+            services.TryAddSingleton<NuGetClient>();
+            services.TryAddSingleton<NullSearchIndexer>();
+            services.TryAddSingleton<NullSearchService>();
+            services.TryAddSingleton<RegistrationBuilder>();
 
-            app.Services.TryAddSingleton(HttpClientFactory);
-            app.Services.TryAddSingleton(NuGetClientFactoryFactory);
+            services.TryAddSingleton(HttpClientFactory);
+            services.TryAddSingleton(NuGetClientFactoryFactory);
 
-            app.Services.TryAddScoped<DownloadsImporter>();
+            services.TryAddScoped<DownloadsImporter>();
 
-            app.Services.TryAddTransient<IAuthenticationService, ApiKeyAuthenticationService>();
-            app.Services.TryAddTransient<IPackageContentService, DefaultPackageContentService>();
-            app.Services.TryAddTransient<IPackageDeletionService, PackageDeletionService>();
-            app.Services.TryAddTransient<IPackageIndexingService, PackageIndexingService>();
-            app.Services.TryAddTransient<IPackageMetadataService, DefaultPackageMetadataService>();
-            app.Services.TryAddTransient<IPackageStorageService, PackageStorageService>();
-            app.Services.TryAddTransient<IServiceIndexService, BaGetServiceIndex>();
-            app.Services.TryAddTransient<ISymbolIndexingService, SymbolIndexingService>();
-            app.Services.TryAddTransient<ISymbolStorageService, SymbolStorageService>();
+            services.TryAddTransient<IAuthenticationService, ApiKeyAuthenticationService>();
+            services.TryAddTransient<IPackageContentService, DefaultPackageContentService>();
+            services.TryAddTransient<IPackageDeletionService, PackageDeletionService>();
+            services.TryAddTransient<IPackageIndexingService, PackageIndexingService>();
+            services.TryAddTransient<IPackageMetadataService, DefaultPackageMetadataService>();
+            services.TryAddTransient<IPackageStorageService, PackageStorageService>();
+            services.TryAddTransient<IServiceIndexService, BaGetServiceIndex>();
+            services.TryAddTransient<ISymbolIndexingService, SymbolIndexingService>();
+            services.TryAddTransient<ISymbolStorageService, SymbolStorageService>();
 
-            app.Services.TryAddTransient<DatabaseSearchService>();
-            app.Services.TryAddTransient<FileStorageService>();
-            app.Services.TryAddTransient<MirrorService>();
-            app.Services.TryAddTransient<NullMirrorService>();
-            app.Services.TryAddSingleton<NullStorageService>();
-            app.Services.TryAddTransient<PackageService>();
+            services.TryAddTransient<DatabaseSearchService>();
+            services.TryAddTransient<FileStorageService>();
+            services.TryAddTransient<MirrorService>();
+            services.TryAddTransient<NullMirrorService>();
+            services.TryAddSingleton<NullStorageService>();
+            services.TryAddTransient<PackageService>();
 
-            app.Services.TryAddTransient(IMirrorServiceFactory);
+            services.TryAddTransient(IMirrorServiceFactory);
         }
 
-        private static void AddDefaultProviders(this BaGetApplication app)
+        private static void AddDefaultProviders(this IServiceCollection services)
         {
-            app.Services.AddProvider((provider, configuration) =>
+            services.AddProvider((provider, configuration) =>
             {
                 if (!configuration.HasSearchType("null")) return null;
 
                 return provider.GetRequiredService<NullSearchService>();
             });
 
-            app.Services.AddProvider((provider, configuration) =>
+            services.AddProvider((provider, configuration) =>
             {
                 if (!configuration.HasSearchType("null")) return null;
 
                 return provider.GetRequiredService<NullSearchIndexer>();
             });
 
-            app.Services.AddProvider<IStorageService>((provider, configuration) =>
+            services.AddProvider<IStorageService>((provider, configuration) =>
             {
                 if (configuration.HasStorageType("filesystem"))
                 {
@@ -224,24 +206,6 @@ namespace BaGet.Core
 
                 return null;
             });
-        }
-
-        public static T GetServiceFromProviders<T>(IServiceProvider services) where T : class
-        {
-            // Run through all the providers for the type. Find the first provider that results a non-null result.
-            var providers = services.GetRequiredService<IEnumerable<IProvider<T>>>();
-            var configuration = services.GetRequiredService<IConfiguration>();
-
-            foreach (var provider in providers)
-            {
-                var result = provider.GetOrNull(services, configuration);
-                if (result != null)
-                {
-                    return result;
-                }
-            }
-
-            return null;
         }
 
         private static HttpClient HttpClientFactory(IServiceProvider provider)
