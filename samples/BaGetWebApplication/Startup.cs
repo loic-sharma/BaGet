@@ -2,6 +2,7 @@ using BaGet.Core;
 using BaGet.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -11,11 +12,6 @@ namespace BaGetWebApplication
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<BaGetOptions>(options =>
-            {
-                options.Database.ConnectionString = "Data Source=baget.db";
-            });
-
             services.AddBaGetWebApplication(app =>
             {
                 app.AddFilesystem();
@@ -34,6 +30,14 @@ namespace BaGetWebApplication
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapGet("/", async context =>
+                {
+                    var url = context.RequestServices.GetRequiredService<IUrlGenerator>();
+                    var packageSource = url.GetServiceIndexUrl();
+
+                    await context.Response.WriteAsync($"Package source URL: '{packageSource}'");
+                });
+
                 endpoints.MapServiceIndexRoutes();
                 endpoints.MapPackagePublishRoutes();
                 endpoints.MapSymbolRoutes();

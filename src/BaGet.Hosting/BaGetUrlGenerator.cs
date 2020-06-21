@@ -18,6 +18,11 @@ namespace BaGet.Hosting
             _linkGenerator = linkGenerator ?? throw new ArgumentNullException(nameof(linkGenerator));
         }
 
+        public string GetServiceIndexUrl()
+        {
+            return AbsoluteUrl("v3/index.json");
+        }
+
         public string GetPackageContentResourceUrl()
         {
             return AbsoluteUrl("v3/package");

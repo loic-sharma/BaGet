@@ -9,7 +9,9 @@ namespace BaGet.Hosting
 {
     public static class IHostExtensions
     {
-        public static async Task RunMigrationsAsync(this IHost host, CancellationToken cancellationToken)
+        public static async Task RunMigrationsAsync(
+            this IHost host,
+            CancellationToken cancellationToken = default)
         {
             // Run migrations if necessary.
             var options = host.Services.GetRequiredService<IOptions<BaGetOptions>>();
