@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\BaGet.Database.Sqlite\BaGet.Database.Sqlite.csproj" />
+    <ProjectReference Include="..\..\src\BaGet.Hosting\BaGet.Hosting.csproj" />
+  </ItemGroup>
+
+</Project>

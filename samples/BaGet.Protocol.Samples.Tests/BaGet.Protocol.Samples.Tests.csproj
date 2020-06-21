@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\BaGet.Protocol\BaGet.Protocol.csproj" />
+    <ProjectReference Include="..\..\src\BaGet.Protocol\BaGet.Protocol.csproj" />
   </ItemGroup>
 
 </Project>
