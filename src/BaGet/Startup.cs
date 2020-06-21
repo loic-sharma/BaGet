@@ -51,12 +51,7 @@ namespace BaGet
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapServiceIndexRoutes();
-                endpoints.MapPackagePublishRoutes();
-                endpoints.MapSymbolRoutes();
-                endpoints.MapSearchRoutes();
-                endpoints.MapPackageMetadataRoutes();
-                endpoints.MapPackageContentRoutes();
+                endpoints.MapBaGetRoutes();
             });
 
             app.UseSpa(spa =>

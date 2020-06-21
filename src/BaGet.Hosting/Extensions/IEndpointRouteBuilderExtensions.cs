@@ -6,6 +6,16 @@ namespace BaGet.Hosting
 {
     public static class IEndpointRouteBuilderExtensions
     {
+        public static void MapBaGetRoutes(this IEndpointRouteBuilder endpoints)
+        {
+            endpoints.MapServiceIndexRoutes();
+            endpoints.MapPackagePublishRoutes();
+            endpoints.MapSymbolRoutes();
+            endpoints.MapSearchRoutes();
+            endpoints.MapPackageMetadataRoutes();
+            endpoints.MapPackageContentRoutes();
+        }
+
         public static void MapServiceIndexRoutes(this IEndpointRouteBuilder endpoints)
         {
             endpoints.MapControllerRoute(

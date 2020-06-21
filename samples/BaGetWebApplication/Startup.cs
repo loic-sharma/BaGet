@@ -39,12 +39,7 @@ namespace BaGetWebApplication
                     await context.Response.WriteAsync($"Package source URL: '{packageSource}'");
                 });
 
-                endpoints.MapServiceIndexRoutes();
-                endpoints.MapPackagePublishRoutes();
-                endpoints.MapSymbolRoutes();
-                endpoints.MapSearchRoutes();
-                endpoints.MapPackageMetadataRoutes();
-                endpoints.MapPackageContentRoutes();
+                endpoints.MapBaGetRoutes();
             });
         }
     }
