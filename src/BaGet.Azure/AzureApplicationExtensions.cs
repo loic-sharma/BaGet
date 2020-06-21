@@ -39,21 +39,6 @@ namespace BaGet.Core
                 return account.CreateCloudTableClient();
             });
 
-            app.Services.AddProvider<IContext>((provider, config) =>
-            {
-                // Entity Framework is heavily used by BaGet, however, it does not support Azure Tables.
-                // Thus, BaGet's Azure Tables provider has custom implementations for all services that
-                // normally would use Entity Framework. As a result, building an Entity Framework context
-                // is unexpected and will result in a runtime error.
-                if (config.HasDatabaseType("AzureTable"))
-                {
-                    throw new InvalidOperationException(
-                        "Azure Tables does not support creating an Entity Framework context.");
-                }
-
-                return null;
-            });
-
             app.Services.AddProvider<IPackageService>((provider, config) =>
             {
                 if (!config.HasDatabaseType("AzureTable")) return null;

@@ -3,7 +3,7 @@ using BaGet.Core;
 
 namespace BaGet.Azure
 {
-    public class AzureSearchOptions : SearchOptions
+    public class AzureSearchOptions
     {
         [Required]
         public string AccountName { get; set; }

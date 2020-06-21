@@ -4,15 +4,14 @@ using BaGet.Core;
 using BaGet.Database.Sqlite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Xunit;
 
 namespace BaGet.Tests
 {
     public class HostIntegrationTests
     {
-        private readonly string DatabaseTypeKey = $"{nameof(BaGetOptions.Database)}:{nameof(DatabaseOptions.Type)}";
-        private readonly string ConnectionStringKey = $"{nameof(BaGetOptions.Database)}:{nameof(DatabaseOptions.ConnectionString)}";
+        private readonly string DatabaseTypeKey = "Database:Type";
+        private readonly string ConnectionStringKey = "Database:ConnectionString";
 
         [Fact]
         public void ThrowsIfDatabaseTypeInvalid()
@@ -31,7 +30,7 @@ namespace BaGet.Tests
         {
             var provider = BuildServiceProvider(new Dictionary<string, string>
             {
-                { DatabaseTypeKey, DatabaseType.Sqlite.ToString() },
+                { DatabaseTypeKey, "Sqlite" },
                 { ConnectionStringKey, "..." }
             });
 
@@ -43,7 +42,7 @@ namespace BaGet.Tests
         {
             var provider = BuildServiceProvider(new Dictionary<string, string>
             {
-                { DatabaseTypeKey, DatabaseType.Sqlite.ToString() },
+                { DatabaseTypeKey, "Sqlite" },
                 { ConnectionStringKey, "..." }
             });
 

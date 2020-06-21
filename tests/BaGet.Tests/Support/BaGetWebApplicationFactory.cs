@@ -14,13 +14,6 @@ namespace BaGet.Tests
 {
     public class BaGetWebApplicationFactory : WebApplicationFactory<Startup>
     {
-        private readonly string DatabaseTypeKey = $"{nameof(BaGetOptions.Database)}:{nameof(DatabaseOptions.Type)}";
-        private readonly string ConnectionStringKey = $"{nameof(BaGetOptions.Database)}:{nameof(DatabaseOptions.ConnectionString)}";
-        private readonly string StorageTypeKey = $"{nameof(BaGetOptions.Storage)}:{nameof(StorageOptions.Type)}";
-        private readonly string FileSystemStoragePathKey = $"{nameof(BaGetOptions.Storage)}:{nameof(FileSystemStorageOptions.Path)}";
-        private readonly string SearchTypeKey = $"{nameof(BaGetOptions.Search)}:{nameof(SearchOptions.Type)}";
-        private readonly string MirrorEnabledKey = $"{nameof(BaGetOptions.Mirror)}:{nameof(MirrorOptions.Enabled)}";
-
         public WebApplicationFactory<Startup> WithOutput(ITestOutputHelper output)
         {
             return WithWebHostBuilder(builder =>
@@ -51,12 +44,12 @@ namespace BaGet.Tests
                     // Setup the integration test configuration.
                     config.AddInMemoryCollection(new Dictionary<string, string>
                     {
-                        { DatabaseTypeKey, DatabaseType.Sqlite.ToString() },
-                        { ConnectionStringKey, $"Data Source={sqlitePath}" },
-                        { StorageTypeKey, StorageType.FileSystem.ToString() },
-                        { FileSystemStoragePathKey, storagePath },
-                        { SearchTypeKey, nameof(SearchType.Database) },
-                        { MirrorEnabledKey, false.ToString() },
+                        { "Database:Type", "Sqlite" },
+                        { "Database:ConnectionString", $"Data Source={sqlitePath}" },
+                        { "Storage:Type", "FileSystem" },
+                        { "Storage:Path", storagePath },
+                        { "Search:Type", "Database" },
+                        { "Mirror:Enabled", "false" },
                     });
                 })
                 .ConfigureServices((context, services) =>
