@@ -38,6 +38,11 @@ namespace BaGet.Core
             return services;
         }
 
+        public static void AddFilesystem(this BaGetApplication app)
+        {
+            app.Services.TryAddTransient<IStorageService>(provider => provider.GetRequiredService<FileStorageService>());
+        }
+
         /// <summary>
         /// Add a new provider to the dependency injection container. The provider may
         /// provide an implementation of the service, or it may return null.
@@ -52,18 +57,6 @@ namespace BaGet.Core
             where TService : class
         {
             services.AddSingleton<IProvider<TService>>(new DelegateProvider<TService>(func));
-
-            return services;
-        }
-
-        // TODO: Convert everything over to new thing...
-        public static IServiceCollection ConfigureAndValidate<TOptions>(
-            this IServiceCollection services,
-            IConfiguration config)
-          where TOptions : class
-        {
-            services.Configure<TOptions>(config);
-            services.TryAddSingleton<IPostConfigureOptions<TOptions>, ValidatePostConfigureOptions<TOptions>>();
 
             return services;
         }
