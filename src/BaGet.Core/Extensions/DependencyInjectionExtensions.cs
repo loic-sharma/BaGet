@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using BaGet.Protocol;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -14,12 +12,6 @@ namespace BaGet.Core
 {
     public static partial class DependencyInjectionExtensions
     {
-        private static readonly string DatabaseTypeKey = $"{nameof(BaGetOptions.Database)}:{nameof(DatabaseOptions.Type)}";
-        private static readonly string SearchTypeKey = $"{nameof(BaGetOptions.Search)}:{nameof(SearchOptions.Type)}";
-        private static readonly string StorageTypeKey = $"{nameof(BaGetOptions.Storage)}:{nameof(StorageOptions.Type)}";
-
-        private static readonly string DatabaseSearchType = "Database";
-
         public static IServiceCollection AddBaGetApplication(
             this IServiceCollection services,
             Action<BaGetApplication> configureAction)
@@ -35,11 +27,6 @@ namespace BaGet.Core
             services.AddFallbackServices();
 
             return services;
-        }
-
-        public static void AddFileStorage(this BaGetApplication app)
-        {
-            app.Services.TryAddTransient<IStorageService>(provider => provider.GetRequiredService<FileStorageService>());
         }
 
         /// <summary>
@@ -70,65 +57,6 @@ namespace BaGet.Core
             });
 
             return services;
-        }
-
-        public static IServiceCollection AddBaGetDbContextProvider<TContext>(
-            this IServiceCollection services,
-            string databaseType,
-            Action<IServiceProvider, DbContextOptionsBuilder> configureContext)
-            where TContext : DbContext, IContext
-        {
-            services.TryAddScoped<IContext>(provider => provider.GetRequiredService<TContext>());
-            services.TryAddTransient<IPackageService>(provider => provider.GetRequiredService<PackageService>());
-
-            services.AddDbContext<TContext>(configureContext);
-
-            services.AddProvider<IContext>((provider, config) =>
-            {
-                if (!config.HasDatabaseType(databaseType)) return null;
-
-                return provider.GetRequiredService<TContext>();
-            });
-
-            services.AddProvider<IPackageService>((provider, config) =>
-            {
-                if (!config.HasDatabaseType(databaseType)) return null;
-
-                return provider.GetRequiredService<PackageService>();
-            });
-
-            services.AddProvider<ISearchIndexer>((provider, config) =>
-            {
-                if (!config.HasSearchType(DatabaseSearchType)) return null;
-                if (!config.HasDatabaseType(databaseType)) return null;
-
-                return provider.GetRequiredService<NullSearchIndexer>();
-            });
-
-            services.AddProvider<ISearchService>((provider, config) =>
-            {
-                if (!config.HasSearchType(DatabaseSearchType)) return null;
-                if (!config.HasDatabaseType(databaseType)) return null;
-
-                return provider.GetRequiredService<DatabaseSearchService>();
-            });
-
-            return services;
-        }
-
-        public static bool HasDatabaseType(this IConfiguration config, string value)
-        {
-            return config[DatabaseTypeKey].Equals(value, StringComparison.OrdinalIgnoreCase);
-        }
-
-        public static bool HasSearchType(this IConfiguration config, string value)
-        {
-            return config[SearchTypeKey].Equals(value, StringComparison.OrdinalIgnoreCase);
-        }
-
-        public static bool HasStorageType(this IConfiguration config, string value)
-        {
-            return config[StorageTypeKey].Equals(value, StringComparison.OrdinalIgnoreCase);
         }
 
         private static void AddConfiguration(this IServiceCollection services)
@@ -211,11 +139,13 @@ namespace BaGet.Core
         private static void AddFallbackServices(this IServiceCollection services)
         {
             // BaGet's services have multiple implementations that live side-by-side.
-            // The application will choose the an implementation using one of two ways:
+            // The application will choose the implementation using one of two ways:
             //
-            // 1. First registered service "wins". This is used by applications that embed BaGet.
+            // 1. Using the first implementation that was registered in the dependency injection
+            //    container. This is the strategy used by applications that embed BaGet.
             // 2. Using "providers". The providers will examine the application's configuration to
-            //    determine whether its service implementation is active.
+            //    determine whether its service implementation is active. Thsi is the strategy used
+            //    by the default BaGet application.
             //
             // BaGet has database and search services, but the database services are special
             // in that they may also act as search services. If an application registers the
