@@ -27,11 +27,8 @@ namespace BaGet.Core
             var app = new BaGetApplication(services);
 
             app.AddConfiguration();
-            app.AddCoreServices();
+            app.AddBaGetServices();
             app.AddDefaultProviders();
-            app.AddMirrorServices();
-            app.AddSearchServices();
-            app.AddStorageServices();
 
             configureAction(app);
 
@@ -162,79 +159,39 @@ namespace BaGet.Core
             app.Services.AddBaGetOptions<StorageOptions>(nameof(BaGetOptions.Storage));
         }
 
-        private static void AddCoreServices(this BaGetApplication app)
+        private static void AddBaGetServices(this BaGetApplication app)
         {
-            app.Services.TryAddTransient<IAuthenticationService, ApiKeyAuthenticationService>();
-            app.Services.TryAddTransient<IPackageIndexingService, PackageIndexingService>();
-            app.Services.TryAddTransient<IPackageDeletionService, PackageDeletionService>();
-            app.Services.TryAddTransient<ISymbolIndexingService, SymbolIndexingService>();
-            app.Services.TryAddTransient<IServiceIndexService, BaGetServiceIndex>();
-            app.Services.TryAddTransient<IPackageContentService, DefaultPackageContentService>();
-            app.Services.TryAddTransient<IPackageMetadataService, DefaultPackageMetadataService>();
             app.Services.TryAddSingleton<IFrameworkCompatibilityService, FrameworkCompatibilityService>();
-            app.Services.TryAddSingleton<RegistrationBuilder>();
-            app.Services.TryAddTransient<PackageService>();
-        }
+            app.Services.TryAddSingleton<IPackageDownloadsSource, PackageDownloadsJsonSource>();
 
-        private static void AddMirrorServices(this BaGetApplication app)
-        {
-            app.Services.TryAddTransient<NullMirrorService>();
-            app.Services.TryAddTransient<MirrorService>();
             app.Services.TryAddSingleton<NuGetClient>();
+            app.Services.TryAddSingleton<NullSearchIndexer>();
+            app.Services.TryAddSingleton<NullSearchService>();
+            app.Services.TryAddSingleton<RegistrationBuilder>();
+
+            app.Services.TryAddSingleton(HttpClientFactory);
+            app.Services.TryAddSingleton(NuGetClientFactoryFactory);
+
             app.Services.TryAddScoped<DownloadsImporter>();
-            app.Services.TryAddScoped<IPackageDownloadsSource, PackageDownloadsJsonSource>();
 
-            app.Services.TryAddTransient(provider =>
-            {
-                var options = provider.GetRequiredService<IOptionsSnapshot<MirrorOptions>>();
-                var service = options.Value.Enabled ? typeof(MirrorService) : typeof(NullMirrorService);
-
-                return (IMirrorService)provider.GetRequiredService(service);
-            });
-
-            app.Services.TryAddSingleton(provider =>
-            {
-                var httpClient = provider.GetRequiredService<HttpClient>();
-                var options = provider.GetRequiredService<IOptions<MirrorOptions>>();
-
-                return new NuGetClientFactory(
-                    httpClient,
-                    options.Value.PackageSource.ToString());
-            });
-
-            app.Services.TryAddSingleton(provider =>
-            {
-                var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
-
-                var assembly = Assembly.GetEntryAssembly();
-                var assemblyName = assembly.GetName().Name;
-                var assemblyVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "0.0.0";
-
-                var client = new HttpClient(new HttpClientHandler
-                {
-                    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
-                });
-
-                client.DefaultRequestHeaders.Add("User-Agent", $"{assemblyName}/{assemblyVersion}");
-                client.Timeout = TimeSpan.FromSeconds(options.Mirror.PackageDownloadTimeoutSeconds);
-
-                return client;
-            });
-        }
-
-        private static void AddSearchServices(this BaGetApplication app)
-        {
-            app.Services.AddTransient<DatabaseSearchService>();
-            app.Services.AddSingleton<NullSearchService>();
-            app.Services.AddSingleton<NullSearchIndexer>();
-        }
-
-        private static void AddStorageServices(this BaGetApplication app)
-        {
-            app.Services.TryAddSingleton<NullStorageService>();
-            app.Services.TryAddTransient<FileStorageService>();
+            app.Services.TryAddTransient<IAuthenticationService, ApiKeyAuthenticationService>();
+            app.Services.TryAddTransient<IPackageContentService, DefaultPackageContentService>();
+            app.Services.TryAddTransient<IPackageDeletionService, PackageDeletionService>();
+            app.Services.TryAddTransient<IPackageIndexingService, PackageIndexingService>();
+            app.Services.TryAddTransient<IPackageMetadataService, DefaultPackageMetadataService>();
             app.Services.TryAddTransient<IPackageStorageService, PackageStorageService>();
+            app.Services.TryAddTransient<IServiceIndexService, BaGetServiceIndex>();
+            app.Services.TryAddTransient<ISymbolIndexingService, SymbolIndexingService>();
             app.Services.TryAddTransient<ISymbolStorageService, SymbolStorageService>();
+
+            app.Services.TryAddTransient<DatabaseSearchService>();
+            app.Services.TryAddTransient<FileStorageService>();
+            app.Services.TryAddTransient<MirrorService>();
+            app.Services.TryAddTransient<NullMirrorService>();
+            app.Services.TryAddSingleton<NullStorageService>();
+            app.Services.TryAddTransient<PackageService>();
+
+            app.Services.TryAddTransient(IMirrorServiceFactory);
         }
 
         private static void AddDefaultProviders(this BaGetApplication app)
@@ -285,6 +242,43 @@ namespace BaGet.Core
             }
 
             return null;
+        }
+
+        private static HttpClient HttpClientFactory(IServiceProvider provider)
+        {
+            var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
+
+            var assembly = Assembly.GetEntryAssembly();
+            var assemblyName = assembly.GetName().Name;
+            var assemblyVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "0.0.0";
+
+            var client = new HttpClient(new HttpClientHandler
+            {
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+            });
+
+            client.DefaultRequestHeaders.Add("User-Agent", $"{assemblyName}/{assemblyVersion}");
+            client.Timeout = TimeSpan.FromSeconds(options.Mirror.PackageDownloadTimeoutSeconds);
+
+            return client;
+        }
+
+        private static NuGetClientFactory NuGetClientFactoryFactory(IServiceProvider provider)
+        {
+            var httpClient = provider.GetRequiredService<HttpClient>();
+            var options = provider.GetRequiredService<IOptions<MirrorOptions>>();
+
+            return new NuGetClientFactory(
+                httpClient,
+                options.Value.PackageSource.ToString());
+        }
+
+        private static IMirrorService IMirrorServiceFactory(IServiceProvider provider)
+        {
+            var options = provider.GetRequiredService<IOptionsSnapshot<MirrorOptions>>();
+            var service = options.Value.Enabled ? typeof(MirrorService) : typeof(NullMirrorService);
+
+            return (IMirrorService)provider.GetRequiredService(service);
         }
     }
 }
