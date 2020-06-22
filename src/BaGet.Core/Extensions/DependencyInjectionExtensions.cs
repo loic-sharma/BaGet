@@ -162,7 +162,7 @@ namespace BaGet.Core
 
         private static HttpClient HttpClientFactory(IServiceProvider provider)
         {
-            var options = provider.GetRequiredService<IOptions<BaGetOptions>>().Value;
+            var options = provider.GetRequiredService<IOptions<MirrorOptions>>().Value;
 
             var assembly = Assembly.GetEntryAssembly();
             var assemblyName = assembly.GetName().Name;
@@ -174,7 +174,7 @@ namespace BaGet.Core
             });
 
             client.DefaultRequestHeaders.Add("User-Agent", $"{assemblyName}/{assemblyVersion}");
-            client.Timeout = TimeSpan.FromSeconds(options.Mirror.PackageDownloadTimeoutSeconds);
+            client.Timeout = TimeSpan.FromSeconds(options.PackageDownloadTimeoutSeconds);
 
             return client;
         }

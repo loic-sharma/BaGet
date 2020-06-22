@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core;
@@ -9,6 +10,14 @@ namespace BaGet.Hosting
 {
     public static class IHostExtensions
     {
+        public static IHostBuilder UseBaGet(this IHostBuilder host, Action<BaGetApplication> configure)
+        {
+            return host.ConfigureServices(services =>
+            {
+                services.AddBaGetWebApplication(configure);
+            });
+        }
+
         public static async Task RunMigrationsAsync(
             this IHost host,
             CancellationToken cancellationToken = default)

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace BaGet
 {
@@ -50,10 +51,7 @@ namespace BaGet
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration(ConfigureBaGetAppConfiguration)
-                .ConfigureServices((ctx, services) =>
-                {
-                    services.AddBaGetWebApplication(ConfigureBaGetApplication);
-                })
+                .UseBaGet(ConfigureBaGetApplication)
                 .ConfigureWebHostDefaults(web =>
                 {
                     web.ConfigureKestrel(options =>
@@ -82,10 +80,7 @@ namespace BaGet
         public static IHostBuilder CreatCmdHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration(ConfigureBaGetAppConfiguration)
-                .ConfigureServices((ctx, services) =>
-                {
-                    services.AddBaGetApplication(ConfigureBaGetApplication);
-                });
+                .UseBaGet(ConfigureBaGetApplication);
 
         private static void ConfigureBaGetApplication(BaGetApplication app)
         {
@@ -115,6 +110,9 @@ namespace BaGet
 
             // Add search providers.
             app.AddAzureSearch();
+
+            // Add strict validation for BaGet's configs.
+            app.Services.AddSingleton<IValidateOptions<BaGetOptions>, RequireBaGetOptions>();
         }
 
         private static void ConfigureBaGetAppConfiguration(HostBuilderContext ctx, IConfigurationBuilder config)
