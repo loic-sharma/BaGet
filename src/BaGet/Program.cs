@@ -45,7 +45,23 @@ namespace BaGet
                 await host.RunAsync(cancellationToken);
             });
 
-            await app.ExecuteAsync(args);
+            try
+            {
+                await app.ExecuteAsync(args);
+            }
+            catch (OptionsValidationException e)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Invalid BaGet configurations:");
+                Console.WriteLine();
+
+                foreach (var failure in e.Failures)
+                {
+                    Console.WriteLine(failure);
+                }
+
+                Console.ResetColor();
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -112,7 +128,7 @@ namespace BaGet
             app.AddAzureSearch();
 
             // Add strict validation for BaGet's configs.
-            app.Services.AddSingleton<IValidateOptions<BaGetOptions>, RequireBaGetOptions>();
+            app.Services.AddSingleton<IValidateOptions<BaGetOptions>, ValidateBaGetOptions>();
         }
 
         private static void ConfigureBaGetAppConfiguration(HostBuilderContext ctx, IConfigurationBuilder config)
