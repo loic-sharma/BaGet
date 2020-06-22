@@ -35,7 +35,7 @@ docker pull loicsharma/baget
 You can now run BaGet:
 
 ```
-docker run --rm --name nuget-server -p 5555:80 --env-file baget.env -v "$(pwd)/baget-data:/var/baget" loicsharma/baget:latest
+docker run --rm --name nuget-server -p 5555:5000 --env-file baget.env -v "$(pwd)/baget-data:/var/baget" loicsharma/baget:latest
 ```
 
 ## Publish Packages
