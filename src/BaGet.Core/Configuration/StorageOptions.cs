@@ -2,6 +2,6 @@ namespace BaGet.Core
 {
     public class StorageOptions
     {
-        public string Type { get; set; }
+        internal string Type { get; set; }
     }
 }
