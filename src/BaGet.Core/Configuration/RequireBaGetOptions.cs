@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.Options;
 
 namespace BaGet.Core
@@ -15,9 +16,9 @@ namespace BaGet.Core
             if (options.Search == null) failures.Add($"The '{nameof(BaGetOptions.Search)}' config is required.");
             if (options.Storage == null) failures.Add($"The '{nameof(BaGetOptions.Storage)}' config is required.");
 
-            if (failures.Count == 0) return ValidateOptionsResult.Success;
+            if (failures.Any()) return ValidateOptionsResult.Fail(failures);
 
-            return ValidateOptionsResult.Fail(failures);
+            return ValidateOptionsResult.Success;
         }
     }
 }
