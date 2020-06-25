@@ -25,10 +25,11 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --env=jest-environment-jsdom-sixteen",
     "eject": "react-scripts eject"
   },
   "devDependencies": {
+    "@testing-library/react": "^10.2.1",
     "@types/commonmark": "^0.27.4",
     "@types/jest": "^23.3.14",
     "@types/node": "^10.17.21",
@@ -36,6 +37,8 @@
     "@types/react-dom": "^16.9.7",
     "@types/react-router-dom": "^5.1.5",
     "@types/semver": "^6.2.1",
+    "jest-environment-jsdom-sixteen": "^1.0.3",
+    "jest-fetch-mock": "^3.0.3",
     "typescript": "^3.8.3"
   },
   "browserslist": {

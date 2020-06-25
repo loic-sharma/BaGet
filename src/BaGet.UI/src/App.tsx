@@ -61,6 +61,7 @@ class App extends React.Component<RouteComponentProps, IAppState> {
                 className="form-control"
                 autoComplete="off"
                 placeholder="Search packages..."
+                data-testid="input-field"
               onChange={this.handleChange} />
             </form>
           </div>
