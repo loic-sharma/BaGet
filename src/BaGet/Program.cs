@@ -1,8 +1,10 @@
+using System.IO;
 using System.Threading.Tasks;
 using BaGet.Core;
 using BaGet.Hosting;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -28,7 +30,6 @@ namespace BaGet
                     {
                         var host = CreateHostBuilder(args).Build();
                         var importer = host.Services.GetRequiredService<DownloadsImporter>();
-
                         await importer.ImportAsync(cancellationToken);
                     });
                 });
@@ -37,7 +38,6 @@ namespace BaGet
             app.OnExecuteAsync(async cancellationToken =>
             {
                 var host = CreateWebHostBuilder(args).Build();
-
                 await host.RunMigrationsAsync(cancellationToken);
                 await host.RunAsync(cancellationToken);
             });
@@ -55,6 +55,19 @@ namespace BaGet
                         // be enforced by a reverse proxy server, like IIS.
                         options.Limits.MaxRequestBodySize = null;
                     });
+
+                    var config = new ConfigurationBuilder()
+                        .SetBasePath(Directory.GetCurrentDirectory())
+                        .AddJsonFile("appsettings.json", optional: true)
+                        .AddCommandLine(args)
+                        .Build();
+
+                    var urls = config["Urls"];
+
+                    if (!string.IsNullOrWhiteSpace(urls))
+                    {
+                        web.UseUrls(urls);
+                    }
 
                     web.UseStartup<Startup>();
                 });
