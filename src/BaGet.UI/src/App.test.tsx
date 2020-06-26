@@ -19,7 +19,7 @@ describe('Tests for App component', () => {
   it('Should change inputs value when changes get triggered', async () => {
     const { getByTestId } = render(<Router><App /></Router>);
     const inputField = await waitFor<HTMLInputElement>(
-      () => getByTestId('input-field') as HTMLInputElement
+      () => getByTestId('search-field') as HTMLInputElement
     );
     const packageName = 'BaGet.Core';
 

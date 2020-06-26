@@ -30,7 +30,7 @@ describe('Tests for SearchResults component', () => {
     expect(notFoundMessage).toBeDefined();
   });
 
-  it('Should render a no package found when invalid name was given', async () => {
+  it('Should render a package when a valid name was given', async () => {
     const data = {
       data: [
         {
