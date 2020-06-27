@@ -20,7 +20,10 @@ namespace BaGet.Hosting
 
         public string GetServiceIndexUrl()
         {
-            return AbsoluteUrl("v3/index.json");
+            return _linkGenerator.GetUriByRouteValues(
+                _httpContextAccessor.HttpContext,
+                Routes.IndexRouteName,
+                values: null);
         }
 
         public string GetPackageContentResourceUrl()

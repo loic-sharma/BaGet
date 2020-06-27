@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace BaGet
 {
@@ -25,6 +26,39 @@ namespace BaGet
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "BaGet.UI/build";
+            });
+
+            services.AddBaGetWebApplication(app =>
+            {
+                // You can swap between implementations of subsystems like storage and search using BaGet's configuration.
+                // Each subsystem's implementation has a provider that reads the configuration to determine if it should be
+                // activated. BaGet will run through all its providers until it finds one that is active.
+                // NOTE: Don't copy this if you are embedding BaGet into your own ASP.NET Core application.
+                app.Services.AddScoped(DependencyInjectionExtensions.GetServiceFromProviders<IContext>);
+                app.Services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<IStorageService>);
+                app.Services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<IPackageService>);
+                app.Services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<ISearchService>);
+                app.Services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<ISearchIndexer>);
+
+                // Add database providers.
+                app.AddAzureTableDatabase();
+                app.AddMySqlDatabase();
+                app.AddPostgreSqlDatabase();
+                app.AddSqliteDatabase();
+                app.AddSqlServerDatabase();
+
+                // Add storage providers.
+                app.AddFileStorage();
+                app.AddAliyunOssStorage();
+                app.AddAwsS3Storage();
+                app.AddAzureBlobStorage();
+                app.AddGoogleCloudStorage();
+
+                // Add search providers.
+                app.AddAzureSearch();
+
+                // Add strict validation for BaGet's configs.
+                app.Services.AddSingleton<IValidateOptions<BaGetOptions>, ValidateBaGetOptions>();
             });
         }
 

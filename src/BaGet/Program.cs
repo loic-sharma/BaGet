@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 
 namespace BaGet
 {
@@ -16,6 +15,12 @@ namespace BaGet
     {
         public static async Task Main(string[] args)
         {
+            var host = CreateHostBuilder(args).Build();
+            if (!host.ValidateOptions())
+            {
+                return;
+            }
+
             var app = new CommandLineApplication
             {
                 Name = "baget",
@@ -30,44 +35,38 @@ namespace BaGet
                 {
                     downloads.OnExecuteAsync(async cancellationToken =>
                     {
-                        var host = CreatCmdHostBuilder(args).Build();
-                        var importer = host.Services.GetRequiredService<DownloadsImporter>();
-                        await importer.ImportAsync(cancellationToken);
+                        using (var scope = host.Services.CreateScope())
+                        {
+                            var importer = scope.ServiceProvider.GetRequiredService<DownloadsImporter>();
+
+                            await importer.ImportAsync(cancellationToken);
+                        }
                     });
                 });
             });
 
             app.OnExecuteAsync(async cancellationToken =>
             {
-                var host = CreateHostBuilder(args).Build();
-
                 await host.RunMigrationsAsync(cancellationToken);
                 await host.RunAsync(cancellationToken);
             });
 
-            try
-            {
-                await app.ExecuteAsync(args);
-            }
-            catch (OptionsValidationException e)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Invalid BaGet configurations:");
-                Console.WriteLine();
-
-                foreach (var failure in e.Failures)
-                {
-                    Console.WriteLine(failure);
-                }
-
-                Console.ResetColor();
-            }
+            await app.ExecuteAsync(args);
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration(ConfigureBaGetAppConfiguration)
-                .UseBaGet(ConfigureBaGetApplication)
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host
+                .CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((ctx, config) =>
+                {
+                    var root = Environment.GetEnvironmentVariable("BAGET_CONFIG_ROOT");
+
+                    if (!string.IsNullOrEmpty(root))
+                    {
+                        config.SetBasePath(root);
+                    }
+                })
                 .ConfigureWebHostDefaults(web =>
                 {
                     web.ConfigureKestrel(options =>
@@ -92,53 +91,6 @@ namespace BaGet
 
                     web.UseStartup<Startup>();
                 });
-
-        public static IHostBuilder CreatCmdHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration(ConfigureBaGetAppConfiguration)
-                .UseBaGet(ConfigureBaGetApplication);
-
-        private static void ConfigureBaGetApplication(BaGetApplication app)
-        {
-            // You can swap between implementations of subsystems like storage and search using BaGet's configuration.
-            // Each subsystem's implementation has a provider that reads the configuration to determine if it should be
-            // activated. BaGet will run through all its providers until it finds one that is active.
-            // NOTE: Don't copy this if you are embedding BaGet into your own ASP.NET Core application.
-            app.Services.AddScoped(DependencyInjectionExtensions.GetServiceFromProviders<IContext>);
-            app.Services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<IStorageService>);
-            app.Services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<IPackageService>);
-            app.Services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<ISearchService>);
-            app.Services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<ISearchIndexer>);
-
-            // Add database providers.
-            app.AddAzureTableDatabase();
-            app.AddMySqlDatabase();
-            app.AddPostgreSqlDatabase();
-            app.AddSqliteDatabase();
-            app.AddSqlServerDatabase();
-
-            // Add storage providers.
-            app.AddFileStorage();
-            app.AddAliyunOssStorage();
-            app.AddAwsS3Storage();
-            app.AddAzureBlobStorage();
-            app.AddGoogleCloudStorage();
-
-            // Add search providers.
-            app.AddAzureSearch();
-
-            // Add strict validation for BaGet's configs.
-            app.Services.AddSingleton<IValidateOptions<BaGetOptions>, ValidateBaGetOptions>();
-        }
-
-        private static void ConfigureBaGetAppConfiguration(HostBuilderContext ctx, IConfigurationBuilder config)
-        {
-            var root = Environment.GetEnvironmentVariable("BAGET_CONFIG_ROOT");
-
-            if (!string.IsNullOrEmpty(root))
-            {
-                config.SetBasePath(root);
-            }
         }
     }
 }

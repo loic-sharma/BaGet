@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using BaGet.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace BaGet.Hosting
@@ -35,6 +36,32 @@ namespace BaGet.Hosting
                         await ctx.RunMigrationsAsync(cancellationToken);
                     }
                 }
+            }
+        }
+
+        public static bool ValidateOptions(this IHost host)
+        {
+            try
+            {
+                _ = host.Services.GetRequiredService<IOptions<BaGetOptions>>().Value;
+                _ = host.Services.GetRequiredService<IOptions<DatabaseOptions>>().Value;
+                _ = host.Services.GetRequiredService<IOptions<StorageOptions>>().Value;
+                _ = host.Services.GetRequiredService<IOptions<MirrorOptions>>().Value;
+
+                return true;
+            }
+            catch (OptionsValidationException e)
+            {
+                var logger = host.Services.GetRequiredService<ILogger<BaGetOptions>>();
+
+                foreach (var failure in e.Failures)
+                {
+                    logger.LogError("{ConfigFailure}", failure);
+                }
+
+                logger.LogError(e, "BaGet configuration is invalid.");
+
+                return false;
             }
         }
     }
