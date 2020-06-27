@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace BaGet.Core
 {
-    public class FileSystemStorageOptions : StorageOptions, IValidatableObject
+    public class FileSystemStorageOptions : IValidatableObject
     {
         /// <summary>
         /// The path at which content will be stored. Defaults to the same path

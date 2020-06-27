@@ -17,12 +17,12 @@ namespace BaGet.Core
 
         public Task<Stream> GetAsync(string path, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return Task.FromResult<Stream>(null);
         }
 
         public Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return Task.FromResult<Uri>(null);
         }
 
         public Task<StoragePutResult> PutAsync(

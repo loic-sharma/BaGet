@@ -43,16 +43,12 @@ namespace BaGet.Core
         /// </summary>
         public string Urls { get; set; }
 
-        [Required]
         public DatabaseOptions Database { get; set; }
 
-        [Required]
         public StorageOptions Storage { get; set; }
 
-        [Required]
         public SearchOptions Search { get; set; }
 
-        [Required]
         public MirrorOptions Mirror { get; set; }
     }
 }

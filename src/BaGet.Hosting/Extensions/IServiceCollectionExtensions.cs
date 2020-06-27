@@ -1,16 +1,17 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Cors.Infrastructure;
-using Microsoft.AspNetCore.Http.Features;
+using System;
+using BaGet.Core;
+using BaGet.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
-namespace BaGet.Hosting
+namespace BaGet
 {
     public static class IServiceCollectionExtensions
     {
-        public static IServiceCollection ConfigureHttpServices(this IServiceCollection services)
+        public static IServiceCollection AddBaGetWebApplication(
+            this IServiceCollection services,
+            Action<BaGetApplication> configureAction)
         {
             services
                 .AddControllers()
@@ -21,14 +22,10 @@ namespace BaGet.Hosting
                     options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
                 });
 
-            services.AddCors();
             services.AddHttpContextAccessor();
-            services.AddSingleton<IConfigureOptions<CorsOptions>, ConfigureCorsOptions>();
-            services.AddSingleton<IConfigureOptions<ForwardedHeadersOptions>, ConfigureForwardedHeadersOptions>();
-            services.Configure<FormOptions>(options =>
-            {
-                options.MultipartBodyLengthLimit = int.MaxValue;
-            });
+            services.AddTransient<IUrlGenerator, BaGetUrlGenerator>();
+
+            services.AddBaGetApplication(configureAction);
 
             return services;
         }

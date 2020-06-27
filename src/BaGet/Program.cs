@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using BaGet.Core;
@@ -14,6 +15,12 @@ namespace BaGet
     {
         public static async Task Main(string[] args)
         {
+            var host = CreateHostBuilder(args).Build();
+            if (!host.ValidateStartupOptions())
+            {
+                return;
+            }
+
             var app = new CommandLineApplication
             {
                 Name = "baget",
@@ -28,16 +35,18 @@ namespace BaGet
                 {
                     downloads.OnExecuteAsync(async cancellationToken =>
                     {
-                        var host = CreateHostBuilder(args).Build();
-                        var importer = host.Services.GetRequiredService<DownloadsImporter>();
-                        await importer.ImportAsync(cancellationToken);
+                        using (var scope = host.Services.CreateScope())
+                        {
+                            var importer = scope.ServiceProvider.GetRequiredService<DownloadsImporter>();
+
+                            await importer.ImportAsync(cancellationToken);
+                        }
                     });
                 });
             });
 
             app.OnExecuteAsync(async cancellationToken =>
             {
-                var host = CreateWebHostBuilder(args).Build();
                 await host.RunMigrationsAsync(cancellationToken);
                 await host.RunAsync(cancellationToken);
             });
@@ -45,8 +54,19 @@ namespace BaGet
             await app.ExecuteAsync(args);
         }
 
-        public static IHostBuilder CreateWebHostBuilder(string[] args) =>
-            CreateHostBuilder(args)
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host
+                .CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((ctx, config) =>
+                {
+                    var root = Environment.GetEnvironmentVariable("BAGET_CONFIG_ROOT");
+
+                    if (!string.IsNullOrEmpty(root))
+                    {
+                        config.SetBasePath(root);
+                    }
+                })
                 .ConfigureWebHostDefaults(web =>
                 {
                     web.ConfigureKestrel(options =>
@@ -71,9 +91,6 @@ namespace BaGet
 
                     web.UseStartup<Startup>();
                 });
-
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .UseBaGet();
+        }
     }
 }
