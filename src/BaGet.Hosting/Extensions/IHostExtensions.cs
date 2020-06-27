@@ -39,30 +39,12 @@ namespace BaGet.Hosting
             }
         }
 
-        public static bool ValidateOptions(this IHost host)
+        public static bool ValidateStartupOptions(this IHost host)
         {
-            try
-            {
-                _ = host.Services.GetRequiredService<IOptions<BaGetOptions>>().Value;
-                _ = host.Services.GetRequiredService<IOptions<DatabaseOptions>>().Value;
-                _ = host.Services.GetRequiredService<IOptions<StorageOptions>>().Value;
-                _ = host.Services.GetRequiredService<IOptions<MirrorOptions>>().Value;
-
-                return true;
-            }
-            catch (OptionsValidationException e)
-            {
-                var logger = host.Services.GetRequiredService<ILogger<BaGetOptions>>();
-
-                foreach (var failure in e.Failures)
-                {
-                    logger.LogError("{ConfigFailure}", failure);
-                }
-
-                logger.LogError(e, "BaGet configuration is invalid.");
-
-                return false;
-            }
+            return host
+                .Services
+                .GetRequiredService<ValidateStartupOptions>()
+                .Validate();
         }
     }
 }

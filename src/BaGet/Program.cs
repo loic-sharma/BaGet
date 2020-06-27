@@ -16,7 +16,7 @@ namespace BaGet
         public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
-            if (!host.ValidateOptions())
+            if (!host.ValidateStartupOptions())
             {
                 return;
             }

@@ -2,8 +2,11 @@ using System;
 using BaGet.Core;
 using BaGet.Hosting;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.AspNetCore.SpaServices.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,44 +25,60 @@ namespace BaGet
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddBaGetOptions<IISServerOptions>(nameof(IISServerOptions));
+
+            // TODO: Ideally we'd use:
+            //
+            //       services.ConfigureOptions<ConfigureBaGetOptions>();
+            //
+            //       However, "ConfigureOptions" doesn't register validations as expected.
+            //       We'll instead register all these configurations manually.
+            // See: https://github.com/dotnet/runtime/issues/38491
+            services.AddTransient<IConfigureOptions<CorsOptions>, ConfigureBaGetOptions>();
+            services.AddTransient<IConfigureOptions<FormOptions>, ConfigureBaGetOptions>();
+            services.AddTransient<IConfigureOptions<ForwardedHeadersOptions>, ConfigureBaGetOptions>();
+            services.AddTransient<IConfigureOptions<IISServerOptions>, ConfigureBaGetOptions>();
+            services.AddTransient<IValidateOptions<BaGetOptions>, ConfigureBaGetOptions>();
+
+            services.AddSpaStaticFiles(ConfigureSpaStaticFiles);
+            services.AddBaGetWebApplication(ConfigureBaGetApplication);
+
+            // You can swap between implementations of subsystems like storage and search using BaGet's configuration.
+            // Each subsystem's implementation has a provider that reads the configuration to determine if it should be
+            // activated. BaGet will run through all its providers until it finds one that is active.
+            services.AddScoped(DependencyInjectionExtensions.GetServiceFromProviders<IContext>);
+            services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<IStorageService>);
+            services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<IPackageService>);
+            services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<ISearchService>);
+            services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<ISearchIndexer>);
+
+            services.AddCors();
+        }
+
+        private void ConfigureSpaStaticFiles(SpaStaticFilesOptions options)
+        {
             // In production, the UI files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "BaGet.UI/build";
-            });
+            options.RootPath = "BaGet.UI/build";
+        }
 
-            services.AddBaGetWebApplication(app =>
-            {
-                // You can swap between implementations of subsystems like storage and search using BaGet's configuration.
-                // Each subsystem's implementation has a provider that reads the configuration to determine if it should be
-                // activated. BaGet will run through all its providers until it finds one that is active.
-                // NOTE: Don't copy this if you are embedding BaGet into your own ASP.NET Core application.
-                app.Services.AddScoped(DependencyInjectionExtensions.GetServiceFromProviders<IContext>);
-                app.Services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<IStorageService>);
-                app.Services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<IPackageService>);
-                app.Services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<ISearchService>);
-                app.Services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<ISearchIndexer>);
+        private void ConfigureBaGetApplication(BaGetApplication app)
+        {
+            // Add database providers.
+            app.AddAzureTableDatabase();
+            app.AddMySqlDatabase();
+            app.AddPostgreSqlDatabase();
+            app.AddSqliteDatabase();
+            app.AddSqlServerDatabase();
 
-                // Add database providers.
-                app.AddAzureTableDatabase();
-                app.AddMySqlDatabase();
-                app.AddPostgreSqlDatabase();
-                app.AddSqliteDatabase();
-                app.AddSqlServerDatabase();
+            // Add storage providers.
+            app.AddFileStorage();
+            app.AddAliyunOssStorage();
+            app.AddAwsS3Storage();
+            app.AddAzureBlobStorage();
+            app.AddGoogleCloudStorage();
 
-                // Add storage providers.
-                app.AddFileStorage();
-                app.AddAliyunOssStorage();
-                app.AddAwsS3Storage();
-                app.AddAzureBlobStorage();
-                app.AddGoogleCloudStorage();
-
-                // Add search providers.
-                app.AddAzureSearch();
-
-                // Add strict validation for BaGet's configs.
-                app.Services.AddSingleton<IValidateOptions<BaGetOptions>, ValidateBaGetOptions>();
-            });
+            // Add search providers.
+            app.AddAzureSearch();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,7 +99,7 @@ namespace BaGet
 
             app.UseRouting();
 
-            app.UseCors(ConfigureCorsOptions.CorsPolicy);
+            app.UseCors(ConfigureBaGetOptions.CorsPolicy);
             app.UseOperationCancelledMiddleware();
 
             app.UseEndpoints(endpoints =>

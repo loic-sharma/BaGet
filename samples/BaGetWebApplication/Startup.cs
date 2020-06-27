@@ -34,7 +34,7 @@ namespace BaGetWebApplication
                 // Add BaGet's endpoints.
                 endpoints.MapBaGetRoutes();
 
-                // Add a "welcome" endpoint to help you find thep package source.
+                // Add a "welcome" endpoint to help you find the package source.
                 // This is optional, you can remove this endpoint if you'd like.
                 endpoints.MapGet("/", async context =>
                 {
