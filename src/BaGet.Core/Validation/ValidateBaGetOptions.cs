@@ -13,6 +13,13 @@ namespace BaGet.Core
     {
         private readonly string _optionsName;
 
+        /// <summary>
+        /// Create a new validator.
+        /// </summary>
+        /// <param name="optionsName">
+        /// The option's key in the configuration or appsettings.json file,
+        /// or null if the options was created from the root configuration.
+        /// </param>
         public ValidateBaGetOptions(string optionsName)
         {
             _optionsName = optionsName;
