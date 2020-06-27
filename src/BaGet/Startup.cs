@@ -104,7 +104,9 @@ namespace BaGet
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapBaGetRoutes();
+                var api = new BaGetApi();
+
+                api.MapRoutes(endpoints);
             });
 
             app.UseSpa(spa =>

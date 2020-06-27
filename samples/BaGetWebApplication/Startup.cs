@@ -32,7 +32,9 @@ namespace BaGetWebApplication
             app.UseEndpoints(endpoints =>
             {
                 // Add BaGet's endpoints.
-                endpoints.MapBaGetRoutes();
+                var api = new BaGetApi();
+
+                api.MapRoutes(endpoints);
 
                 // Add a "welcome" endpoint to help you find the package source.
                 // This is optional, you can remove this endpoint if you'd like.
