@@ -15,10 +15,17 @@ namespace BaGet
 
             app.Services.TryAddTransient<IStorageService>(provider => provider.GetRequiredService<GoogleCloudStorageService>());
 
+            app.Services.AddProvider<IStorageService>((provider, config) =>
+            {
+                if (!config.HasStorageType("GoogleCloud")) return null;
+
+                return provider.GetRequiredService<GoogleCloudStorageService>();
+            });
+
             return app;
         }
 
-        public static BaGetApplication AddMySqlDatabase(
+        public static BaGetApplication AddGoogleCloudStorage(
             this BaGetApplication app,
             Action<GoogleCloudStorageOptions> configure)
         {

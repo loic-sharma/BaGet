@@ -36,15 +36,20 @@ namespace BaGet
         private static readonly HashSet<string> ValidStorageTypes
             = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
+                "AliyunOss",
+                "AwsS3",
                 "AzureBlobStorage",
                 "Filesystem",
+                "GoogleCloud",
+                "Null",
             };
 
         private static readonly HashSet<string> ValidSearchTypes
             = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                "Database",
                 "AzureSearch",
+                "Database",
+                "Null",
             };
 
         public void Configure(CorsOptions options)
