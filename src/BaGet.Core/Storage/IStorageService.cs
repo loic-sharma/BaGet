@@ -34,7 +34,8 @@ namespace BaGet.Core
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>
         /// The content's URI. This may be a local file. Returns null if the content
-        /// does not exist or if a URI could not be created.</returns>
+        /// does not exist or if a URI could not be created.
+        /// </returns>
         Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -56,7 +57,7 @@ namespace BaGet.Core
         /// </summary>
         /// <param name="path">The path to the content to delete.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
-        /// <returns></returns>
+        /// <returns>A task that completes when the content has been deleted.</returns>
         Task DeleteAsync(string path, CancellationToken cancellationToken = default);
     }
 
