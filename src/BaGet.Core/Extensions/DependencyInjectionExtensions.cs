@@ -53,7 +53,7 @@ namespace BaGet.Core
                     config = config.GetSection(key);
                 }
 
-                return new ConfigureBaGetOptions<TOptions>(config);
+                return new BindOptions<TOptions>(config);
             });
 
             return services;
