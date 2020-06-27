@@ -31,6 +31,11 @@ namespace BaGetWebApplication
 
             app.UseEndpoints(endpoints =>
             {
+                // Add BaGet's endpoints.
+                endpoints.MapBaGetRoutes();
+
+                // Add a "welcome" endpoint to help you find thep package source.
+                // This is optional, you can remove this endpoint if you'd like.
                 endpoints.MapGet("/", async context =>
                 {
                     var url = context.RequestServices.GetRequiredService<IUrlGenerator>();
@@ -38,8 +43,6 @@ namespace BaGetWebApplication
 
                     await context.Response.WriteAsync($"Package source URL: '{packageSource}'");
                 });
-
-                endpoints.MapBaGetRoutes();
             });
         }
     }
