@@ -710,7 +710,7 @@
 <span class="kt">string</span> <span class="n">packageId</span> <span class="p">=</span> <span class="s">&quot;Newtonsoft.Json&quot;</span><span class="p">;</span>
 <span class="n">NuGetVersion</span> <span class="n">packageVersion</span> <span class="p">=</span> <span class="k">new</span> <span class="n">NuGetVersion</span><span class="p">(</span><span class="s">&quot;12.0.1&quot;</span><span class="p">);</span>
 
-<span class="k">using</span> <span class="p">(</span><span class="n">Stream</span> <span class="n">packageStream</span> <span class="p">=</span> <span class="k">await</span> <span class="n">client</span><span class="p">.</span><span class="n">GetPackageStreamAsync</span><span class="p">(</span><span class="n">packageId</span><span class="p">,</span> <span class="n">packageVersion</span><span class="p">))</span>
+<span class="k">using</span> <span class="p">(</span><span class="n">Stream</span> <span class="n">packageStream</span> <span class="p">=</span> <span class="k">await</span> <span class="n">client</span><span class="p">.</span><span class="n">DownloadPackageAsync</span><span class="p">(</span><span class="n">packageId</span><span class="p">,</span> <span class="n">packageVersion</span><span class="p">))</span>
 <span class="p">{</span>
     <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Downloaded package {packageId} {packageVersion}&quot;</span><span class="p">);</span>
 <span class="p">}</span>
@@ -815,7 +815,7 @@
       <div class="md-footer-copyright">
         
           <div class="md-footer-copyright__highlight">
-            Copyright &copy; 2018 Loic Sharma
+            Copyright &copy; 2020 Loic Sharma
           </div>
         
         powered by

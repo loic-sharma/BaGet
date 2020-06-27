@@ -443,6 +443,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#iis-server-options" title="IIS Server Options" class="md-nav__link">
+    IIS Server Options
+  </a>
+  
+</li>
+      
       
       
       
@@ -716,6 +723,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#iis-server-options" title="IIS Server Options" class="md-nav__link">
+    IIS Server Options
+  </a>
+  
+</li>
+      
       
       
       
@@ -849,6 +863,19 @@ to overwrite the already existing package by setting <code>AllowPackageOverwrite
 <li><strong>Type</strong>: The database engine to use, this should be one of the strings from the above list such as <code>PostgreSql</code> or <code>Sqlite</code>.</li>
 <li><strong>ConnectionString</strong>: The connection string for your database engine.</li>
 </ul>
+<h2 id="iis-server-options">IIS Server Options<a class="headerlink" href="#iis-server-options" title="Permanent link">&para;</a></h2>
+<p>IIS Server options can be configured under the <code>IISServerOptions</code> key. The available options are detailed at <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.iisserveroptions">docs.microsoft.com</a>
+Note: If not specified, the MaxRequestBodySize in BaGet defaults to 250MB (262144000 bytes), rather than the ASP.NET Core default of 30MB</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+    <span class="err">...</span>
+
+    <span class="nt">&quot;IISServerOptions&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;MaxRequestBodySize&quot;</span><span class="p">:</span> <span class="mi">262144000</span>
+    <span class="p">},</span>
+
+    <span class="err">...</span>
+<span class="p">}</span>
+</pre></div>
                 
                   
                 
@@ -906,7 +933,7 @@ to overwrite the already existing package by setting <code>AllowPackageOverwrite
       <div class="md-footer-copyright">
         
           <div class="md-footer-copyright__highlight">
-            Copyright &copy; 2018 Loic Sharma
+            Copyright &copy; 2020 Loic Sharma
           </div>
         
         powered by

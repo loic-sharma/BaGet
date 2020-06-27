@@ -729,7 +729,7 @@ variables. To learn how these configurations work, please refer to
 
 
 <p>You can now run BaGet:</p>
-<div class="codehilite"><pre><span></span>docker run --rm --name nuget-server -p 5555:80 --env-file baget.env -v &quot;$(pwd)/baget-data:/var/baget&quot; loicsharma/baget:latest
+<div class="codehilite"><pre><span></span>docker run --rm --name nuget-server -p 5555:5000 --env-file baget.env -v &quot;$(pwd)/baget-data:/var/baget&quot; loicsharma/baget:latest
 </pre></div>
 
 
@@ -819,7 +819,7 @@ variables. To learn how these configurations work, please refer to
       <div class="md-footer-copyright">
         
           <div class="md-footer-copyright__highlight">
-            Copyright &copy; 2018 Loic Sharma
+            Copyright &copy; 2020 Loic Sharma
           </div>
         
         powered by
