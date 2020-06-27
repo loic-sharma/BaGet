@@ -1,11 +1,12 @@
 using System;
 using Aliyun.OSS;
 using BaGet.Aliyun;
+using BaGet.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
-namespace BaGet.Core
+namespace BaGet
 {
     public static class AliyunApplicationExtensions
     {

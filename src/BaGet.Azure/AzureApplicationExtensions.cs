@@ -1,5 +1,6 @@
 using System;
 using BaGet.Azure;
+using BaGet.Core;
 using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Azure.Search;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage.Blob;
 
-namespace BaGet.Core
+namespace BaGet
 {
     using CloudStorageAccount = Microsoft.WindowsAzure.Storage.CloudStorageAccount;
     using StorageCredentials = Microsoft.WindowsAzure.Storage.Auth.StorageCredentials;

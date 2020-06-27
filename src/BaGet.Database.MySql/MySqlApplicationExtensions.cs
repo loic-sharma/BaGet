@@ -1,10 +1,11 @@
 using System;
+using BaGet.Core;
 using BaGet.Database.MySql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace BaGet.Core
+namespace BaGet
 {
     public static class MySqlApplicationExtensions
     {

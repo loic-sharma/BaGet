@@ -1,5 +1,5 @@
+using BaGet;
 using BaGet.Core;
-using BaGet.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;

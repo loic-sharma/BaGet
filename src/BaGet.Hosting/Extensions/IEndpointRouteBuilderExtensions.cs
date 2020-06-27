@@ -1,8 +1,9 @@
+using BaGet.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Routing.Constraints;
 
-namespace BaGet.Hosting
+namespace BaGet
 {
     public static class IEndpointRouteBuilderExtensions
     {

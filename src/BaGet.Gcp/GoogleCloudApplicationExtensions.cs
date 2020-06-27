@@ -1,9 +1,10 @@
 using System;
+using BaGet.Core;
 using BaGet.Gcp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace BaGet.Core
+namespace BaGet
 {
     public static class GoogleCloudApplicationExtensions
     {
