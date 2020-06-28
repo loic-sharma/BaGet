@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using BaGet.Core;
 using BaGet.Hosting;
@@ -16,6 +17,11 @@ namespace BaGet
         public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
+
+            var env = host.Services.GetRequiredService<IWebHostEnvironment>();
+            var config = host.Services.GetRequiredService<IConfiguration>();
+            Console.WriteLine(env.ContentRootPath);
+
             if (!host.ValidateStartupOptions())
             {
                 return;
@@ -69,13 +75,21 @@ namespace BaGet
                 })
                 .ConfigureWebHostDefaults(web =>
                 {
+                    // Normally ASP.NET Core uses the current working directory as the content root.
+                    // BaGet can be installed as a .NET Core tool, so we'll set the content root to
+                    // the application's root instead.
+                    var applicationRoot = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+
+                    web.UseContentRoot(applicationRoot);
+
+                    // Remove the upload limit from Kestrel. If needed, an upload limit can
+                    // be enforced by a reverse proxy server, like IIS.
                     web.ConfigureKestrel(options =>
                     {
-                        // Remove the upload limit from Kestrel. If needed, an upload limit can
-                        // be enforced by a reverse proxy server, like IIS.
                         options.Limits.MaxRequestBodySize = null;
                     });
 
+                    // Let BaGet's configurations override the URL to listen to.
                     var config = new ConfigurationBuilder()
                         .SetBasePath(Directory.GetCurrentDirectory())
                         .AddJsonFile("appsettings.json", optional: true)
@@ -89,6 +103,7 @@ namespace BaGet
                         web.UseUrls(urls);
                     }
 
+                    // Register our startup handler.
                     web.UseStartup<Startup>();
                 });
         }
