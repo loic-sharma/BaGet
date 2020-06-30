@@ -45,6 +45,8 @@ namespace BaGet
                 });
             });
 
+            app.Option("--urls", "The URLs that BaGet should bind to.", CommandOptionType.SingleValue);
+
             app.OnExecuteAsync(async cancellationToken =>
             {
                 await host.RunMigrationsAsync(cancellationToken);
@@ -75,19 +77,6 @@ namespace BaGet
                         // be enforced by a reverse proxy server, like IIS.
                         options.Limits.MaxRequestBodySize = null;
                     });
-
-                    var config = new ConfigurationBuilder()
-                        .SetBasePath(Directory.GetCurrentDirectory())
-                        .AddJsonFile("appsettings.json", optional: true)
-                        .AddCommandLine(args)
-                        .Build();
-
-                    var urls = config["Urls"];
-
-                    if (!string.IsNullOrWhiteSpace(urls))
-                    {
-                        web.UseUrls(urls);
-                    }
 
                     web.UseStartup<Startup>();
                 });
