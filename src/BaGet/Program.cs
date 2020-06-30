@@ -45,6 +45,8 @@ namespace BaGet
                 });
             });
 
+            app.Option("--urls", "The URL that BaGet should bind to.", CommandOptionType.SingleValue);
+
             app.OnExecuteAsync(async cancellationToken =>
             {
                 await host.RunMigrationsAsync(cancellationToken);
