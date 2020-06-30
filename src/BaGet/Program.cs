@@ -76,19 +76,6 @@ namespace BaGet
                         options.Limits.MaxRequestBodySize = null;
                     });
 
-                    var config = new ConfigurationBuilder()
-                        .SetBasePath(Directory.GetCurrentDirectory())
-                        .AddJsonFile("appsettings.json", optional: true)
-                        .AddCommandLine(args)
-                        .Build();
-
-                    var urls = config["Urls"];
-
-                    if (!string.IsNullOrWhiteSpace(urls))
-                    {
-                        web.UseUrls(urls);
-                    }
-
                     web.UseStartup<Startup>();
                 });
         }
