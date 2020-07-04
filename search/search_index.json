@@ -21,238 +21,238 @@
             "title": "BaGet SDK"
         }, 
         {
-            "location": "/quickstart/local/", 
-            "text": "Run BaGet on your Computer\n\n\nRun BaGet\n\n\n\n\nInstall the \n.NET Core SDK\n\n\nDownload and extract \nBaGet's latest release\n\n\nStart the service with \ndotnet BaGet.dll\n\n\nBrowse \nhttp://localhost:5000/\n in your browser\n\n\n\n\nConfigure BaGet\n\n\nYou can modify BaGet's configurations by editing the \nappsettings.json\n file. For the full list of configurations, please refer to \nBaGet's configuration\n guide.\n\n\nPublish Packages\n\n\nPublish your first package with:\n\n\ndotnet nuget push -s http://localhost:5000/v3/index.json package.1.0.0.nupkg\n\n\n\n\n\nPublish your first \nsymbol package\n with:\n\n\ndotnet nuget push -s http://localhost:5000/v3/index.json symbol.package.1.0.0.snupkg\n\n\n\n\n\n\n\nWarning\n\n\nYou should secure your server by requiring an API Key to publish packages. For more information, please refer to the \nRequire an API Key\n guide.\n\n\n\n\nRestore Packages\n\n\nYou can restore packages by using the following package source:\n\n\nhttp://localhost:5000/v3/index.json\n\n\nSome helpful guides:\n\n\n\n\nVisual Studio\n\n\nNuGet.config\n\n\n\n\nSymbol Server\n\n\nYou can load symbols by using the following symbol location:\n\n\nhttp://localhost:5000/api/download/symbols\n\n\nFor Visual Studio, please refer to the \nConfigure Debugging\n guide.", 
+            "location": "/installation/local/", 
+            "text": "Run BaGet on your Computer\n\n\nRun BaGet\n\n\n\n\nInstall the \n.NET Core SDK\n\n\nDownload and extract \nBaGet's latest release\n\n\nStart the service with \ndotnet BaGet.dll\n\n\nBrowse \nhttp://localhost:5000/\n in your browser\n\n\n\n\nConfigure BaGet\n\n\nYou can modify BaGet's configurations by editing the \nappsettings.json\n file. For the full list of configurations, please refer to \nBaGet's configuration\n guide.\n\n\nPublish packages\n\n\nPublish your first package with:\n\n\ndotnet nuget push -s http://localhost:5000/v3/index.json package.1.0.0.nupkg\n\n\n\n\n\nPublish your first \nsymbol package\n with:\n\n\ndotnet nuget push -s http://localhost:5000/v3/index.json symbol.package.1.0.0.snupkg\n\n\n\n\n\n\n\nWarning\n\n\nYou should secure your server by requiring an API Key to publish packages. For more information, please refer to the \nRequire an API Key\n guide.\n\n\n\n\nRestore packages\n\n\nYou can restore packages by using the following package source:\n\n\nhttp://localhost:5000/v3/index.json\n\n\nSome helpful guides:\n\n\n\n\nVisual Studio\n\n\nNuGet.config\n\n\n\n\nSymbol server\n\n\nYou can load symbols by using the following symbol location:\n\n\nhttp://localhost:5000/api/download/symbols\n\n\nFor Visual Studio, please refer to the \nConfigure Debugging\n guide.", 
             "title": "On your computer"
         }, 
         {
-            "location": "/quickstart/local/#run-baget-on-your-computer", 
+            "location": "/installation/local/#run-baget-on-your-computer", 
             "text": "", 
             "title": "Run BaGet on your Computer"
         }, 
         {
-            "location": "/quickstart/local/#run-baget", 
+            "location": "/installation/local/#run-baget", 
             "text": "Install the  .NET Core SDK  Download and extract  BaGet's latest release  Start the service with  dotnet BaGet.dll  Browse  http://localhost:5000/  in your browser", 
             "title": "Run BaGet"
         }, 
         {
-            "location": "/quickstart/local/#configure-baget", 
+            "location": "/installation/local/#configure-baget", 
             "text": "You can modify BaGet's configurations by editing the  appsettings.json  file. For the full list of configurations, please refer to  BaGet's configuration  guide.", 
             "title": "Configure BaGet"
         }, 
         {
-            "location": "/quickstart/local/#publish-packages", 
+            "location": "/installation/local/#publish-packages", 
             "text": "Publish your first package with:  dotnet nuget push -s http://localhost:5000/v3/index.json package.1.0.0.nupkg  Publish your first  symbol package  with:  dotnet nuget push -s http://localhost:5000/v3/index.json symbol.package.1.0.0.snupkg   Warning  You should secure your server by requiring an API Key to publish packages. For more information, please refer to the  Require an API Key  guide.", 
-            "title": "Publish Packages"
+            "title": "Publish packages"
         }, 
         {
-            "location": "/quickstart/local/#restore-packages", 
+            "location": "/installation/local/#restore-packages", 
             "text": "You can restore packages by using the following package source:  http://localhost:5000/v3/index.json  Some helpful guides:   Visual Studio  NuGet.config", 
-            "title": "Restore Packages"
+            "title": "Restore packages"
         }, 
         {
-            "location": "/quickstart/local/#symbol-server", 
+            "location": "/installation/local/#symbol-server", 
             "text": "You can load symbols by using the following symbol location:  http://localhost:5000/api/download/symbols  For Visual Studio, please refer to the  Configure Debugging  guide.", 
-            "title": "Symbol Server"
+            "title": "Symbol server"
         }, 
         {
-            "location": "/quickstart/docker/", 
-            "text": "Run BaGet on Docker\n\n\nConfigure BaGet\n\n\nCreate a file named \nbaget.env\n to store BaGet's configurations:\n\n\n# The following config is the API Key used to publish packages.\n# You should change this to a secret value to secure your server.\nApiKey=NUGET-SERVER-API-KEY\n\nStorage__Type=FileSystem\nStorage__Path=/var/baget/packages\nDatabase__Type=Sqlite\nDatabase__ConnectionString=Data Source=/var/baget/baget.db\nSearch__Type=Database\n\n\n\n\n\nFor a full list of configurations, please refer to \nBaGet's configuration\n guide.\n\n\n\n\nInfo\n\n\nThe \nbaget.env\n file stores \nBaGet's configuration\n as environment\nvariables. To learn how these configurations work, please refer to\n\nASP.NET Core's configuration documentation\n.\n\n\n\n\nRun BaGet\n\n\n\n\nCreate a folder named \nbaget-data\n in the same directory as the \nbaget.env\n file. This will be used by BaGet to persist its state.\n\n\nPull BaGet's latest \ndocker image\n:\n\n\n\n\ndocker pull loicsharma/baget\n\n\n\n\n\nYou can now run BaGet:\n\n\ndocker run --rm --name nuget-server -p 5555:5000 --env-file baget.env -v \n$(pwd)/baget-data:/var/baget\n loicsharma/baget:latest\n\n\n\n\n\nPublish Packages\n\n\nPublish your first package with:\n\n\ndotnet nuget push -s http://localhost:5555/v3/index.json -k NUGET-SERVER-API-KEY package.1.0.0.nupkg\n\n\n\n\n\nPublish your first \nsymbol package\n with:\n\n\ndotnet nuget push -s http://localhost:5555/v3/index.json -k NUGET-SERVER-API-KEY symbol.package.1.0.0.snupkg\n\n\n\n\n\n\n\nWarning\n\n\nThe default API Key to publish packages is \nNUGET-SERVER-API-KEY\n. You should change this to a secret value to secure your server. See \nConfigure BaGet\n.\n\n\n\n\nBrowse Packages\n\n\nYou can browse packages by opening the URL \nhttp://localhost:5555/\n in your browser.\n\n\nRestore Packages\n\n\nYou can restore packages by using the following package source:\n\n\nhttp://localhost:5555/v3/index.json\n\n\nSome helpful guides:\n\n\n\n\nVisual Studio\n\n\nNuGet.config\n\n\n\n\nSymbol Server\n\n\nYou can load symbols by using the following symbol location:\n\n\nhttp://localhost:5555/api/download/symbols\n\n\nFor Visual Studio, please refer to the \nConfigure Debugging\n guide.", 
+            "location": "/installation/docker/", 
+            "text": "Run BaGet on Docker\n\n\nConfigure BaGet\n\n\nCreate a file named \nbaget.env\n to store BaGet's configurations:\n\n\n# The following config is the API Key used to publish packages.\n# You should change this to a secret value to secure your server.\nApiKey=NUGET-SERVER-API-KEY\n\nStorage__Type=FileSystem\nStorage__Path=/var/baget/packages\nDatabase__Type=Sqlite\nDatabase__ConnectionString=Data Source=/var/baget/baget.db\nSearch__Type=Database\n\n\n\n\n\nFor a full list of configurations, please refer to \nBaGet's configuration\n guide.\n\n\n\n\nInfo\n\n\nThe \nbaget.env\n file stores \nBaGet's configuration\n as environment\nvariables. To learn how these configurations work, please refer to\n\nASP.NET Core's configuration documentation\n.\n\n\n\n\nRun BaGet\n\n\n\n\nCreate a folder named \nbaget-data\n in the same directory as the \nbaget.env\n file. This will be used by BaGet to persist its state.\n\n\nPull BaGet's latest \ndocker image\n:\n\n\n\n\ndocker pull loicsharma/baget\n\n\n\n\n\nYou can now run BaGet:\n\n\ndocker run --rm --name nuget-server -p 5555:5000 --env-file baget.env -v \n$(pwd)/baget-data:/var/baget\n loicsharma/baget:latest\n\n\n\n\n\nPublish packages\n\n\nPublish your first package with:\n\n\ndotnet nuget push -s http://localhost:5555/v3/index.json -k NUGET-SERVER-API-KEY package.1.0.0.nupkg\n\n\n\n\n\nPublish your first \nsymbol package\n with:\n\n\ndotnet nuget push -s http://localhost:5555/v3/index.json -k NUGET-SERVER-API-KEY symbol.package.1.0.0.snupkg\n\n\n\n\n\n\n\nWarning\n\n\nThe default API Key to publish packages is \nNUGET-SERVER-API-KEY\n. You should change this to a secret value to secure your server. See \nConfigure BaGet\n.\n\n\n\n\nBrowse packages\n\n\nYou can browse packages by opening the URL \nhttp://localhost:5555/\n in your browser.\n\n\nRestore packages\n\n\nYou can restore packages by using the following package source:\n\n\nhttp://localhost:5555/v3/index.json\n\n\nSome helpful guides:\n\n\n\n\nVisual Studio\n\n\nNuGet.config\n\n\n\n\nSymbol server\n\n\nYou can load symbols by using the following symbol location:\n\n\nhttp://localhost:5555/api/download/symbols\n\n\nFor Visual Studio, please refer to the \nConfigure Debugging\n guide.", 
             "title": "Docker"
         }, 
         {
-            "location": "/quickstart/docker/#run-baget-on-docker", 
+            "location": "/installation/docker/#run-baget-on-docker", 
             "text": "", 
             "title": "Run BaGet on Docker"
         }, 
         {
-            "location": "/quickstart/docker/#configure-baget", 
+            "location": "/installation/docker/#configure-baget", 
             "text": "Create a file named  baget.env  to store BaGet's configurations:  # The following config is the API Key used to publish packages.\n# You should change this to a secret value to secure your server.\nApiKey=NUGET-SERVER-API-KEY\n\nStorage__Type=FileSystem\nStorage__Path=/var/baget/packages\nDatabase__Type=Sqlite\nDatabase__ConnectionString=Data Source=/var/baget/baget.db\nSearch__Type=Database  For a full list of configurations, please refer to  BaGet's configuration  guide.   Info  The  baget.env  file stores  BaGet's configuration  as environment\nvariables. To learn how these configurations work, please refer to ASP.NET Core's configuration documentation .", 
             "title": "Configure BaGet"
         }, 
         {
-            "location": "/quickstart/docker/#run-baget", 
+            "location": "/installation/docker/#run-baget", 
             "text": "Create a folder named  baget-data  in the same directory as the  baget.env  file. This will be used by BaGet to persist its state.  Pull BaGet's latest  docker image :   docker pull loicsharma/baget  You can now run BaGet:  docker run --rm --name nuget-server -p 5555:5000 --env-file baget.env -v  $(pwd)/baget-data:/var/baget  loicsharma/baget:latest", 
             "title": "Run BaGet"
         }, 
         {
-            "location": "/quickstart/docker/#publish-packages", 
+            "location": "/installation/docker/#publish-packages", 
             "text": "Publish your first package with:  dotnet nuget push -s http://localhost:5555/v3/index.json -k NUGET-SERVER-API-KEY package.1.0.0.nupkg  Publish your first  symbol package  with:  dotnet nuget push -s http://localhost:5555/v3/index.json -k NUGET-SERVER-API-KEY symbol.package.1.0.0.snupkg   Warning  The default API Key to publish packages is  NUGET-SERVER-API-KEY . You should change this to a secret value to secure your server. See  Configure BaGet .", 
-            "title": "Publish Packages"
+            "title": "Publish packages"
         }, 
         {
-            "location": "/quickstart/docker/#browse-packages", 
+            "location": "/installation/docker/#browse-packages", 
             "text": "You can browse packages by opening the URL  http://localhost:5555/  in your browser.", 
-            "title": "Browse Packages"
+            "title": "Browse packages"
         }, 
         {
-            "location": "/quickstart/docker/#restore-packages", 
+            "location": "/installation/docker/#restore-packages", 
             "text": "You can restore packages by using the following package source:  http://localhost:5555/v3/index.json  Some helpful guides:   Visual Studio  NuGet.config", 
-            "title": "Restore Packages"
+            "title": "Restore packages"
         }, 
         {
-            "location": "/quickstart/docker/#symbol-server", 
+            "location": "/installation/docker/#symbol-server", 
             "text": "You can load symbols by using the following symbol location:  http://localhost:5555/api/download/symbols  For Visual Studio, please refer to the  Configure Debugging  guide.", 
-            "title": "Symbol Server"
+            "title": "Symbol server"
         }, 
         {
-            "location": "/quickstart/azure/", 
-            "text": "Run BaGet on Azure\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nUse Azure to scale BaGet. You can store metadata on \nAzure SQL Database\n, upload packages to \nAzure Blob Storage\n, and provide powerful search using \nAzure Search\n.\n\n\nTODO\n\n\n\n\nApp Service\n\n\nTable Storage\n\n\nHigh availability setup\n\n\n\n\nConfigure BaGet\n\n\nYou can modify BaGet's configurations by editing the \nappsettings.json\n file. For the full list of configurations, please refer to \nBaGet's configuration\n guide.\n\n\nAzure SQL Database\n\n\nUpdate the \nappsettings.json\n file:\n\n\n{\n\n    \n...\n\n\n    \nDatabase\n:\n \n{\n\n        \nType\n:\n \nSqlServer\n,\n\n        \nConnectionString\n:\n \n...\n\n    \n},\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\nAzure Blob Storage\n\n\nUpdate the \nappsettings.json\n file:\n\n\n{\n\n    \n...\n\n\n    \nStorage\n:\n \n{\n\n        \nType\n:\n \nAzureBlobStorage\n,\n\n\n        \nAccountName\n:\n \nmy-account\n,\n\n        \nAccessKey\n:\n \nabcd1234\n,\n\n        \nContainer\n:\n \nmy-container\n\n    \n},\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\nAlternatively, you can use a full Azure Storage connection string:\n\n\n{\n\n    \n...\n\n\n    \nStorage\n:\n \n{\n\n        \nType\n:\n \nAzureBlobStorage\n,\n\n\n        \nConnectionString\n:\n \nAccountName=my-account;AccountKey=abcd1234;...\n,\n\n        \nContainer\n:\n \nmy-container\n\n    \n},\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\nAzure Search\n\n\nUpdate the \nappsettings.json\n file:\n\n\n{\n\n    \n...\n\n\n    \nSearch\n:\n \n{\n\n        \nType\n:\n \nAzure\n,\n\n        \nAccountName\n:\n \nmy-account\n,\n\n        \nApiKey\n:\n \nABCD1234\n\n    \n},\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\nPublish Packages\n\n\nPublish your first package with:\n\n\ndotnet nuget push -s http://localhost:5000/v3/index.json package.1.0.0.nupkg\n\n\n\n\n\nPublish your first \nsymbol package\n with:\n\n\ndotnet nuget push -s http://localhost:5000/v3/index.json symbol.package.1.0.0.snupkg\n\n\n\n\n\n\n\nWarning\n\n\nYou should secure your server by requiring an API Key to publish packages. For more information, please refer to the \nRequire an API Key\n guide.\n\n\n\n\nRestore Packages\n\n\nYou can restore packages by using the following package source:\n\n\nhttp://localhost:5000/v3/index.json\n\n\nSome helpful guides:\n\n\n\n\nVisual Studio\n\n\nNuGet.config\n\n\n\n\nSymbol Server\n\n\nYou can load symbols by using the following symbol location:\n\n\nhttp://localhost:5000/api/download/symbols\n\n\nFor Visual Studio, please refer to the \nConfigure Debugging\n guide.", 
+            "location": "/installation/azure/", 
+            "text": "Run BaGet on Azure\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nUse Azure to scale BaGet. You can store metadata on \nAzure SQL Database\n, upload packages to \nAzure Blob Storage\n, and provide powerful search using \nAzure Search\n.\n\n\nTODO\n\n\n\n\nApp Service\n\n\nTable Storage\n\n\nHigh availability setup\n\n\n\n\nConfigure BaGet\n\n\nYou can modify BaGet's configurations by editing the \nappsettings.json\n file. For the full list of configurations, please refer to \nBaGet's configuration\n guide.\n\n\nAzure SQL database\n\n\nUpdate the \nappsettings.json\n file:\n\n\n{\n\n    \n...\n\n\n    \nDatabase\n:\n \n{\n\n        \nType\n:\n \nSqlServer\n,\n\n        \nConnectionString\n:\n \n...\n\n    \n},\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\nAzure Blob Storage\n\n\nUpdate the \nappsettings.json\n file:\n\n\n{\n\n    \n...\n\n\n    \nStorage\n:\n \n{\n\n        \nType\n:\n \nAzureBlobStorage\n,\n\n\n        \nAccountName\n:\n \nmy-account\n,\n\n        \nAccessKey\n:\n \nabcd1234\n,\n\n        \nContainer\n:\n \nmy-container\n\n    \n},\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\nAlternatively, you can use a full Azure Storage connection string:\n\n\n{\n\n    \n...\n\n\n    \nStorage\n:\n \n{\n\n        \nType\n:\n \nAzureBlobStorage\n,\n\n\n        \nConnectionString\n:\n \nAccountName=my-account;AccountKey=abcd1234;...\n,\n\n        \nContainer\n:\n \nmy-container\n\n    \n},\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\nAzure Search\n\n\nUpdate the \nappsettings.json\n file:\n\n\n{\n\n    \n...\n\n\n    \nSearch\n:\n \n{\n\n        \nType\n:\n \nAzure\n,\n\n        \nAccountName\n:\n \nmy-account\n,\n\n        \nApiKey\n:\n \nABCD1234\n\n    \n},\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\nPublish packages\n\n\nPublish your first package with:\n\n\ndotnet nuget push -s http://localhost:5000/v3/index.json package.1.0.0.nupkg\n\n\n\n\n\nPublish your first \nsymbol package\n with:\n\n\ndotnet nuget push -s http://localhost:5000/v3/index.json symbol.package.1.0.0.snupkg\n\n\n\n\n\n\n\nWarning\n\n\nYou should secure your server by requiring an API Key to publish packages. For more information, please refer to the \nRequire an API Key\n guide.\n\n\n\n\nRestore packages\n\n\nYou can restore packages by using the following package source:\n\n\nhttp://localhost:5000/v3/index.json\n\n\nSome helpful guides:\n\n\n\n\nVisual Studio\n\n\nNuGet.config\n\n\n\n\nSymbol server\n\n\nYou can load symbols by using the following symbol location:\n\n\nhttp://localhost:5000/api/download/symbols\n\n\nFor Visual Studio, please refer to the \nConfigure Debugging\n guide.", 
             "title": "Azure"
         }, 
         {
-            "location": "/quickstart/azure/#run-baget-on-azure", 
+            "location": "/installation/azure/#run-baget-on-azure", 
             "text": "Warning  This page is a work in progress!   Use Azure to scale BaGet. You can store metadata on  Azure SQL Database , upload packages to  Azure Blob Storage , and provide powerful search using  Azure Search .", 
             "title": "Run BaGet on Azure"
         }, 
         {
-            "location": "/quickstart/azure/#todo", 
+            "location": "/installation/azure/#todo", 
             "text": "App Service  Table Storage  High availability setup", 
             "title": "TODO"
         }, 
         {
-            "location": "/quickstart/azure/#configure-baget", 
+            "location": "/installation/azure/#configure-baget", 
             "text": "You can modify BaGet's configurations by editing the  appsettings.json  file. For the full list of configurations, please refer to  BaGet's configuration  guide.", 
             "title": "Configure BaGet"
         }, 
         {
-            "location": "/quickstart/azure/#azure-sql-database", 
+            "location": "/installation/azure/#azure-sql-database", 
             "text": "Update the  appsettings.json  file:  { \n     ... \n\n     Database :   { \n         Type :   SqlServer , \n         ConnectionString :   ... \n     }, \n\n     ...  }", 
-            "title": "Azure SQL Database"
+            "title": "Azure SQL database"
         }, 
         {
-            "location": "/quickstart/azure/#azure-blob-storage", 
+            "location": "/installation/azure/#azure-blob-storage", 
             "text": "Update the  appsettings.json  file:  { \n     ... \n\n     Storage :   { \n         Type :   AzureBlobStorage , \n\n         AccountName :   my-account , \n         AccessKey :   abcd1234 , \n         Container :   my-container \n     }, \n\n     ...  }   Alternatively, you can use a full Azure Storage connection string:  { \n     ... \n\n     Storage :   { \n         Type :   AzureBlobStorage , \n\n         ConnectionString :   AccountName=my-account;AccountKey=abcd1234;... , \n         Container :   my-container \n     }, \n\n     ...  }", 
             "title": "Azure Blob Storage"
         }, 
         {
-            "location": "/quickstart/azure/#azure-search", 
+            "location": "/installation/azure/#azure-search", 
             "text": "Update the  appsettings.json  file:  { \n     ... \n\n     Search :   { \n         Type :   Azure , \n         AccountName :   my-account , \n         ApiKey :   ABCD1234 \n     }, \n\n     ...  }", 
             "title": "Azure Search"
         }, 
         {
-            "location": "/quickstart/azure/#publish-packages", 
+            "location": "/installation/azure/#publish-packages", 
             "text": "Publish your first package with:  dotnet nuget push -s http://localhost:5000/v3/index.json package.1.0.0.nupkg  Publish your first  symbol package  with:  dotnet nuget push -s http://localhost:5000/v3/index.json symbol.package.1.0.0.snupkg   Warning  You should secure your server by requiring an API Key to publish packages. For more information, please refer to the  Require an API Key  guide.", 
-            "title": "Publish Packages"
+            "title": "Publish packages"
         }, 
         {
-            "location": "/quickstart/azure/#restore-packages", 
+            "location": "/installation/azure/#restore-packages", 
             "text": "You can restore packages by using the following package source:  http://localhost:5000/v3/index.json  Some helpful guides:   Visual Studio  NuGet.config", 
-            "title": "Restore Packages"
+            "title": "Restore packages"
         }, 
         {
-            "location": "/quickstart/azure/#symbol-server", 
+            "location": "/installation/azure/#symbol-server", 
             "text": "You can load symbols by using the following symbol location:  http://localhost:5000/api/download/symbols  For Visual Studio, please refer to the  Configure Debugging  guide.", 
-            "title": "Symbol Server"
+            "title": "Symbol server"
         }, 
         {
-            "location": "/quickstart/aws/", 
-            "text": "Run BaGet on AWS\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nUse Amazon Web Services to scale BaGet. You can store metadata on \nAmazon RDS\n and upload packages to \nAmazon S3\n.\n\n\nConfigure BaGet\n\n\nYou can modify BaGet's configurations by editing the \nappsettings.json\n file. For the full list of configurations, please refer to \nBaGet's configuration\n guide.\n\n\nAmazon S3\n\n\nUpdate the \nappsettings.json\n file:\n\n\n{\n\n    \n...\n\n\n    \nStorage\n:\n \n{\n\n        \nType\n:\n \nAwsS3\n,\n\n        \nRegion\n:\n \nus-west-1\n,\n\n        \nBucket\n:\n \nfoo\n,\n\n        \nAccessKey\n:\n \n,\n\n        \nSecretKey\n:\n \n\n    \n},\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\nAmazon RDS\n\n\nTo use PostgreSQL, update the \nappsettings.json\n file:\n\n\n{\n\n    \n...\n\n\n    \nDatabase\n:\n \n{\n\n        \nType\n:\n \nPostgreSql\n,\n\n        \nConnectionString\n:\n \n...\n\n    \n},\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\nTo use MySQL, update the \nappsettings.json\n file:\n\n\n{\n\n    \n...\n\n\n    \nDatabase\n:\n \n{\n\n        \nType\n:\n \nMySql\n,\n\n        \nConnectionString\n:\n \n...\n\n    \n},\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\nPublish Packages\n\n\nPublish your first package with:\n\n\ndotnet nuget push -s http://localhost:5000/v3/index.json package.1.0.0.nupkg\n\n\n\n\n\nPublish your first \nsymbol package\n with:\n\n\ndotnet nuget push -s http://localhost:5000/v3/index.json symbol.package.1.0.0.snupkg\n\n\n\n\n\n\n\nWarning\n\n\nYou should secure your server by requiring an API Key to publish packages. For more information, please refer to the \nRequire an API Key\n guide.\n\n\n\n\nRestore Packages\n\n\nYou can restore packages by using the following package source:\n\n\nhttp://localhost:5000/v3/index.json\n\n\nSome helpful guides:\n\n\n\n\nVisual Studio\n\n\nNuGet.config\n\n\n\n\nSymbol Server\n\n\nYou can load symbols by using the following symbol location:\n\n\nhttp://localhost:5000/api/download/symbols\n\n\nFor Visual Studio, please refer to the \nConfigure Debugging\n guide.", 
+            "location": "/installation/aws/", 
+            "text": "Run BaGet on AWS\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nUse Amazon Web Services to scale BaGet. You can store metadata on \nAmazon RDS\n and upload packages to \nAmazon S3\n.\n\n\nConfigure BaGet\n\n\nYou can modify BaGet's configurations by editing the \nappsettings.json\n file. For the full list of configurations, please refer to \nBaGet's configuration\n guide.\n\n\nAmazon S3\n\n\nUpdate the \nappsettings.json\n file:\n\n\n{\n\n    \n...\n\n\n    \nStorage\n:\n \n{\n\n        \nType\n:\n \nAwsS3\n,\n\n        \nRegion\n:\n \nus-west-1\n,\n\n        \nBucket\n:\n \nfoo\n,\n\n        \nAccessKey\n:\n \n,\n\n        \nSecretKey\n:\n \n\n    \n},\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\nAmazon RDS\n\n\nTo use PostgreSQL, update the \nappsettings.json\n file:\n\n\n{\n\n    \n...\n\n\n    \nDatabase\n:\n \n{\n\n        \nType\n:\n \nPostgreSql\n,\n\n        \nConnectionString\n:\n \n...\n\n    \n},\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\nTo use MySQL, update the \nappsettings.json\n file:\n\n\n{\n\n    \n...\n\n\n    \nDatabase\n:\n \n{\n\n        \nType\n:\n \nMySql\n,\n\n        \nConnectionString\n:\n \n...\n\n    \n},\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\nPublish packages\n\n\nPublish your first package with:\n\n\ndotnet nuget push -s http://localhost:5000/v3/index.json package.1.0.0.nupkg\n\n\n\n\n\nPublish your first \nsymbol package\n with:\n\n\ndotnet nuget push -s http://localhost:5000/v3/index.json symbol.package.1.0.0.snupkg\n\n\n\n\n\n\n\nWarning\n\n\nYou should secure your server by requiring an API Key to publish packages. For more information, please refer to the \nRequire an API Key\n guide.\n\n\n\n\nRestore packages\n\n\nYou can restore packages by using the following package source:\n\n\nhttp://localhost:5000/v3/index.json\n\n\nSome helpful guides:\n\n\n\n\nVisual Studio\n\n\nNuGet.config\n\n\n\n\nSymbol server\n\n\nYou can load symbols by using the following symbol location:\n\n\nhttp://localhost:5000/api/download/symbols\n\n\nFor Visual Studio, please refer to the \nConfigure Debugging\n guide.", 
             "title": "AWS"
         }, 
         {
-            "location": "/quickstart/aws/#run-baget-on-aws", 
+            "location": "/installation/aws/#run-baget-on-aws", 
             "text": "Warning  This page is a work in progress!   Use Amazon Web Services to scale BaGet. You can store metadata on  Amazon RDS  and upload packages to  Amazon S3 .", 
             "title": "Run BaGet on AWS"
         }, 
         {
-            "location": "/quickstart/aws/#configure-baget", 
+            "location": "/installation/aws/#configure-baget", 
             "text": "You can modify BaGet's configurations by editing the  appsettings.json  file. For the full list of configurations, please refer to  BaGet's configuration  guide.", 
             "title": "Configure BaGet"
         }, 
         {
-            "location": "/quickstart/aws/#amazon-s3", 
+            "location": "/installation/aws/#amazon-s3", 
             "text": "Update the  appsettings.json  file:  { \n     ... \n\n     Storage :   { \n         Type :   AwsS3 , \n         Region :   us-west-1 , \n         Bucket :   foo , \n         AccessKey :   , \n         SecretKey :   \n     }, \n\n     ...  }", 
             "title": "Amazon S3"
         }, 
         {
-            "location": "/quickstart/aws/#amazon-rds", 
+            "location": "/installation/aws/#amazon-rds", 
             "text": "To use PostgreSQL, update the  appsettings.json  file:  { \n     ... \n\n     Database :   { \n         Type :   PostgreSql , \n         ConnectionString :   ... \n     }, \n\n     ...  }   To use MySQL, update the  appsettings.json  file:  { \n     ... \n\n     Database :   { \n         Type :   MySql , \n         ConnectionString :   ... \n     }, \n\n     ...  }", 
             "title": "Amazon RDS"
         }, 
         {
-            "location": "/quickstart/aws/#publish-packages", 
+            "location": "/installation/aws/#publish-packages", 
             "text": "Publish your first package with:  dotnet nuget push -s http://localhost:5000/v3/index.json package.1.0.0.nupkg  Publish your first  symbol package  with:  dotnet nuget push -s http://localhost:5000/v3/index.json symbol.package.1.0.0.snupkg   Warning  You should secure your server by requiring an API Key to publish packages. For more information, please refer to the  Require an API Key  guide.", 
-            "title": "Publish Packages"
+            "title": "Publish packages"
         }, 
         {
-            "location": "/quickstart/aws/#restore-packages", 
+            "location": "/installation/aws/#restore-packages", 
             "text": "You can restore packages by using the following package source:  http://localhost:5000/v3/index.json  Some helpful guides:   Visual Studio  NuGet.config", 
-            "title": "Restore Packages"
+            "title": "Restore packages"
         }, 
         {
-            "location": "/quickstart/aws/#symbol-server", 
+            "location": "/installation/aws/#symbol-server", 
             "text": "You can load symbols by using the following symbol location:  http://localhost:5000/api/download/symbols  For Visual Studio, please refer to the  Configure Debugging  guide.", 
-            "title": "Symbol Server"
+            "title": "Symbol server"
         }, 
         {
-            "location": "/quickstart/gcp/", 
+            "location": "/installation/gcp/", 
             "text": "Run BaGet on Google Cloud Platform\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nWe're open source and accept contributions!\n\nFork us on GitHub\n.\n\n\nBefore you begin, you should decide which \nAppEngine region\n\nyou will use. For best performance, Cloud Storage and Cloud SQL should be located\nin the same region as your AppEngine deployment.\n\n\nGoogle Cloud Storage\n\n\nPackages can be stored in \nGoogle Cloud Storage\n.\n\n\nSetup\n\n\nFollow the instructions in \nUsing Cloud Storage\n to create a bucket.\n\n\nConfiguration\n\n\nNOTE:\n If you plan to use AppEngine, skip this part and follow the AppEngine instructions below.\n\n\nSet up a service account and download credentials. Set the \nGOOGLE_APPLICATION_CREDENTIALS\n environment variable to the path to the JSON file you downloaded.\n\n\nConfigure BaGet to use Google Cloud Storage by updating the \nappsettings.json\n file:\n\n\n{\n\n    \n...\n\n\n    \nStorage\n:\n \n{\n\n        \nType\n:\n \nGoogleCloud\n,\n\n        \nBucketName\n:\n \nyour-gcs-bucket\n\n    \n},\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\nGoogle Cloud SQL\n\n\n\n\nFollow the instructions in \nUsing Cloud SQL\n to create a 2nd Gen MySQL 5.7 Google Cloud SQL instance. The default options should work well.\n\n\nCreate a database named \nbaget\n. This can be done through the Google Cloud Console. Use \nutf8mb4\n as the Character set.\n\n\nFollow \nConfiguring SSL/TLS\n to create a client certificate. Download the three files it creates.\n\n\nConvert the PEM to a PFX by running \nopenssl pkcs12 -inkey client-key.pem -in client-cert.pem -export -out client.pfx\n\n\nOne way to obtain OpenSSL on Windows is to install \nGit Bash\n.\n\n\nConfigure BaGet to use Google Cloud SQL by updating the \nappsettings.json\n file:\n\n\n\n\n{\n\n    \n...\n\n    \nDatabase\n:\n \n{\n\n        \nType\n:\n \nMySql\n,\n\n        \nConnectionString\n:\n \nServer=YOURIP;User Id=root;Password=***;Database=baget;CertificateFile=C:\\\\Path\\\\To\\\\client.pfx;CACertificateFile=C:\\\\Path\\\\To\\\\server-ca.pem;SSL Mode=VerifyCA\n\n    \n},\n\n    \n...\n\n\n}\n\n\n\n\n\n\n\n\nCreate the tables by running \ndotnet ef database update --context MySqlContext --project src\\BaGet\n\n\n\n\nGoogle AppEngine\n\n\nBaGet can be hosted in Google AppEngine. See \nhere\n\nfor a tutorial on how to create a new AppEngine project.\n\n\nCreate a \napp.yaml\n file to publish the Docker container built by the Dockerfile in this repo. In the template\nbelow, make the following replacements:\n\n\n\n\nPROJECT\n - your GCP project, as returned by \ngcloud config get-value project\n\n\nREGION\n -- the GCP region your Google Cloud SQL database is in, e.g., \nus-central1\n or \nus-west2\n\n\nDBINSTANCE\n -- the name of your Google Cloud SQL database instance\n\n\nDBNAME\n -- the name of the BaGet database on that instance (e.g., \nbaget\n in the instructions above)\n\n\nPASSWORD\n -- the password for the database root user\n\n\nBUCKETNAME\n -- the name of the Google Cloud Storage Bucket configured above\n\n\n\n\nruntime\n:\n \ncustom\n\n\nenv\n:\n \nflex\n\n\n\n# The settings below are to reduce costs during testing and are not necessarily\n\n\n# appropriate for production use. For more information, see:\n\n\n# https://cloud.google.com/appengine/docs/flexible/dotnet/configuring-your-app-with-app-yaml\n\n\nresources\n:\n\n  \ncpu\n:\n \n1\n\n  \nmemory_gb\n:\n \n0.5\n\n  \ndisk_size_gb\n:\n \n10\n\n\n\nbeta_settings\n:\n\n  \ncloud_sql_instances\n:\n \nPROJECT:REGION:DBINSTANCE\n\n\n\nenv_variables\n:\n\n  \nDatabase__Type\n:\n \nMySql\n\n  \nDatabase__ConnectionString\n:\n \nServer=/cloudsql/PROJECT:REGION:DBINSTANCE;User\n \nId=root;Password=PASSWORD;Database=DBNAME;SslMode=None\n\n  \nStorage__Type\n:\n \nGoogleCloud\n\n  \nStorage__BucketName\n:\n \nBUCKETNAME\n\n  \nSearch__Type\n:\n \nDatabase\n\n  \nASPNETCORE_URLS\n:\n \nhttp://0.0.0.0:8080\n\n\n\n\n\n\nTo publish the application, run \ngcloud app deploy\n.", 
-            "title": "Google Cloud"
+            "title": "Google cloud"
         }, 
         {
-            "location": "/quickstart/gcp/#run-baget-on-google-cloud-platform", 
+            "location": "/installation/gcp/#run-baget-on-google-cloud-platform", 
             "text": "Warning  This page is a work in progress!   We're open source and accept contributions! Fork us on GitHub .  Before you begin, you should decide which  AppEngine region \nyou will use. For best performance, Cloud Storage and Cloud SQL should be located\nin the same region as your AppEngine deployment.", 
             "title": "Run BaGet on Google Cloud Platform"
         }, 
         {
-            "location": "/quickstart/gcp/#google-cloud-storage", 
+            "location": "/installation/gcp/#google-cloud-storage", 
             "text": "Packages can be stored in  Google Cloud Storage .", 
             "title": "Google Cloud Storage"
         }, 
         {
-            "location": "/quickstart/gcp/#setup", 
+            "location": "/installation/gcp/#setup", 
             "text": "Follow the instructions in  Using Cloud Storage  to create a bucket.", 
             "title": "Setup"
         }, 
         {
-            "location": "/quickstart/gcp/#configuration", 
+            "location": "/installation/gcp/#configuration", 
             "text": "NOTE:  If you plan to use AppEngine, skip this part and follow the AppEngine instructions below.  Set up a service account and download credentials. Set the  GOOGLE_APPLICATION_CREDENTIALS  environment variable to the path to the JSON file you downloaded.  Configure BaGet to use Google Cloud Storage by updating the  appsettings.json  file:  { \n     ... \n\n     Storage :   { \n         Type :   GoogleCloud , \n         BucketName :   your-gcs-bucket \n     }, \n\n     ...  }", 
             "title": "Configuration"
         }, 
         {
-            "location": "/quickstart/gcp/#google-cloud-sql", 
+            "location": "/installation/gcp/#google-cloud-sql", 
             "text": "Follow the instructions in  Using Cloud SQL  to create a 2nd Gen MySQL 5.7 Google Cloud SQL instance. The default options should work well.  Create a database named  baget . This can be done through the Google Cloud Console. Use  utf8mb4  as the Character set.  Follow  Configuring SSL/TLS  to create a client certificate. Download the three files it creates.  Convert the PEM to a PFX by running  openssl pkcs12 -inkey client-key.pem -in client-cert.pem -export -out client.pfx  One way to obtain OpenSSL on Windows is to install  Git Bash .  Configure BaGet to use Google Cloud SQL by updating the  appsettings.json  file:   { \n     ... \n     Database :   { \n         Type :   MySql , \n         ConnectionString :   Server=YOURIP;User Id=root;Password=***;Database=baget;CertificateFile=C:\\\\Path\\\\To\\\\client.pfx;CACertificateFile=C:\\\\Path\\\\To\\\\server-ca.pem;SSL Mode=VerifyCA \n     }, \n     ...  }    Create the tables by running  dotnet ef database update --context MySqlContext --project src\\BaGet", 
             "title": "Google Cloud SQL"
         }, 
         {
-            "location": "/quickstart/gcp/#google-appengine", 
+            "location": "/installation/gcp/#google-appengine", 
             "text": "BaGet can be hosted in Google AppEngine. See  here \nfor a tutorial on how to create a new AppEngine project.  Create a  app.yaml  file to publish the Docker container built by the Dockerfile in this repo. In the template\nbelow, make the following replacements:   PROJECT  - your GCP project, as returned by  gcloud config get-value project  REGION  -- the GCP region your Google Cloud SQL database is in, e.g.,  us-central1  or  us-west2  DBINSTANCE  -- the name of your Google Cloud SQL database instance  DBNAME  -- the name of the BaGet database on that instance (e.g.,  baget  in the instructions above)  PASSWORD  -- the password for the database root user  BUCKETNAME  -- the name of the Google Cloud Storage Bucket configured above   runtime :   custom  env :   flex  # The settings below are to reduce costs during testing and are not necessarily  # appropriate for production use. For more information, see:  # https://cloud.google.com/appengine/docs/flexible/dotnet/configuring-your-app-with-app-yaml  resources : \n   cpu :   1 \n   memory_gb :   0.5 \n   disk_size_gb :   10  beta_settings : \n   cloud_sql_instances :   PROJECT:REGION:DBINSTANCE  env_variables : \n   Database__Type :   MySql \n   Database__ConnectionString :   Server=/cloudsql/PROJECT:REGION:DBINSTANCE;User   Id=root;Password=PASSWORD;Database=DBNAME;SslMode=None \n   Storage__Type :   GoogleCloud \n   Storage__BucketName :   BUCKETNAME \n   Search__Type :   Database \n   ASPNETCORE_URLS :   http://0.0.0.0:8080   To publish the application, run  gcloud app deploy .", 
             "title": "Google AppEngine"
         }, 
         {
-            "location": "/quickstart/iis-proxy/", 
-            "text": "Windows IIS Proxy\n\n\nWith a few extra steps you can run BaGet behind a Windows IIS proxy. This has many benefits, including automatic restarts on reboots.\n\n\nIIS Setup\n\n\n\n\nInstall the \n.NET Core Runtime\n on the web server.\n\n\nCopy the BaGet directory over to your hosting area such as \nC:\\Inetpub\\wwwroot\\BaGet\n\n\n\n\nUsing IIS Manager, create a new Application Pool:\n\n\n\n\nName = \nBaGetAppPool\n (can be whatever you want)\n\n\n.NET CLR version = No Managed Code\n\n\nManaged Pipeline Mode = Integrated\n\n\nStart application pool immediately = checked\n\n\n\n\n\n\n\n\nUsing IIS Manager, create a new web site:\n\n\n\n\nChoose your site name and physical path\n\n\nChoose \nBaGetAppPool\n as the application pool\n\n\nIn the Binding area, enter the default BaGet port of 5000\n\n\n\n\n\n\n\n\nBaGet Folder Permissions\n\n\nYou \nmay\n need to give special permissions to the top-level BaGet folder so that the app can persist its state. This is necessary as the Application Pools' identity is a virtual account that isn't recognized by the Windows User Management Console. For more information, please refer to ASP.NET Core's documentation:\n\n\n\n\nApplication Pools\n\n\nApplication Pool Identity\n\n\n\n\nAlternative Storage Path\n\n\n\n\nInfo\n\n\nVirtual Directories do not work with IIS and Kestrel. For more information, please refer to \nASP.NET Core's documentation\n.\n\n\n\n\nEnsure that the configuration's storage \nPath\n has the appropriate forward slashes:\n\n\n...\n\n  \nStorage\n:\n \n{\n\n    \nType\n:\n \nFileSystem\n,\n\n    \nPath\n:\n \nC://AnotherFolder/Packages\n\n  \n},\n\n\n...\n\n\n\n\n\n\nNote that you will need to adjust folder permissions if the \nPath\n is created outside of the BaGet top-level directory. See the \nBaGet Folder Permissions\n.\n\n\nIIS Server Options\n\n\nSettings such as the maximum package size can be configured for IIS in the appsettings.json file - see \nIIS Server Options\n.", 
-            "title": "Windows IIS Proxy"
+            "location": "/installation/iis-proxy/", 
+            "text": "Windows IIS Proxy\n\n\nWith a few extra steps you can run BaGet behind a Windows IIS proxy. This has many benefits, including automatic restarts on reboots.\n\n\nIIS setup\n\n\n\n\nInstall the \n.NET Core Runtime\n on the web server.\n\n\nCopy the BaGet directory over to your hosting area such as \nC:\\Inetpub\\wwwroot\\BaGet\n\n\n\n\nUsing IIS Manager, create a new Application Pool:\n\n\n\n\nName = \nBaGetAppPool\n (can be whatever you want)\n\n\n.NET CLR version = No Managed Code\n\n\nManaged Pipeline Mode = Integrated\n\n\nStart application pool immediately = checked\n\n\n\n\n\n\n\n\nUsing IIS Manager, create a new web site:\n\n\n\n\nChoose your site name and physical path\n\n\nChoose \nBaGetAppPool\n as the application pool\n\n\nIn the Binding area, enter the default BaGet port of 5000\n\n\n\n\n\n\n\n\nBaGet folder permissions\n\n\nYou \nmay\n need to give special permissions to the top-level BaGet folder so that the app can persist its state. This is necessary as the Application Pools' identity is a virtual account that isn't recognized by the Windows User Management Console. For more information, please refer to ASP.NET Core's documentation:\n\n\n\n\nApplication Pools\n\n\nApplication Pool Identity\n\n\n\n\nAlternative storage path\n\n\n\n\nInfo\n\n\nVirtual Directories do not work with IIS and Kestrel. For more information, please refer to \nASP.NET Core's documentation\n.\n\n\n\n\nEnsure that the configuration's storage \nPath\n has the appropriate forward slashes:\n\n\n...\n\n  \nStorage\n:\n \n{\n\n    \nType\n:\n \nFileSystem\n,\n\n    \nPath\n:\n \nC://AnotherFolder/Packages\n\n  \n},\n\n\n...\n\n\n\n\n\n\nNote that you will need to adjust folder permissions if the \nPath\n is created outside of the BaGet top-level directory. See the \nBaGet Folder Permissions\n.\n\n\nIIS server options\n\n\nSettings such as the maximum package size can be configured for IIS in the appsettings.json file - see \nIIS Server Options\n.", 
+            "title": "Windows IIS proxy"
         }, 
         {
-            "location": "/quickstart/iis-proxy/#windows-iis-proxy", 
+            "location": "/installation/iis-proxy/#windows-iis-proxy", 
             "text": "With a few extra steps you can run BaGet behind a Windows IIS proxy. This has many benefits, including automatic restarts on reboots.", 
             "title": "Windows IIS Proxy"
         }, 
         {
-            "location": "/quickstart/iis-proxy/#iis-setup", 
+            "location": "/installation/iis-proxy/#iis-setup", 
             "text": "Install the  .NET Core Runtime  on the web server.  Copy the BaGet directory over to your hosting area such as  C:\\Inetpub\\wwwroot\\BaGet   Using IIS Manager, create a new Application Pool:   Name =  BaGetAppPool  (can be whatever you want)  .NET CLR version = No Managed Code  Managed Pipeline Mode = Integrated  Start application pool immediately = checked     Using IIS Manager, create a new web site:   Choose your site name and physical path  Choose  BaGetAppPool  as the application pool  In the Binding area, enter the default BaGet port of 5000", 
-            "title": "IIS Setup"
+            "title": "IIS setup"
         }, 
         {
-            "location": "/quickstart/iis-proxy/#baget-folder-permissions", 
+            "location": "/installation/iis-proxy/#baget-folder-permissions", 
             "text": "You  may  need to give special permissions to the top-level BaGet folder so that the app can persist its state. This is necessary as the Application Pools' identity is a virtual account that isn't recognized by the Windows User Management Console. For more information, please refer to ASP.NET Core's documentation:   Application Pools  Application Pool Identity", 
-            "title": "BaGet Folder Permissions"
+            "title": "BaGet folder permissions"
         }, 
         {
-            "location": "/quickstart/iis-proxy/#alternative-storage-path", 
+            "location": "/installation/iis-proxy/#alternative-storage-path", 
             "text": "Info  Virtual Directories do not work with IIS and Kestrel. For more information, please refer to  ASP.NET Core's documentation .   Ensure that the configuration's storage  Path  has the appropriate forward slashes:  ... \n   Storage :   { \n     Type :   FileSystem , \n     Path :   C://AnotherFolder/Packages \n   },  ...   Note that you will need to adjust folder permissions if the  Path  is created outside of the BaGet top-level directory. See the  BaGet Folder Permissions .", 
-            "title": "Alternative Storage Path"
+            "title": "Alternative storage path"
         }, 
         {
-            "location": "/quickstart/iis-proxy/#iis-server-options", 
+            "location": "/installation/iis-proxy/#iis-server-options", 
             "text": "Settings such as the maximum package size can be configured for IIS in the appsettings.json file - see  IIS Server Options .", 
-            "title": "IIS Server Options"
+            "title": "IIS server options"
         }, 
         {
             "location": "/configuration/", 
-            "text": "Configuration\n\n\nYou can modify BaGet's configurations by editing the \nappsettings.json\n file.\n\n\nRequire an API Key\n\n\nYou can require that users provide a password, called an API Key, to publish packages.\nTo do so, you can insert the desired API key in the \nApiKey\n field.\n\n\n{\n\n    \nApiKey\n:\n \nNUGET-SERVER-API-KEY\n,\n\n    \n...\n\n\n}\n\n\n\n\n\n\nUsers will now have to provide the API key to push packages:\n\n\ndotnet\n \nnuget\n \npush\n \n-\ns\n \nhttp\n:\n//localhost:5000/v3/index.json -k NUGET-SERVER-API-KEY package.1.0.0.nupkg\n\n\n\n\n\n\nEnable Read-Through Caching\n\n\nRead-through caching lets you index packages from an upstream source. You can use read-through\ncaching to:\n\n\n\n\nSpeed up your builds if restores from \nnuget.org\n are slow\n\n\nEnable package restores in offline scenarios\n\n\n\n\nThe following \nMirror\n setting configures BaGet to index packages from \nnuget.org\n:\n\n\n{\n\n    \n...\n\n\n    \nMirror\n:\n \n{\n\n        \nEnabled\n:\n  \ntrue\n,\n\n        \nPackageSource\n:\n \nhttps://api.nuget.org/v3/index.json\n\n    \n},\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\n\n\nInfo\n\n\nPackageSource\n is the value of the \nNuGet service index\n.\n\n\n\n\nEnable Package Hard Deletions\n\n\nTo prevent the \n\"left pad\" problem\n,\nBaGet's default configuration doesn't allow package deletions. Whenever BaGet receives a package deletion\nrequest, it will instead \"unlist\" the package. An unlisted package is undiscoverable but can still be\ndownloaded if you know the package's id and version. You can override this behavior by setting the\n\nPackageDeletionBehavior\n:\n\n\n{\n\n    \n...\n\n\n    \nPackageDeletionBehavior\n:\n \nHardDelete\n,\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\nEnable Package Overwrites\n\n\nNormally, BaGet will reject a package upload if the id and version are already taken. You can configure BaGet\nto overwrite the already existing package by setting \nAllowPackageOverwrites\n:\n\n\n{\n\n    \n...\n\n\n    \nAllowPackageOverwrites\n:\n \ntrue\n,\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\nPrivate Feeds\n\n\nA private feed requires users to authenticate before accessing packages.\n\n\n\n\nWarning\n\n\nPrivate feeds are not supported at this time! See \nthis pull request\n for more information.\n\n\n\n\nDatabase Configuration\n\n\nBaGet supports multiple database engines for storing package information:\n\n\n\n\nMySQL: \nMySql\n\n\nSQLite: \nSqlite\n\n\nSQL Server: \nSqlServer\n\n\nPostgreSQL: \nPostgreSql\n\n\nAzure Table Storage: \nAzureTable\n\n\n\n\nEach database engine requires a connection string to configure the connection. Please refer to \nConnectionStrings.com\n to learn how to create the proper connection string for each database engine.\n\n\nYou may configure the chosen database engine either using environment variables or by editing the \nappsettings.json\n file.\n\n\nEnvironment Variables\n\n\nThere are two environment variables related to database configuration. These are:\n\n\n\n\nDatabase__Type\n: The database engine to use, this should be one of the strings from the above list such as \nPostgreSql\n or \nSqlite\n.\n\n\nDatabase__ConnectionString\n: The connection string for your database engine.\n\n\n\n\nappsettings.json\n\n\nThe database settings are located under the \nDatabase\n key in the \nappsettings.json\n configuration file:\n\n\n{\n\n    \n...\n\n\n    \nDatabase\n:\n \n{\n\n        \nType\n:\n \nSqlite\n,\n\n        \nConnectionString\n:\n \nData Source=baget.db\n\n    \n},\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\nThere are two settings related to the database configuration:\n\n\n\n\nType\n: The database engine to use, this should be one of the strings from the above list such as \nPostgreSql\n or \nSqlite\n.\n\n\nConnectionString\n: The connection string for your database engine.\n\n\n\n\nIIS Server Options\n\n\nIIS Server options can be configured under the \nIISServerOptions\n key. The available options are detailed at \ndocs.microsoft.com\n\nNote: If not specified, the MaxRequestBodySize in BaGet defaults to 250MB (262144000 bytes), rather than the ASP.NET Core default of 30MB\n\n\n{\n\n    \n...\n\n\n    \nIISServerOptions\n:\n \n{\n\n        \nMaxRequestBodySize\n:\n \n262144000\n\n    \n},\n\n\n    \n...\n\n\n}", 
+            "text": "Configuration\n\n\nYou can modify BaGet's configurations by editing the \nappsettings.json\n file.\n\n\nRequire an API key\n\n\nYou can require that users provide a password, called an API key, to publish packages.\nTo do so, you can insert the desired API key in the \nApiKey\n field.\n\n\n{\n\n    \nApiKey\n:\n \nNUGET-SERVER-API-KEY\n,\n\n    \n...\n\n\n}\n\n\n\n\n\n\nUsers will now have to provide the API key to push packages:\n\n\ndotnet\n \nnuget\n \npush\n \n-\ns\n \nhttp\n:\n//localhost:5000/v3/index.json -k NUGET-SERVER-API-KEY package.1.0.0.nupkg\n\n\n\n\n\n\nEnable read-through caching\n\n\nRead-through caching lets you index packages from an upstream source. You can use read-through\ncaching to:\n\n\n\n\nSpeed up your builds if restores from \nnuget.org\n are slow\n\n\nEnable package restores in offline scenarios\n\n\n\n\nThe following \nMirror\n setting configures BaGet to index packages from \nnuget.org\n:\n\n\n{\n\n    \n...\n\n\n    \nMirror\n:\n \n{\n\n        \nEnabled\n:\n  \ntrue\n,\n\n        \nPackageSource\n:\n \nhttps://api.nuget.org/v3/index.json\n\n    \n},\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\n\n\nInfo\n\n\nPackageSource\n is the value of the \nNuGet service index\n.\n\n\n\n\nEnable package hard deletions\n\n\nTo prevent the \n\"left pad\" problem\n,\nBaGet's default configuration doesn't allow package deletions. Whenever BaGet receives a package deletion\nrequest, it will instead \"unlist\" the package. An unlisted package is undiscoverable but can still be\ndownloaded if you know the package's id and version. You can override this behavior by setting the\n\nPackageDeletionBehavior\n:\n\n\n{\n\n    \n...\n\n\n    \nPackageDeletionBehavior\n:\n \nHardDelete\n,\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\nEnable package overwrites\n\n\nNormally, BaGet will reject a package upload if the id and version are already taken. You can configure BaGet\nto overwrite the already existing package by setting \nAllowPackageOverwrites\n:\n\n\n{\n\n    \n...\n\n\n    \nAllowPackageOverwrites\n:\n \ntrue\n,\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\nPrivate feeds\n\n\nA private feed requires users to authenticate before accessing packages.\n\n\n\n\nWarning\n\n\nPrivate feeds are not supported at this time! See \nthis pull request\n for more information.\n\n\n\n\nDatabase configuration\n\n\nBaGet supports multiple database engines for storing package information:\n\n\n\n\nMySQL: \nMySql\n\n\nSQLite: \nSqlite\n\n\nSQL Server: \nSqlServer\n\n\nPostgreSQL: \nPostgreSql\n\n\nAzure Table Storage: \nAzureTable\n\n\n\n\nEach database engine requires a connection string to configure the connection. Please refer to \nConnectionStrings.com\n to learn how to create the proper connection string for each database engine.\n\n\nYou may configure the chosen database engine either using environment variables or by editing the \nappsettings.json\n file.\n\n\nEnvironment Variables\n\n\nThere are two environment variables related to database configuration. These are:\n\n\n\n\nDatabase__Type\n: The database engine to use, this should be one of the strings from the above list such as \nPostgreSql\n or \nSqlite\n.\n\n\nDatabase__ConnectionString\n: The connection string for your database engine.\n\n\n\n\nappsettings.json\n\n\nThe database settings are located under the \nDatabase\n key in the \nappsettings.json\n configuration file:\n\n\n{\n\n    \n...\n\n\n    \nDatabase\n:\n \n{\n\n        \nType\n:\n \nSqlite\n,\n\n        \nConnectionString\n:\n \nData Source=baget.db\n\n    \n},\n\n\n    \n...\n\n\n}\n\n\n\n\n\n\nThere are two settings related to the database configuration:\n\n\n\n\nType\n: The database engine to use, this should be one of the strings from the above list such as \nPostgreSql\n or \nSqlite\n.\n\n\nConnectionString\n: The connection string for your database engine.\n\n\n\n\nIIS server options\n\n\nIIS Server options can be configured under the \nIISServerOptions\n key. The available options are detailed at \ndocs.microsoft.com\n\nNote: If not specified, the MaxRequestBodySize in BaGet defaults to 250MB (262144000 bytes), rather than the ASP.NET Core default of 30MB\n\n\n{\n\n    \n...\n\n\n    \nIISServerOptions\n:\n \n{\n\n        \nMaxRequestBodySize\n:\n \n262144000\n\n    \n},\n\n\n    \n...\n\n\n}", 
             "title": "Configuration"
         }, 
         {
@@ -262,33 +262,33 @@
         }, 
         {
             "location": "/configuration/#require-an-api-key", 
-            "text": "You can require that users provide a password, called an API Key, to publish packages.\nTo do so, you can insert the desired API key in the  ApiKey  field.  { \n     ApiKey :   NUGET-SERVER-API-KEY , \n     ...  }   Users will now have to provide the API key to push packages:  dotnet   nuget   push   - s   http : //localhost:5000/v3/index.json -k NUGET-SERVER-API-KEY package.1.0.0.nupkg", 
-            "title": "Require an API Key"
+            "text": "You can require that users provide a password, called an API key, to publish packages.\nTo do so, you can insert the desired API key in the  ApiKey  field.  { \n     ApiKey :   NUGET-SERVER-API-KEY , \n     ...  }   Users will now have to provide the API key to push packages:  dotnet   nuget   push   - s   http : //localhost:5000/v3/index.json -k NUGET-SERVER-API-KEY package.1.0.0.nupkg", 
+            "title": "Require an API key"
         }, 
         {
             "location": "/configuration/#enable-read-through-caching", 
             "text": "Read-through caching lets you index packages from an upstream source. You can use read-through\ncaching to:   Speed up your builds if restores from  nuget.org  are slow  Enable package restores in offline scenarios   The following  Mirror  setting configures BaGet to index packages from  nuget.org :  { \n     ... \n\n     Mirror :   { \n         Enabled :    true , \n         PackageSource :   https://api.nuget.org/v3/index.json \n     }, \n\n     ...  }    Info  PackageSource  is the value of the  NuGet service index .", 
-            "title": "Enable Read-Through Caching"
+            "title": "Enable read-through caching"
         }, 
         {
             "location": "/configuration/#enable-package-hard-deletions", 
             "text": "To prevent the  \"left pad\" problem ,\nBaGet's default configuration doesn't allow package deletions. Whenever BaGet receives a package deletion\nrequest, it will instead \"unlist\" the package. An unlisted package is undiscoverable but can still be\ndownloaded if you know the package's id and version. You can override this behavior by setting the PackageDeletionBehavior :  { \n     ... \n\n     PackageDeletionBehavior :   HardDelete , \n\n     ...  }", 
-            "title": "Enable Package Hard Deletions"
+            "title": "Enable package hard deletions"
         }, 
         {
             "location": "/configuration/#enable-package-overwrites", 
             "text": "Normally, BaGet will reject a package upload if the id and version are already taken. You can configure BaGet\nto overwrite the already existing package by setting  AllowPackageOverwrites :  { \n     ... \n\n     AllowPackageOverwrites :   true , \n\n     ...  }", 
-            "title": "Enable Package Overwrites"
+            "title": "Enable package overwrites"
         }, 
         {
             "location": "/configuration/#private-feeds", 
             "text": "A private feed requires users to authenticate before accessing packages.   Warning  Private feeds are not supported at this time! See  this pull request  for more information.", 
-            "title": "Private Feeds"
+            "title": "Private feeds"
         }, 
         {
             "location": "/configuration/#database-configuration", 
             "text": "BaGet supports multiple database engines for storing package information:   MySQL:  MySql  SQLite:  Sqlite  SQL Server:  SqlServer  PostgreSQL:  PostgreSql  Azure Table Storage:  AzureTable   Each database engine requires a connection string to configure the connection. Please refer to  ConnectionStrings.com  to learn how to create the proper connection string for each database engine.  You may configure the chosen database engine either using environment variables or by editing the  appsettings.json  file.", 
-            "title": "Database Configuration"
+            "title": "Database configuration"
         }, 
         {
             "location": "/configuration/#environment-variables", 
@@ -303,77 +303,107 @@
         {
             "location": "/configuration/#iis-server-options", 
             "text": "IIS Server options can be configured under the  IISServerOptions  key. The available options are detailed at  docs.microsoft.com \nNote: If not specified, the MaxRequestBodySize in BaGet defaults to 250MB (262144000 bytes), rather than the ASP.NET Core default of 30MB  { \n     ... \n\n     IISServerOptions :   { \n         MaxRequestBodySize :   262144000 \n     }, \n\n     ...  }", 
-            "title": "IIS Server Options"
+            "title": "IIS server options"
         }, 
         {
-            "location": "/tools/mirroring/", 
-            "text": "Mirroring nuget.org\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nImporting package downloads from nuget.org\n\n\nYou can import package downloads from nuget.org:\n\n\n\n\nNavigate to \n.\\BaGet\\src\\BaGet\n\n\nRun:\n\n\n\n\ndotnet run -- import-downloads\n\n\n\n\n\nIndexing nuget.org\n\n\n\n\nTODO Check-in code\n\n\nExplain scaling\n\n\nRebuild indexes at end\n\n\nImporting downloads from nuget.org", 
+            "location": "/import/local-feeds/", 
+            "text": "Import packages from a local feed\n\n\nLocal feeds\n let you use a folder as a NuGet package source.\n\n\n\n\nInfo\n\n\nPlease refer to the \nBaGet vs local feeds\n page for reasons to upgrade to BaGet.\n\n\n\n\nSteps\n\n\nMake sure that you've installed \nnuget.exe\n. In PowerShell, run:\n\n\n$source\n \n=\n \nC:\\path\\to\\local\\feed\n\n\n$destination\n \n=\n \nhttp://localhost:5000/v3/index.json\n\n\n\n\n\n\nIf you've \nconfigured BaGet to require an API Key\n, set it using \nthe \nsetapikey\n command\n:\n\n\n \nnuget\n.\nexe\n \nsetapikey\n \nMY-API-KEY\n \n-Source\n \n$destination\n\n\n\n\n\n\nNow run the following PowerShell script:\n\n\n$packages\n \n=\n \nnuget\n \nlist\n \n-AllVersions\n \n-Source\n \n$source\n\n\n\n$packages\n \n|\n \n%\n \n{\n\n  \n$id\n,\n \n$version\n \n=\n \n$_\n \n-Split\n \n \n\n  \n$nupkg\n \n=\n \n$id\n \n+\n \n.\n \n+\n \n$version\n \n+\n \n.nupkg\n\n  \n$path\n \n=\n \n[IO.Path]\n::\nCombine\n(\n$source\n,\n \n$id\n,\n \n$version\n,\n \n$nupkg\n)\n\n\n  \nWrite-Host\n \nnuget.exe push -Source $destination \n$path\n\n  \n \nnuget\n.\nexe\n \npush\n \n-Source\n \n$destination\n \n$path\n\n\n}", 
+            "title": "Local feeds"
+        }, 
+        {
+            "location": "/import/local-feeds/#import-packages-from-a-local-feed", 
+            "text": "Local feeds  let you use a folder as a NuGet package source.   Info  Please refer to the  BaGet vs local feeds  page for reasons to upgrade to BaGet.", 
+            "title": "Import packages from a local feed"
+        }, 
+        {
+            "location": "/import/local-feeds/#steps", 
+            "text": "Make sure that you've installed  nuget.exe . In PowerShell, run:  $source   =   C:\\path\\to\\local\\feed  $destination   =   http://localhost:5000/v3/index.json   If you've  configured BaGet to require an API Key , set it using  the  setapikey  command :    nuget . exe   setapikey   MY-API-KEY   -Source   $destination   Now run the following PowerShell script:  $packages   =   nuget   list   -AllVersions   -Source   $source  $packages   |   %   { \n   $id ,   $version   =   $_   -Split     \n   $nupkg   =   $id   +   .   +   $version   +   .nupkg \n   $path   =   [IO.Path] :: Combine ( $source ,   $id ,   $version ,   $nupkg ) \n\n   Write-Host   nuget.exe push -Source $destination  $path \n     nuget . exe   push   -Source   $destination   $path  }", 
+            "title": "Steps"
+        }, 
+        {
+            "location": "/import/nugetserver/", 
+            "text": "Import NuGet.Server packages\n\n\nNuGet.Server\n is a lightweight standalone NuGet server. It is strongly recommended that you upgrade to BaGet if you use NuGet.Server. Feel free to open a \nGitHub issue\n if you need help migrating.\n\n\n\n\nInfo\n\n\nPlease refer to the \nBaGet vs NuGet.Server\n page for reasons to upgrade to BaGet.\n\n\n\n\nSteps\n\n\nMake sure that you've installed \nnuget.exe\n. In PowerShell, run:\n\n\n$source\n \n=\n \nNuGet.Server package source\n\n\n$destination\n \n=\n \nBaGet package source\n\n\n\n\n\n\nIf you've \nconfigured BaGet to require an API Key\n, set it using \nthe \nsetapikey\n command\n:\n\n\n \nnuget\n.\nexe\n \nsetapikey\n \nMY-API-KEY\n \n-Source\n \n$destination\n\n\n\n\n\n\nNow run the following PowerShell script:\n\n\nif\n \n(!(\nTest-Path\n \nWeb.config\n))\n \n{\n\n  \nthrow\n \nPlease run this script in the same directory as NuGet.Server\ns Web.config file\n\n\n}\n\n\n\n(\n \nnuget\n.\nexe\n \nlist\n \n-AllVersions\n \n-Source\n \n$source\n).\nSplit\n(\n[Environment]\n::\nNewLine\n)\n \n|\n \n%\n \n{\n\n  \n$id\n \n=\n \n$_\n.\nSplit\n(\n \n)[\n0\n].\nTrim\n()\n\n  \n$version\n \n=\n \n$_\n.\nSplit\n(\n \n)[\n1\n].\nTrim\n()\n\n\n  \n$path\n \n=\n \n[IO.Path]\n::\nCombine\n(\nPackages\n,\n \n$id\n,\n \n$version\n,\n \n${id}.${version}.nupkg\n)\n\n\n  \nWrite-Host\n \nnuget.exe push -Source $destination \n$path\n\n  \n \nnuget\n.\nexe\n \npush\n \n-Source\n \n$destination\n \n$path\n\n\n}", 
+            "title": "NuGet.Server"
+        }, 
+        {
+            "location": "/import/nugetserver/#import-nugetserver-packages", 
+            "text": "NuGet.Server  is a lightweight standalone NuGet server. It is strongly recommended that you upgrade to BaGet if you use NuGet.Server. Feel free to open a  GitHub issue  if you need help migrating.   Info  Please refer to the  BaGet vs NuGet.Server  page for reasons to upgrade to BaGet.", 
+            "title": "Import NuGet.Server packages"
+        }, 
+        {
+            "location": "/import/nugetserver/#steps", 
+            "text": "Make sure that you've installed  nuget.exe . In PowerShell, run:  $source   =   NuGet.Server package source  $destination   =   BaGet package source   If you've  configured BaGet to require an API Key , set it using  the  setapikey  command :    nuget . exe   setapikey   MY-API-KEY   -Source   $destination   Now run the following PowerShell script:  if   (!( Test-Path   Web.config ))   { \n   throw   Please run this script in the same directory as NuGet.Server s Web.config file  }  (   nuget . exe   list   -AllVersions   -Source   $source ). Split ( [Environment] :: NewLine )   |   %   { \n   $id   =   $_ . Split (   )[ 0 ]. Trim () \n   $version   =   $_ . Split (   )[ 1 ]. Trim () \n\n   $path   =   [IO.Path] :: Combine ( Packages ,   $id ,   $version ,   ${id}.${version}.nupkg ) \n\n   Write-Host   nuget.exe push -Source $destination  $path \n     nuget . exe   push   -Source   $destination   $path  }", 
+            "title": "Steps"
+        }, 
+        {
+            "location": "/import/nugetorg/", 
+            "text": "Import nuget.org packages\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nMirroring\n\n\nYou can configure BaGet to mirror nuget.org. For example, say you install BaGet, enable mirroring, and try to install the package\n\nNewtonsoft.Json\n. BaGet doesn't have this package yet, so it will\nautomatically index this package from nuget.org. This is also known as \"read-through caching\".\n\n\nFor more information, please see \nEnable read-through caching\n.\n\n\nImporting package downloads from nuget.org\n\n\nYou can import package downloads from nuget.org:\n\n\n\n\nNavigate to \n.\\BaGet\\src\\BaGet\n\n\nRun:\n\n\n\n\ndotnet run -- import-downloads\n\n\n\n\n\nImporting all nuget.org packages\n\n\n\n\nTODO Check-in code\n\n\nExplain scaling\n\n\nRebuild indexes at end\n\n\nImporting downloads from nuget.org", 
+            "title": "NuGet.org"
+        }, 
+        {
+            "location": "/import/nugetorg/#import-nugetorg-packages", 
+            "text": "Warning  This page is a work in progress!", 
+            "title": "Import nuget.org packages"
+        }, 
+        {
+            "location": "/import/nugetorg/#mirroring", 
+            "text": "You can configure BaGet to mirror nuget.org. For example, say you install BaGet, enable mirroring, and try to install the package Newtonsoft.Json . BaGet doesn't have this package yet, so it will\nautomatically index this package from nuget.org. This is also known as \"read-through caching\".  For more information, please see  Enable read-through caching .", 
             "title": "Mirroring"
         }, 
         {
-            "location": "/tools/mirroring/#mirroring-nugetorg", 
-            "text": "Warning  This page is a work in progress!", 
-            "title": "Mirroring nuget.org"
-        }, 
-        {
-            "location": "/tools/mirroring/#importing-package-downloads-from-nugetorg", 
+            "location": "/import/nugetorg/#importing-package-downloads-from-nugetorg", 
             "text": "You can import package downloads from nuget.org:   Navigate to  .\\BaGet\\src\\BaGet  Run:   dotnet run -- import-downloads", 
             "title": "Importing package downloads from nuget.org"
         }, 
         {
-            "location": "/tools/mirroring/#indexing-nugetorg", 
+            "location": "/import/nugetorg/#importing-all-nugetorg-packages", 
             "text": "TODO Check-in code  Explain scaling  Rebuild indexes at end  Importing downloads from nuget.org", 
-            "title": "Indexing nuget.org"
+            "title": "Importing all nuget.org packages"
         }, 
         {
-            "location": "/tools/sdk/", 
+            "location": "/advanced/debugging/", 
+            "text": "Debugging BaGet\n\n\n\n\nWarning\n\n\nThis page is a work in progress!", 
+            "title": "Debugging"
+        }, 
+        {
+            "location": "/advanced/debugging/#debugging-baget", 
+            "text": "Warning  This page is a work in progress!", 
+            "title": "Debugging BaGet"
+        }, 
+        {
+            "location": "/advanced/sdk/", 
             "text": "BaGet SDK\n\n\nYou can use BaGet's \nBaGet.Protocol\n package to interact with a NuGet server.\n\n\nGetting Started\n\n\nInstall the \nBaGet.Protocol\n package:\n\n\ndotnet add package BaGet.Protocol\n\n\n\n\n\nList Package Versions\n\n\nFind all versions of the \nNewtonsoft.Json\n package:\n\n\nNuGetClient\n \nclient\n \n=\n \nnew\n \nNuGetClient\n(\nhttps://api.nuget.org/v3/index.json\n);\n\n\n\nIReadOnlyList\nNuGetVersion\n \nversions\n \n=\n \nawait\n \nclient\n.\nListPackageVersionsAsync\n(\nNewtonsoft.Json\n);\n\n\n\nforeach\n \n(\nNuGetVersion\n \nversion\n \nin\n \nversions\n)\n\n\n{\n\n    \nConsole\n.\nWriteLine\n(\n$\nFound version: {version}\n);\n\n\n}\n\n\n\n\n\n\nDownload a package\n\n\nNuGetClient\n \nclient\n \n=\n \nnew\n \nNuGetClient\n(\nhttps://api.nuget.org/v3/index.json\n);\n\n\n\nstring\n \npackageId\n \n=\n \nNewtonsoft.Json\n;\n\n\nNuGetVersion\n \npackageVersion\n \n=\n \nnew\n \nNuGetVersion\n(\n12.0.1\n);\n\n\n\nusing\n \n(\nStream\n \npackageStream\n \n=\n \nawait\n \nclient\n.\nDownloadPackageAsync\n(\npackageId\n,\n \npackageVersion\n))\n\n\n{\n\n    \nConsole\n.\nWriteLine\n(\n$\nDownloaded package {packageId} {packageVersion}\n);\n\n\n}\n\n\n\n\n\n\nFind Package Metadata\n\n\nNuGetClient\n \nclient\n \n=\n \nnew\n \nNuGetClient\n(\nhttps://api.nuget.org/v3/index.json\n);\n\n\n\n// Find the metadata for all versions of a package.\n\n\nIReadOnlyList\nPackageMetadata\n \nitems\n \n=\n \nawait\n \nclient\n.\nGetPackageMetadataAsync\n(\nNewtonsoft.Json\n);\n\n\nif\n \n(!\nitems\n.\nAny\n())\n\n\n{\n\n    \nConsole\n.\nWriteLine\n(\n$\nPackage \nNewtonsoft.Json\n does not exist\n);\n\n    \nreturn\n;\n\n\n}\n\n\n\nforeach\n \n(\nvar\n \nmetadata\n \nin\n \nitems\n)\n\n\n{\n\n    \nConsole\n.\nWriteLine\n(\n$\nVersion: {metadata.Version}\n);\n\n    \nConsole\n.\nWriteLine\n(\n$\nListed: {metadata.Listed}\n);\n\n    \nConsole\n.\nWriteLine\n(\n$\nTags: {metadata.Tags}\n);\n\n    \nConsole\n.\nWriteLine\n(\n$\nDescription: {metadata.Description}\n);\n\n\n}\n\n\n\n// Or, find the metadata for a single version of a package.\n\n\nstring\n \npackageId\n \n=\n \nNewtonsoft.Json\n\n\nNuGetVersion\n \npackageVersion\n \n=\n \nnew\n \nNuGetVersion\n(\n12.0.1\n);\n\n\n\nPackageMetadata\n \nmetadata\n \n=\n \nawait\n \nclient\n.\nGetPackageMetadataAsync\n(\npackageId\n,\n \npackageVersion\n);\n\n\n\nConsole\n.\nWriteLine\n(\n$\nListed: {metadata.Listed}\n);\n\n\nConsole\n.\nWriteLine\n(\n$\nTags: {metadata.Tags}\n);\n\n\nConsole\n.\nWriteLine\n(\n$\nDescription: {metadata.Description}\n);\n\n\n\n\n\n\nSearch for packages\n\n\nSearch for \"json\" packages:\n\n\nNuGetClient\n \nclient\n \n=\n \nnew\n \nNuGetClient\n(\nhttps://api.nuget.org/v3/index.json\n);\n\n\nIReadOnlyList\nSearchResult\n \nresults\n \n=\n \nawait\n \nclient\n.\nSearchAsync\n(\njson\n);\n\n\n\nforeach\n \n(\nSearchResult\n \nresult\n \nin\n \nresults\n)\n\n\n{\n\n    \nConsole\n.\nWriteLine\n(\n$\nFound package {result.PackageId} {searchResult.Version}\n);\n\n\n}", 
             "title": "BaGet SDK"
         }, 
         {
-            "location": "/tools/sdk/#baget-sdk", 
+            "location": "/advanced/sdk/#baget-sdk", 
             "text": "You can use BaGet's  BaGet.Protocol  package to interact with a NuGet server.", 
             "title": "BaGet SDK"
         }, 
         {
-            "location": "/tools/sdk/#getting-started", 
+            "location": "/advanced/sdk/#getting-started", 
             "text": "Install the  BaGet.Protocol  package:  dotnet add package BaGet.Protocol", 
             "title": "Getting Started"
         }, 
         {
-            "location": "/tools/sdk/#list-package-versions", 
+            "location": "/advanced/sdk/#list-package-versions", 
             "text": "Find all versions of the  Newtonsoft.Json  package:  NuGetClient   client   =   new   NuGetClient ( https://api.nuget.org/v3/index.json );  IReadOnlyList NuGetVersion   versions   =   await   client . ListPackageVersionsAsync ( Newtonsoft.Json );  foreach   ( NuGetVersion   version   in   versions )  { \n     Console . WriteLine ( $ Found version: {version} );  }", 
             "title": "List Package Versions"
         }, 
         {
-            "location": "/tools/sdk/#download-a-package", 
+            "location": "/advanced/sdk/#download-a-package", 
             "text": "NuGetClient   client   =   new   NuGetClient ( https://api.nuget.org/v3/index.json );  string   packageId   =   Newtonsoft.Json ;  NuGetVersion   packageVersion   =   new   NuGetVersion ( 12.0.1 );  using   ( Stream   packageStream   =   await   client . DownloadPackageAsync ( packageId ,   packageVersion ))  { \n     Console . WriteLine ( $ Downloaded package {packageId} {packageVersion} );  }", 
             "title": "Download a package"
         }, 
         {
-            "location": "/tools/sdk/#find-package-metadata", 
+            "location": "/advanced/sdk/#find-package-metadata", 
             "text": "NuGetClient   client   =   new   NuGetClient ( https://api.nuget.org/v3/index.json );  // Find the metadata for all versions of a package.  IReadOnlyList PackageMetadata   items   =   await   client . GetPackageMetadataAsync ( Newtonsoft.Json );  if   (! items . Any ())  { \n     Console . WriteLine ( $ Package  Newtonsoft.Json  does not exist ); \n     return ;  }  foreach   ( var   metadata   in   items )  { \n     Console . WriteLine ( $ Version: {metadata.Version} ); \n     Console . WriteLine ( $ Listed: {metadata.Listed} ); \n     Console . WriteLine ( $ Tags: {metadata.Tags} ); \n     Console . WriteLine ( $ Description: {metadata.Description} );  }  // Or, find the metadata for a single version of a package.  string   packageId   =   Newtonsoft.Json  NuGetVersion   packageVersion   =   new   NuGetVersion ( 12.0.1 );  PackageMetadata   metadata   =   await   client . GetPackageMetadataAsync ( packageId ,   packageVersion );  Console . WriteLine ( $ Listed: {metadata.Listed} );  Console . WriteLine ( $ Tags: {metadata.Tags} );  Console . WriteLine ( $ Description: {metadata.Description} );", 
             "title": "Find Package Metadata"
         }, 
         {
-            "location": "/tools/sdk/#search-for-packages", 
+            "location": "/advanced/sdk/#search-for-packages", 
             "text": "Search for \"json\" packages:  NuGetClient   client   =   new   NuGetClient ( https://api.nuget.org/v3/index.json );  IReadOnlyList SearchResult   results   =   await   client . SearchAsync ( json );  foreach   ( SearchResult   result   in   results )  { \n     Console . WriteLine ( $ Found package {result.PackageId} {searchResult.Version} );  }", 
             "title": "Search for packages"
-        }, 
-        {
-            "location": "/tools/migrate/", 
-            "text": "Migrate from NuGet.Server\n\n\nNuGet.Server\n is a lightweight standalone NuGet server. It is strongly recommended that you upgrade to BaGet if you use NuGet.Server. Feel free to open a \nGitHub issue\n if you need help migrating.\n\n\n\n\nInfo\n\n\nPlease refer to the \nBaGet vs NuGet.Server\n page for reasons to upgrade to BaGet.\n\n\n\n\nSteps\n\n\nMake sure that you've installed \nnuget.exe\n. In PowerShell, run:\n\n\n$source\n \n=\n \nNuGet.Server package source\n\n\n$destination\n \n=\n \nBaGet package source\n\n\n\n\n\n\nIf you've \nconfigured BaGet to require an API Key\n, set it using \nthe \nsetapikey\n command\n:\n\n\n \nnuget\n.\nexe\n \nsetapikey\n \nNUGET-SERVER-API-KEY\n \n-Source\n \n$destination\n\n\n\n\n\n\nNow run the following PowerShell script:\n\n\nif\n \n(!(\nTest-Path\n \nWeb.config\n))\n \n{\n\n  \nthrow\n \nPlease run this script in the same directory as NuGet.Server\ns Web.config file\n\n\n}\n\n\n\n(\n \nnuget\n.\nexe\n \nlist\n \n-AllVersions\n \n-Source\n \n$source\n).\nSplit\n(\n[Environment]\n::\nNewLine\n)\n \n|\n \n%\n \n{\n\n  \n$id\n \n=\n \n$_\n.\nSplit\n(\n \n)[\n0\n].\nTrim\n()\n\n  \n$version\n \n=\n \n$_\n.\nSplit\n(\n \n)[\n1\n].\nTrim\n()\n\n\n  \n$path\n \n=\n \n[IO.Path]\n::\nCombine\n(\nPackages\n,\n \n$id\n,\n \n$version\n,\n \n${id}.${version}.nupkg\n)\n\n\n  \nWrite-Host\n \nnuget.exe push -Source $destination \n$path\n\n  \n \nnuget\n.\nexe\n \npush\n \n-Source\n \n$destination\n \n$path\n\n\n}", 
-            "title": "Migrate from NuGet.Server"
-        }, 
-        {
-            "location": "/tools/migrate/#migrate-from-nugetserver", 
-            "text": "NuGet.Server  is a lightweight standalone NuGet server. It is strongly recommended that you upgrade to BaGet if you use NuGet.Server. Feel free to open a  GitHub issue  if you need help migrating.   Info  Please refer to the  BaGet vs NuGet.Server  page for reasons to upgrade to BaGet.", 
-            "title": "Migrate from NuGet.Server"
-        }, 
-        {
-            "location": "/tools/migrate/#steps", 
-            "text": "Make sure that you've installed  nuget.exe . In PowerShell, run:  $source   =   NuGet.Server package source  $destination   =   BaGet package source   If you've  configured BaGet to require an API Key , set it using  the  setapikey  command :    nuget . exe   setapikey   NUGET-SERVER-API-KEY   -Source   $destination   Now run the following PowerShell script:  if   (!( Test-Path   Web.config ))   { \n   throw   Please run this script in the same directory as NuGet.Server s Web.config file  }  (   nuget . exe   list   -AllVersions   -Source   $source ). Split ( [Environment] :: NewLine )   |   %   { \n   $id   =   $_ . Split (   )[ 0 ]. Trim () \n   $version   =   $_ . Split (   )[ 1 ]. Trim () \n\n   $path   =   [IO.Path] :: Combine ( Packages ,   $id ,   $version ,   ${id}.${version}.nupkg ) \n\n   Write-Host   nuget.exe push -Source $destination  $path \n     nuget . exe   push   -Source   $destination   $path  }", 
-            "title": "Steps"
         }, 
         {
             "location": "/vs/nugetorg/", 
@@ -404,6 +434,21 @@
             "location": "/vs/nugetserver/#migration-guide", 
             "text": "You can use the  NuGet.Server migration  guide to import your NuGet.Server packages into BaGet.", 
             "title": "Migration Guide"
+        }, 
+        {
+            "location": "/vs/local-feeds/", 
+            "text": "Local Feeds\n\n\n\n\nWarning\n\n\nThis page is a work in progress!\n\n\n\n\nLocal feeds\n, also known as \"folder feeds\", let you\nuse a folder as a NuGet package source. You can access these packages using a network share.\n\n\nBaGet vs local feeds\n\n\nLocal feeds are very simple and are lack features like:\n\n\n\n\nSearch functionality\n\n\nA user interface to browse your packages\n\n\nAuthentication for package uploads\n\n\nCloud storage for large feeds", 
+            "title": "Local feeds"
+        }, 
+        {
+            "location": "/vs/local-feeds/#local-feeds", 
+            "text": "Warning  This page is a work in progress!   Local feeds , also known as \"folder feeds\", let you\nuse a folder as a NuGet package source. You can access these packages using a network share.", 
+            "title": "Local Feeds"
+        }, 
+        {
+            "location": "/vs/local-feeds/#baget-vs-local-feeds", 
+            "text": "Local feeds are very simple and are lack features like:   Search functionality  A user interface to browse your packages  Authentication for package uploads  Cloud storage for large feeds", 
+            "title": "BaGet vs local feeds"
         }, 
         {
             "location": "/vs/azure-artifacts/", 

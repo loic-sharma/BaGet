@@ -10,10 +10,10 @@
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <meta http-equiv="x-ua-compatible" content="ie=edge">
       
-        <meta name="description" content="A lightweight NuGet service implementation">
+        <meta name="description" content="A lightweight NuGet and symbol server">
       
       
-        <link rel="canonical" href="https://loic-sharma.github.io/BaGet/tools/mirroring/">
+        <link rel="canonical" href="https://loic-sharma.github.io/BaGet/installation/local/">
       
       
         <meta name="author" content="Loic Sharma">
@@ -42,7 +42,7 @@
     
     
       
-        <title>Mirroring - BaGet</title>
+        <title>On your computer - BaGet</title>
       
     
     
@@ -104,7 +104,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#mirroring-nugetorg" tabindex="1" class="md-skip">
+      <a href="#run-baget-on-your-computer" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -130,7 +130,7 @@
                 BaGet
               </span>
               <span class="md-header-nav__topic">
-                Mirroring
+                On your computer
               </span>
             
           
@@ -257,17 +257,19 @@
       
       
 
+  
 
-  <li class="md-nav__item md-nav__item--nested">
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
     
     <label class="md-nav__link" for="nav-2">
-      Getting Started
+      Installation
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
       <label class="md-nav__title" for="nav-2">
-        Getting Started
+        Installation
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
@@ -276,11 +278,77 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../../quickstart/local/" title="On your computer" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        On your computer
+      </label>
+    
+    <a href="./" title="On your computer" class="md-nav__link md-nav__link--active">
       On your computer
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#run-baget" title="Run BaGet" class="md-nav__link">
+    Run BaGet
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-baget" title="Configure BaGet" class="md-nav__link">
+    Configure BaGet
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#publish-packages" title="Publish packages" class="md-nav__link">
+    Publish packages
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#restore-packages" title="Restore packages" class="md-nav__link">
+    Restore packages
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#symbol-server" title="Symbol server" class="md-nav__link">
+    Symbol server
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
         
@@ -290,7 +358,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../quickstart/docker/" title="Docker" class="md-nav__link">
+    <a href="../docker/" title="Docker" class="md-nav__link">
       Docker
     </a>
   </li>
@@ -302,7 +370,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../quickstart/azure/" title="Azure" class="md-nav__link">
+    <a href="../azure/" title="Azure" class="md-nav__link">
       Azure
     </a>
   </li>
@@ -314,7 +382,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../quickstart/aws/" title="AWS" class="md-nav__link">
+    <a href="../aws/" title="AWS" class="md-nav__link">
       AWS
     </a>
   </li>
@@ -326,8 +394,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../quickstart/gcp/" title="Google Cloud" class="md-nav__link">
-      Google Cloud
+    <a href="../gcp/" title="Google cloud" class="md-nav__link">
+      Google cloud
     </a>
   </li>
 
@@ -338,8 +406,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../quickstart/iis-proxy/" title="Windows IIS Proxy" class="md-nav__link">
-      Windows IIS Proxy
+    <a href="../iis-proxy/" title="Windows IIS proxy" class="md-nav__link">
+      Windows IIS proxy
     </a>
   </li>
 
@@ -365,19 +433,17 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+  <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
     
     <label class="md-nav__link" for="nav-4">
-      Tools
+      Import
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
       <label class="md-nav__title" for="nav-4">
-        Tools
+        Import
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
@@ -386,67 +452,10 @@
           
           
 
-  
-
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Mirroring
-      </label>
-    
-    <a href="./" title="Mirroring" class="md-nav__link md-nav__link--active">
-      Mirroring
-    </a>
-    
-      
-<nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#importing-package-downloads-from-nugetorg" title="Importing package downloads from nuget.org" class="md-nav__link">
-    Importing package downloads from nuget.org
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#indexing-nugetorg" title="Indexing nuget.org" class="md-nav__link">
-    Indexing nuget.org
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
-</nav>
-    
-  </li>
-
-        
-          
-          
-          
-
 
   <li class="md-nav__item">
-    <a href="../sdk/" title="BaGet SDK" class="md-nav__link">
-      BaGet SDK
+    <a href="../../import/local-feeds/" title="Local feeds" class="md-nav__link">
+      Local feeds
     </a>
   </li>
 
@@ -457,8 +466,20 @@
 
 
   <li class="md-nav__item">
-    <a href="../migrate/" title="Migrate from NuGet.Server" class="md-nav__link">
-      Migrate from NuGet.Server
+    <a href="../../import/nugetserver/" title="NuGet.Server" class="md-nav__link">
+      NuGet.Server
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../import/nugetorg/" title="NuGet.org" class="md-nav__link">
+      NuGet.org
     </a>
   </li>
 
@@ -478,11 +499,59 @@
       <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
     
     <label class="md-nav__link" for="nav-5">
-      BaGet vs. Other
+      Advanced
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
       <label class="md-nav__title" for="nav-5">
-        BaGet vs. Other
+        Advanced
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../advanced/debugging/" title="Debugging" class="md-nav__link">
+      Debugging
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../advanced/sdk/" title="BaGet SDK" class="md-nav__link">
+      BaGet SDK
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      BaGet vs. other
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        BaGet vs. other
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
@@ -507,6 +576,18 @@
   <li class="md-nav__item">
     <a href="../../vs/nugetserver/" title="NuGet.Server" class="md-nav__link">
       NuGet.Server
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../vs/local-feeds/" title="Local feeds" class="md-nav__link">
+      Local feeds
     </a>
   </li>
 
@@ -609,15 +690,36 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#importing-package-downloads-from-nugetorg" title="Importing package downloads from nuget.org" class="md-nav__link">
-    Importing package downloads from nuget.org
+  <a href="#run-baget" title="Run BaGet" class="md-nav__link">
+    Run BaGet
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#indexing-nugetorg" title="Indexing nuget.org" class="md-nav__link">
-    Indexing nuget.org
+  <a href="#configure-baget" title="Configure BaGet" class="md-nav__link">
+    Configure BaGet
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#publish-packages" title="Publish packages" class="md-nav__link">
+    Publish packages
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#restore-packages" title="Restore packages" class="md-nav__link">
+    Restore packages
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#symbol-server" title="Symbol server" class="md-nav__link">
+    Symbol server
   </a>
   
 </li>
@@ -638,31 +740,46 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/loic-sharma/BaGet/edit/master/docs/tools/mirroring.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                  <a href="https://github.com/loic-sharma/BaGet/edit/master/docs/installation/local.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                <h1 id="mirroring-nugetorg">Mirroring nuget.org<a class="headerlink" href="#mirroring-nugetorg" title="Permanent link">&para;</a></h1>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This page is a work in progress!</p>
-</div>
-<h2 id="importing-package-downloads-from-nugetorg">Importing package downloads from nuget.org<a class="headerlink" href="#importing-package-downloads-from-nugetorg" title="Permanent link">&para;</a></h2>
-<p>You can import package downloads from nuget.org:</p>
+                <h1 id="run-baget-on-your-computer">Run BaGet on your Computer<a class="headerlink" href="#run-baget-on-your-computer" title="Permanent link">&para;</a></h1>
+<h2 id="run-baget">Run BaGet<a class="headerlink" href="#run-baget" title="Permanent link">&para;</a></h2>
 <ol>
-<li>Navigate to <code>.\BaGet\src\BaGet</code></li>
-<li>Run:</li>
+<li>Install the <a href="https://www.microsoft.com/net/download">.NET Core SDK</a></li>
+<li>Download and extract <a href="https://github.com/loic-sharma/BaGet/releases">BaGet's latest release</a></li>
+<li>Start the service with <code>dotnet BaGet.dll</code></li>
+<li>Browse <code>http://localhost:5000/</code> in your browser</li>
 </ol>
-<div class="codehilite"><pre><span></span>dotnet run -- import-downloads
+<h2 id="configure-baget">Configure BaGet<a class="headerlink" href="#configure-baget" title="Permanent link">&para;</a></h2>
+<p>You can modify BaGet's configurations by editing the <code>appsettings.json</code> file. For the full list of configurations, please refer to <a href="../../configuration/">BaGet's configuration</a> guide.</p>
+<h2 id="publish-packages">Publish packages<a class="headerlink" href="#publish-packages" title="Permanent link">&para;</a></h2>
+<p>Publish your first package with:</p>
+<div class="codehilite"><pre><span></span>dotnet nuget push -s http://localhost:5000/v3/index.json package.1.0.0.nupkg
 </pre></div>
 
 
-<h2 id="indexing-nugetorg">Indexing nuget.org<a class="headerlink" href="#indexing-nugetorg" title="Permanent link">&para;</a></h2>
+<p>Publish your first <a href="https://docs.microsoft.com/en-us/nuget/create-packages/symbol-packages-snupkg">symbol package</a> with:</p>
+<div class="codehilite"><pre><span></span>dotnet nuget push -s http://localhost:5000/v3/index.json symbol.package.1.0.0.snupkg
+</pre></div>
+
+
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>You should secure your server by requiring an API Key to publish packages. For more information, please refer to the <a href="../../configuration/#require-an-api-key">Require an API Key</a> guide.</p>
+</div>
+<h2 id="restore-packages">Restore packages<a class="headerlink" href="#restore-packages" title="Permanent link">&para;</a></h2>
+<p>You can restore packages by using the following package source:</p>
+<p><code>http://localhost:5000/v3/index.json</code></p>
+<p>Some helpful guides:</p>
 <ul>
-<li>TODO Check-in code</li>
-<li>Explain scaling</li>
-<li>Rebuild indexes at end</li>
-<li>Importing downloads from nuget.org</li>
+<li><a href="https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio#package-sources">Visual Studio</a></li>
+<li><a href="https://docs.microsoft.com/en-us/nuget/reference/nuget-config-file#package-source-sections">NuGet.config</a></li>
 </ul>
+<h2 id="symbol-server">Symbol server<a class="headerlink" href="#symbol-server" title="Permanent link">&para;</a></h2>
+<p>You can load symbols by using the following symbol location:</p>
+<p><code>http://localhost:5000/api/download/symbols</code></p>
+<p>For Visual Studio, please refer to the <a href="https://docs.microsoft.com/en-us/visualstudio/debugger/specify-symbol-dot-pdb-and-source-files-in-the-visual-studio-debugger?view=vs-2017#configure-symbol-locations-and-loading-options">Configure Debugging</a> guide.</p>
                 
                   
                 
@@ -683,7 +800,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../../configuration/" title="Configuration" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../.." title="Overview" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -692,19 +809,19 @@
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Configuration
+                Overview
               </span>
             </div>
           </a>
         
         
-          <a href="../sdk/" title="BaGet SDK" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../docker/" title="Docker" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                BaGet SDK
+                Docker
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">
@@ -736,7 +853,7 @@
     
       <a href="https://github.com/loic-sharma" class="md-footer-social__link fa fa-github-alt"></a>
     
-      <a href="https://twitter.com/sharmaloic" class="md-footer-social__link fa fa-twitter"></a>
+      <a href="https://twitter.com/bagetapp" class="md-footer-social__link fa fa-twitter"></a>
     
   </div>
 

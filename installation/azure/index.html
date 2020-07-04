@@ -10,10 +10,10 @@
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <meta http-equiv="x-ua-compatible" content="ie=edge">
       
-        <meta name="description" content="A lightweight NuGet service implementation">
+        <meta name="description" content="A lightweight NuGet and symbol server">
       
       
-        <link rel="canonical" href="https://loic-sharma.github.io/BaGet/tools/sdk/">
+        <link rel="canonical" href="https://loic-sharma.github.io/BaGet/installation/azure/">
       
       
         <meta name="author" content="Loic Sharma">
@@ -42,7 +42,7 @@
     
     
       
-        <title>BaGet SDK - BaGet</title>
+        <title>Azure - BaGet</title>
       
     
     
@@ -104,7 +104,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#baget-sdk" tabindex="1" class="md-skip">
+      <a href="#run-baget-on-azure" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -130,7 +130,7 @@
                 BaGet
               </span>
               <span class="md-header-nav__topic">
-                BaGet SDK
+                Azure
               </span>
             
           
@@ -257,17 +257,19 @@
       
       
 
+  
 
-  <li class="md-nav__item md-nav__item--nested">
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
     
     <label class="md-nav__link" for="nav-2">
-      Getting Started
+      Installation
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
       <label class="md-nav__title" for="nav-2">
-        Getting Started
+        Installation
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
@@ -278,7 +280,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../quickstart/local/" title="On your computer" class="md-nav__link">
+    <a href="../local/" title="On your computer" class="md-nav__link">
       On your computer
     </a>
   </li>
@@ -290,7 +292,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../quickstart/docker/" title="Docker" class="md-nav__link">
+    <a href="../docker/" title="Docker" class="md-nav__link">
       Docker
     </a>
   </li>
@@ -300,11 +302,104 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../../quickstart/azure/" title="Azure" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Azure
+      </label>
+    
+    <a href="./" title="Azure" class="md-nav__link md-nav__link--active">
       Azure
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#todo" title="TODO" class="md-nav__link">
+    TODO
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-baget" title="Configure BaGet" class="md-nav__link">
+    Configure BaGet
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#azure-sql-database" title="Azure SQL database" class="md-nav__link">
+    Azure SQL database
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#azure-blob-storage" title="Azure Blob Storage" class="md-nav__link">
+    Azure Blob Storage
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#azure-search" title="Azure Search" class="md-nav__link">
+    Azure Search
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#publish-packages" title="Publish packages" class="md-nav__link">
+    Publish packages
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#restore-packages" title="Restore packages" class="md-nav__link">
+    Restore packages
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#symbol-server" title="Symbol server" class="md-nav__link">
+    Symbol server
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
         
@@ -314,7 +409,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../quickstart/aws/" title="AWS" class="md-nav__link">
+    <a href="../aws/" title="AWS" class="md-nav__link">
       AWS
     </a>
   </li>
@@ -326,8 +421,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../quickstart/gcp/" title="Google Cloud" class="md-nav__link">
-      Google Cloud
+    <a href="../gcp/" title="Google cloud" class="md-nav__link">
+      Google cloud
     </a>
   </li>
 
@@ -338,8 +433,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../quickstart/iis-proxy/" title="Windows IIS Proxy" class="md-nav__link">
-      Windows IIS Proxy
+    <a href="../iis-proxy/" title="Windows IIS proxy" class="md-nav__link">
+      Windows IIS proxy
     </a>
   </li>
 
@@ -365,19 +460,17 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+  <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
     
     <label class="md-nav__link" for="nav-4">
-      Tools
+      Import
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
       <label class="md-nav__title" for="nav-4">
-        Tools
+        Import
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
@@ -388,87 +481,9 @@
 
 
   <li class="md-nav__item">
-    <a href="../mirroring/" title="Mirroring" class="md-nav__link">
-      Mirroring
+    <a href="../../import/local-feeds/" title="Local feeds" class="md-nav__link">
+      Local feeds
     </a>
-  </li>
-
-        
-          
-          
-          
-
-  
-
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        BaGet SDK
-      </label>
-    
-    <a href="./" title="BaGet SDK" class="md-nav__link md-nav__link--active">
-      BaGet SDK
-    </a>
-    
-      
-<nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#getting-started" title="Getting Started" class="md-nav__link">
-    Getting Started
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#list-package-versions" title="List Package Versions" class="md-nav__link">
-    List Package Versions
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#download-a-package" title="Download a package" class="md-nav__link">
-    Download a package
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#find-package-metadata" title="Find Package Metadata" class="md-nav__link">
-    Find Package Metadata
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#search-for-packages" title="Search for packages" class="md-nav__link">
-    Search for packages
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
         
@@ -478,8 +493,20 @@
 
 
   <li class="md-nav__item">
-    <a href="../migrate/" title="Migrate from NuGet.Server" class="md-nav__link">
-      Migrate from NuGet.Server
+    <a href="../../import/nugetserver/" title="NuGet.Server" class="md-nav__link">
+      NuGet.Server
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../import/nugetorg/" title="NuGet.org" class="md-nav__link">
+      NuGet.org
     </a>
   </li>
 
@@ -499,11 +526,59 @@
       <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
     
     <label class="md-nav__link" for="nav-5">
-      BaGet vs. Other
+      Advanced
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
       <label class="md-nav__title" for="nav-5">
-        BaGet vs. Other
+        Advanced
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../advanced/debugging/" title="Debugging" class="md-nav__link">
+      Debugging
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../advanced/sdk/" title="BaGet SDK" class="md-nav__link">
+      BaGet SDK
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      BaGet vs. other
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        BaGet vs. other
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
@@ -528,6 +603,18 @@
   <li class="md-nav__item">
     <a href="../../vs/nugetserver/" title="NuGet.Server" class="md-nav__link">
       NuGet.Server
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../vs/local-feeds/" title="Local feeds" class="md-nav__link">
+      Local feeds
     </a>
   </li>
 
@@ -630,36 +717,63 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#getting-started" title="Getting Started" class="md-nav__link">
-    Getting Started
+  <a href="#todo" title="TODO" class="md-nav__link">
+    TODO
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#list-package-versions" title="List Package Versions" class="md-nav__link">
-    List Package Versions
+  <a href="#configure-baget" title="Configure BaGet" class="md-nav__link">
+    Configure BaGet
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#azure-sql-database" title="Azure SQL database" class="md-nav__link">
+    Azure SQL database
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#azure-blob-storage" title="Azure Blob Storage" class="md-nav__link">
+    Azure Blob Storage
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#azure-search" title="Azure Search" class="md-nav__link">
+    Azure Search
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#publish-packages" title="Publish packages" class="md-nav__link">
+    Publish packages
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#download-a-package" title="Download a package" class="md-nav__link">
-    Download a package
+  <a href="#restore-packages" title="Restore packages" class="md-nav__link">
+    Restore packages
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#find-package-metadata" title="Find Package Metadata" class="md-nav__link">
-    Find Package Metadata
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#search-for-packages" title="Search for packages" class="md-nav__link">
-    Search for packages
+  <a href="#symbol-server" title="Symbol server" class="md-nav__link">
+    Symbol server
   </a>
   
 </li>
@@ -680,84 +794,115 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/loic-sharma/BaGet/edit/master/docs/tools/sdk.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                  <a href="https://github.com/loic-sharma/BaGet/edit/master/docs/installation/azure.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                <h1 id="baget-sdk">BaGet SDK<a class="headerlink" href="#baget-sdk" title="Permanent link">&para;</a></h1>
-<p>You can use BaGet's <a href="https://www.nuget.org/packages/BaGet.Protocol"><code>BaGet.Protocol</code></a> package to interact with a NuGet server.</p>
-<h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h2>
-<p>Install the <a href="https://www.nuget.org/packages/BaGet.Protocol"><code>BaGet.Protocol</code></a> package:</p>
-<div class="codehilite"><pre><span></span>dotnet add package BaGet.Protocol
-</pre></div>
+                <h1 id="run-baget-on-azure">Run BaGet on Azure<a class="headerlink" href="#run-baget-on-azure" title="Permanent link">&para;</a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This page is a work in progress!</p>
+</div>
+<p>Use Azure to scale BaGet. You can store metadata on <a href="https://azure.microsoft.com/en-us/services/sql-database/">Azure SQL Database</a>, upload packages to <a href="https://azure.microsoft.com/en-us/services/storage/blobs/">Azure Blob Storage</a>, and provide powerful search using <a href="https://azure.microsoft.com/en-us/services/search/">Azure Search</a>.</p>
+<h2 id="todo">TODO<a class="headerlink" href="#todo" title="Permanent link">&para;</a></h2>
+<ul>
+<li>App Service</li>
+<li>Table Storage</li>
+<li>High availability setup</li>
+</ul>
+<h2 id="configure-baget">Configure BaGet<a class="headerlink" href="#configure-baget" title="Permanent link">&para;</a></h2>
+<p>You can modify BaGet's configurations by editing the <code>appsettings.json</code> file. For the full list of configurations, please refer to <a href="../../configuration/">BaGet's configuration</a> guide.</p>
+<h3 id="azure-sql-database">Azure SQL database<a class="headerlink" href="#azure-sql-database" title="Permanent link">&para;</a></h3>
+<p>Update the <code>appsettings.json</code> file:</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+    <span class="err">...</span>
 
+    <span class="nt">&quot;Database&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;SqlServer&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;ConnectionString&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+    <span class="p">},</span>
 
-<h2 id="list-package-versions">List Package Versions<a class="headerlink" href="#list-package-versions" title="Permanent link">&para;</a></h2>
-<p>Find all versions of the <code>Newtonsoft.Json</code> package:</p>
-<div class="codehilite"><pre><span></span><span class="n">NuGetClient</span> <span class="n">client</span> <span class="p">=</span> <span class="k">new</span> <span class="n">NuGetClient</span><span class="p">(</span><span class="s">&quot;https://api.nuget.org/v3/index.json&quot;</span><span class="p">);</span>
-
-<span class="n">IReadOnlyList</span><span class="p">&lt;</span><span class="n">NuGetVersion</span><span class="p">&gt;&gt;</span> <span class="n">versions</span> <span class="p">=</span> <span class="k">await</span> <span class="n">client</span><span class="p">.</span><span class="n">ListPackageVersionsAsync</span><span class="p">(</span><span class="s">&quot;Newtonsoft.Json&quot;</span><span class="p">);</span>
-
-<span class="k">foreach</span> <span class="p">(</span><span class="n">NuGetVersion</span> <span class="n">version</span> <span class="k">in</span> <span class="n">versions</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Found version: {version}&quot;</span><span class="p">);</span>
+    <span class="err">...</span>
 <span class="p">}</span>
 </pre></div>
 
 
-<h2 id="download-a-package">Download a package<a class="headerlink" href="#download-a-package" title="Permanent link">&para;</a></h2>
-<div class="codehilite"><pre><span></span><span class="n">NuGetClient</span> <span class="n">client</span> <span class="p">=</span> <span class="k">new</span> <span class="n">NuGetClient</span><span class="p">(</span><span class="s">&quot;https://api.nuget.org/v3/index.json&quot;</span><span class="p">);</span>
+<h3 id="azure-blob-storage">Azure Blob Storage<a class="headerlink" href="#azure-blob-storage" title="Permanent link">&para;</a></h3>
+<p>Update the <code>appsettings.json</code> file:</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+    <span class="err">...</span>
 
-<span class="kt">string</span> <span class="n">packageId</span> <span class="p">=</span> <span class="s">&quot;Newtonsoft.Json&quot;</span><span class="p">;</span>
-<span class="n">NuGetVersion</span> <span class="n">packageVersion</span> <span class="p">=</span> <span class="k">new</span> <span class="n">NuGetVersion</span><span class="p">(</span><span class="s">&quot;12.0.1&quot;</span><span class="p">);</span>
+    <span class="nt">&quot;Storage&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;AzureBlobStorage&quot;</span><span class="p">,</span>
 
-<span class="k">using</span> <span class="p">(</span><span class="n">Stream</span> <span class="n">packageStream</span> <span class="p">=</span> <span class="k">await</span> <span class="n">client</span><span class="p">.</span><span class="n">DownloadPackageAsync</span><span class="p">(</span><span class="n">packageId</span><span class="p">,</span> <span class="n">packageVersion</span><span class="p">))</span>
-<span class="p">{</span>
-    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Downloaded package {packageId} {packageVersion}&quot;</span><span class="p">);</span>
+        <span class="nt">&quot;AccountName&quot;</span><span class="p">:</span> <span class="s2">&quot;my-account&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;AccessKey&quot;</span><span class="p">:</span> <span class="s2">&quot;abcd1234&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;Container&quot;</span><span class="p">:</span> <span class="s2">&quot;my-container&quot;</span>
+    <span class="p">},</span>
+
+    <span class="err">...</span>
 <span class="p">}</span>
 </pre></div>
 
 
-<h2 id="find-package-metadata">Find Package Metadata<a class="headerlink" href="#find-package-metadata" title="Permanent link">&para;</a></h2>
-<div class="codehilite"><pre><span></span><span class="n">NuGetClient</span> <span class="n">client</span> <span class="p">=</span> <span class="k">new</span> <span class="n">NuGetClient</span><span class="p">(</span><span class="s">&quot;https://api.nuget.org/v3/index.json&quot;</span><span class="p">);</span>
+<p>Alternatively, you can use a full Azure Storage connection string:</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+    <span class="err">...</span>
 
-<span class="c1">// Find the metadata for all versions of a package.</span>
-<span class="n">IReadOnlyList</span><span class="p">&lt;</span><span class="n">PackageMetadata</span><span class="p">&gt;</span> <span class="n">items</span> <span class="p">=</span> <span class="k">await</span> <span class="n">client</span><span class="p">.</span><span class="n">GetPackageMetadataAsync</span><span class="p">(</span><span class="s">&quot;Newtonsoft.Json&quot;</span><span class="p">);</span>
-<span class="k">if</span> <span class="p">(!</span><span class="n">items</span><span class="p">.</span><span class="n">Any</span><span class="p">())</span>
-<span class="p">{</span>
-    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Package &#39;Newtonsoft.Json&#39; does not exist&quot;</span><span class="p">);</span>
-    <span class="k">return</span><span class="p">;</span>
+    <span class="nt">&quot;Storage&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;AzureBlobStorage&quot;</span><span class="p">,</span>
+
+        <span class="nt">&quot;ConnectionString&quot;</span><span class="p">:</span> <span class="s2">&quot;AccountName=my-account;AccountKey=abcd1234;...&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;Container&quot;</span><span class="p">:</span> <span class="s2">&quot;my-container&quot;</span>
+    <span class="p">},</span>
+
+    <span class="err">...</span>
 <span class="p">}</span>
+</pre></div>
 
-<span class="k">foreach</span> <span class="p">(</span><span class="kt">var</span> <span class="n">metadata</span> <span class="k">in</span> <span class="n">items</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Version: {metadata.Version}&quot;</span><span class="p">);</span>
-    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Listed: {metadata.Listed}&quot;</span><span class="p">);</span>
-    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Tags: {metadata.Tags}&quot;</span><span class="p">);</span>
-    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Description: {metadata.Description}&quot;</span><span class="p">);</span>
+
+<h3 id="azure-search">Azure Search<a class="headerlink" href="#azure-search" title="Permanent link">&para;</a></h3>
+<p>Update the <code>appsettings.json</code> file:</p>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
+    <span class="err">...</span>
+
+    <span class="nt">&quot;Search&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;Azure&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;AccountName&quot;</span><span class="p">:</span> <span class="s2">&quot;my-account&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;ApiKey&quot;</span><span class="p">:</span> <span class="s2">&quot;ABCD1234&quot;</span>
+    <span class="p">},</span>
+
+    <span class="err">...</span>
 <span class="p">}</span>
-
-<span class="c1">// Or, find the metadata for a single version of a package.</span>
-<span class="kt">string</span> <span class="n">packageId</span> <span class="p">=</span> <span class="s">&quot;Newtonsoft.Json&quot;</span>
-<span class="n">NuGetVersion</span> <span class="n">packageVersion</span> <span class="p">=</span> <span class="k">new</span> <span class="n">NuGetVersion</span><span class="p">(</span><span class="s">&quot;12.0.1&quot;</span><span class="p">);</span>
-
-<span class="n">PackageMetadata</span> <span class="n">metadata</span> <span class="p">=</span> <span class="k">await</span> <span class="n">client</span><span class="p">.</span><span class="n">GetPackageMetadataAsync</span><span class="p">(</span><span class="n">packageId</span><span class="p">,</span> <span class="n">packageVersion</span><span class="p">);</span>
-
-<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Listed: {metadata.Listed}&quot;</span><span class="p">);</span>
-<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Tags: {metadata.Tags}&quot;</span><span class="p">);</span>
-<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Description: {metadata.Description}&quot;</span><span class="p">);</span>
 </pre></div>
 
 
-<h2 id="search-for-packages">Search for packages<a class="headerlink" href="#search-for-packages" title="Permanent link">&para;</a></h2>
-<p>Search for "json" packages:</p>
-<div class="codehilite"><pre><span></span><span class="n">NuGetClient</span> <span class="n">client</span> <span class="p">=</span> <span class="k">new</span> <span class="n">NuGetClient</span><span class="p">(</span><span class="s">&quot;https://api.nuget.org/v3/index.json&quot;</span><span class="p">);</span>
-<span class="n">IReadOnlyList</span><span class="p">&lt;</span><span class="n">SearchResult</span><span class="p">&gt;</span> <span class="n">results</span> <span class="p">=</span> <span class="k">await</span> <span class="n">client</span><span class="p">.</span><span class="n">SearchAsync</span><span class="p">(</span><span class="s">&quot;json&quot;</span><span class="p">);</span>
-
-<span class="k">foreach</span> <span class="p">(</span><span class="n">SearchResult</span> <span class="n">result</span> <span class="k">in</span> <span class="n">results</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="err">$</span><span class="s">&quot;Found package {result.PackageId} {searchResult.Version}&quot;</span><span class="p">);</span>
-<span class="p">}</span>
+<h2 id="publish-packages">Publish packages<a class="headerlink" href="#publish-packages" title="Permanent link">&para;</a></h2>
+<p>Publish your first package with:</p>
+<div class="codehilite"><pre><span></span>dotnet nuget push -s http://localhost:5000/v3/index.json package.1.0.0.nupkg
 </pre></div>
+
+
+<p>Publish your first <a href="https://docs.microsoft.com/en-us/nuget/create-packages/symbol-packages-snupkg">symbol package</a> with:</p>
+<div class="codehilite"><pre><span></span>dotnet nuget push -s http://localhost:5000/v3/index.json symbol.package.1.0.0.snupkg
+</pre></div>
+
+
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>You should secure your server by requiring an API Key to publish packages. For more information, please refer to the <a href="../../configuration/#require-an-api-key">Require an API Key</a> guide.</p>
+</div>
+<h2 id="restore-packages">Restore packages<a class="headerlink" href="#restore-packages" title="Permanent link">&para;</a></h2>
+<p>You can restore packages by using the following package source:</p>
+<p><code>http://localhost:5000/v3/index.json</code></p>
+<p>Some helpful guides:</p>
+<ul>
+<li><a href="https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio#package-sources">Visual Studio</a></li>
+<li><a href="https://docs.microsoft.com/en-us/nuget/reference/nuget-config-file#package-source-sections">NuGet.config</a></li>
+</ul>
+<h2 id="symbol-server">Symbol server<a class="headerlink" href="#symbol-server" title="Permanent link">&para;</a></h2>
+<p>You can load symbols by using the following symbol location:</p>
+<p><code>http://localhost:5000/api/download/symbols</code></p>
+<p>For Visual Studio, please refer to the <a href="https://docs.microsoft.com/en-us/visualstudio/debugger/specify-symbol-dot-pdb-and-source-files-in-the-visual-studio-debugger?view=vs-2017#configure-symbol-locations-and-loading-options">Configure Debugging</a> guide.</p>
                 
                   
                 
@@ -778,7 +923,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../mirroring/" title="Mirroring" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../docker/" title="Docker" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -787,19 +932,19 @@
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Mirroring
+                Docker
               </span>
             </div>
           </a>
         
         
-          <a href="../migrate/" title="Migrate from NuGet.Server" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../aws/" title="AWS" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Migrate from NuGet.Server
+                AWS
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">
@@ -831,7 +976,7 @@
     
       <a href="https://github.com/loic-sharma" class="md-footer-social__link fa fa-github-alt"></a>
     
-      <a href="https://twitter.com/sharmaloic" class="md-footer-social__link fa fa-twitter"></a>
+      <a href="https://twitter.com/bagetapp" class="md-footer-social__link fa fa-twitter"></a>
     
   </div>
 

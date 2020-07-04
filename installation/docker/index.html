@@ -10,10 +10,10 @@
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <meta http-equiv="x-ua-compatible" content="ie=edge">
       
-        <meta name="description" content="A lightweight NuGet service implementation">
+        <meta name="description" content="A lightweight NuGet and symbol server">
       
       
-        <link rel="canonical" href="https://loic-sharma.github.io/BaGet/quickstart/gcp/">
+        <link rel="canonical" href="https://loic-sharma.github.io/BaGet/installation/docker/">
       
       
         <meta name="author" content="Loic Sharma">
@@ -42,7 +42,7 @@
     
     
       
-        <title>Google Cloud - BaGet</title>
+        <title>Docker - BaGet</title>
       
     
     
@@ -104,7 +104,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#run-baget-on-google-cloud-platform" tabindex="1" class="md-skip">
+      <a href="#run-baget-on-docker" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -130,7 +130,7 @@
                 BaGet
               </span>
               <span class="md-header-nav__topic">
-                Google Cloud
+                Docker
               </span>
             
           
@@ -265,11 +265,11 @@
       <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
     
     <label class="md-nav__link" for="nav-2">
-      Getting Started
+      Installation
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
       <label class="md-nav__title" for="nav-2">
-        Getting Started
+        Installation
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
@@ -290,11 +290,84 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../docker/" title="Docker" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Docker
+      </label>
+    
+    <a href="./" title="Docker" class="md-nav__link md-nav__link--active">
       Docker
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#configure-baget" title="Configure BaGet" class="md-nav__link">
+    Configure BaGet
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-baget" title="Run BaGet" class="md-nav__link">
+    Run BaGet
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#publish-packages" title="Publish packages" class="md-nav__link">
+    Publish packages
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#browse-packages" title="Browse packages" class="md-nav__link">
+    Browse packages
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#restore-packages" title="Restore packages" class="md-nav__link">
+    Restore packages
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#symbol-server" title="Symbol server" class="md-nav__link">
+    Symbol server
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
         
@@ -326,83 +399,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Google Cloud
-      </label>
-    
-    <a href="./" title="Google Cloud" class="md-nav__link md-nav__link--active">
-      Google Cloud
+  <li class="md-nav__item">
+    <a href="../gcp/" title="Google cloud" class="md-nav__link">
+      Google cloud
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#google-cloud-storage" title="Google Cloud Storage" class="md-nav__link">
-    Google Cloud Storage
-  </a>
-  
-    <nav class="md-nav">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#setup" title="Setup" class="md-nav__link">
-    Setup
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#configuration" title="Configuration" class="md-nav__link">
-    Configuration
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#google-cloud-sql" title="Google Cloud SQL" class="md-nav__link">
-    Google Cloud SQL
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#google-appengine" title="Google AppEngine" class="md-nav__link">
-    Google AppEngine
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
         
@@ -412,8 +413,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../iis-proxy/" title="Windows IIS Proxy" class="md-nav__link">
-      Windows IIS Proxy
+    <a href="../iis-proxy/" title="Windows IIS proxy" class="md-nav__link">
+      Windows IIS proxy
     </a>
   </li>
 
@@ -445,11 +446,11 @@
       <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
     
     <label class="md-nav__link" for="nav-4">
-      Tools
+      Import
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
       <label class="md-nav__title" for="nav-4">
-        Tools
+        Import
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
@@ -460,8 +461,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../tools/mirroring/" title="Mirroring" class="md-nav__link">
-      Mirroring
+    <a href="../../import/local-feeds/" title="Local feeds" class="md-nav__link">
+      Local feeds
     </a>
   </li>
 
@@ -472,8 +473,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../tools/sdk/" title="BaGet SDK" class="md-nav__link">
-      BaGet SDK
+    <a href="../../import/nugetserver/" title="NuGet.Server" class="md-nav__link">
+      NuGet.Server
     </a>
   </li>
 
@@ -484,8 +485,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../tools/migrate/" title="Migrate from NuGet.Server" class="md-nav__link">
-      Migrate from NuGet.Server
+    <a href="../../import/nugetorg/" title="NuGet.org" class="md-nav__link">
+      NuGet.org
     </a>
   </li>
 
@@ -505,11 +506,59 @@
       <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
     
     <label class="md-nav__link" for="nav-5">
-      BaGet vs. Other
+      Advanced
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
       <label class="md-nav__title" for="nav-5">
-        BaGet vs. Other
+        Advanced
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../advanced/debugging/" title="Debugging" class="md-nav__link">
+      Debugging
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../advanced/sdk/" title="BaGet SDK" class="md-nav__link">
+      BaGet SDK
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      BaGet vs. other
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        BaGet vs. other
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
@@ -534,6 +583,18 @@
   <li class="md-nav__item">
     <a href="../../vs/nugetserver/" title="NuGet.Server" class="md-nav__link">
       NuGet.Server
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../vs/local-feeds/" title="Local feeds" class="md-nav__link">
+      Local feeds
     </a>
   </li>
 
@@ -636,42 +697,43 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#google-cloud-storage" title="Google Cloud Storage" class="md-nav__link">
-    Google Cloud Storage
-  </a>
-  
-    <nav class="md-nav">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#setup" title="Setup" class="md-nav__link">
-    Setup
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#configuration" title="Configuration" class="md-nav__link">
-    Configuration
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#google-cloud-sql" title="Google Cloud SQL" class="md-nav__link">
-    Google Cloud SQL
+  <a href="#configure-baget" title="Configure BaGet" class="md-nav__link">
+    Configure BaGet
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#google-appengine" title="Google AppEngine" class="md-nav__link">
-    Google AppEngine
+  <a href="#run-baget" title="Run BaGet" class="md-nav__link">
+    Run BaGet
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#publish-packages" title="Publish packages" class="md-nav__link">
+    Publish packages
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#browse-packages" title="Browse packages" class="md-nav__link">
+    Browse packages
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#restore-packages" title="Restore packages" class="md-nav__link">
+    Restore packages
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#symbol-server" title="Symbol server" class="md-nav__link">
+    Symbol server
   </a>
   
 </li>
@@ -692,101 +754,74 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/loic-sharma/BaGet/edit/master/docs/quickstart/gcp.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                  <a href="https://github.com/loic-sharma/BaGet/edit/master/docs/installation/docker.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                <h1 id="run-baget-on-google-cloud-platform">Run BaGet on Google Cloud Platform<a class="headerlink" href="#run-baget-on-google-cloud-platform" title="Permanent link">&para;</a></h1>
+                <h1 id="run-baget-on-docker">Run BaGet on Docker<a class="headerlink" href="#run-baget-on-docker" title="Permanent link">&para;</a></h1>
+<h2 id="configure-baget">Configure BaGet<a class="headerlink" href="#configure-baget" title="Permanent link">&para;</a></h2>
+<p>Create a file named <code>baget.env</code> to store BaGet's configurations:</p>
+<div class="codehilite"><pre><span></span># The following config is the API Key used to publish packages.
+# You should change this to a secret value to secure your server.
+ApiKey=NUGET-SERVER-API-KEY
+
+Storage__Type=FileSystem
+Storage__Path=/var/baget/packages
+Database__Type=Sqlite
+Database__ConnectionString=Data Source=/var/baget/baget.db
+Search__Type=Database
+</pre></div>
+
+
+<p>For a full list of configurations, please refer to <a href="../../configuration/">BaGet's configuration</a> guide.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>The <code>baget.env</code> file stores <a href="../configuration">BaGet's configuration</a> as environment
+variables. To learn how these configurations work, please refer to
+<a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-2.1&amp;tabs=basicconfiguration#configuration-by-environment">ASP.NET Core's configuration documentation</a>.</p>
+</div>
+<h2 id="run-baget">Run BaGet<a class="headerlink" href="#run-baget" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Create a folder named <code>baget-data</code> in the same directory as the <code>baget.env</code> file. This will be used by BaGet to persist its state.</li>
+<li>Pull BaGet's latest <a href="https://hub.docker.com/r/loicsharma/baget">docker image</a>:</li>
+</ol>
+<div class="codehilite"><pre><span></span>docker pull loicsharma/baget
+</pre></div>
+
+
+<p>You can now run BaGet:</p>
+<div class="codehilite"><pre><span></span>docker run --rm --name nuget-server -p 5555:5000 --env-file baget.env -v &quot;$(pwd)/baget-data:/var/baget&quot; loicsharma/baget:latest
+</pre></div>
+
+
+<h2 id="publish-packages">Publish packages<a class="headerlink" href="#publish-packages" title="Permanent link">&para;</a></h2>
+<p>Publish your first package with:</p>
+<div class="codehilite"><pre><span></span>dotnet nuget push -s http://localhost:5555/v3/index.json -k NUGET-SERVER-API-KEY package.1.0.0.nupkg
+</pre></div>
+
+
+<p>Publish your first <a href="https://docs.microsoft.com/en-us/nuget/create-packages/symbol-packages-snupkg">symbol package</a> with:</p>
+<div class="codehilite"><pre><span></span>dotnet nuget push -s http://localhost:5555/v3/index.json -k NUGET-SERVER-API-KEY symbol.package.1.0.0.snupkg
+</pre></div>
+
+
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>This page is a work in progress!</p>
+<p>The default API Key to publish packages is <code>NUGET-SERVER-API-KEY</code>. You should change this to a secret value to secure your server. See <a href="#configure-baget">Configure BaGet</a>.</p>
 </div>
-<p>We're open source and accept contributions!
-<a href="https://github.com/loic-sharma/BaGet">Fork us on GitHub</a>.</p>
-<p>Before you begin, you should decide which <a href="https://cloud.google.com/appengine/docs/locations">AppEngine region</a>
-you will use. For best performance, Cloud Storage and Cloud SQL should be located
-in the same region as your AppEngine deployment.</p>
-<h2 id="google-cloud-storage">Google Cloud Storage<a class="headerlink" href="#google-cloud-storage" title="Permanent link">&para;</a></h2>
-<p>Packages can be stored in <a href="https://cloud.google.com/storage/">Google Cloud Storage</a>.</p>
-<h3 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h3>
-<p>Follow the instructions in <a href="https://cloud.google.com/appengine/docs/flexible/dotnet/using-cloud-storage">Using Cloud Storage</a> to create a bucket.</p>
-<h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h3>
-<p><strong>NOTE:</strong> If you plan to use AppEngine, skip this part and follow the AppEngine instructions below.</p>
-<p>Set up a service account and download credentials. Set the <code>GOOGLE_APPLICATION_CREDENTIALS</code> environment variable to the path to the JSON file you downloaded.</p>
-<p>Configure BaGet to use Google Cloud Storage by updating the <code>appsettings.json</code> file:</p>
-<div class="codehilite"><pre><span></span><span class="p">{</span>
-    <span class="err">...</span>
-
-    <span class="nt">&quot;Storage&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;GoogleCloud&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;BucketName&quot;</span><span class="p">:</span> <span class="s2">&quot;your-gcs-bucket&quot;</span>
-    <span class="p">},</span>
-
-    <span class="err">...</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<h2 id="google-cloud-sql">Google Cloud SQL<a class="headerlink" href="#google-cloud-sql" title="Permanent link">&para;</a></h2>
+<h2 id="browse-packages">Browse packages<a class="headerlink" href="#browse-packages" title="Permanent link">&para;</a></h2>
+<p>You can browse packages by opening the URL <a href="http://localhost:5555/"><code>http://localhost:5555/</code></a> in your browser.</p>
+<h2 id="restore-packages">Restore packages<a class="headerlink" href="#restore-packages" title="Permanent link">&para;</a></h2>
+<p>You can restore packages by using the following package source:</p>
+<p><code>http://localhost:5555/v3/index.json</code></p>
+<p>Some helpful guides:</p>
 <ul>
-<li>Follow the instructions in <a href="https://cloud.google.com/appengine/docs/flexible/dotnet/using-cloud-sql">Using Cloud SQL</a> to create a 2nd Gen MySQL 5.7 Google Cloud SQL instance. The default options should work well.</li>
-<li>Create a database named <code>baget</code>. This can be done through the Google Cloud Console. Use <code>utf8mb4</code> as the Character set.</li>
-<li>Follow <a href="https://cloud.google.com/sql/docs/mysql/configure-ssl-instance#new-client">Configuring SSL/TLS</a> to create a client certificate. Download the three files it creates.</li>
-<li>Convert the PEM to a PFX by running <code>openssl pkcs12 -inkey client-key.pem -in client-cert.pem -export -out client.pfx</code></li>
-<li>One way to obtain OpenSSL on Windows is to install <a href="https://gitforwindows.org/">Git Bash</a>.</li>
-<li>Configure BaGet to use Google Cloud SQL by updating the <a href="https://github.com/loic-sharma/BaGet/blob/master/src/BaGet/appsettings.json"><code>appsettings.json</code></a> file:</li>
+<li><a href="https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio#package-sources">Visual Studio</a></li>
+<li><a href="https://docs.microsoft.com/en-us/nuget/reference/nuget-config-file#package-source-sections">NuGet.config</a></li>
 </ul>
-<div class="codehilite"><pre><span></span><span class="p">{</span>
-    <span class="err">...</span>
-    <span class="nt">&quot;Database&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;MySql&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;ConnectionString&quot;</span><span class="p">:</span> <span class="s2">&quot;Server=YOURIP;User Id=root;Password=***;Database=baget;CertificateFile=C:\\Path\\To\\client.pfx;CACertificateFile=C:\\Path\\To\\server-ca.pem;SSL Mode=VerifyCA&quot;</span>
-    <span class="p">},</span>
-    <span class="err">...</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<ul>
-<li>Create the tables by running <code>dotnet ef database update --context MySqlContext --project src\BaGet</code></li>
-</ul>
-<h2 id="google-appengine">Google AppEngine<a class="headerlink" href="#google-appengine" title="Permanent link">&para;</a></h2>
-<p>BaGet can be hosted in Google AppEngine. See <a href="https://cloud.google.com/appengine/docs/flexible/dotnet/quickstart">here</a>
-for a tutorial on how to create a new AppEngine project.</p>
-<p>Create a <code>app.yaml</code> file to publish the Docker container built by the Dockerfile in this repo. In the template
-below, make the following replacements:</p>
-<ul>
-<li><code>PROJECT</code> - your GCP project, as returned by <code>gcloud config get-value project</code></li>
-<li><code>REGION</code> -- the GCP region your Google Cloud SQL database is in, e.g., <code>us-central1</code> or <code>us-west2</code></li>
-<li><code>DBINSTANCE</code> -- the name of your Google Cloud SQL database instance</li>
-<li><code>DBNAME</code> -- the name of the BaGet database on that instance (e.g., <code>baget</code> in the instructions above)</li>
-<li><code>PASSWORD</code> -- the password for the database root user</li>
-<li><code>BUCKETNAME</code> -- the name of the Google Cloud Storage Bucket configured above</li>
-</ul>
-<div class="codehilite"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">runtime</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">custom</span>
-<span class="l l-Scalar l-Scalar-Plain">env</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">flex</span>
-
-<span class="c1"># The settings below are to reduce costs during testing and are not necessarily</span>
-<span class="c1"># appropriate for production use. For more information, see:</span>
-<span class="c1"># https://cloud.google.com/appengine/docs/flexible/dotnet/configuring-your-app-with-app-yaml</span>
-<span class="l l-Scalar l-Scalar-Plain">resources</span><span class="p p-Indicator">:</span>
-  <span class="l l-Scalar l-Scalar-Plain">cpu</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-  <span class="l l-Scalar l-Scalar-Plain">memory_gb</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
-  <span class="l l-Scalar l-Scalar-Plain">disk_size_gb</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-
-<span class="l l-Scalar l-Scalar-Plain">beta_settings</span><span class="p p-Indicator">:</span>
-  <span class="l l-Scalar l-Scalar-Plain">cloud_sql_instances</span><span class="p p-Indicator">:</span> <span class="s">&quot;PROJECT:REGION:DBINSTANCE&quot;</span>
-
-<span class="l l-Scalar l-Scalar-Plain">env_variables</span><span class="p p-Indicator">:</span>
-  <span class="l l-Scalar l-Scalar-Plain">Database__Type</span><span class="p p-Indicator">:</span> <span class="s">&quot;MySql&quot;</span>
-  <span class="l l-Scalar l-Scalar-Plain">Database__ConnectionString</span><span class="p p-Indicator">:</span> <span class="s">&quot;Server=/cloudsql/PROJECT:REGION:DBINSTANCE;User</span><span class="nv"> </span><span class="s">Id=root;Password=PASSWORD;Database=DBNAME;SslMode=None&quot;</span>
-  <span class="l l-Scalar l-Scalar-Plain">Storage__Type</span><span class="p p-Indicator">:</span> <span class="s">&quot;GoogleCloud&quot;</span>
-  <span class="l l-Scalar l-Scalar-Plain">Storage__BucketName</span><span class="p p-Indicator">:</span> <span class="s">&quot;BUCKETNAME&quot;</span>
-  <span class="l l-Scalar l-Scalar-Plain">Search__Type</span><span class="p p-Indicator">:</span> <span class="s">&quot;Database&quot;</span>
-  <span class="l l-Scalar l-Scalar-Plain">ASPNETCORE_URLS</span><span class="p p-Indicator">:</span> <span class="s">&quot;http://0.0.0.0:8080&quot;</span>
-</pre></div>
-
-
-<p>To publish the application, run <code>gcloud app deploy</code>.</p>
+<h2 id="symbol-server">Symbol server<a class="headerlink" href="#symbol-server" title="Permanent link">&para;</a></h2>
+<p>You can load symbols by using the following symbol location:</p>
+<p><code>http://localhost:5555/api/download/symbols</code></p>
+<p>For Visual Studio, please refer to the <a href="https://docs.microsoft.com/en-us/visualstudio/debugger/specify-symbol-dot-pdb-and-source-files-in-the-visual-studio-debugger?view=vs-2017#configure-symbol-locations-and-loading-options">Configure Debugging</a> guide.</p>
                 
                   
                 
@@ -807,7 +842,7 @@ below, make the following replacements:</p>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../aws/" title="AWS" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../local/" title="On your computer" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -816,19 +851,19 @@ below, make the following replacements:</p>
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                AWS
+                On your computer
               </span>
             </div>
           </a>
         
         
-          <a href="../iis-proxy/" title="Windows IIS Proxy" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../azure/" title="Azure" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Windows IIS Proxy
+                Azure
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">
@@ -860,7 +895,7 @@ below, make the following replacements:</p>
     
       <a href="https://github.com/loic-sharma" class="md-footer-social__link fa fa-github-alt"></a>
     
-      <a href="https://twitter.com/sharmaloic" class="md-footer-social__link fa fa-twitter"></a>
+      <a href="https://twitter.com/bagetapp" class="md-footer-social__link fa fa-twitter"></a>
     
   </div>
 
