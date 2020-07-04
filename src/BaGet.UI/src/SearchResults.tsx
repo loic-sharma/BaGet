@@ -352,7 +352,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     includePrerelease: boolean,
     packageType?: string,
     targetFramework?: string
-  ) {
+  ): string {
     const parameters: { [parameter: string]: string } = {
       semVerLevel: "2.0.0",
       take: defaultSearchTake.toString()
