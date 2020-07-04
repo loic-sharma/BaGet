@@ -2,9 +2,9 @@
 
 You can modify BaGet's configurations by editing the `appsettings.json` file.
 
-## Require an API Key
+## Require an API key
 
-You can require that users provide a password, called an API Key, to publish packages.
+You can require that users provide a password, called an API key, to publish packages.
 To do so, you can insert the desired API key in the `ApiKey` field.
 
 ```json
@@ -20,7 +20,7 @@ Users will now have to provide the API key to push packages:
 dotnet nuget push -s http://localhost:5000/v3/index.json -k NUGET-SERVER-API-KEY package.1.0.0.nupkg
 ```
 
-## Enable Read-Through Caching
+## Enable read-through caching
 
 Read-through caching lets you index packages from an upstream source. You can use read-through
 caching to:
@@ -46,7 +46,7 @@ The following `Mirror` setting configures BaGet to index packages from [nuget.or
 !!! info
     `PackageSource` is the value of the [NuGet service index](https://docs.microsoft.com/en-us/nuget/api/service-index).
 
-## Enable Package Hard Deletions
+## Enable package hard deletions
 
 To prevent the ["left pad" problem](https://blog.npmjs.org/post/141577284765/kik-left-pad-and-npm),
 BaGet's default configuration doesn't allow package deletions. Whenever BaGet receives a package deletion
@@ -64,7 +64,7 @@ downloaded if you know the package's id and version. You can override this behav
 }
 ```
 
-## Enable Package Overwrites
+## Enable package overwrites
 
 Normally, BaGet will reject a package upload if the id and version are already taken. You can configure BaGet
 to overwrite the already existing package by setting `AllowPackageOverwrites`:
@@ -79,14 +79,14 @@ to overwrite the already existing package by setting `AllowPackageOverwrites`:
 }
 ```
 
-## Private Feeds
+## Private feeds
 
 A private feed requires users to authenticate before accessing packages.
 
 !!! warning
     Private feeds are not supported at this time! See [this pull request](https://github.com/loic-sharma/BaGet/pull/69) for more information.
 
-## Database Configuration
+## Database configuration
 
 BaGet supports multiple database engines for storing package information:
 
@@ -130,7 +130,7 @@ There are two settings related to the database configuration:
 - **Type**: The database engine to use, this should be one of the strings from the above list such as `PostgreSql` or `Sqlite`.
 - **ConnectionString**: The connection string for your database engine.
 
-## IIS Server Options
+## IIS server options
 
 IIS Server options can be configured under the `IISServerOptions` key. The available options are detailed at [docs.microsoft.com](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.iisserveroptions)
 Note: If not specified, the MaxRequestBodySize in BaGet defaults to 250MB (262144000 bytes), rather than the ASP.NET Core default of 30MB

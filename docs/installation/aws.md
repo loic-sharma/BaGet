@@ -1,17 +1,67 @@
-# Run BaGet on your Computer
+# Run BaGet on AWS
 
-## Run BaGet
+!!! warning
+    This page is a work in progress!
 
-1. Install the [.NET Core SDK](https://www.microsoft.com/net/download)
-1. Download and extract [BaGet's latest release](https://github.com/loic-sharma/BaGet/releases)
-1. Start the service with `dotnet BaGet.dll`
-1. Browse `http://localhost:5000/` in your browser
+Use Amazon Web Services to scale BaGet. You can store metadata on [Amazon RDS](https://aws.amazon.com/rds/postgresql/) and upload packages to [Amazon S3](https://aws.amazon.com/s3/).
 
 ## Configure BaGet
 
 You can modify BaGet's configurations by editing the `appsettings.json` file. For the full list of configurations, please refer to [BaGet's configuration](../configuration.md) guide.
 
-## Publish Packages
+### Amazon S3
+
+Update the `appsettings.json` file:
+
+```json
+{
+    ...
+
+    "Storage": {
+        "Type": "AwsS3",
+        "Region": "us-west-1",
+        "Bucket": "foo",
+        "AccessKey": "",
+        "SecretKey": ""
+    },
+
+    ...
+}
+```
+
+### Amazon RDS
+
+To use PostgreSQL, update the `appsettings.json` file:
+
+```json
+{
+    ...
+
+    "Database": {
+        "Type": "PostgreSql",
+        "ConnectionString": "..."
+    },
+
+    ...
+}
+```
+
+To use MySQL, update the `appsettings.json` file:
+
+```json
+{
+    ...
+
+    "Database": {
+        "Type": "MySql",
+        "ConnectionString": "..."
+    },
+
+    ...
+}
+```
+
+## Publish packages
 
 Publish your first package with:
 
@@ -28,7 +78,7 @@ dotnet nuget push -s http://localhost:5000/v3/index.json symbol.package.1.0.0.sn
 !!! warning
     You should secure your server by requiring an API Key to publish packages. For more information, please refer to the [Require an API Key](../configuration.md#require-an-api-key) guide.
 
-## Restore Packages
+## Restore packages
 
 You can restore packages by using the following package source:
 
@@ -39,7 +89,7 @@ Some helpful guides:
 * [Visual Studio](https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio#package-sources)
 * [NuGet.config](https://docs.microsoft.com/en-us/nuget/reference/nuget-config-file#package-source-sections)
 
-## Symbol Server
+## Symbol server
 
 You can load symbols by using the following symbol location:
 

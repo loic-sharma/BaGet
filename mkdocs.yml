@@ -1,5 +1,5 @@
 site_name: BaGet
-site_description: A lightweight NuGet service implementation
+site_description: A lightweight NuGet and symbol server
 site_author: Loic Sharma
 site_url: https://loic-sharma.github.io/BaGet/
 
@@ -23,7 +23,7 @@ extra:
     - type: github-alt
       link: https://github.com/loic-sharma
     - type: twitter
-      link: https://twitter.com/sharmaloic
+      link: https://twitter.com/bagetapp
 
 markdown_extensions:
   - markdown.extensions.admonition
@@ -34,21 +34,25 @@ markdown_extensions:
 
 pages:
   - Overview: index.md
-  - Getting Started:
-    - On your computer: quickstart/local.md
-    - Docker: quickstart/docker.md
-    - Azure: quickstart/azure.md
-    - AWS: quickstart/aws.md
-    - Google Cloud: quickstart/gcp.md
-    - Windows IIS Proxy: quickstart/iis-proxy.md
+  - Installation:
+    - On your computer: installation/local.md
+    - Docker: installation/docker.md
+    - Azure: installation/azure.md
+    - AWS: installation/aws.md
+    - Google cloud: installation/gcp.md
+    - Windows IIS proxy: installation/iis-proxy.md
   - Configuration: configuration.md
-  - Tools:
-    - Mirroring: tools/mirroring.md
-    - BaGet SDK: tools/sdk.md
-    - Migrate from NuGet.Server: tools/migrate.md
-  - BaGet vs. Other:
+  - Import:
+    - Local feeds: import/local-feeds.md
+    - NuGet.Server: import/nugetserver.md
+    - NuGet.org: import/nugetorg.md
+  - Advanced:
+    - Debugging: advanced/debugging.md
+    - BaGet SDK: advanced/sdk.md
+  - BaGet vs. other:
     - nuget.org: vs/nugetorg.md
     - NuGet.Server: vs/nugetserver.md
+    - Local feeds: vs/local-feeds.md
     - Azure Artifacts: vs/azure-artifacts.md
     - MyGet: vs/myget.md
     - LiGet: vs/liget.md
