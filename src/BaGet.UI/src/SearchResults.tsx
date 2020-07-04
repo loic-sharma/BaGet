@@ -79,7 +79,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
   }
 
   public render() {
-    let noResultsFound = !this.state.loading && this.state.items.length == 0;
+    let noResultsFound = !this.state.loading && this.state.items.length === 0;
     let showLoadMore = !this.state.loading &&
       this.state.items.length === this.state.page * defaultSearchTake;
 
