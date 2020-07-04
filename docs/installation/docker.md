@@ -38,7 +38,7 @@ You can now run BaGet:
 docker run --rm --name nuget-server -p 5555:5000 --env-file baget.env -v "$(pwd)/baget-data:/var/baget" loicsharma/baget:latest
 ```
 
-## Publish Packages
+## Publish packages
 
 Publish your first package with:
 
@@ -55,11 +55,11 @@ dotnet nuget push -s http://localhost:5555/v3/index.json -k NUGET-SERVER-API-KEY
 !!! warning
     The default API Key to publish packages is `NUGET-SERVER-API-KEY`. You should change this to a secret value to secure your server. See [Configure BaGet](#configure-baget).
 
-## Browse Packages
+## Browse packages
 
 You can browse packages by opening the URL [`http://localhost:5555/`](http://localhost:5555/) in your browser.
 
-## Restore Packages
+## Restore packages
 
 You can restore packages by using the following package source:
 
@@ -70,7 +70,7 @@ Some helpful guides:
 * [Visual Studio](https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio#package-sources)
 * [NuGet.config](https://docs.microsoft.com/en-us/nuget/reference/nuget-config-file#package-source-sections)
 
-## Symbol Server
+## Symbol server
 
 You can load symbols by using the following symbol location:
 

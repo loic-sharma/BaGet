@@ -10,13 +10,13 @@ BaGet (pronounced "baguette") is a lightweight NuGet and symbol server. It is [o
 
 You can run BaGet on your preferred platform:
 
-* [On your computer](quickstart/local.md)
-* [Docker](quickstart/docker.md)
-* [Azure](quickstart/azure.md)
-* [AWS](quickstart/aws.md)
-* [Google Cloud](quickstart/gcp.md)
-* [Alibaba Cloud(Aliyun)](quickstart/aliyun.md)
+* [On your computer](installation/local.md)
+* [Docker](installation/docker.md)
+* [Azure](installation/azure.md)
+* [AWS](installation/aws.md)
+* [Google Cloud](installation/gcp.md)
+* [Alibaba Cloud(Aliyun)](installation/aliyun.md)
 
 ## BaGet SDK
 
-You can also use the [`BaGet.Protocol`](https://www.nuget.org/packages/BaGet.Protocol) package to interact with a NuGet server. For more information, please refer to the [BaGet SDK](tools/sdk.md) guide.
+You can also use the [`BaGet.Protocol`](https://www.nuget.org/packages/BaGet.Protocol) package to interact with a NuGet server. For more information, please refer to the [BaGet SDK](advanced/sdk.md) guide.
