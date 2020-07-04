@@ -316,7 +316,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     url: string,
     onStart: () => void,
     onComplete: (results: ISearchResponse) => void
-  ):void {
+  ): void {
     if (this.resultsController) {
       this.resultsController.abort();
     }
