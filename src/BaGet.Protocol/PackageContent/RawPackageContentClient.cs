@@ -48,7 +48,7 @@ namespace BaGet.Protocol.Internal
         }
 
         /// <inheritdoc />
-        public async Task<Stream> GetPackageContentStreamOrNullAsync(
+        public async Task<Stream> DownloadPackageOrNullAsync(
             string packageId,
             NuGetVersion packageVersion,
             CancellationToken cancellationToken = default)
@@ -69,7 +69,7 @@ namespace BaGet.Protocol.Internal
         }
 
         /// <inheritdoc />
-        public async Task<Stream> GetPackageManifestStreamOrNullAsync(
+        public async Task<Stream> DownloadPackageManifestOrNullAsync(
             string packageId,
             NuGetVersion packageVersion,
             CancellationToken cancellationToken = default)

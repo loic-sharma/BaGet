@@ -18,24 +18,24 @@ namespace BaGet.Protocol
                 _clientfactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
             }
 
-            public async Task<Stream> GetPackageContentStreamOrNullAsync(
+            public async Task<Stream> DownloadPackageOrNullAsync(
                 string packageId,
                 NuGetVersion packageVersion,
                 CancellationToken cancellationToken = default)
             {
                 var client = await _clientfactory.GetPackageContentClientAsync(cancellationToken);
 
-                return await client.GetPackageContentStreamOrNullAsync(packageId, packageVersion, cancellationToken);
+                return await client.DownloadPackageOrNullAsync(packageId, packageVersion, cancellationToken);
             }
 
-            public async Task<Stream> GetPackageManifestStreamOrNullAsync(
+            public async Task<Stream> DownloadPackageManifestOrNullAsync(
                 string packageId,
                 NuGetVersion packageVersion,
                 CancellationToken cancellationToken = default)
             {
                 var client = await _clientfactory.GetPackageContentClientAsync(cancellationToken);
 
-                return await client.GetPackageManifestStreamOrNullAsync(packageId, packageVersion, cancellationToken);
+                return await client.DownloadPackageManifestOrNullAsync(packageId, packageVersion, cancellationToken);
             }
 
             public async Task<PackageVersionsResponse> GetPackageVersionsOrNullAsync(

@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core;
@@ -9,20 +10,40 @@ namespace BaGet.Hosting
 {
     public static class IHostExtensions
     {
-        public static async Task RunMigrationsAsync(this IHost host, CancellationToken cancellationToken)
+        public static IHostBuilder UseBaGet(this IHostBuilder host, Action<BaGetApplication> configure)
+        {
+            return host.ConfigureServices(services =>
+            {
+                services.AddBaGetWebApplication(configure);
+            });
+        }
+
+        public static async Task RunMigrationsAsync(
+            this IHost host,
+            CancellationToken cancellationToken = default)
         {
             // Run migrations if necessary.
             var options = host.Services.GetRequiredService<IOptions<BaGetOptions>>();
 
-            if (options.Value.RunMigrationsAtStartup && options.Value.Database.Type != DatabaseType.AzureTable)
+            if (options.Value.RunMigrationsAtStartup)
             {
                 using (var scope = host.Services.CreateScope())
                 {
-                    var ctx = scope.ServiceProvider.GetRequiredService<IContext>();
-
-                    await ctx.RunMigrationsAsync(cancellationToken);
+                    var ctx = scope.ServiceProvider.GetService<IContext>();
+                    if (ctx != null)
+                    {
+                        await ctx.RunMigrationsAsync(cancellationToken);
+                    }
                 }
             }
+        }
+
+        public static bool ValidateStartupOptions(this IHost host)
+        {
+            return host
+                .Services
+                .GetRequiredService<ValidateStartupOptions>()
+                .Validate();
         }
     }
 }

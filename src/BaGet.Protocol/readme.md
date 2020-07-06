@@ -4,7 +4,7 @@
 
 BaGet's SDK to interact with the [NuGet protocol](https://docs.microsoft.com/en-us/nuget/api/overview).
 
-[Package (NuGet)](https://www.nuget.org/packages/BaGet.Protocol) | [Documentation](https://loic-sharma.github.io/BaGet/tools/sdk/) | [Samples](https://github.com/loic-sharma/BaGet/tree/master/samples)
+[Package (NuGet)](https://www.nuget.org/packages/BaGet.Protocol) | [Documentation](https://loic-sharma.github.io/BaGet/advanced/sdk/) | [Samples](https://github.com/loic-sharma/BaGet/tree/master/samples)
 
 ## Getting started
 
@@ -39,7 +39,7 @@ NuGetClient client = new NuGetClient("https://api.nuget.org/v3/index.json");
 string packageId = "Newtonsoft.Json";
 NuGetVersion packageVersion = new NuGetVersion("12.0.1");
 
-using (Stream packageStream = await client.GetPackageStreamAsync(packageId, packageVersion))
+using (Stream packageStream = await client.DownloadPackageAsync(packageId, packageVersion))
 {
     Console.WriteLine($"Downloaded package {packageId} {packageVersion}");
 }
