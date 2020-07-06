@@ -6,7 +6,6 @@ using System.IO;
 using System.Text;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.FileProviders.Physical;
-using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.Primitives;
 
 namespace BaGet.Hosting
@@ -16,7 +15,6 @@ namespace BaGet.Hosting
         private readonly DirectoryInfo _root;
         private readonly string _pathBase;
         private readonly PhysicalFilesWatcher _watcher;
-        private readonly Matcher _matcher;
         private readonly ConcurrentDictionary<string, CachedFileInfo> _fileCache;
 
         public BaGetUIFileProvider(DirectoryInfo root, string pathBase)
@@ -24,7 +22,6 @@ namespace BaGet.Hosting
             _root = root;
             _pathBase = pathBase;
             _watcher = new PhysicalFilesWatcher(root.FullName, new FileSystemWatcher(root.FullName), true);
-            _matcher = new Matcher().AddInclude("**/index.html").AddInclude("**/*.js");
             _fileCache = new ConcurrentDictionary<string, CachedFileInfo>();
         }
 
@@ -39,7 +36,7 @@ namespace BaGet.Hosting
             if (info.Exists)
             {
                 var relative = Path.GetRelativePath(_root.FullName, info.FullName);
-                if (_matcher.Match(relative).HasMatches)
+                if (relative.EndsWith("index.html", StringComparison.Ordinal) || relative.EndsWith(".js", StringComparison.Ordinal))
                 {
                     if (_fileCache.TryGetValue(relative, out var file) && file.LastModified >= info.LastWriteTime)
                     {
