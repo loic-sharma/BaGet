@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace BaGet.Protocol.Models
 {
@@ -20,38 +20,38 @@ namespace BaGet.Protocol.Models
         /// <summary>
         /// The URL to the registration leaf.
         /// </summary>
-        [JsonProperty("@id")]
+        [JsonPropertyName("@id")]
         public string RegistrationLeafUrl { get; set; }
 
         /// <summary>
         /// The registration leaf's type.
         /// </summary>
-        [JsonProperty("@type")]
+        [JsonPropertyName("@type")]
         public IReadOnlyList<string> Type { get; set; }
 
         /// <summary>
         /// Whether the package is listed.
         /// </summary>
-        [JsonProperty("listed")]
+        [JsonPropertyName("listed")]
         public bool Listed { get; set; }
 
         /// <summary>
         /// The URL to the package content (.nupkg).
         /// </summary>
-        [JsonProperty("packageContent")]
+        [JsonPropertyName("packageContent")]
         public string PackageContentUrl { get; set; }
 
         /// <summary>
         /// The date the package was published. On NuGet.org, <see cref="Published"/>
         /// is set to the year 1900 if the package is unlisted.
         /// </summary>
-        [JsonProperty("published")]
+        [JsonPropertyName("published")]
         public DateTimeOffset Published { get; set; }
 
         /// <summary>
         /// The URL to the package's registration index.
         /// </summary>
-        [JsonProperty("registration")]
+        [JsonPropertyName("registration")]
         public string RegistrationIndexUrl { get; set; }
     }
 }

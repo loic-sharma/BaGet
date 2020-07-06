@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace BaGet.Protocol.Models
 {
@@ -14,116 +14,116 @@ namespace BaGet.Protocol.Models
         /// <summary>
         /// The URL to the document used to produce this object.
         /// </summary>
-        [JsonProperty("@id")]
+        [JsonPropertyName("@id")]
         public string CatalogLeafUrl { get; set; }
 
         /// <summary>
         /// The ID of the package.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string PackageId { get; set; }
 
         /// <summary>
         /// The full NuGet version after normalization, including any SemVer 2.0.0 build metadata.
         /// </summary>
-        [JsonProperty("version")]
+        [JsonPropertyName("version")]
         public string Version { get; set; }
 
         /// <summary>
         /// The package's authors.
         /// </summary>
-        [JsonProperty("authors")]
+        [JsonPropertyName("authors")]
         public string Authors { get; set; }
 
         /// <summary>
         /// The dependencies of the package, grouped by target framework.
         /// </summary>
-        [JsonProperty("dependencyGroups")]
+        [JsonPropertyName("dependencyGroups")]
         public IReadOnlyList<DependencyGroupItem> DependencyGroups { get; set; }
 
         /// <summary>
         /// The deprecation associated with the package, if any.
         /// </summary>
-        [JsonProperty("deprecation")]
+        [JsonPropertyName("deprecation")]
         public PackageDeprecation Deprecation { get; set; }
 
         /// <summary>
         /// The package's description.
         /// </summary>
-        [JsonProperty("description")]
+        [JsonPropertyName("description")]
         public string Description { get; set; }
 
         /// <summary>
         /// The URL to the package's icon.
         /// </summary>
-        [JsonProperty("iconUrl")]
+        [JsonPropertyName("iconUrl")]
         public string IconUrl { get; set; }
 
         /// <summary>
         /// The package's language.
         /// </summary>
-        [JsonProperty("language")]
+        [JsonPropertyName("language")]
         public string Language { get; set; }
 
         /// <summary>
         /// The URL to the package's license.
         /// </summary>
-        [JsonProperty("licenseUrl")]
+        [JsonPropertyName("licenseUrl")]
         public string LicenseUrl { get; set; }
 
         /// <summary>
         /// Whether the package is listed in search results.
         /// If <see langword="null"/>, the package should be considered as listed.
         /// </summary>
-        [JsonProperty("listed")]
+        [JsonPropertyName("listed")]
         public bool? Listed { get; set; }
 
         /// <summary>
         /// The minimum NuGet client version needed to use this package.
         /// </summary>
-        [JsonProperty("minClientVersion")]
+        [JsonPropertyName("minClientVersion")]
         public string MinClientVersion { get; set; }
 
         /// <summary>
         /// The URL to download the package's content.
         /// </summary>
-        [JsonProperty("packageContent")]
+        [JsonPropertyName("packageContent")]
         public string PackageContentUrl { get; set; }
 
         /// <summary>
         /// The URL for the package's home page.
         /// </summary>
-        [JsonProperty("projectUrl")]
+        [JsonPropertyName("projectUrl")]
         public string ProjectUrl { get; set; }
 
         /// <summary>
         /// The package's publish date.
         /// </summary>
-        [JsonProperty("published")]
+        [JsonPropertyName("published")]
         public DateTimeOffset Published { get; set; }
 
         /// <summary>
         /// If true, the package requires its license to be accepted.
         /// </summary>
-        [JsonProperty("requireLicenseAcceptance")]
+        [JsonPropertyName("requireLicenseAcceptance")]
         public bool RequireLicenseAcceptance { get; set; }
 
         /// <summary>
         /// The package's summary.
         /// </summary>
-        [JsonProperty("summary")]
+        [JsonPropertyName("summary")]
         public string Summary { get; set; }
 
         /// <summary>
         /// The package's tags.
         /// </summary>
-        [JsonProperty("tags")]
+        [JsonPropertyName("tags")]
         public IReadOnlyList<string> Tags { get; set; }
 
         /// <summary>
         /// The package's title.
         /// </summary>
-        [JsonProperty("title")]
+        [JsonPropertyName("title")]
         public string Title { get; set; }
     }
 }

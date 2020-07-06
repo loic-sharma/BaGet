@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,7 +35,7 @@ namespace BaGet.Protocol.Internal
         public async Task<PackageDeleteCatalogLeaf> GetPackageDeleteLeafAsync(string leafUrl, CancellationToken cancellationToken = default)
         {
             return await GetAndValidateLeafAsync<PackageDeleteCatalogLeaf>(
-                CatalogLeafType.PackageDelete,
+                "PackageDelete",
                 leafUrl,
                 cancellationToken);
         }
@@ -42,24 +43,24 @@ namespace BaGet.Protocol.Internal
         public async Task<PackageDetailsCatalogLeaf> GetPackageDetailsLeafAsync(string leafUrl, CancellationToken cancellationToken = default)
         {
             return await GetAndValidateLeafAsync<PackageDetailsCatalogLeaf>(
-                CatalogLeafType.PackageDetails,
+                "PackageDetails",
                 leafUrl,
                 cancellationToken);
         }
 
-        private async Task<T> GetAndValidateLeafAsync<T>(
-            CatalogLeafType type,
+        private async Task<TCatalogLeaf> GetAndValidateLeafAsync<TCatalogLeaf>(
+            string leafType,
             string leafUrl,
-            CancellationToken cancellationToken) where T : CatalogLeaf
+            CancellationToken cancellationToken) where TCatalogLeaf : CatalogLeaf
         {
-            var result = await _httpClient.DeserializeUrlAsync<T>(leafUrl, cancellationToken);
+            var result = await _httpClient.DeserializeUrlAsync<TCatalogLeaf>(leafUrl, cancellationToken);
             var leaf = result.GetResultOrThrow();
 
-            if (leaf.Type != type)
+            if (leaf.Type.FirstOrDefault() != leafType)
             {
                 throw new ArgumentException(
-                    $"The leaf type found in the document does not match the expected '{type}' type.",
-                    nameof(type));
+                    $"The leaf type found in the document does not match the expected '{leafType}' type.",
+                    nameof(leafType));
             }
 
             return leaf;

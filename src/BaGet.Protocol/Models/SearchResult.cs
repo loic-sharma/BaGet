@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using BaGet.Protocol.Internal;
-using Newtonsoft.Json;
 
 namespace BaGet.Protocol.Models
 {
@@ -14,81 +14,81 @@ namespace BaGet.Protocol.Models
         /// <summary>
         /// The ID of the matched package.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string PackageId { get; set; }
 
         /// <summary>
         /// The latest version of the matched pacakge. This is the full NuGet version after normalization,
         /// including any SemVer 2.0.0 build metadata.
         /// </summary>
-        [JsonProperty("version")]
+        [JsonPropertyName("version")]
         public string Version { get; set; }
 
         /// <summary>
         /// The description of the matched package.
         /// </summary>
-        [JsonProperty("description")]
+        [JsonPropertyName("description")]
         public string Description { get; set; }
 
         /// <summary>
         /// The authors of the matched package.
         /// </summary>
-        [JsonProperty("authors")]
-        [JsonConverter(typeof(SingleOrListConverter<string>))]
+        [JsonPropertyName("authors")]
+        [JsonConverter(typeof(StringOrStringArrayJsonConverter))]
         public IReadOnlyList<string> Authors { get; set; }
 
         /// <summary>
         /// The URL of the matched package's icon.
         /// </summary>
-        [JsonProperty("iconUrl")]
+        [JsonPropertyName("iconUrl")]
         public string IconUrl { get; set; }
 
         /// <summary>
         /// The URL of the matched package's license.
         /// </summary>
-        [JsonProperty("licenseUrl")]
+        [JsonPropertyName("licenseUrl")]
         public string LicenseUrl { get; set; }
 
         /// <summary>
         /// The URL of the matched package's homepage.
         /// </summary>
-        [JsonProperty("projectUrl")]
+        [JsonPropertyName("projectUrl")]
         public string ProjectUrl { get; set; }
 
         /// <summary>
         /// The URL for the matched package's registration index.
         /// </summary>
-        [JsonProperty("registration")]
+        [JsonPropertyName("registration")]
         public string RegistrationIndexUrl { get; set; }
 
         /// <summary>
         /// The summary of the matched package.
         /// </summary>
-        [JsonProperty("summary")]
+        [JsonPropertyName("summary")]
         public string Summary { get; set; }
 
         /// <summary>
         /// The tags of the matched package.
         /// </summary>
-        [JsonProperty("tags")]
+        [JsonPropertyName("tags")]
         public IReadOnlyList<string> Tags { get; set; }
 
         /// <summary>
         /// The title of the matched package.
         /// </summary>
-        [JsonProperty("title")]
+        [JsonPropertyName("title")]
         public string Title { get; set; }
 
         /// <summary>
         /// The total downloads for all versions of the matched package.
         /// </summary>
-        [JsonProperty("totalDownloads")]
+        [JsonPropertyName("totalDownloads")]
         public long TotalDownloads { get; set; }
 
         /// <summary>
         /// The versions of the matched package.
         /// </summary>
-        [JsonProperty("versions")]
+        [JsonPropertyName("versions")]
         public IReadOnlyList<SearchResultVersion> Versions { get; set; }
     }
 }

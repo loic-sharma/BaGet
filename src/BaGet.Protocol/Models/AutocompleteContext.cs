@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace BaGet.Protocol.Models
 {
@@ -9,7 +9,7 @@ namespace BaGet.Protocol.Models
             Vocab = "http://schema.nuget.org/schema#"
         };
 
-        [JsonProperty("@vocab")]
+        [JsonPropertyName("@vocab")]
         public string Vocab { get; set; }
     }
 }

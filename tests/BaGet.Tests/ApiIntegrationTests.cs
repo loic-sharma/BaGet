@@ -99,7 +99,7 @@ namespace BaGet.Tests
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(@"{
-  ""context"": {
+  ""@context"": {
     ""@vocab"": ""http://schema.nuget.org/schema#""
   },
   ""totalHits"": 1,
@@ -118,7 +118,7 @@ namespace BaGet.Tests
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(@"{
-  ""context"": {
+  ""@context"": {
     ""@vocab"": ""http://schema.nuget.org/schema#""
   },
   ""totalHits"": 0,
@@ -188,7 +188,6 @@ namespace BaGet.Tests
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(@"{
-  ""totalDownloads"": 0,
   ""@id"": ""http://localhost/v3/registration/defaultpackage/index.json"",
   ""@type"": [
     ""catalog:CatalogRoot"",
@@ -200,9 +199,12 @@ namespace BaGet.Tests
     {
       ""@id"": ""http://localhost/v3/registration/defaultpackage/index.json"",
       ""count"": 1,
+      ""lower"": ""1.2.3"",
+      ""upper"": ""1.2.3"",
       ""items"": [
         {
           ""@id"": ""http://localhost/v3/registration/defaultpackage/1.2.3.json"",
+          ""packageContent"": ""http://localhost/v3/package/defaultpackage/1.2.3/defaultpackage.1.2.3.nupkg"",
           ""catalogEntry"": {
             ""downloads"": 0,
             ""hasReadme"": false,
@@ -211,13 +213,10 @@ namespace BaGet.Tests
             ],
             ""releaseNotes"": """",
             ""repositoryUrl"": """",
-            ""repositoryType"": null,
-            ""@id"": null,
             ""id"": ""DefaultPackage"",
             ""version"": ""1.2.3"",
             ""authors"": ""Default package author"",
             ""dependencyGroups"": [],
-            ""deprecation"": null,
             ""description"": ""Default package description"",
             ""iconUrl"": """",
             ""language"": """",
@@ -231,14 +230,12 @@ namespace BaGet.Tests
             ""summary"": """",
             ""tags"": [],
             ""title"": """"
-          },
-          ""packageContent"": ""http://localhost/v3/package/defaultpackage/1.2.3/defaultpackage.1.2.3.nupkg""
+          }
         }
-      ],
-      ""lower"": ""1.2.3"",
-      ""upper"": ""1.2.3""
+      ]
     }
-  ]
+  ],
+  ""totalDownloads"": 0
 }", json);
         }
 
@@ -259,7 +256,6 @@ namespace BaGet.Tests
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(@"{
-  ""downloads"": 0,
   ""@id"": ""http://localhost/v3/registration/defaultpackage/1.2.3.json"",
   ""@type"": [
     ""Package"",

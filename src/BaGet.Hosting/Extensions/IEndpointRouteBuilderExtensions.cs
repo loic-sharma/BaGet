@@ -1,17 +1,15 @@
-using BaGet.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.Routing.Constraints;
 
 namespace BaGet
 {
-    public static class IEndpointRouteBuilderExtensions
+    public static class EndpointRoutingExtensions
     {
-        public static void MapBaGetRoutes(this IEndpointRouteBuilder endpoints)
+        public static IEndpointConventionBuilder WithRouteName(this IEndpointConventionBuilder endpoints, string name)
         {
-
+            return endpoints.WithMetadata(
+                new EndpointNameMetadata(name),
+                new RouteNameMetadata(name));
         }
-
-
     }
 }

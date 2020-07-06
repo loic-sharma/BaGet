@@ -1,5 +1,4 @@
-using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace BaGet.Protocol.Models
 {
@@ -10,22 +9,22 @@ namespace BaGet.Protocol.Models
     /// </summary>
     public class AlternatePackage
     {
-        [JsonProperty("@id")]
+        [JsonPropertyName("@id")]
         public string Url { get; set; }
 
-        [JsonProperty("@type")]
+        [JsonPropertyName("@type")]
         public string Type { get; set; }
 
         /// <summary>
         /// The ID of the alternate package.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; }
 
         /// <summary>
         /// The allowed version range, or * if any version is allowed.
         /// </summary>
-        [JsonProperty("range")]
+        [JsonPropertyName("range")]
         public string Range { get; set; }
     }
 }

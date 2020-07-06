@@ -1,6 +1,5 @@
 using System;
-using BaGet.Protocol.Internal;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace BaGet.Protocol.Models
 {
@@ -16,32 +15,31 @@ namespace BaGet.Protocol.Models
         /// <summary>
         /// The URL to the current catalog leaf.
         /// </summary>
-        [JsonProperty("@id")]
+        [JsonPropertyName("@id")]
         public string CatalogLeafUrl { get; set; }
 
         /// <summary>
         /// The type of the current catalog leaf.
         /// </summary>
-        [JsonProperty("@type")]
-        [JsonConverter(typeof(CatalogLeafItemTypeConverter))]
-        public CatalogLeafType Type { get; set; }
+        [JsonPropertyName("@type")]
+        public string Type { get; set; }
 
         /// <summary>
         /// The commit timestamp of this catalog item.
         /// </summary>
-        [JsonProperty("commitTimeStamp")]
+        [JsonPropertyName("commitTimeStamp")]
         public DateTimeOffset CommitTimestamp { get; set; }
 
         /// <summary>
         /// The package ID of the catalog item.
         /// </summary>
-        [JsonProperty("nuget:id")]
+        [JsonPropertyName("nuget:id")]
         public string PackageId { get; set; }
 
         /// <summary>
         /// The package version of the catalog item.
         /// </summary>
-        [JsonProperty("nuget:version")]
+        [JsonPropertyName("nuget:version")]
         public string PackageVersion { get; set; }
     }
 }

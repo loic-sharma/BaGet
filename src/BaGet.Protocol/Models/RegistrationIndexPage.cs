@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace BaGet.Protocol.Models
 {
@@ -13,34 +13,34 @@ namespace BaGet.Protocol.Models
         /// <summary>
         /// The URL to the registration page.
         /// </summary>
-        [JsonProperty("@id")]
+        [JsonPropertyName("@id")]
         public string RegistrationPageUrl { get; set; }
 
         /// <summary>
         /// The number of registration leafs in the page.
         /// </summary>
-        [JsonProperty("count")]
+        [JsonPropertyName("count")]
         public int Count { get; set; }
 
         /// <summary>
         /// <see langword="null"/> if this package's registration is paged. The items can be found
         /// by following the page's <see cref="RegistrationPageUrl"/>.
         /// </summary>
-        [JsonProperty("items")]
+        [JsonPropertyName("items")]
         public IReadOnlyList<RegistrationIndexPageItem> ItemsOrNull { get; set; }
 
         /// <summary>
         /// This page's lowest package version. The version should be lowercased, normalized,
         /// and the SemVer 2.0.0 build metadata removed, if any.
         /// </summary>
-        [JsonProperty("lower")]
+        [JsonPropertyName("lower")]
         public string Lower { get; set; }
 
         /// <summary>
         /// This page's highest package version. The version should be lowercased, normalized,
         /// and the SemVer 2.0.0 build metadata removed, if any.
         /// </summary>
-        [JsonProperty("upper")]
+        [JsonPropertyName("upper")]
         public string Upper { get; set; }
     }
 }

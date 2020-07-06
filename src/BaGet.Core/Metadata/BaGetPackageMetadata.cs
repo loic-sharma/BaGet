@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using BaGet.Protocol.Models;
-using Newtonsoft.Json;
 
 namespace BaGet.Core
 {
@@ -10,26 +10,25 @@ namespace BaGet.Core
     /// </summary>
     public class BaGetPackageMetadata : PackageMetadata
     {
-        [JsonProperty("downloads")]
+        [JsonPropertyName("downloads")]
         public long Downloads { get; set; }
 
-        [JsonProperty("hasReadme")]
+        [JsonPropertyName("hasReadme")]
         public bool HasReadme { get; set; }
 
-        [JsonProperty("packageTypes")]
+        [JsonPropertyName("packageTypes")]
         public IReadOnlyList<string> PackageTypes { get; set; }
 
         /// <summary>
         /// The package's release notes.
         /// </summary>
-        [JsonProperty("releaseNotes")]
+        [JsonPropertyName("releaseNotes")]
         public string ReleaseNotes { get; set; }
 
-        [JsonProperty("repositoryUrl")]
+        [JsonPropertyName("repositoryUrl")]
         public string RepositoryUrl { get; set; }
 
-        [JsonProperty("repositoryType")]
+        [JsonPropertyName("repositoryType")]
         public string RepositoryType { get; set; }
-
     }
 }

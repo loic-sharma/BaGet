@@ -1,5 +1,5 @@
+using System.Text.Json.Serialization;
 using BaGet.Protocol.Internal;
-using Newtonsoft.Json;
 
 namespace BaGet.Protocol.Models
 {
@@ -13,14 +13,14 @@ namespace BaGet.Protocol.Models
         /// <summary>
         /// The ID of the package dependency.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; }
 
         /// <summary>
         /// The allowed version range of the dependency.
         /// </summary>
-        [JsonProperty("range")]
-        [JsonConverter(typeof(PackageDependencyRangeConverter))]
+        [JsonPropertyName("range")]
+        [JsonConverter(typeof(PackageDependencyRangeJsonConverter))]
         public string Range { get; set; }
     }
 }

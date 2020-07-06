@@ -16,11 +16,7 @@ namespace BaGet
             services
                 .AddControllers()
                 .AddApplicationPart(typeof(PackageContentController).Assembly)
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
-                .AddNewtonsoftJson(options =>
-                {
-                    options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
-                });
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddHttpContextAccessor();
             services.AddTransient<IUrlGenerator, BaGetUrlGenerator>();

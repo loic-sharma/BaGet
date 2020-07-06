@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace BaGet.Protocol.Models
 {
@@ -12,19 +12,19 @@ namespace BaGet.Protocol.Models
         /// <summary>
         /// The URL to the registration leaf.
         /// </summary>
-        [JsonProperty("@id")]
+        [JsonPropertyName("@id")]
         public string RegistrationLeafUrl { get; set; }
 
         /// <summary>
         /// The catalog entry containing the package metadata.
         /// </summary>
-        [JsonProperty("catalogEntry")]
+        [JsonPropertyName("catalogEntry")]
         public PackageMetadata PackageMetadata { get; set; }
 
         /// <summary>
         /// The URL to the package content (.nupkg)
         /// </summary>
-        [JsonProperty("packageContent")]
+        [JsonPropertyName("packageContent")]
         public string PackageContentUrl { get; set; }
     }
 }

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace BaGet.Protocol.Models
 {
@@ -13,7 +13,7 @@ namespace BaGet.Protocol.Models
         /// <summary>
         /// The versions, lowercased and normalized.
         /// </summary>
-        [JsonProperty("versions")]
+        [JsonPropertyName("versions")]
         public IReadOnlyList<string> Versions { get; set; }
     }
 }

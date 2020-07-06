@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace BaGet.Protocol.Models
 {
@@ -13,13 +13,13 @@ namespace BaGet.Protocol.Models
         /// <summary>
         /// The target framework that these dependencies are applicable to.
         /// </summary>
-        [JsonProperty("targetFramework")]
+        [JsonPropertyName("targetFramework")]
         public string TargetFramework { get; set; }
 
         /// <summary>
         /// A list of dependencies.
         /// </summary>
-        [JsonProperty("dependencies", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonPropertyName("dependencies")] // TODO: VERIFY IGNORED IF NULL
         public List<DependencyItem> Dependencies { get; set; }
     }
 }
