@@ -25,6 +25,24 @@ namespace BaGet.Tests
             });
         }
 
+        public WebApplicationFactory<Startup> WithOutputAndConfig(
+            ITestOutputHelper output,
+            IEnumerable<KeyValuePair<string, string>> configuration)
+        {
+            return WithWebHostBuilder(builder =>
+            {
+                builder
+                    .ConfigureAppConfiguration(config =>
+                    {
+                        config.AddInMemoryCollection(configuration);
+                    })
+                    .ConfigureLogging(logging =>
+                    {
+                        logging.AddProvider(new XunitLoggerProvider(output));
+                    });
+            });
+        }
+
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             // Create temporary storage paths.
