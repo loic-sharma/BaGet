@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
-using Microsoft.AspNetCore.SpaServices.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -40,6 +39,7 @@ namespace BaGet
             services.AddTransient<IConfigureOptions<IISServerOptions>, ConfigureBaGetOptions>();
             services.AddTransient<IValidateOptions<BaGetOptions>, ConfigureBaGetOptions>();
 
+            services.AddBaGetSpaStaticFiles();
             services.AddBaGetWebApplication(ConfigureBaGetApplication);
 
             // You can swap between implementations of subsystems like storage and search using BaGet's configuration.
@@ -88,7 +88,7 @@ namespace BaGet
             app.UseForwardedHeaders();
             app.UsePathBase(options.PathBase);
 
-            app.UseSpaStaticFiles();
+            app.UseBaGetSpaStaticFiles();
 
             app.UseRouting();
 
@@ -104,17 +104,15 @@ namespace BaGet
 
             app.UseSpa(spa =>
             {
-                var spaStaticFilesService = app.ApplicationServices.GetService<ISpaStaticFileProvider>();
-
                 spa.Options.SourcePath = "../BaGet.UI";
-                spa.Options.DefaultPageStaticFileOptions = new StaticFileOptions
-                {
-                    FileProvider = spaStaticFilesService.FileProvider
-                };
 
                 if (env.IsDevelopment())
                 {
                     spa.UseReactDevelopmentServer(npmScript: "start");
+                }
+                else
+                {
+                    spa.UseBaGetFileProvider();
                 }
             });
         }
