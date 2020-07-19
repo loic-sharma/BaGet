@@ -78,6 +78,7 @@ namespace BaGet.Core
             services.TryAddSingleton<NullSearchIndexer>();
             services.TryAddSingleton<NullSearchService>();
             services.TryAddSingleton<RegistrationBuilder>();
+            services.TryAddSingleton<SystemTime>();
             services.TryAddSingleton<ValidateStartupOptions>();
 
             services.TryAddSingleton(HttpClientFactory);

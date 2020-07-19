@@ -13,6 +13,7 @@ namespace BaGet.Core
         private readonly IPackageService _packages;
         private readonly IPackageStorageService _storage;
         private readonly ISearchIndexer _search;
+        private readonly SystemTime _time;
         private readonly IOptionsSnapshot<BaGetOptions> _options;
         private readonly ILogger<PackageIndexingService> _logger;
 
@@ -20,12 +21,14 @@ namespace BaGet.Core
             IPackageService packages,
             IPackageStorageService storage,
             ISearchIndexer search,
+            SystemTime time,
             IOptionsSnapshot<BaGetOptions> options,
             ILogger<PackageIndexingService> logger)
         {
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
             _search = search ?? throw new ArgumentNullException(nameof(search));
+            _time = time ?? throw new ArgumentNullException(nameof(time));
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -43,6 +46,8 @@ namespace BaGet.Core
                 using (var packageReader = new PackageArchiveReader(packageStream, leaveStreamOpen: true))
                 {
                     package = packageReader.GetPackageMetadata();
+                    package.Published = _time.UtcNow;
+
                     nuspecStream = await packageReader.GetNuspecAsync(cancellationToken);
                     nuspecStream = await nuspecStream.AsTemporaryFileStreamAsync();
 

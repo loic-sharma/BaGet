@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using BaGet.Core;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -8,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Moq;
 using Xunit.Abstractions;
 
 namespace BaGet.Tests
@@ -54,16 +56,33 @@ namespace BaGet.Tests
                 })
                 .ConfigureServices((context, services) =>
                 {
+                    // Clobber BaGet services with test replacements.
+                    var time = new Mock<SystemTime>();
+                    time
+                        .Setup(t => t.UtcNow)
+                        .Returns(DateTime.Parse("2020-01-01T00:00:00.000Z"));
+
+                    services.AddSingleton(time.Object);
+
                     // Setup the integration test database.
                     var provider = services.BuildServiceProvider();
                     var scopeFactory = provider.GetRequiredService<IServiceScopeFactory>();
 
                     using (var scope = scopeFactory.CreateScope())
                     {
-                        scope.ServiceProvider
-                            .GetRequiredService<IContext>()
-                            .Database
-                            .Migrate();
+                        var ctx = scope.ServiceProvider.GetRequiredService<IContext>();
+                        var indexer = scope.ServiceProvider.GetRequiredService<IPackageIndexingService>();
+                        var cancellationToken = CancellationToken.None;
+
+                        // Ensure the database is created.
+                        ctx.Database.Migrate();
+
+                        // Seed the application with test data.
+                        var result = indexer.IndexAsync(PackageData.Default, cancellationToken).Result;
+                        if (result != PackageIndexingResult.Success)
+                        {
+                            throw new InvalidOperationException($"Unexpected indexing result {result}");
+                        }
                     }
                 });
         }
