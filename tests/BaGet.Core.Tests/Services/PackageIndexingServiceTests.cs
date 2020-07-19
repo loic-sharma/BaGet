@@ -11,6 +11,7 @@ namespace BaGet.Core.Tests.Services
         private readonly Mock<IPackageService> _packages;
         private readonly Mock<IPackageStorageService> _storage;
         private readonly Mock<ISearchIndexer> _search;
+        private readonly Mock<SystemTime> _time;
         private readonly PackageIndexingService _target;
 
         public PackageIndexingServiceTests()
@@ -18,11 +19,13 @@ namespace BaGet.Core.Tests.Services
             _packages = new Mock<IPackageService>();
             _storage = new Mock<IPackageStorageService>();
             _search = new Mock<ISearchIndexer>();
+            _time = new Mock<SystemTime>();
 
             _target = new PackageIndexingService(
                 _packages.Object,
                 _storage.Object,
                 _search.Object,
+                _time.Object,
                 Mock.Of<IOptionsSnapshot<BaGetOptions>>(),
                 Mock.Of<ILogger<PackageIndexingService>>());
         }

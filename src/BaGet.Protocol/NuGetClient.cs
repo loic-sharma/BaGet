@@ -63,6 +63,7 @@ namespace BaGet.Protocol
             _contentClient = clientFactory.CreatePackageContentClient();
             _metadataClient = clientFactory.CreatePackageMetadataClient();
             _searchClient = clientFactory.CreateSearchClient();
+            _autocompleteClient = clientFactory.CreateAutocompleteClient();
         }
 
         /// <summary>
@@ -157,7 +158,9 @@ namespace BaGet.Protocol
         /// <param name="packageId">The package ID.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The package's listed versions, if any.</returns>
-        public virtual async Task<IReadOnlyList<NuGetVersion>> ListPackageVersionsAsync(string packageId, CancellationToken cancellationToken)
+        public virtual async Task<IReadOnlyList<NuGetVersion>> ListPackageVersionsAsync(
+            string packageId,
+            CancellationToken cancellationToken = default)
         {
             // TODO: Use the Autocomplete's enumerate versions endpoint if this is not Sleet.
             var packages = await GetPackageMetadataAsync(packageId, cancellationToken);
