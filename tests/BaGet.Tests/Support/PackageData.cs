@@ -7,6 +7,8 @@ namespace BaGet.Tests
 {
     public class PackageData
     {
+        private static readonly byte[] DefaultBytes;
+
         static PackageData()
         {
             var builder = new PackageBuilder();
@@ -21,10 +23,13 @@ namespace BaGet.Tests
                 TargetPath = "lib/netstandard2.0/_._"
             });
 
-            Default = new MemoryStream();
-            builder.Save(Default);
+            using var defaultStream = new MemoryStream();
+            builder.Save(defaultStream);
+
+            DefaultBytes = defaultStream.ToArray();
         }
 
-        public static Stream Default { get; }
+        // Create a new stream each time so that tests can run concurrently.
+        public static Stream Default => new MemoryStream(DefaultBytes, writable: false);
     }
 }
