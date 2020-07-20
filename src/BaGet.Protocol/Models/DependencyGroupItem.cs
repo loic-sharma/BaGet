@@ -19,7 +19,7 @@ namespace BaGet.Protocol.Models
         /// <summary>
         /// A list of dependencies.
         /// </summary>
-        [JsonPropertyName("dependencies")] // TODO: VERIFY IGNORED IF NULL
+        [JsonPropertyName("dependencies")]
         public List<DependencyItem> Dependencies { get; set; }
     }
 }

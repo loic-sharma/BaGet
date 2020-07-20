@@ -4,7 +4,10 @@ using System.Text.Json.Serialization;
 
 namespace BaGet.Protocol.Internal
 {
-    internal class PackageDependencyRangeJsonConverter : JsonConverter<string>
+    /// <summary>
+    /// This is an internal API that may be changed or removed without notice in any release.
+    /// </summary>
+    public class PackageDependencyRangeJsonConverter : JsonConverter<string>
     {
         public override string Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
