@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core;
+using BaGet.Protocol.Models;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Versioning;
 
@@ -18,6 +19,17 @@ namespace BaGet.Hosting
         public PackageContentController(IPackageContentService content)
         {
             _content = content ?? throw new ArgumentNullException(nameof(content));
+        }
+
+        public async Task<ActionResult<PackageVersionsResponse>> GetPackageVersionsAsync(string id, CancellationToken cancellationToken)	
+        {	
+            var versions = await _content.GetPackageVersionsOrNullAsync(id, cancellationToken);	
+            if (versions == null)	
+            {	
+                return NotFound();	
+            }	
+
+            return versions;	
         }
 
         public async Task<IActionResult> DownloadPackageAsync(string id, string version, CancellationToken cancellationToken)

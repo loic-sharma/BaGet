@@ -1,10 +1,7 @@
-using BaGet.Core;
 using BaGet.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Routing.Constraints;
-using Microsoft.Extensions.DependencyInjection;
-using NuGet.Versioning;
 
 namespace BaGet
 {
@@ -22,17 +19,10 @@ namespace BaGet
 
         public void MapServiceIndexRoutes(IEndpointRouteBuilder endpoints)
         {
-            endpoints
-                .MapGet("v3/index.json", async context =>
-                {
-                    var cancellationToken = context.RequestAborted;
-                    var serviceIndex = context.RequestServices.GetRequiredService<IServiceIndexService>();
-
-                    var response = await serviceIndex.GetAsync(cancellationToken);
-
-                    await context.Response.WriteAsJsonAsync(response, cancellationToken);
-                })
-                .WithRouteName(Routes.IndexRouteName);
+            endpoints.MapControllerRoute(
+                name: Routes.IndexRouteName,
+                pattern: "v3/index.json",
+                defaults: new { controller = "ServiceIndex", action = "Get" });
         }
 
         public void MapPackagePublishRoutes(IEndpointRouteBuilder endpoints)
@@ -77,139 +67,42 @@ namespace BaGet
 
         public void MapSearchRoutes(IEndpointRouteBuilder endpoints)
         {
-            endpoints
-                .MapGet("v3/search", async context =>
-                {
-                    var query = context.Request.ReadFromQuery("q");
-                    var skip = context.Request.ReadFromQuery("skip", defaultValue: 0);
-                    var take = context.Request.ReadFromQuery("take", defaultValue: 20);
-                    var prerelease = context.Request.ReadFromQuery("prerelease", defaultValue: false);
-                    var semVerLevel = context.Request.ReadFromQuery("semVerLevel", defaultValue: null);
-                    var packageType = context.Request.ReadFromQuery("packageType", defaultValue: null);
-                    var framework = context.Request.ReadFromQuery("framework", defaultValue: null);
-                    var cancellationToken = context.RequestAborted;
+            endpoints.MapControllerRoute(
+                name: Routes.SearchRouteName,
+                pattern: "v3/search",
+                defaults: new { controller = "Search", action = "Search" });
 
-                    var searchService = context.RequestServices.GetRequiredService<ISearchService>();
-                    var includeSemVer2 = semVerLevel == "2.0.0";
-
-                    var response = await searchService.SearchAsync(
-                        query ?? string.Empty,
-                        skip,
-                        take,
-                        prerelease,
-                        includeSemVer2,
-                        packageType,
-                        framework,
-                        cancellationToken);
-
-                    await context.Response.WriteAsJsonAsync(response, cancellationToken);
-                })
-                .WithRouteName(Routes.SearchRouteName);
-
-            endpoints
-                .MapGet("v3/autocomplete", async context =>
-                {
-                    // TODO: Add other autocomplete parameters
-                    // TODO: Support versions autocomplete.
-                    // See: https://github.com/loic-sharma/BaGet/issues/291
-                    var query = context.Request.ReadFromQuery("q");
-                    var cancellationToken = context.RequestAborted;
-
-                    var searchService = context.RequestServices.GetRequiredService<ISearchService>();
-
-                    var response = await searchService.AutocompleteAsync(
-                        query,
-                        cancellationToken: cancellationToken);
-
-                    await context.Response.WriteAsJsonAsync(response, cancellationToken);
-                })
-                .WithRouteName(Routes.AutocompleteRouteName);
+            endpoints.MapControllerRoute(
+                name: Routes.AutocompleteRouteName,
+                pattern: "v3/autocomplete",
+                defaults: new { controller = "Search", action = "Autocomplete" });
 
             // This is an unofficial API to find packages that depend on a given package.
-            endpoints
-                .MapGet("v3/dependents", async context =>
-                {
-                    var packageId = context.Request.ReadFromQuery("packageId");
-                    var cancellationToken = context.RequestAborted;
-
-                    var searchService = context.RequestServices.GetRequiredService<ISearchService>();
-
-                    var response = await searchService.FindDependentsAsync(
-                        packageId,
-                        cancellationToken: cancellationToken);
-
-                    await context.Response.WriteAsJsonAsync(response, cancellationToken);
-                })
-                .WithRouteName(Routes.DependentsRouteName);
+            endpoints.MapControllerRoute(
+                name: Routes.DependentsRouteName,
+                pattern: "v3/dependents",
+                defaults: new { controller = "Search", action = "Dependents" });
         }
 
         public void MapPackageMetadataRoutes(IEndpointRouteBuilder endpoints)
         {
-            endpoints
-                .MapGet("v3/registration/{id}/index.json", async context =>
-                {
-                    var packageId = context.Request.RouteValues["id"]?.ToString();
-                    var cancellationToken = context.RequestAborted;
+            endpoints.MapControllerRoute(
+               name: Routes.RegistrationIndexRouteName,
+               pattern: "v3/registration/{id}/index.json",
+               defaults: new { controller = "PackageMetadata", action = "RegistrationIndex" });
 
-                    var metadata = context.RequestServices.GetRequiredService<IPackageMetadataService>();
-
-                    var index = await metadata.GetRegistrationIndexOrNullAsync(packageId, cancellationToken);
-                    if (index == null)
-                    {
-                        context.Response.NotFound();
-                        return;
-                    }
-
-                    await context.Response.WriteAsJsonAsync(index, cancellationToken);
-                })
-                .WithRouteName(Routes.RegistrationIndexRouteName);
-
-            endpoints
-                .MapGet("v3/registration/{id}/{version}.json", async context =>
-                {
-                    var packageId = context.Request.RouteValues["id"]?.ToString();
-                    var version = context.Request.RouteValues["version"]?.ToString();
-                    var cancellationToken = context.RequestAborted;
-
-                    var metadata = context.RequestServices.GetRequiredService<IPackageMetadataService>();
-
-                    if (!NuGetVersion.TryParse(version, out var nugetVersion))
-                    {
-                        context.Response.NotFound();
-                        return;
-                    }
-
-                    var leaf = await metadata.GetRegistrationLeafOrNullAsync(packageId, nugetVersion, cancellationToken);
-                    if (leaf == null)
-                    {
-                        context.Response.NotFound();
-                        return;
-                    }
-
-                    await context.Response.WriteAsJsonAsync(leaf, cancellationToken);
-                })
-                .WithRouteName(Routes.RegistrationLeafRouteName);
+            endpoints.MapControllerRoute(
+                name: Routes.RegistrationLeafRouteName,
+                pattern: "v3/registration/{id}/{version}.json",
+                defaults: new { controller = "PackageMetadata", action = "RegistrationLeaf" });
         }
 
         public void MapPackageContentRoutes(IEndpointRouteBuilder endpoints)
         {
-            endpoints
-                .MapGet("v3/package/{id}/index.json", async context =>
-                {
-                    var packageId = context.Request.RouteValues["id"]?.ToString();
-                    var cancellationToken = context.RequestAborted;
-
-                    var content = context.RequestServices.GetRequiredService<IPackageContentService>();
-                    var response = await content.GetPackageVersionsOrNullAsync(packageId, cancellationToken);
-                    if (response == null)
-                    {
-                        context.Response.NotFound();
-                        return;
-                    }
-
-                    await context.Response.WriteAsJsonAsync(response, cancellationToken);
-                })
-                .WithRouteName(Routes.PackageVersionsRouteName);
+            endpoints.MapControllerRoute(
+                name: Routes.PackageVersionsRouteName,
+                pattern: "v3/package/{id}/index.json",
+                defaults: new { controller = "PackageContent", action = "GetPackageVersions" });
 
             endpoints.MapControllerRoute(
                 name: Routes.PackageDownloadRouteName,
