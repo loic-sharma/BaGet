@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,9 +40,7 @@ namespace BaGet.Protocol.Internal
         {
             var url = AddSearchQueryString(_searchUrl, query, skip, take, includePrerelease, includeSemVer2, "q");
 
-            var response = await _httpClient.DeserializeUrlAsync<SearchResponse>(url, cancellationToken);
-
-            return response.GetResultOrThrow();
+            return await _httpClient.GetFromJsonAsync<SearchResponse>(url, cancellationToken);
         }
 
         internal static string AddSearchQueryString(

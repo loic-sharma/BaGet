@@ -1,5 +1,6 @@
 using System;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Protocol.Models;
@@ -30,11 +31,9 @@ namespace BaGet.Protocol.Internal
         /// <inheritdoc />
         public async Task<ServiceIndexResponse> GetAsync(CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.DeserializeUrlAsync<ServiceIndexResponse>(
+            return await _httpClient.GetFromJsonAsync<ServiceIndexResponse>(
                 _serviceIndexUrl,
                 cancellationToken);
-
-            return response.GetResultOrThrow();
         }
     }
 }

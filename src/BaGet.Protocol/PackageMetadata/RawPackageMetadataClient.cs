@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Protocol.Models;
@@ -32,14 +33,8 @@ namespace BaGet.Protocol.Internal
             CancellationToken cancellationToken = default)
         {
             var url = $"{_packageMetadataUrl}/{packageId.ToLowerInvariant()}/index.json";
-            var response = await _httpClient.DeserializeUrlAsync<RegistrationIndexResponse>(url, cancellationToken);
 
-            if (response.StatusCode == HttpStatusCode.NotFound)
-            {
-                return null;
-            }
-
-            return response.GetResultOrThrow();
+            return await _httpClient.GetFromJsonOrDefaultAsync<RegistrationIndexResponse>(url, cancellationToken);
         }
 
         /// <inheritdoc />
@@ -47,9 +42,7 @@ namespace BaGet.Protocol.Internal
             string pageUrl,
             CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.DeserializeUrlAsync<RegistrationPageResponse>(pageUrl, cancellationToken);
-
-            return response.GetResultOrThrow();
+            return await _httpClient.GetFromJsonAsync<RegistrationPageResponse>(pageUrl, cancellationToken);
         }
 
         /// <inheritdoc />
@@ -57,14 +50,7 @@ namespace BaGet.Protocol.Internal
             string leafUrl,
             CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.DeserializeUrlAsync<RegistrationLeafResponse>(leafUrl, cancellationToken);
-
-            if (response.StatusCode == HttpStatusCode.NotFound)
-            {
-                return null;
-            }
-
-            return response.GetResultOrThrow();
+            return await _httpClient.GetFromJsonAsync<RegistrationLeafResponse>(leafUrl, cancellationToken);
         }
     }
 }

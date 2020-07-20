@@ -1,5 +1,6 @@
 using System;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Protocol.Models;
@@ -44,9 +45,7 @@ namespace BaGet.Protocol.Internal
                 includeSemVer2,
                 "q");
 
-            var response = await _httpClient.DeserializeUrlAsync<AutocompleteResponse>(url, cancellationToken);
-
-            return response.GetResultOrThrow();
+            return await _httpClient.GetFromJsonAsync<AutocompleteResponse>(url, cancellationToken);
         }
 
         public async Task<AutocompleteResponse> ListPackageVersionsAsync(
@@ -64,9 +63,7 @@ namespace BaGet.Protocol.Internal
                 includeSemVer2,
                 "id");
 
-            var response = await _httpClient.DeserializeUrlAsync<AutocompleteResponse>(url, cancellationToken);
-
-            return response.GetResultOrThrow();
+            return await _httpClient.GetFromJsonAsync<AutocompleteResponse>(url, cancellationToken);
         }
     }
 }

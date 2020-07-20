@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Protocol.Models;
@@ -20,16 +21,12 @@ namespace BaGet.Protocol.Internal
 
         public async Task<CatalogIndex> GetIndexAsync(CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.DeserializeUrlAsync<CatalogIndex>(_catalogUrl, cancellationToken);
-
-            return response.GetResultOrThrow();
+            return await _httpClient.GetFromJsonAsync<CatalogIndex>(_catalogUrl, cancellationToken);
         }
 
         public async Task<CatalogPage> GetPageAsync(string pageUrl, CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.DeserializeUrlAsync<CatalogPage>(pageUrl, cancellationToken);
-
-            return response.GetResultOrThrow();
+            return await _httpClient.GetFromJsonAsync<CatalogPage>(pageUrl, cancellationToken);
         }
 
         public async Task<PackageDeleteCatalogLeaf> GetPackageDeleteLeafAsync(string leafUrl, CancellationToken cancellationToken = default)
@@ -53,8 +50,7 @@ namespace BaGet.Protocol.Internal
             string leafUrl,
             CancellationToken cancellationToken) where TCatalogLeaf : CatalogLeaf
         {
-            var result = await _httpClient.DeserializeUrlAsync<TCatalogLeaf>(leafUrl, cancellationToken);
-            var leaf = result.GetResultOrThrow();
+            var leaf = await _httpClient.GetFromJsonAsync<TCatalogLeaf>(leafUrl, cancellationToken);
 
             if (leaf.Type.FirstOrDefault() != leafType)
             {

@@ -8,36 +8,31 @@ namespace BaGet.Protocol
 {
     internal static class HttpClientExtensions
     {
-        public static async Task<ResponseAndResult<TResult>> DeserializeUrlAsync<TResult>(
+        /// <summary>
+        /// Deserialize JSON content. If the HTTP response status code is 404,
+        /// returns the default value.
+        /// </summary>
+        /// <typeparam name="TResult">The JSON type to deserialize.</typeparam>
+        /// <param name="httpClient">The HTTP client that will perform the request.</param>
+        /// <param name="requestUri">The request URI.</param>
+        /// <param name="cancellationToken">A token to cancel the task.</param>
+        /// <returns>The JSON content, or the default value if the HTTP response status code is 404.</returns>
+        public static async Task<TResult> GetFromJsonOrDefaultAsync<TResult>(
             this HttpClient httpClient,
-            string documentUrl,
+            string requestUri,
             CancellationToken cancellationToken = default)
         {
             using (var response = await httpClient.GetAsync(
-                documentUrl,
+                requestUri,
                 HttpCompletionOption.ResponseHeadersRead,
                 cancellationToken))
             {
-                if (response.StatusCode != HttpStatusCode.OK)
+                if (response.StatusCode == HttpStatusCode.NotFound)
                 {
-                    return new ResponseAndResult<TResult>(
-                        HttpMethod.Get,
-                        documentUrl,
-                        response.StatusCode,
-                        response.ReasonPhrase,
-                        hasResult: false,
-                        result: default);
+                    return default;
                 }
 
-                var result = await response.Content.ReadFromJsonAsync<TResult>();
-
-                return new ResponseAndResult<TResult>(
-                    HttpMethod.Get,
-                    documentUrl,
-                    response.StatusCode,
-                    response.ReasonPhrase,
-                    hasResult: true,
-                    result: result);
+                return await response.Content.ReadFromJsonAsync<TResult>();
             }
         }
     }
