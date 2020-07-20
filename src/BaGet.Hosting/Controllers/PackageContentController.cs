@@ -21,15 +21,15 @@ namespace BaGet.Hosting
             _content = content ?? throw new ArgumentNullException(nameof(content));
         }
 
-        public async Task<ActionResult<PackageVersionsResponse>> GetPackageVersionsAsync(string id, CancellationToken cancellationToken)	
-        {	
-            var versions = await _content.GetPackageVersionsOrNullAsync(id, cancellationToken);	
-            if (versions == null)	
-            {	
-                return NotFound();	
-            }	
+        public async Task<ActionResult<PackageVersionsResponse>> GetPackageVersionsAsync(string id, CancellationToken cancellationToken)
+        {
+            var versions = await _content.GetPackageVersionsOrNullAsync(id, cancellationToken);
+            if (versions == null)
+            {
+                return NotFound();
+            }
 
-            return versions;	
+            return versions;
         }
 
         public async Task<IActionResult> DownloadPackageAsync(string id, string version, CancellationToken cancellationToken)
