@@ -1,6 +1,5 @@
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,6 +8,14 @@ namespace BaGet.Protocol
 {
     internal static class HttpClientExtensions
     {
+        /// <summary>
+        /// Deserialize JSON content.
+        /// </summary>
+        /// <typeparam name="TResult">The JSON type to deserialize.</typeparam>
+        /// <param name="httpClient">The HTTP client that will perform the request.</param>
+        /// <param name="requestUri">The request URI.</param>
+        /// <param name="cancellationToken">A token to cancel the task.</param>
+        /// <returns>The deserialized JSON content</returns>
         public static async Task<TResult> GetFromJsonAsync<TResult>(
             this HttpClient httpClient,
             string requestUri,
@@ -54,7 +61,12 @@ namespace BaGet.Protocol
                     return default;
                 }
 
-                return await response.Content.ReadFromJsonAsync<TResult>();
+                response.EnsureSuccessStatusCode();
+
+                using (var stream = await response.Content.ReadAsStreamAsync())
+                {
+                    return await JsonSerializer.DeserializeAsync<TResult>(stream);
+                }
             }
         }
     }
