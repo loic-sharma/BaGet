@@ -12,7 +12,6 @@
     <PackageReference Include="NuGet.Frameworks" Version="$(NuGetPackageVersion)" />
     <PackageReference Include="NuGet.Versioning" Version="$(NuGetPackageVersion)" />
     <PackageReference Include="System.Net.Http.Json" Version="3.2.1" />
-    <PackageReference Include="System.Text.Json" Version="4.7.2" />
   </ItemGroup>
 
 </Project>

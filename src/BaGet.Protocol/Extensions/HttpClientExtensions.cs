@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,6 +9,27 @@ namespace BaGet.Protocol
 {
     internal static class HttpClientExtensions
     {
+        public static async Task<TResult> GetFromJsonAsync<TResult>(
+            this HttpClient httpClient,
+            string requestUri,
+            CancellationToken cancellationToken = default)
+        {
+            using (var response = await httpClient.GetAsync(
+                requestUri,
+                HttpCompletionOption.ResponseHeadersRead,
+                cancellationToken))
+            {
+                // This is similar to System.Net.Http.Json's implementation, however,
+                // this does not validate that the response's content type indicates JSON content.
+                response.EnsureSuccessStatusCode();
+
+                using (var stream = await response.Content.ReadAsStreamAsync())
+                {
+                    return await JsonSerializer.DeserializeAsync<TResult>(stream);
+                }
+            }
+        }
+
         /// <summary>
         /// Deserialize JSON content. If the HTTP response status code is 404,
         /// returns the default value.
