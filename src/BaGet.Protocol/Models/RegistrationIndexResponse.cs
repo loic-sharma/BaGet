@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace BaGet.Protocol.Models
 {
@@ -20,26 +20,26 @@ namespace BaGet.Protocol.Models
         /// <summary>
         /// The URL to the registration index.
         /// </summary>
-        [JsonProperty("@id")]
+        [JsonPropertyName("@id")]
         public string RegistrationIndexUrl { get; set; }
 
         /// <summary>
         /// The registration index's type.
         /// </summary>
-        [JsonProperty("@type")]
+        [JsonPropertyName("@type")]
         public IReadOnlyList<string> Type { get; set; }
 
         /// <summary>
-        /// The number of registration pages. See <see cref="Pages"/>. 
+        /// The number of registration pages. See <see cref="Pages"/>.
         /// </summary>
-        [JsonProperty("count")]
+        [JsonPropertyName("count")]
         public int Count { get; set; }
 
         /// <summary>
         /// The pages that contain all of the versions of the package, ordered
         /// by the package's version.
         /// </summary>
-        [JsonProperty("items")]
+        [JsonPropertyName("items")]
         public IReadOnlyList<RegistrationIndexPage> Pages { get; set; }
     }
 }

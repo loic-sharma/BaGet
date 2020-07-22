@@ -29,7 +29,7 @@ export interface ICatalogEntry {
   listed: boolean;
   packageTypes: string[];
   repositoryUrl: string;
-  repositoryType: string;
+  repositoryType?: string;
   authors: string;
   tags: string[];
   dependencyGroups: IDependencyGroup[];

@@ -144,18 +144,19 @@ namespace BaGet.Protocol.Catalog
             bool success;
             try
             {
-                switch (leafItem.Type)
+                if (leafItem.IsPackageDelete())
                 {
-                    case CatalogLeafType.PackageDelete:
-                        var packageDelete = await _client.GetPackageDeleteLeafAsync(leafItem.CatalogLeafUrl);
-                        success = await _leafProcessor.ProcessPackageDeleteAsync(packageDelete, cancellationToken);
-                        break;
-                    case CatalogLeafType.PackageDetails:
-                        var packageDetails = await _client.GetPackageDetailsLeafAsync(leafItem.CatalogLeafUrl);
-                        success = await _leafProcessor.ProcessPackageDetailsAsync(packageDetails, cancellationToken);
-                        break;
-                    default:
-                        throw new NotSupportedException($"The catalog leaf type '{leafItem.Type}' is not supported.");
+                    var packageDelete = await _client.GetPackageDeleteLeafAsync(leafItem.CatalogLeafUrl);
+                    success = await _leafProcessor.ProcessPackageDeleteAsync(packageDelete, cancellationToken);
+                }
+                else if (leafItem.IsPackageDetails())
+                {
+                    var packageDetails = await _client.GetPackageDetailsLeafAsync(leafItem.CatalogLeafUrl);
+                    success = await _leafProcessor.ProcessPackageDetailsAsync(packageDetails, cancellationToken);
+                }
+                else
+                {
+                    throw new NotSupportedException($"The catalog leaf type '{leafItem.Type}' is not supported.");
                 }
             }
             catch (Exception exception)

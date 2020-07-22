@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace BaGet.Protocol.Models
 {
@@ -17,43 +17,43 @@ namespace BaGet.Protocol.Models
         /// <summary>
         /// The package's authors.
         /// </summary>
-        [JsonProperty("authors")]
+        [JsonPropertyName("authors")]
         public string Authors { get; set; }
 
         /// <summary>
         /// The package's copyright.
         /// </summary>
-        [JsonProperty("copyright")]
+        [JsonPropertyName("copyright")]
         public string Copyright { get; set; }
 
         /// <summary>
         /// A timestamp of when the package was first created. Fallback property: <see cref="CatalogLeaf.Published"/>.
         /// </summary>
-        [JsonProperty("created")]
+        [JsonPropertyName("created")]
         public DateTimeOffset Created { get; set; }
 
         /// <summary>
         /// A timestamp of when the package was last edited.
         /// </summary>
-        [JsonProperty("lastEdited")]
+        [JsonPropertyName("lastEdited")]
         public DateTimeOffset LastEdited { get; set; }
 
         /// <summary>
         /// The dependencies of the package, grouped by target framework.
         /// </summary>
-        [JsonProperty("dependencyGroups")]
+        [JsonPropertyName("dependencyGroups")]
         public List<DependencyGroupItem> DependencyGroups { get; set; }
 
         /// <summary>
         /// The package's description.
         /// </summary>
-        [JsonProperty("description")]
+        [JsonPropertyName("description")]
         public string Description { get; set; }
 
         /// <summary>
         /// The URL to the package's icon.
         /// </summary>
-        [JsonProperty("iconUrl")]
+        [JsonPropertyName("iconUrl")]
         public string IconUrl { get; set; }
 
         /// <summary>
@@ -61,110 +61,110 @@ namespace BaGet.Protocol.Models
         /// Note that the NuGet.org catalog had this wrong in some cases.
         /// Example: https://api.nuget.org/v3/catalog0/data/2016.03.11.21.02.55/mvid.fody.2.json
         /// </summary>
-        [JsonProperty("isPrerelease")]
+        [JsonPropertyName("isPrerelease")]
         public bool IsPrerelease { get; set; }
 
         /// <summary>
         /// The package's language.
         /// </summary>
-        [JsonProperty("language")]
+        [JsonPropertyName("language")]
         public string Language { get; set; }
 
         /// <summary>
         /// THe URL to the package's license.
         /// </summary>
-        [JsonProperty("licenseUrl")]
+        [JsonPropertyName("licenseUrl")]
         public string LicenseUrl { get; set; }
 
         /// <summary>
         /// Whether the pacakge is listed.
         /// </summary>
-        [JsonProperty("listed")]
+        [JsonPropertyName("listed")]
         public bool? Listed { get; set; }
 
         /// <summary>
         /// The minimum NuGet client version needed to use this package.
         /// </summary>
-        [JsonProperty("minClientVersion")]
+        [JsonPropertyName("minClientVersion")]
         public string MinClientVersion { get; set; }
 
         /// <summary>
         /// The hash of the package encoded using Base64.
         /// Hash algorithm can be detected using <see cref="PackageHashAlgorithm"/>.
         /// </summary>
-        [JsonProperty("packageHash")]
+        [JsonPropertyName("packageHash")]
         public string PackageHash { get; set; }
 
         /// <summary>
         /// The algorithm used to hash <see cref="PackageHash"/>.
         /// </summary>
-        [JsonProperty("packageHashAlgorithm")]
+        [JsonPropertyName("packageHashAlgorithm")]
         public string PackageHashAlgorithm { get; set; }
 
         /// <summary>
         /// The size of the package .nupkg in bytes.
         /// </summary>
-        [JsonProperty("packageSize")]
+        [JsonPropertyName("packageSize")]
         public long PackageSize { get; set; }
 
         /// <summary>
         /// The URL for the package's home page.
         /// </summary>
-        [JsonProperty("projectUrl")]
+        [JsonPropertyName("projectUrl")]
         public string ProjectUrl { get; set; }
 
         /// <summary>
         /// The package's release notes.
         /// </summary>
-        [JsonProperty("releaseNotes")]
+        [JsonPropertyName("releaseNotes")]
         public string ReleaseNotes { get; set; }
 
         /// <summary>
         /// If true, the package requires its license to be accepted.
         /// </summary>
-        [JsonProperty("requireLicenseAcceptance")]
+        [JsonPropertyName("requireLicenseAcceptance")]
         public bool? RequireLicenseAcceptance { get; set; }
 
         /// <summary>
         /// The package's summary.
         /// </summary>
-        [JsonProperty("summary")]
+        [JsonPropertyName("summary")]
         public string Summary { get; set; }
 
         /// <summary>
         /// The package's tags.
         /// </summary>
-        [JsonProperty("tags")]
+        [JsonPropertyName("tags")]
         public List<string> Tags { get; set; }
 
         /// <summary>
         /// The package's title.
         /// </summary>
-        [JsonProperty("title")]
+        [JsonPropertyName("title")]
         public string Title { get; set; }
 
         /// <summary>
         /// The version string as it's originally found in the .nuspec.
         /// </summary>
-        [JsonProperty("verbatimVersion")]
+        [JsonPropertyName("verbatimVersion")]
         public string VerbatimVersion { get; set; }
 
         /// <summary>
         /// The package's License Expression.
         /// </summary>
-        [JsonProperty("licenseExpression")]
+        [JsonPropertyName("licenseExpression")]
         public string LicenseExpression { get; set; }
 
         /// <summary>
         /// The package's license file.
         /// </summary>
-        [JsonProperty("licenseFile")]
+        [JsonPropertyName("licenseFile")]
         public string LicenseFile { get; set; }
 
         /// <summary>
         /// The package's icon file.
         /// </summary>
-        [JsonProperty("iconFile")]
+        [JsonPropertyName("iconFile")]
         public string IconFile { get; set; }
     }
 }

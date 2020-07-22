@@ -45,7 +45,8 @@ namespace BaGet.Protocol.Tests
             var leaf = await _target.GetPackageDetailsLeafAsync(TestData.PackageDetailsCatalogLeafUrl);
 
             Assert.Equal(TestData.PackageDetailsCatalogLeafUrl, leaf.CatalogLeafUrl);
-            Assert.Equal(CatalogLeafType.PackageDetails, leaf.Type);
+            Assert.Equal("PackageDetails", leaf.Type[0]);
+            Assert.Equal("catalog:Permalink", leaf.Type[1]);
 
             Assert.Equal("Test.Package", leaf.PackageId);
             Assert.Equal("1.0.0", leaf.PackageVersion);
@@ -57,7 +58,8 @@ namespace BaGet.Protocol.Tests
             var leaf = await _target.GetPackageDeleteLeafAsync(TestData.PackageDeleteCatalogLeafUrl);
 
             Assert.Equal(TestData.PackageDeleteCatalogLeafUrl, leaf.CatalogLeafUrl);
-            Assert.Equal(CatalogLeafType.PackageDelete, leaf.Type);
+            Assert.Equal("PackageDelete", leaf.Type[0]);
+            Assert.Equal("catalog:Permalink", leaf.Type[1]);
 
             Assert.Equal("Deleted.Package", leaf.PackageId);
             Assert.Equal("1.0.0", leaf.PackageVersion);

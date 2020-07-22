@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BaGet.Protocol.Models;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 
@@ -41,7 +42,7 @@ namespace BaGet.Core
                     packages));
         }
 
-        public async Task<BaGetRegistrationLeafResponse> GetRegistrationLeafOrNullAsync(
+        public async Task<RegistrationLeafResponse> GetRegistrationLeafOrNullAsync(
             string id,
             NuGetVersion version,
             CancellationToken cancellationToken = default)

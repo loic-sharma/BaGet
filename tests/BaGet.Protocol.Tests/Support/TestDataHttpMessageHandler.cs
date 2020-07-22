@@ -55,7 +55,10 @@ namespace BaGet.Protocol.Tests
             {
                 RequestMessage = request,
                 StatusCode = HttpStatusCode.OK,
-                Content = new StringContent(getContent()),
+                Content = new StringContent(
+                    getContent(),
+                    encoding: null,
+                    mediaType: "application/json"),
             };
         }
     }

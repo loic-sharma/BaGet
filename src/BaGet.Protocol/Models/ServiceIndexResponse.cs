@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace BaGet.Protocol.Models
 {
@@ -13,13 +13,13 @@ namespace BaGet.Protocol.Models
         /// <summary>
         /// The service index's version.
         /// </summary>
-        [JsonProperty("version")]
+        [JsonPropertyName("version")]
         public string Version { get; set; }
 
         /// <summary>
         /// The resources declared by this service index.
         /// </summary>
-        [JsonProperty("resources")]
+        [JsonPropertyName("resources")]
         public IReadOnlyList<ServiceIndexItem> Resources { get; set; }
     }
 }

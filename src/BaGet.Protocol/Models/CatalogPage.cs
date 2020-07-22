@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace BaGet.Protocol.Models
 {
@@ -17,25 +17,25 @@ namespace BaGet.Protocol.Models
         /// <summary>
         /// A unique ID associated with the most recent commit in this page.
         /// </summary>
-        [JsonProperty("commitTimeStamp")]
+        [JsonPropertyName("commitTimeStamp")]
         public DateTimeOffset CommitTimestamp { get; set; }
 
         /// <summary>
         /// The number of items in the page.
         /// </summary>
-        [JsonProperty("count")]
+        [JsonPropertyName("count")]
         public int Count { get; set; }
 
         /// <summary>
         /// The items used to discover <see cref="CatalogLeaf"/>s.
         /// </summary>
-        [JsonProperty("items")]
+        [JsonPropertyName("items")]
         public List<CatalogLeafItem> Items { get; set; }
 
         /// <summary>
         /// The URL to the Catalog Index.
         /// </summary>
-        [JsonProperty("parent")]
+        [JsonPropertyName("parent")]
         public string CatalogIndexUrl { get; set; }
     }
 }

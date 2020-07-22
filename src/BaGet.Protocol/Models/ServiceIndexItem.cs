@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace BaGet.Protocol.Models
 {
@@ -12,19 +12,19 @@ namespace BaGet.Protocol.Models
         /// <summary>
         /// The resource's base URL.
         /// </summary>
-        [JsonProperty("@id")]
+        [JsonPropertyName("@id")]
         public string ResourceUrl { get; set; }
 
         /// <summary>
         /// The resource's type.
         /// </summary>
-        [JsonProperty("@type")]
+        [JsonPropertyName("@type")]
         public string Type { get; set; }
 
         /// <summary>
         /// Human readable comments about the resource.
         /// </summary>
-        [JsonProperty("comment")]
+        [JsonPropertyName("comment")]
         public string Comment { get; set; }
     }
 }

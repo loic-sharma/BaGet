@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using BaGet.Protocol.Models;
 using NuGet.Versioning;
 
 namespace BaGet.Core
@@ -27,7 +28,7 @@ namespace BaGet.Core
         /// <param name="packageVersion">The package's version.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The registration leaf, or null if the package does not exist.</returns>
-        Task<BaGetRegistrationLeafResponse> GetRegistrationLeafOrNullAsync(
+        Task<RegistrationLeafResponse> GetRegistrationLeafOrNullAsync(
             string packageId,
             NuGetVersion packageVersion,
             CancellationToken cancellationToken = default);

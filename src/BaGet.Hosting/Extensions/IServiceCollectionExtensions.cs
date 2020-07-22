@@ -17,9 +17,9 @@ namespace BaGet
                 .AddControllers()
                 .AddApplicationPart(typeof(PackageContentController).Assembly)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
-                .AddNewtonsoftJson(options =>
+                .AddJsonOptions(options =>
                 {
-                    options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+                    options.JsonSerializerOptions.IgnoreNullValues = true;
                 });
 
             services.AddHttpContextAccessor();

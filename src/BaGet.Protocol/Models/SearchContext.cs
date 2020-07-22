@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace BaGet.Protocol.Models
 {
@@ -13,10 +13,10 @@ namespace BaGet.Protocol.Models
             };
         }
 
-        [JsonProperty("@vocab")]
+        [JsonPropertyName("@vocab")]
         public string Vocab { get; set; }
 
-        [JsonProperty("@base")]
+        [JsonPropertyName("@base")]
         public string Base { get; set; }
     }
 }

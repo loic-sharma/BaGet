@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace BaGet.Protocol.Models
 {
@@ -13,26 +13,26 @@ namespace BaGet.Protocol.Models
         /// <summary>
         /// The URL to the document used to produce this object.
         /// </summary>
-        [JsonProperty("@id")]
+        [JsonPropertyName("@id")]
         public string CatalogLeafUrl { get; set; }
 
         /// <summary>
         /// The reasons why the package was deprecated.
         /// Deprecation reasons include: "Legacy", "CriticalBugs", and "Other".
         /// </summary>
-        [JsonProperty("reasons")]
+        [JsonPropertyName("reasons")]
         public IReadOnlyList<string> Reasons { get; set; }
 
         /// <summary>
         /// The additional details about this deprecation.
         /// </summary>
-        [JsonProperty("message")]
+        [JsonPropertyName("message")]
         public string Message { get; set; }
 
         /// <summary>
         /// The alternate package that should be used instead.
         /// </summary>
-        [JsonProperty("alternatePackage")]
+        [JsonPropertyName("alternatePackage")]
         public AlternatePackage AlternatePackage { get; set; }
     }
 }

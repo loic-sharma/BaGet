@@ -36,7 +36,7 @@ interface IPackage {
   licenseUrl: string;
   downloadUrl: string;
   repositoryUrl: string;
-  repositoryType: string;
+  repositoryType?: string;
   releaseNotes: string;
   totalDownloads: number;
   packageType: PackageType;

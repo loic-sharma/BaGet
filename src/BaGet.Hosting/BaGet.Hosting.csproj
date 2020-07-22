@@ -12,10 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="$(MicrosoftAspNetCorePackageVersion)" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
   </ItemGroup>
 </Project>
