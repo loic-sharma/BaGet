@@ -36,12 +36,14 @@ The following `Mirror` setting configures BaGet to index packages from [nuget.or
 
     "Mirror": {
         "Enabled":  true,
-        "PackageSource": "https://api.nuget.org/v3/index.json"
+        "PackageSource": "https://api.nuget.org/v3/index.json",
+        "Exclude": []
     },
 
     ...
 }
 ```
+The ```Exclude``` list allows to specify regular expressions to prevent indexing certain packages from upstream source, e.g. to prevent clashes with internal packages.
 
 !!! info
     `PackageSource` is the value of the [NuGet service index](https://docs.microsoft.com/en-us/nuget/api/service-index).

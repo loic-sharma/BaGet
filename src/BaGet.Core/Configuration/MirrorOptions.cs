@@ -22,6 +22,10 @@ namespace BaGet.Core
         /// </summary>
         [Range(0, int.MaxValue)]
         public int PackageDownloadTimeoutSeconds { get; set; } = 600;
+        /// <summary>
+        /// The ```Exclude``` list allows to specify regular expressions to prevent indexing certain packages from upstream source, e.g. to prevent clashes with internal packages.
+        /// </summary>
+        public IEnumerable<string> Exclude { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
