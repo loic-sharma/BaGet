@@ -43,13 +43,27 @@ namespace BaGet.Hosting
 
         public async Task<ActionResult<AutocompleteResponse>> AutocompleteAsync(
             [FromQuery(Name = "q")] string query = null,
+            [FromQuery]int skip = 0,
+            [FromQuery]int take = 20,
+            [FromQuery]bool prerelease = false,
+            [FromQuery]string semVerLevel = null,
+
+            // These are unofficial parameters
+            [FromQuery]string packageType = null,
             CancellationToken cancellationToken = default)
         {
+            var includeSemVer2 = semVerLevel == "2.0.0";
+
             // TODO: Add other autocomplete parameters
             // TODO: Support versions autocomplete.
             // See: https://github.com/loic-sharma/BaGet/issues/291
             return await _searchService.AutocompleteAsync(
                 query,
+                skip,
+                take,
+                prerelease,
+                includeSemVer2,
+                packageType,
                 cancellationToken: cancellationToken);
         }
 
@@ -57,10 +71,7 @@ namespace BaGet.Hosting
             [FromQuery] string packageId,
             CancellationToken cancellationToken = default)
         {
-            // TODO: Add other dependents parameters.
-            return await _searchService.FindDependentsAsync(
-                packageId,
-                cancellationToken: cancellationToken);
+            return await _searchService.FindDependentsAsync(packageId, cancellationToken);
         }
     }
 }

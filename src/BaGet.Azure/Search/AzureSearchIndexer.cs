@@ -25,7 +25,7 @@ namespace BaGet.Azure
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task IndexAsync(Package package, CancellationToken cancellationToken = default)
+        public async Task IndexAsync(Package package, CancellationToken cancellationToken)
         {
             var packages = await _packages.FindAsync(package.Id, includeUnlisted: false, cancellationToken);
 

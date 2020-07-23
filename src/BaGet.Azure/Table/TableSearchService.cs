@@ -35,14 +35,39 @@ namespace BaGet.Azure
             _url = url ?? throw new ArgumentNullException(nameof(url));
         }
 
+        public async Task<SearchResponse> SearchAsync(
+            string query,
+            int skip,
+            int take,
+            bool includePrerelease,
+            bool includeSemVer2,
+            string packageType,
+            string framework,
+            CancellationToken cancellationToken)
+        {
+            var results = await SearchInternalAsync(
+                query,
+                skip,
+                take,
+                includePrerelease,
+                includeSemVer2,
+                cancellationToken);
+
+            return new SearchResponse
+            {
+                TotalHits = results.Count,
+                Data = results.Select(ToSearchResult).ToList()
+            };
+        }
+
         public async Task<AutocompleteResponse> AutocompleteAsync(
-            string query = null,
-            AutocompleteType type = AutocompleteType.PackageIds,
-            int skip = 0,
-            int take = 20,
-            bool includePrerelease = true,
-            bool includeSemVer2 = true,
-            CancellationToken cancellationToken = default)
+            string query,
+            int skip,
+            int take,
+            bool includePrerelease,
+            bool includeSemVer2,
+            string packageType,
+            CancellationToken cancellationToken)
         {
             // TODO: Support version autocomplete
             var results = await SearchInternalAsync(
@@ -60,39 +85,20 @@ namespace BaGet.Azure
             };
         }
 
-        public async Task<SearchResponse> SearchAsync(
-            string query = null,
-            int skip = 0,
-            int take = 20,
-            bool includePrerelease = true,
-            bool includeSemVer2 = true,
-            string packageType = null,
-            string framework = null,
-            CancellationToken cancellationToken = default)
+        public Task<AutocompleteResponse> ListPackageVersionsAssync(
+            string packageId,
+            bool includePrerelease,
+            bool includeSemVer2,
+            CancellationToken cancellationToken)
         {
-            var results = await SearchInternalAsync(
-                query,
-                skip,
-                take,
-                includePrerelease,
-                includeSemVer2,
-                cancellationToken);
-
-            return new SearchResponse
-            {
-                TotalHits = results.Count,
-                Data = results.Select(ToSearchResult).ToList()
-            };
+            // TODO: Support versions autocomplete.
+            // See: https://github.com/loic-sharma/BaGet/issues/291
+            throw new NotImplementedException();
         }
 
-        public Task<DependentsResponse> FindDependentsAsync(string packageId, int skip = 0, int take = 20, CancellationToken cancellationToken = default)
+        public Task<DependentsResponse> FindDependentsAsync(string packageId, CancellationToken cancellationToken)
         {
             return EmptyDependentsResponseTask;
-        }
-
-        public Task IndexAsync(Package package, CancellationToken cancellationToken = default)
-        {
-            return Task.CompletedTask;
         }
 
         private async Task<List<List<PackageEntity>>> SearchInternalAsync(

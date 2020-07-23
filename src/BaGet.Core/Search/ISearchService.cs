@@ -25,48 +25,59 @@ namespace BaGet.Core
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The search response.</returns>
         Task<SearchResponse> SearchAsync(
-            string query = null,
-            int skip = 0,
-            int take = 20,
-            bool includePrerelease = true,
-            bool includeSemVer2 = true,
-            string packageType = null,
-            string framework = null,
-            CancellationToken cancellationToken = default);
+            string query,
+            int skip,
+            int take,
+            bool includePrerelease,
+            bool includeSemVer2,
+            string packageType,
+            string framework,
+            CancellationToken cancellationToken);
 
         /// <summary>
         /// Perform an autocomplete query.
-        /// See: https://docs.microsoft.com/en-us/nuget/api/search-autocomplete-service-resource
+        /// See: https://docs.microsoft.com/en-us/nuget/api/search-autocomplete-service-resource#search-for-package-ids
         /// </summary>
         /// <param name="query">The autocomplete query.</param>
-        /// <param name="type">The autocomplete request type.</param>
         /// <param name="skip">How many results to skip.</param>
         /// <param name="take">How many results to return.</param>
         /// <param name="includePrerelease">Whether pre-release packages should be returned.</param>
         /// <param name="includeSemVer2">Whether packages that require SemVer 2.0.0 compatibility should be returned.</param>
+        /// <param name="packageType">The type of packages that should be returned.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The autocomplete response.</returns>
         Task<AutocompleteResponse> AutocompleteAsync(
-            string query = null,
-            AutocompleteType type = AutocompleteType.PackageIds,
-            int skip = 0,
-            int take = 20,
-            bool includePrerelease = true,
-            bool includeSemVer2 = true,
-            CancellationToken cancellationToken = default);
+            string query,
+            int skip,
+            int take,
+            bool includePrerelease,
+            bool includeSemVer2,
+            string packageType,
+            CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Enumerate listed package versions.
+        /// See: https://docs.microsoft.com/en-us/nuget/api/search-autocomplete-service-resource#enumerate-package-versions
+        /// </summary>
+        /// <param name="packageId">The package ID.</param>
+        /// <param name="includePrerelease">Whether pre-release packages should be returned.</param>
+        /// <param name="includeSemVer2">Whether packages that require SemVer 2.0.0 compatibility should be returned.</param>
+        /// <param name="cancellationToken">A token to cancel the task.</param>
+        /// <returns>The package versions that matched the request.</returns>
+        Task<AutocompleteResponse> ListPackageVersionsAssync(
+            string packageId,
+            bool includePrerelease,
+            bool includeSemVer2,
+            CancellationToken cancellationToken);
 
         /// <summary>
         /// Find the packages that depend on a given package.
         /// </summary>
         /// <param name="packageId">The package whose dependents should be found.</param>
-        /// <param name="skip">How many results to skip.</param>
-        /// <param name="take">How many results to return.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The dependents response.</returns>
         Task<DependentsResponse> FindDependentsAsync(
             string packageId,
-            int skip = 0,
-            int take = 20,
-            CancellationToken cancellationToken = default);
+            CancellationToken cancellationToken);
     }
 }

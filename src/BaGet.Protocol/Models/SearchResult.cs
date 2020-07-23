@@ -50,6 +50,12 @@ namespace BaGet.Protocol.Models
         public string LicenseUrl { get; set; }
 
         /// <summary>
+        /// The package types defined by the package author.
+        /// </summary>
+        [JsonPropertyName("packageTypes")]
+        public IReadOnlyList<SearchResultPackageType> PackageTypes { get; set; }
+
+        /// <summary>
         /// The URL of the matched package's homepage.
         /// </summary>
         [JsonPropertyName("projectUrl")]

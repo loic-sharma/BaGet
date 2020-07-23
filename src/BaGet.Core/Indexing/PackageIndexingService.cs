@@ -152,7 +152,7 @@ namespace BaGet.Core
                 package.Id,
                 package.NormalizedVersionString);
 
-            await _search.IndexAsync(package);
+            await _search.IndexAsync(package, cancellationToken);
 
             _logger.LogInformation(
                 "Successfully indexed package {Id} {Version} in search",
