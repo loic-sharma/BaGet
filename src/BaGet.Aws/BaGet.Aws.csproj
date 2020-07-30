@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="AWSSDK.S3" Version="3.3.110.20" />
     <PackageReference Include="AWSSDK.SecurityToken" Version="3.3.104.27" />
+    <PackageReference Include="Kralizek.Extensions.Configuration.AWSSecretsManager" Version="1.4.1" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(MicrosoftExtensionsPackageVersion)" />
   </ItemGroup>
 

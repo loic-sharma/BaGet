@@ -5,6 +5,7 @@ using Amazon.Runtime;
 using Amazon.S3;
 using BaGet.Aws;
 using BaGet.Core;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -75,6 +76,30 @@ namespace BaGet
             app.AddAwsS3Storage();
             app.Services.Configure(configure);
             return app;
+        }
+
+        public static IConfigurationBuilder AddAwsSecretsManager(this IConfigurationBuilder builder)
+        {
+            IConfiguration partialConfig = builder.Build();
+            var secretsPath = partialConfig["BAGET_AWS_SECRETS_PATH"];
+            if (!string.IsNullOrEmpty(secretsPath))
+            {
+                var secretsRegion = partialConfig["BAGET_AWS_SECRETS_REGION"];
+                RegionEndpoint region = null;
+                if(!string.IsNullOrEmpty(secretsRegion))
+                {
+                    region = RegionEndpoint.GetBySystemName(secretsRegion);
+                }
+                builder.AddSecretsManager(region: region, configurator: options =>
+                {
+                    options.SecretFilter = entry => entry.Name.StartsWith(secretsPath);
+                    options.KeyGenerator = (entry, key) => { var v = key.Substring(secretsPath.Length).Replace("__", ":");
+                                                             if (v.StartsWith(":")) { v = v.Substring(1); }
+                                                             return v; };
+                });
+            }
+            
+            return builder;
         }
 
         private static async Task<AWSCredentials> AssumeRoleAsync(
