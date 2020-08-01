@@ -22,24 +22,12 @@ namespace BaGet.Core
         }
 
         public async Task<SearchResponse> SearchAsync(
-            string query,
-            int skip,
-            int take,
-            bool includePrerelease,
-            bool includeSemVer2,
-            string packageType,
-            string framework,
+            SearchRequest request,
             CancellationToken cancellationToken)
         {
             var result = new List<SearchResult>();
             var packages = await SearchImplAsync(
-                query,
-                skip,
-                take,
-                includePrerelease,
-                includeSemVer2,
-                packageType,
-                framework,
+                request,
                 cancellationToken);
 
             foreach (var package in packages)
@@ -84,34 +72,29 @@ namespace BaGet.Core
         }
 
         public async Task<AutocompleteResponse> AutocompleteAsync(
-            string query,
-            int skip,
-            int take,
-            bool includePrerelease,
-            bool includeSemVer2,
-            string packageType,
+            AutocompleteRequest request,
             CancellationToken cancellationToken)
         {
             IQueryable<Package> search = _context.Packages;
 
-            if (!string.IsNullOrEmpty(query))
+            if (!string.IsNullOrEmpty(request.Query))
             {
-                query = query.ToLower();
+                var query = request.Query.ToLower();
                 search = search.Where(p => p.Id.ToLower().Contains(query));
             }
 
             search = AddSearchFilters(
                 search,
-                includePrerelease,
-                includeSemVer2,
-                packageType,
+                request.IncludePrerelease,
+                request.IncludeSemVer2,
+                request.PackageType,
                 frameworks: null);
 
             var results = await search
                 .OrderByDescending(p => p.Downloads)
                 .Distinct()
-                .Skip(skip)
-                .Take(take)
+                .Skip(request.Skip)
+                .Take(request.Take)
                 .Select(p => p.Id)
                 .ToListAsync(cancellationToken);
 
@@ -154,36 +137,30 @@ namespace BaGet.Core
         }
 
         private async Task<List<IGrouping<string, Package>>> SearchImplAsync(
-            string query,
-            int skip,
-            int take,
-            bool includePrerelease,
-            bool includeSemVer2,
-            string packageType,
-            string framework,
+            SearchRequest request,
             CancellationToken cancellationToken)
         {
-            var frameworks = GetCompatibleFrameworksOrNull(framework);
+            var frameworks = GetCompatibleFrameworksOrNull(request.Framework);
             IQueryable<Package> search = _context.Packages;
 
             search = AddSearchFilters(
                 search,
-                includePrerelease,
-                includeSemVer2,
-                packageType,
+                request.IncludePrerelease,
+                request.IncludeSemVer2,
+                request.PackageType,
                 frameworks);
 
-            if (!string.IsNullOrEmpty(query))
+            if (!string.IsNullOrEmpty(request.Query))
             {
-                query = query.ToLower();
+                var query = request.Query.ToLower();
                 search = search.Where(p => p.Id.ToLower().Contains(query));
             }
 
             var packageIds = search.Select(p => p.Id)
                 .Distinct()
                 .OrderBy(id => id)
-                .Skip(skip)
-                .Take(take);
+                .Skip(request.Skip)
+                .Take(request.Take);
 
             // This query MUST fetch all versions for each package that matches the search,
             // otherwise the results for a package's latest version may be incorrect.
@@ -204,9 +181,9 @@ namespace BaGet.Core
 
             search = AddSearchFilters(
                 search,
-                includePrerelease,
-                includeSemVer2,
-                packageType,
+                request.IncludePrerelease,
+                request.IncludeSemVer2,
+                request.PackageType,
                 frameworks);
 
             var results = await search.ToListAsync(cancellationToken);

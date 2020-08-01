@@ -31,27 +31,24 @@ namespace BaGet.Azure
         }
 
         public async Task<SearchResponse> SearchAsync(
-            string query,
-            int skip,
-            int take,
-            bool includePrerelease,
-            bool includeSemVer2,
-            string packageType,
-            string framework,
+            SearchRequest request,
             CancellationToken cancellationToken)
         {
-            var searchText = BuildSeachQuery(query, packageType, framework);
-            var filter = BuildSearchFilter(includePrerelease, includeSemVer2);
+            var searchText = BuildSeachQuery(request.Query, request.PackageType, request.Framework);
+            var filter = BuildSearchFilter(request.IncludePrerelease, request.IncludeSemVer2);
             var parameters = new SearchParameters
             {
                 IncludeTotalResultCount = true,
                 QueryType = QueryType.Full,
-                Skip = skip,
-                Top = take,
+                Skip = request.Skip,
+                Top = request.Take,
                 Filter = filter
             };
 
-            var response = await _searchClient.Documents.SearchAsync<PackageDocument>(searchText, parameters, cancellationToken: cancellationToken);
+            var response = await _searchClient.Documents.SearchAsync<PackageDocument>(
+                searchText,
+                parameters,
+                cancellationToken: cancellationToken);
 
             var results = new List<SearchResult>();
 
@@ -108,12 +105,7 @@ namespace BaGet.Azure
         }
 
         public async Task<AutocompleteResponse> AutocompleteAsync(
-            string query,
-            int skip,
-            int take,
-            bool includePrerelease,
-            bool includeSemVer2,
-            string packageType,
+            AutocompleteRequest request,
             CancellationToken cancellationToken)
         {
             // TODO: Do a prefix search on the package id field.
@@ -122,11 +114,15 @@ namespace BaGet.Azure
             var parameters = new SearchParameters
             {
                 IncludeTotalResultCount = true,
-                Skip = skip,
-                Top = take,
+                Skip = request.Skip,
+                Top = request.Take,
             };
 
-            var response = await _searchClient.Documents.SearchAsync<PackageDocument>(query, parameters, cancellationToken: cancellationToken);
+            var response = await _searchClient.Documents.SearchAsync<PackageDocument>(
+                request.Query,
+                parameters,
+                cancellationToken: cancellationToken);
+
             var results = response.Results
                 .Select(r => r.Document.Id)
                 .ToList()

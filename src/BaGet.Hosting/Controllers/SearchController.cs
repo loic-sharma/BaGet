@@ -28,17 +28,18 @@ namespace BaGet.Hosting
             [FromQuery]string framework = null,
             CancellationToken cancellationToken = default)
         {
-            var includeSemVer2 = semVerLevel == "2.0.0";
+            var request = new SearchRequest
+            {
+                Skip = skip,
+                Take = take,
+                IncludePrerelease = prerelease,
+                IncludeSemVer2 = semVerLevel == "2.0.0",
+                PackageType = packageType,
+                Framework = framework,
+                Query = query ?? string.Empty,
+            };
 
-            return await _searchService.SearchAsync(
-                query ?? string.Empty,
-                skip,
-                take,
-                prerelease,
-                includeSemVer2,
-                packageType,
-                framework,
-                cancellationToken);
+            return await _searchService.SearchAsync(request, cancellationToken);
         }
 
         public async Task<ActionResult<AutocompleteResponse>> AutocompleteAsync(
@@ -52,19 +53,19 @@ namespace BaGet.Hosting
             [FromQuery]string packageType = null,
             CancellationToken cancellationToken = default)
         {
-            var includeSemVer2 = semVerLevel == "2.0.0";
-
-            // TODO: Add other autocomplete parameters
             // TODO: Support versions autocomplete.
             // See: https://github.com/loic-sharma/BaGet/issues/291
-            return await _searchService.AutocompleteAsync(
-                query,
-                skip,
-                take,
-                prerelease,
-                includeSemVer2,
-                packageType,
-                cancellationToken: cancellationToken);
+            var request = new AutocompleteRequest
+            {
+                Skip = skip,
+                Take = take,
+                IncludePrerelease = prerelease,
+                IncludeSemVer2 = semVerLevel == "2.0.0",
+                PackageType = packageType,
+                Query = query,
+            };
+
+            return await _searchService.AutocompleteAsync(request, cancellationToken);
         }
 
         public async Task<ActionResult<DependentsResponse>> DependentsAsync(

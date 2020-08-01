@@ -36,21 +36,15 @@ namespace BaGet.Azure
         }
 
         public async Task<SearchResponse> SearchAsync(
-            string query,
-            int skip,
-            int take,
-            bool includePrerelease,
-            bool includeSemVer2,
-            string packageType,
-            string framework,
+            SearchRequest request,
             CancellationToken cancellationToken)
         {
             var results = await SearchInternalAsync(
-                query,
-                skip,
-                take,
-                includePrerelease,
-                includeSemVer2,
+                request.Query,
+                request.Skip,
+                request.Take,
+                request.IncludePrerelease,
+                request.IncludeSemVer2,
                 cancellationToken);
 
             return new SearchResponse
@@ -61,21 +55,15 @@ namespace BaGet.Azure
         }
 
         public async Task<AutocompleteResponse> AutocompleteAsync(
-            string query,
-            int skip,
-            int take,
-            bool includePrerelease,
-            bool includeSemVer2,
-            string packageType,
+            AutocompleteRequest request,
             CancellationToken cancellationToken)
         {
-            // TODO: Support version autocomplete
             var results = await SearchInternalAsync(
-                query,
-                skip,
-                take,
-                includePrerelease,
-                includeSemVer2,
+                request.Query,
+                request.Skip,
+                request.Take,
+                request.IncludePrerelease,
+                request.IncludeSemVer2,
                 cancellationToken);
 
             return new AutocompleteResponse

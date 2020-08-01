@@ -35,12 +35,7 @@ namespace BaGet.Core
             });
 
         public Task<AutocompleteResponse> AutocompleteAsync(
-            string query,
-            int skip,
-            int take,
-            bool includePrerelease,
-            bool includeSemVer2,
-            string packageType,
+            AutocompleteRequest request,
             CancellationToken cancellationToken)
         {
             return EmptyAutocompleteResponseTask;
@@ -61,13 +56,7 @@ namespace BaGet.Core
         }
 
         public Task<SearchResponse> SearchAsync(
-            string query,
-            int skip,
-            int take,
-            bool includePrerelease,
-            bool includeSemVer2,
-            string packageType,
-            string framework,
+            SearchRequest request,
             CancellationToken cancellationToken)
         {
             return EmptySearchResponseTask;
