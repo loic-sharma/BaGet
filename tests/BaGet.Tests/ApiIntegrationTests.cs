@@ -33,6 +33,8 @@ namespace BaGet.Tests
         [Fact]
         public async Task SearchReturnsOk()
         {
+            await _factory.AddPackageAsync(PackageData.Default);
+
             using var response = await _client.GetAsync("v3/search");
             var content = await response.Content.ReadAsStreamAsync();
             var json = PrettifyJson(content);
@@ -93,6 +95,8 @@ namespace BaGet.Tests
         [Fact]
         public async Task AutocompleteReturnsOk()
         {
+            await _factory.AddPackageAsync(PackageData.Default);
+
             using var response = await _client.GetAsync("v3/autocomplete");
             var content = await response.Content.ReadAsStreamAsync();
             var json = PrettifyJson(content);
@@ -129,6 +133,8 @@ namespace BaGet.Tests
         [Fact]
         public async Task VersionListReturnsOk()
         {
+            await _factory.AddPackageAsync(PackageData.Default);
+
             var response = await _client.GetAsync("v3/package/DefaultPackage/index.json");
             var content = await response.Content.ReadAsStringAsync();
 
@@ -147,6 +153,8 @@ namespace BaGet.Tests
         [Fact]
         public async Task PackageDownloadReturnsOk()
         {
+            await _factory.AddPackageAsync(PackageData.Default);
+
             using var response = await _client.GetAsync("v3/package/DefaultPackage/1.2.3/DefaultPackage.1.2.3.nupkg");
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -164,6 +172,8 @@ namespace BaGet.Tests
         [Fact]
         public async Task NuspecDownloadReturnsOk()
         {
+            await _factory.AddPackageAsync(PackageData.Default);
+
             using var response = await _client.GetAsync(
                 "v3/package/DefaultPackage/1.2.3/DefaultPackage.1.2.3.nuspec");
 
@@ -182,6 +192,8 @@ namespace BaGet.Tests
         [Fact]
         public async Task PackageMetadataReturnsOk()
         {
+            await _factory.AddPackageAsync(PackageData.Default);
+
             using var response = await _client.GetAsync("v3/registration/DefaultPackage/index.json");
             var content = await response.Content.ReadAsStreamAsync();
             var json = PrettifyJson(content);
@@ -250,6 +262,8 @@ namespace BaGet.Tests
         [Fact]
         public async Task PackageMetadataLeafReturnsOk()
         {
+            await _factory.AddPackageAsync(PackageData.Default);
+
             using var response = await _client.GetAsync("v3/registration/DefaultPackage/1.2.3.json");
             var content = await response.Content.ReadAsStreamAsync();
             var json = PrettifyJson(content);

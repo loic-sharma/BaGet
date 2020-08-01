@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using BaGet.Core;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -97,16 +98,32 @@ namespace BaGet.Tests
                         ctx.Database.Migrate();
 
                         // Seed the application with test data.
-                        var indexer = scope.ServiceProvider.GetRequiredService<IPackageIndexingService>();
-                        var cancellationToken = CancellationToken.None;
 
-                        var result = indexer.IndexAsync(PackageData.Default, cancellationToken).Result;
-                        if (result != PackageIndexingResult.Success)
-                        {
-                            throw new InvalidOperationException($"Unexpected indexing result {result}");
-                        }
                     }
                 });
+        }
+    }
+
+    public static class BaGetWebApplicationFactoryExtensions
+    {
+        public static async Task AddPackageAsync(
+            this WebApplicationFactory<Startup> factory,
+            Stream package,
+            CancellationToken cancellationToken = default)
+        {
+            //PackageData.Default
+            var scopeFactory = factory.Services.GetRequiredService<IServiceScopeFactory>();
+
+            using (var scope = scopeFactory.CreateScope())
+            {
+                var indexer = scope.ServiceProvider.GetRequiredService<IPackageIndexingService>();
+
+                var result = await indexer.IndexAsync(package, cancellationToken);
+                if (result != PackageIndexingResult.Success)
+                {
+                    throw new InvalidOperationException($"Unexpected indexing result {result}");
+                }
+            }
         }
     }
 }
