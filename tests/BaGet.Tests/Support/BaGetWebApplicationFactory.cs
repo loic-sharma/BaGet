@@ -104,14 +104,13 @@ namespace BaGet.Tests
         }
     }
 
-    public static class BaGetWebApplicationFactoryExtensions
+    internal static class BaGetWebApplicationFactoryExtensions
     {
         public static async Task AddPackageAsync(
             this WebApplicationFactory<Startup> factory,
             Stream package,
             CancellationToken cancellationToken = default)
         {
-            //PackageData.Default
             var scopeFactory = factory.Services.GetRequiredService<IServiceScopeFactory>();
 
             using (var scope = scopeFactory.CreateScope())
