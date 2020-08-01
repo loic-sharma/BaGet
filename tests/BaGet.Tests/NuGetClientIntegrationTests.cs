@@ -65,6 +65,8 @@ namespace BaGet.Tests
         [Fact]
         public async Task SearchReturnsResults()
         {
+            await _factory.AddPackageAsync(PackageData.Default);
+
             var resource = await _repository.GetResourceAsync<PackageSearchResource>();
             var searchFilter = new SearchFilter(includePrerelease: true);
 
@@ -111,6 +113,8 @@ namespace BaGet.Tests
         [Fact]
         public async Task AutocompleteReturnsResults()
         {
+            await _factory.AddPackageAsync(PackageData.Default);
+
             var resource = await _repository.GetResourceAsync<AutoCompleteResource>();
             var results = await resource.IdStartsWith(
                 "",
@@ -139,6 +143,8 @@ namespace BaGet.Tests
         [Fact]
         public async Task VersionListReturnsResults()
         {
+            await _factory.AddPackageAsync(PackageData.Default);
+
             var resource = await _repository.GetResourceAsync<FindPackageByIdResource>();
             var versions = await resource.GetAllVersionsAsync(
                 "DefaultPackage",
@@ -170,6 +176,8 @@ namespace BaGet.Tests
         [InlineData("PackageDoesNotExists", "1.0.0", false)]
         public async Task PackageExistsWorks(string packageId, string packageVersion, bool exists)
         {
+            await _factory.AddPackageAsync(PackageData.Default);
+
             var version = NuGetVersion.Parse(packageVersion);
             var resource = await _repository.GetResourceAsync<FindPackageByIdResource>();
             var result = await resource.DoesPackageExistAsync(
@@ -188,6 +196,8 @@ namespace BaGet.Tests
         [InlineData("PackageDoesNotExists", "1.0.0", false)]
         public async Task PackageDownloadWorks(string packageId, string packageVersion, bool exists)
         {
+            await _factory.AddPackageAsync(PackageData.Default);
+
             using var packageStream = new MemoryStream();
 
             var version = NuGetVersion.Parse(packageVersion);
@@ -209,6 +219,8 @@ namespace BaGet.Tests
         [Fact]
         public async Task PackageMetadataReturnsOk()
         {
+            await _factory.AddPackageAsync(PackageData.Default);
+
             var resource = await _repository.GetResourceAsync<PackageMetadataResource>();
             var packages = await resource.GetMetadataAsync(
                 "DefaultPackage",
