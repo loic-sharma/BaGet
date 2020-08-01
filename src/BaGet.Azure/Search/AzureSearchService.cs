@@ -147,7 +147,9 @@ namespace BaGet.Azure
             throw new NotImplementedException();
         }
 
-        public async Task<DependentsResponse> FindDependentsAsync(string packageId, CancellationToken cancellationToken)
+        public async Task<DependentsResponse> FindDependentsAsync(
+            string packageId,
+            CancellationToken cancellationToken)
         {
             // TODO: Escape packageId.
             var query = $"dependencies:{packageId.ToLowerInvariant()}";
