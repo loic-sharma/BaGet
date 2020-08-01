@@ -31,46 +31,24 @@ namespace BaGet.Azure
         }
 
         public async Task<SearchResponse> SearchAsync(
-            string query = null,
-            int skip = 0,
-            int take = 20,
-            bool includePrerelease = true,
-            bool includeSemVer2 = true,
-            CancellationToken cancellationToken = default)
+            SearchRequest request,
+            CancellationToken cancellationToken)
         {
-            return await SearchAsync(
-                query,
-                skip,
-                take,
-                includePrerelease,
-                includeSemVer2,
-                packageType: null,
-                framework: null,
-                cancellationToken);
-        }
-
-        public async Task<SearchResponse> SearchAsync(
-            string query = null,
-            int skip = 0,
-            int take = 20,
-            bool includePrerelease = true,
-            bool includeSemVer2 = true,
-            string packageType = null,
-            string framework = null,
-            CancellationToken cancellationToken = default)
-        {
-            var searchText = BuildSeachQuery(query, packageType, framework);
-            var filter = BuildSearchFilter(includePrerelease, includeSemVer2);
+            var searchText = BuildSeachQuery(request.Query, request.PackageType, request.Framework);
+            var filter = BuildSearchFilter(request.IncludePrerelease, request.IncludeSemVer2);
             var parameters = new SearchParameters
             {
                 IncludeTotalResultCount = true,
                 QueryType = QueryType.Full,
-                Skip = skip,
-                Top = take,
+                Skip = request.Skip,
+                Top = request.Take,
                 Filter = filter
             };
 
-            var response = await _searchClient.Documents.SearchAsync<PackageDocument>(searchText, parameters, cancellationToken: cancellationToken);
+            var response = await _searchClient.Documents.SearchAsync<PackageDocument>(
+                searchText,
+                parameters,
+                cancellationToken: cancellationToken);
 
             var results = new List<SearchResult>();
 
@@ -127,26 +105,24 @@ namespace BaGet.Azure
         }
 
         public async Task<AutocompleteResponse> AutocompleteAsync(
-            string query = null,
-            AutocompleteType type = AutocompleteType.PackageIds,
-            int skip = 0,
-            int take = 20,
-            bool includePrerelease = true,
-            bool includeSemVer2 = true,
-            CancellationToken cancellationToken = default)
+            AutocompleteRequest request,
+            CancellationToken cancellationToken)
         {
             // TODO: Do a prefix search on the package id field.
-            // TODO: Support versions autocomplete.
-            // TODO: Support prerelease and semver2 filters.
+            // TODO: Support prerelease, semver2, and package type filters.
             // See: https://github.com/loic-sharma/BaGet/issues/291
             var parameters = new SearchParameters
             {
                 IncludeTotalResultCount = true,
-                Skip = skip,
-                Top = take,
+                Skip = request.Skip,
+                Top = request.Take,
             };
 
-            var response = await _searchClient.Documents.SearchAsync<PackageDocument>(query, parameters, cancellationToken: cancellationToken);
+            var response = await _searchClient.Documents.SearchAsync<PackageDocument>(
+                request.Query,
+                parameters,
+                cancellationToken: cancellationToken);
+
             var results = response.Results
                 .Select(r => r.Document.Id)
                 .ToList()
@@ -160,11 +136,20 @@ namespace BaGet.Azure
             };
         }
 
+        public Task<AutocompleteResponse> ListPackageVersionsAssync(
+            string packageId,
+            bool includePrerelease,
+            bool includeSemVer2,
+            CancellationToken cancellationToken)
+        {
+            // TODO: Support versions autocomplete.
+            // See: https://github.com/loic-sharma/BaGet/issues/291
+            throw new NotImplementedException();
+        }
+
         public async Task<DependentsResponse> FindDependentsAsync(
             string packageId,
-            int skip = 0,
-            int take = 20,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken)
         {
             // TODO: Escape packageId.
             var query = $"dependencies:{packageId.ToLowerInvariant()}";
@@ -172,8 +157,8 @@ namespace BaGet.Azure
             {
                 IncludeTotalResultCount = true,
                 QueryType = QueryType.Full,
-                Skip = skip,
-                Top = take,
+                Skip = 0,
+                Top = 20,
             };
 
             var response = await _searchClient.Documents.SearchAsync<PackageDocument>(query, parameters, cancellationToken: cancellationToken);

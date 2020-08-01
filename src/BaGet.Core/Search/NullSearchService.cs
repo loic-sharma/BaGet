@@ -35,46 +35,29 @@ namespace BaGet.Core
             });
 
         public Task<AutocompleteResponse> AutocompleteAsync(
-            string query = null,
-            AutocompleteType type = AutocompleteType.PackageIds,
-            int skip = 0,
-            int take = 20,
-            bool includePrerelease = true,
-            bool includeSemVer2 = true,
-            CancellationToken cancellationToken = default)
+            AutocompleteRequest request,
+            CancellationToken cancellationToken)
         {
             return EmptyAutocompleteResponseTask;
         }
 
-        public Task<DependentsResponse> FindDependentsAsync(
+        public Task<AutocompleteResponse> ListPackageVersionsAssync(
             string packageId,
-            int skip = 0,
-            int take = 20,
-            CancellationToken cancellationToken = default)
+            bool includePrerelease,
+            bool includeSemVer2,
+            CancellationToken cancellationToken)
+        {
+            return EmptyAutocompleteResponseTask;
+        }
+
+        public Task<DependentsResponse> FindDependentsAsync(string packageId, CancellationToken cancellationToken)
         {
             return EmptyDependentsResponseTask;
         }
 
         public Task<SearchResponse> SearchAsync(
-            string query = null,
-            int skip = 0,
-            int take = 20,
-            bool includePrerelease = true,
-            bool includeSemVer2 = true,
-            string packageType = null,
-            string framework = null,
-            CancellationToken cancellationToken = default)
-        {
-            return EmptySearchResponseTask;
-        }
-
-        public Task<SearchResponse> SearchAsync(
-            string query = null,
-            int skip = 0,
-            int take = 20,
-            bool includePrerelease = true,
-            bool includeSemVer2 = true,
-            CancellationToken cancellationToken = default)
+            SearchRequest request,
+            CancellationToken cancellationToken)
         {
             return EmptySearchResponseTask;
         }

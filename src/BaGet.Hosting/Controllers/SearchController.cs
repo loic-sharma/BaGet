@@ -28,39 +28,51 @@ namespace BaGet.Hosting
             [FromQuery]string framework = null,
             CancellationToken cancellationToken = default)
         {
-            var includeSemVer2 = semVerLevel == "2.0.0";
+            var request = new SearchRequest
+            {
+                Skip = skip,
+                Take = take,
+                IncludePrerelease = prerelease,
+                IncludeSemVer2 = semVerLevel == "2.0.0",
+                PackageType = packageType,
+                Framework = framework,
+                Query = query ?? string.Empty,
+            };
 
-            return await _searchService.SearchAsync(
-                query ?? string.Empty,
-                skip,
-                take,
-                prerelease,
-                includeSemVer2,
-                packageType,
-                framework,
-                cancellationToken);
+            return await _searchService.SearchAsync(request, cancellationToken);
         }
 
         public async Task<ActionResult<AutocompleteResponse>> AutocompleteAsync(
             [FromQuery(Name = "q")] string query = null,
+            [FromQuery]int skip = 0,
+            [FromQuery]int take = 20,
+            [FromQuery]bool prerelease = false,
+            [FromQuery]string semVerLevel = null,
+
+            // These are unofficial parameters
+            [FromQuery]string packageType = null,
             CancellationToken cancellationToken = default)
         {
-            // TODO: Add other autocomplete parameters
             // TODO: Support versions autocomplete.
             // See: https://github.com/loic-sharma/BaGet/issues/291
-            return await _searchService.AutocompleteAsync(
-                query,
-                cancellationToken: cancellationToken);
+            var request = new AutocompleteRequest
+            {
+                Skip = skip,
+                Take = take,
+                IncludePrerelease = prerelease,
+                IncludeSemVer2 = semVerLevel == "2.0.0",
+                PackageType = packageType,
+                Query = query,
+            };
+
+            return await _searchService.AutocompleteAsync(request, cancellationToken);
         }
 
         public async Task<ActionResult<DependentsResponse>> DependentsAsync(
             [FromQuery] string packageId,
             CancellationToken cancellationToken = default)
         {
-            // TODO: Add other dependents parameters.
-            return await _searchService.FindDependentsAsync(
-                packageId,
-                cancellationToken: cancellationToken);
+            return await _searchService.FindDependentsAsync(packageId, cancellationToken);
         }
     }
 }

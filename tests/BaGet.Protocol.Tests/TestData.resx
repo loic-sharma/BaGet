@@ -278,6 +278,11 @@
       ],
       "totalDownloads": 100,
       "verified": false,
+      "packageTypes": [
+        {
+          "name": "Dependency"
+        }
+      ],
       "versions": [
         {
           "version": "3.0.0",
