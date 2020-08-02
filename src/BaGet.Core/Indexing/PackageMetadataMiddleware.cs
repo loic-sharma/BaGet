@@ -51,7 +51,7 @@ namespace BaGet.Core
             }
 
             _logger.LogInformation(
-                "Successfully persisted package {Id} {Version} metadata to database.",
+                "Successfully saved package {Id} {Version} metadata to database.",
                 context.Package.Id,
                 context.Package.NormalizedVersionString);
 

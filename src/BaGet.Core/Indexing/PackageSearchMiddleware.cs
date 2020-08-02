@@ -23,14 +23,14 @@ namespace BaGet.Core
         public async Task<PackageIndexingResult> IndexAsync(PackageIndexingContext context, PackageIndexingDelegate next)
         {
             _logger.LogInformation(
-                "Indexing package {Id} {Version} to search...",
+                "Adding package {Id} {Version} to the search index...",
                 context.Package.Id,
                 context.Package.NormalizedVersionString);
 
             await _search.IndexAsync(context.Package, context.CancellationToken);
 
             _logger.LogInformation(
-                "Successfully indexed package {Id} {Version} in search",
+                "Successfully added package {Id} {Version} to the search index.",
                 context.Package.Id,
                 context.Package.NormalizedVersionString);
 

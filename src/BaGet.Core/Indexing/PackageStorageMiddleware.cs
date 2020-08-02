@@ -41,7 +41,7 @@ namespace BaGet.Core
                 // can be properly handled.
                 _logger.LogError(
                     e,
-                    "Failed to save package {PackageId} {PackageVersion} content to storage",
+                    "Failed to save package {PackageId} {PackageVersion} to storage.",
                     context.Package.Id,
                     context.Package.NormalizedVersionString);
 
@@ -49,6 +49,11 @@ namespace BaGet.Core
                     PackageIndexingStatus.UnexpectedError,
                     "Failed to save package to storage due to unexpected exception");
             }
+
+            _logger.LogInformation(
+                "Successfully savead package {Id} {Version} to storage.",
+                context.Package.Id,
+                context.Package.NormalizedVersionString);
 
             return await next();
         }

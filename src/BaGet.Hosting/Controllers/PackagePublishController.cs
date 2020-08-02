@@ -1,7 +1,9 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -11,6 +13,8 @@ namespace BaGet.Hosting
 {
     public class PackagePublishController : Controller
     {
+        private const int MaxReasonPhraseLength = 512;
+
         private readonly IAuthenticationService _authentication;
         private readonly IPackageIndexingService _indexer;
         private readonly IPackageService _packages;
@@ -75,8 +79,16 @@ namespace BaGet.Hosting
                             break;
                     }
 
-                    // TODO: Write the messages to headers.
+                    if (result.Messages.Any())
+                    {
+                        var reasonPhrase = string.Join(". ", result.Messages);
+                        if (reasonPhrase.Length > MaxReasonPhraseLength)
+                        {
+                            reasonPhrase = reasonPhrase.Substring(0, MaxReasonPhraseLength - 3) + "...";
+                        }
 
+                        HttpContext.Features.Get<IHttpResponseFeature>().ReasonPhrase = reasonPhrase;
+                    }
                 }
             }
             catch (Exception e)

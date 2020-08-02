@@ -115,8 +115,9 @@ namespace BaGet.Core
                 indexer = () =>
                 {
                     // Rewind all streams before invoking the next middleware.
-                    if (context.PackageStream != null) context.PackageStream.Position = 0;
-                    if (context.NuspecStream != null) context.NuspecStream.Position = 0;
+                    context.PackageStream.Position = 0;
+                    context.NuspecStream.Position = 0;
+
                     if (context.IconStream != null) context.IconStream.Position = 0;
                     if (context.ReadmeStream != null) context.ReadmeStream.Position = 0;
 
