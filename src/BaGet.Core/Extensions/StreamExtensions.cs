@@ -14,32 +14,40 @@ namespace BaGet.Core
 
         /// <summary>
         /// Copies a stream to a file, and returns that file as a stream. The underlying file will be
-        /// deleted when the resulting stream is disposed.
+        /// deleted when the resulting stream is disposed. The input stream will be disposed.
         /// </summary>
-        /// <param name="original">The stream to be copied, at its current position.</param>
-        /// <param name="cancellationToken"></param>
+        /// <param name="original">
+        /// The stream to be copied at its current position. The stream will be disposed.
+        /// </param>
+        /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The copied stream, with its position reset to the beginning.</returns>
         public static async Task<FileStream> AsTemporaryFileStreamAsync(
             this Stream original,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken)
         {
-            var result = new FileStream(
-                Path.GetTempFileName(),
-                FileMode.Create,
-                FileAccess.ReadWrite,
-                FileShare.None,
-                DefaultCopyBufferSize,
-                FileOptions.DeleteOnClose);
+            FileStream result = null;
 
             try
             {
+                result = new FileStream(
+                    Path.GetTempFileName(),
+                    FileMode.Create,
+                    FileAccess.ReadWrite,
+                    FileShare.None,
+                    DefaultCopyBufferSize,
+                    FileOptions.DeleteOnClose);
+
                 await original.CopyToAsync(result, DefaultCopyBufferSize, cancellationToken);
                 result.Position = 0;
             }
             catch (Exception)
             {
-                result.Dispose();
+                result?.Dispose();
                 throw;
+            }
+            finally
+            {
+                original.Dispose();
             }
 
             return result;

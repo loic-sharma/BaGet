@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,6 +12,12 @@ namespace BaGet.Core
     /// </summary>
     public class PackageIndexingResult
     {
+        public PackageIndexingResult(PackageIndexingStatus status, params string[] messages)
+        {
+            Status = status;
+            Messages = messages.ToList();
+        }
+
         /// <summary>
         /// The status of the indexing operation.
         /// </summary>
@@ -19,7 +26,7 @@ namespace BaGet.Core
         /// <summary>
         /// Messages that should be surfaced to the client.
         /// </summary>
-        public List<string> Messages { get; set; }
+        public List<string> Messages { get; }
     }
 
     /// <summary>

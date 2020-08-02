@@ -17,7 +17,7 @@ namespace BaGet.Core
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task IndexAsync(PackageIndexingContext context, PackageIndexingDelegate next)
+        public async Task<PackageIndexingResult> IndexAsync(PackageIndexingContext context, PackageIndexingDelegate next)
         {
             _logger.LogInformation(
                 "Saving package {PackageId} {PackageVersion} content to storage...",
@@ -45,12 +45,12 @@ namespace BaGet.Core
                     context.Package.Id,
                     context.Package.NormalizedVersionString);
 
-                context.Status = PackageIndexingStatus.UnexpectedError;
-                context.Messages.Add("Failed to save package to storage due to exception");
-                return;
+                return new PackageIndexingResult(
+                    PackageIndexingStatus.UnexpectedError,
+                    "Failed to save package to storage due to unexpected exception");
             }
 
-            await next();
+            return await next();
         }
     }
 }

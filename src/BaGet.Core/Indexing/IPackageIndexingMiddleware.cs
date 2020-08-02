@@ -15,20 +15,20 @@ namespace BaGet.Core
         /// </summary>
         /// <param name="context">The context for the package that is being indexed.</param>
         /// <param name="next">The next middleware in the indexing chain.</param>
-        /// <returns>A task that completes when the package has been indexed.</returns>
-        Task IndexAsync(PackageIndexingContext context, PackageIndexingDelegate next);
+        /// <returns>The result of indexing the package.</returns>
+        Task<PackageIndexingResult> IndexAsync(PackageIndexingContext context, PackageIndexingDelegate next);
     }
 
     /// <summary>
     /// A delegate that wraps a <see cref="IPackageIndexingMiddleware"/>.
     /// </summary>
     /// <returns>A task that completes when the middleware is done indexing the package.</returns>
-    public delegate Task PackageIndexingDelegate();
+    public delegate Task<PackageIndexingResult> PackageIndexingDelegate();
 
     /// <summary>
     /// The state of the package indexing operation.
     /// </summary>
-    public class PackageIndexingContext : PackageIndexingResult, IDisposable
+    public class PackageIndexingContext : IDisposable
     {
         /// <summary>
         /// The metadata for the package that is being indexed.

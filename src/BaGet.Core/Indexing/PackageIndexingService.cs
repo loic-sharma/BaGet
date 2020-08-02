@@ -32,15 +32,10 @@ namespace BaGet.Core
             {
                 if (context == null)
                 {
-                    return new PackageIndexingResult
-                    {
-                        Status = PackageIndexingStatus.InvalidPackage,
-                        Messages = new List<string>()
-                    };
+                    return new PackageIndexingResult(PackageIndexingStatus.InvalidPackage);
                 }
 
-                await CreateIndexer(context).Invoke();
-                return context;
+                return await CreateIndexer(context).Invoke();
             }
         }
 
@@ -62,12 +57,12 @@ namespace BaGet.Core
                     package.Published = _time.UtcNow;
 
                     nuspecStream = await packageReader.GetNuspecAsync(cancellationToken);
-                    nuspecStream = await nuspecStream.AsTemporaryFileStreamAsync();
+                    nuspecStream = await nuspecStream.AsTemporaryFileStreamAsync(cancellationToken);
 
                     if (package.HasReadme)
                     {
                         readmeStream = await packageReader.GetReadmeAsync(cancellationToken);
-                        readmeStream = await readmeStream.AsTemporaryFileStreamAsync();
+                        readmeStream = await readmeStream.AsTemporaryFileStreamAsync(cancellationToken);
                     }
                     else
                     {
@@ -77,7 +72,7 @@ namespace BaGet.Core
                     if (package.HasEmbeddedIcon)
                     {
                         iconStream = await packageReader.GetIconAsync(cancellationToken);
-                        iconStream = await iconStream.AsTemporaryFileStreamAsync();
+                        iconStream = await iconStream.AsTemporaryFileStreamAsync(cancellationToken);
                     }
                     else
                     {
@@ -92,8 +87,6 @@ namespace BaGet.Core
                     NuspecStream = nuspecStream,
                     IconStream = iconStream,
                     ReadmeStream = readmeStream,
-                    Messages = new List<string>(),
-                    Status = PackageIndexingStatus.Success,
                     CancellationToken = cancellationToken,
                 };
             }
@@ -113,7 +106,7 @@ namespace BaGet.Core
         private PackageIndexingDelegate CreateIndexer(PackageIndexingContext context)
         {
             var middlewares = _services.GetRequiredService<IEnumerable<IPackageIndexingMiddleware>>();
-            PackageIndexingDelegate indexer = () => Task.CompletedTask;
+            PackageIndexingDelegate indexer = () => Task.FromResult(new PackageIndexingResult(PackageIndexingStatus.Success));
 
             foreach (var middleware in middlewares.Reverse())
             {

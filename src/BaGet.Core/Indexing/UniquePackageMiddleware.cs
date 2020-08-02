@@ -27,7 +27,7 @@ namespace BaGet.Core
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task IndexAsync(PackageIndexingContext context, PackageIndexingDelegate next)
+        public async Task<PackageIndexingResult> IndexAsync(PackageIndexingContext context, PackageIndexingDelegate next)
         {
             // Ensure this is a new package.
             if (await _packages.ExistsAsync(context.Package.Id, context.Package.Version, context.CancellationToken))
@@ -38,8 +38,10 @@ namespace BaGet.Core
                         "Failed to index package {Id} {Version} as it already exists and overwrites are disabled.",
                         context.Package.Id,
                         context.Package.NormalizedVersionString);
-                    context.Status = PackageIndexingStatus.PackageAlreadyExists;
-                    return;
+
+                    return new PackageIndexingResult(
+                        PackageIndexingStatus.PackageAlreadyExists,
+                        "Enable package overwrites to replace previously uploaded packages.");
                 }
 
                 _logger.LogInformation(
@@ -58,7 +60,7 @@ namespace BaGet.Core
                     context.CancellationToken);
             }
 
-            await next();
+            return await next();
         }
     }
 }

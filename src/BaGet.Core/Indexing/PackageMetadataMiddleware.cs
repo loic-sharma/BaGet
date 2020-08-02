@@ -17,10 +17,10 @@ namespace BaGet.Core
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task IndexAsync(PackageIndexingContext context, PackageIndexingDelegate next)
+        public async Task<PackageIndexingResult> IndexAsync(PackageIndexingContext context, PackageIndexingDelegate next)
         {
             _logger.LogInformation(
-                "Persisted package {Id} {Version} content to storage, saving metadata to database...",
+                "Saving package {Id} {Version} metadata to database...",
                 context.Package.Id,
                 context.Package.NormalizedVersionString);
 
@@ -32,8 +32,7 @@ namespace BaGet.Core
                     context.Package.Id,
                     context.Package.NormalizedVersionString);
 
-                context.Status = PackageIndexingStatus.PackageAlreadyExists;
-                return;
+                return new PackageIndexingResult(PackageIndexingStatus.PackageAlreadyExists);
             }
 
             if (result != PackageAddResult.Success)
@@ -45,8 +44,7 @@ namespace BaGet.Core
                     context.Package.NormalizedVersionString,
                     result);
 
-                context.Status = PackageIndexingStatus.UnexpectedError;
-                return;
+                return new PackageIndexingResult(PackageIndexingStatus.UnexpectedError);
             }
 
             _logger.LogInformation(
@@ -54,7 +52,7 @@ namespace BaGet.Core
                 context.Package.Id,
                 context.Package.NormalizedVersionString);
 
-            await next();
+            return await next();
         }
     }
 }

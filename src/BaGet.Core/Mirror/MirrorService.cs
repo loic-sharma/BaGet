@@ -203,10 +203,8 @@ namespace BaGet.Core
 
             try
             {
-                using (var stream = await _upstreamClient.DownloadPackageAsync(id, version, cancellationToken))
-                {
-                    packageStream = await stream.AsTemporaryFileStreamAsync();
-                }
+                packageStream = await _upstreamClient.DownloadPackageAsync(id, version, cancellationToken);
+                packageStream = await packageStream.AsTemporaryFileStreamAsync(cancellationToken);
 
                 _logger.LogInformation(
                     "Downloaded package {PackageId} {PackageVersion}, indexing...",

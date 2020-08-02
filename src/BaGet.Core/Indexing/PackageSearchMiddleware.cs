@@ -17,7 +17,7 @@ namespace BaGet.Core
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task IndexAsync(PackageIndexingContext context, PackageIndexingDelegate next)
+        public async Task<PackageIndexingResult> IndexAsync(PackageIndexingContext context, PackageIndexingDelegate next)
         {
             _logger.LogInformation(
                 "Indexing package {Id} {Version} to search...",
@@ -31,7 +31,7 @@ namespace BaGet.Core
                 context.Package.Id,
                 context.Package.NormalizedVersionString);
 
-            await next();
+            return await next();
         }
     }
 }
