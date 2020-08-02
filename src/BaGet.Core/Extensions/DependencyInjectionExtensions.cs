@@ -141,8 +141,8 @@ namespace BaGet.Core
 
         private static void AddPackageIndexingMiddlewares(this IServiceCollection services)
         {
-            // The middlewares that process package uploads.
-            // These are registered in the order that they process the package.
+            // The middlewares that process package uploads. Order is important.
+            // Middlewares that are registered first will process package uploads first.
             services.AddTransient<IPackageIndexingMiddleware, UniquePackageMiddleware>();
             services.AddTransient<IPackageIndexingMiddleware, PackageStorageMiddleware>();
             services.AddTransient<IPackageIndexingMiddleware, PackageMetadataMiddleware>();
