@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -5,13 +6,30 @@ using System.Threading.Tasks;
 namespace BaGet.Core
 {
     /// <summary>
+    /// The result of indexing a package.
+    /// See: <see cref="IPackageIndexingService.IndexAsync(Stream, CancellationToken)"/>.
+    /// </summary>
+    public class PackageIndexingResult
+    {
+        /// <summary>
+        /// The status of the indexing operation.
+        /// </summary>
+        public PackageIndexingStatus Status { get; set; }
+
+        /// <summary>
+        /// Messages that should be surfaced to the client.
+        /// </summary>
+        public List<string> Messages { get; set; }
+    }
+
+    /// <summary>
     /// The result of attempting to index a package.
     /// See <see cref="IPackageIndexingService.IndexAsync(Stream, CancellationToken)"/>.
     /// </summary>
-    public enum PackageIndexingResult
+    public enum PackageIndexingStatus
     {
         /// <summary>
-        /// The package is malformed. This may also happen if BaGet is in a corrupted state.
+        /// The package is invalid or malformed. This may also happen if BaGet is in a corrupted state.
         /// </summary>
         InvalidPackage,
 
@@ -19,6 +37,11 @@ namespace BaGet.Core
         /// The package has already been indexed.
         /// </summary>
         PackageAlreadyExists,
+
+        /// <summary>
+        /// The service encountered an unexpected error while indexing the package.
+        /// </summary>
+        UnexpectedError,
 
         /// <summary>
         /// The package has been indexed successfully.
@@ -36,7 +59,7 @@ namespace BaGet.Core
         /// </summary>
         /// <param name="stream">The stream containing the package's content.</param>
         /// <param name="cancellationToken"></param>
-        /// <returns>The result of the attempted indexing operation.</returns>
+        /// <returns>The result of the indexing operation.</returns>
         Task<PackageIndexingResult> IndexAsync(Stream stream, CancellationToken cancellationToken);
     }
 }

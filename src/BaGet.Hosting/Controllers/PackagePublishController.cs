@@ -56,20 +56,27 @@ namespace BaGet.Hosting
 
                     var result = await _indexer.IndexAsync(uploadStream, cancellationToken);
 
-                    switch (result)
+                    switch (result.Status)
                     {
-                        case PackageIndexingResult.InvalidPackage:
+                        case PackageIndexingStatus.InvalidPackage:
                             HttpContext.Response.StatusCode = 400;
                             break;
 
-                        case PackageIndexingResult.PackageAlreadyExists:
+                        case PackageIndexingStatus.PackageAlreadyExists:
                             HttpContext.Response.StatusCode = 409;
                             break;
 
-                        case PackageIndexingResult.Success:
+                        case PackageIndexingStatus.UnexpectedError:
+                            HttpContext.Response.StatusCode = 500;
+                            break;
+
+                        case PackageIndexingStatus.Success:
                             HttpContext.Response.StatusCode = 201;
                             break;
                     }
+
+                    // TODO: Write the messages to headers.
+
                 }
             }
             catch (Exception e)

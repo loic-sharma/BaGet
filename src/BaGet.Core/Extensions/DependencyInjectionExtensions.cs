@@ -24,6 +24,7 @@ namespace BaGet.Core
 
             configureAction(app);
 
+            services.AddPackageIndexingMiddlewares();
             services.AddFallbackServices();
 
             return services;
@@ -136,6 +137,16 @@ namespace BaGet.Core
 
                 return null;
             });
+        }
+
+        private static void AddPackageIndexingMiddlewares(this IServiceCollection services)
+        {
+            // The middlewares that process package uploads.
+            // These are registered in the order that they process the package.
+            services.AddTransient<IPackageIndexingMiddleware, UniquePackageMiddleware>();
+            services.AddTransient<IPackageIndexingMiddleware, PackageStorageMiddleware>();
+            services.AddTransient<IPackageIndexingMiddleware, PackageMetadataMiddleware>();
+            services.AddTransient<IPackageIndexingMiddleware, PackageSearchMiddleware>();
         }
 
         private static void AddFallbackServices(this IServiceCollection services)

@@ -118,7 +118,7 @@ namespace BaGet.Tests
                 var indexer = scope.ServiceProvider.GetRequiredService<IPackageIndexingService>();
 
                 var result = await indexer.IndexAsync(package, cancellationToken);
-                if (result != PackageIndexingResult.Success)
+                if (result.Status != PackageIndexingStatus.Success)
                 {
                     throw new InvalidOperationException($"Unexpected indexing result {result}");
                 }
