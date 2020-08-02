@@ -59,7 +59,6 @@ namespace BaGet.Tests
             Directory.CreateDirectory(tempPath);
 
             builder
-                .UseStartup<Startup>()
                 .UseEnvironment("Production")
                 .ConfigureAppConfiguration(config =>
                 {
@@ -96,9 +95,6 @@ namespace BaGet.Tests
 
                         dbCreator.Create();
                         ctx.Database.Migrate();
-
-                        // Seed the application with test data.
-
                     }
                 });
         }
