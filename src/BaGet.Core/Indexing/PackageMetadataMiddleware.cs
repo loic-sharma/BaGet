@@ -4,6 +4,9 @@ using Microsoft.Extensions.Logging;
 
 namespace BaGet.Core
 {
+    /// <summary>
+    /// Indexes package metadata to the database.
+    /// </summary>
     public class PackageMetadataMiddleware : IPackageIndexingMiddleware
     {
         private readonly IPackageService _packages;

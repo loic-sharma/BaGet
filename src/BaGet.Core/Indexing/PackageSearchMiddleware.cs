@@ -4,6 +4,9 @@ using Microsoft.Extensions.Logging;
 
 namespace BaGet.Core
 {
+    /// <summary>
+    /// Indexes a package to the search service.
+    /// </summary>
     public class PackageSearchMiddleware : IPackageIndexingMiddleware
     {
         private readonly ISearchIndexer _search;

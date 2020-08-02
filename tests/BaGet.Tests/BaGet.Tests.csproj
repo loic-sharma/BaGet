@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\BaGet\BaGet.csproj" />
+    <ProjectReference Include="..\BaGet.Core.Tests\BaGet.Core.Tests.csproj" />
   </ItemGroup>
 
   <ItemGroup>
