@@ -143,10 +143,10 @@ namespace BaGet.Core
         {
             // The middlewares that process package uploads. Order is important.
             // Middlewares that are registered first will process package uploads first.
-            services.AddTransient<IPackageIndexingMiddleware, UniquePackageMiddleware>();
-            services.AddTransient<IPackageIndexingMiddleware, PackageStorageMiddleware>();
-            services.AddTransient<IPackageIndexingMiddleware, PackageMetadataMiddleware>();
-            services.AddTransient<IPackageIndexingMiddleware, PackageSearchMiddleware>();
+            services.AddTransient<IPackageIndexingMiddleware, PackageIndexingUniquenessMiddleware>();
+            services.AddTransient<IPackageIndexingMiddleware, PackageIndexingStorageMiddleware>();
+            services.AddTransient<IPackageIndexingMiddleware, PackageIndexingMetadataMiddleware>();
+            services.AddTransient<IPackageIndexingMiddleware, PackageIndexingSearchMiddleware>();
         }
 
         private static void AddFallbackServices(this IServiceCollection services)

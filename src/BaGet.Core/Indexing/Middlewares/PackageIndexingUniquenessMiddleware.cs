@@ -7,19 +7,20 @@ namespace BaGet.Core
 {
     /// <summary>
     /// Validates that the new package doesn't already exist.
+    /// This step should run before the package is saved to storage, database, or search.
     /// </summary>
-    public class UniquePackageMiddleware : IPackageIndexingMiddleware
+    public class PackageIndexingUniquenessMiddleware : IPackageIndexingMiddleware
     {
         private readonly IPackageService _packages;
         private readonly IPackageStorageService _storage;
         private readonly IOptionsSnapshot<BaGetOptions> _options;
-        private readonly ILogger<UniquePackageMiddleware> _logger;
+        private readonly ILogger<PackageIndexingUniquenessMiddleware> _logger;
 
-        public UniquePackageMiddleware(
+        public PackageIndexingUniquenessMiddleware(
             IPackageService packages,
             IPackageStorageService storage,
             IOptionsSnapshot<BaGetOptions> options,
-            ILogger<UniquePackageMiddleware> logger)
+            ILogger<PackageIndexingUniquenessMiddleware> logger)
         {
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));

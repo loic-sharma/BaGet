@@ -5,16 +5,20 @@ using Microsoft.Extensions.Logging;
 namespace BaGet.Core
 {
     /// <summary>
-    /// Indexes package metadata to the database.
+    /// Saves the package's metadata to the database.
     /// </summary>
-    public class PackageMetadataMiddleware : IPackageIndexingMiddleware
+    /// <remarks>
+    /// This step should run after the package has been saved to storage,
+    /// but before the package is saved to the search index.
+    /// </remarks>
+    public class PackageIndexingMetadataMiddleware : IPackageIndexingMiddleware
     {
         private readonly IPackageService _packages;
-        private readonly ILogger<PackageMetadataMiddleware> _logger;
+        private readonly ILogger<PackageIndexingMetadataMiddleware> _logger;
 
-        public PackageMetadataMiddleware(
+        public PackageIndexingMetadataMiddleware(
             IPackageService packages,
-            ILogger<PackageMetadataMiddleware> logger)
+            ILogger<PackageIndexingMetadataMiddleware> logger)
         {
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

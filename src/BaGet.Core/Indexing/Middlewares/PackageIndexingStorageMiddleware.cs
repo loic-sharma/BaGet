@@ -4,14 +4,21 @@ using Microsoft.Extensions.Logging;
 
 namespace BaGet.Core
 {
-    public class PackageStorageMiddleware : IPackageIndexingMiddleware
+    /// <summary>
+    /// Saves the package content to storage.
+    /// </summary>
+    /// <remarks>
+    /// This step should run after the package has been validated, but before
+    /// the package has been saved to the database and the search index.
+    /// </remarks>
+    public class PackageIndexingStorageMiddleware : IPackageIndexingMiddleware
     {
         private readonly IPackageStorageService _storage;
-        private readonly ILogger<PackageStorageMiddleware> _logger;
+        private readonly ILogger<PackageIndexingStorageMiddleware> _logger;
 
-        public PackageStorageMiddleware(
+        public PackageIndexingStorageMiddleware(
             IPackageStorageService storage,
-            ILogger<PackageStorageMiddleware> logger)
+            ILogger<PackageIndexingStorageMiddleware> logger)
         {
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -26,6 +33,13 @@ namespace BaGet.Core
 
             try
             {
+                // Rewind all streams before saving content..
+                context.PackageStream.Position = 0;
+                context.NuspecStream.Position = 0;
+
+                if (context.ReadmeStream != null) context.ReadmeStream.Position = 0;
+                if (context.IconStream != null) context.IconStream.Position = 0;
+
                 await _storage.SavePackageContentAsync(
                     context.Package,
                     context.PackageStream,

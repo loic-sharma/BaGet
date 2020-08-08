@@ -108,33 +108,6 @@ namespace BaGet.Core.Tests.Services
             }
         }
 
-        [Fact]
-        public async Task StreamsAreRewinded()
-        {
-            SetupMiddlewares(First, Second);
-
-            await _target.IndexAsync(PackageData.Default, _cancellationToken);
-
-            Task<PackageIndexingResult> First(PackageIndexingContext context, PackageIndexingDelegate next)
-            {
-                Assert.Equal(0, context.PackageStream.Position);
-                Assert.Equal(0, context.NuspecStream.Position);
-
-                context.PackageStream.Position = 1;
-                context.NuspecStream.Position = 1;
-
-                return next();
-            }
-
-            Task<PackageIndexingResult> Second(PackageIndexingContext context, PackageIndexingDelegate next)
-            {
-                Assert.Equal(0, context.PackageStream.Position);
-                Assert.Equal(0, context.NuspecStream.Position);
-
-                return next();
-            }
-        }
-
         private void SetupMiddlewares(
             params Func<PackageIndexingContext, PackageIndexingDelegate, Task<PackageIndexingResult>>[] middlewares)
         {

@@ -28,15 +28,13 @@ namespace BaGet.Core
 
         public async Task<PackageIndexingResult> IndexAsync(Stream packageStream, CancellationToken cancellationToken)
         {
-            using (var context = await CreateContextOrNullAsync(packageStream, cancellationToken))
+            using var context = await CreateContextOrNullAsync(packageStream, cancellationToken);
+            if (context == null)
             {
-                if (context == null)
-                {
-                    return new PackageIndexingResult(PackageIndexingStatus.InvalidPackage);
-                }
-
-                return await CreateIndexer(context).Invoke();
+                return new PackageIndexingResult(PackageIndexingStatus.InvalidPackage);
             }
+
+            return await CreateIndexer(context).Invoke();
         }
 
         private async Task<PackageIndexingContext> CreateContextOrNullAsync(
@@ -51,33 +49,32 @@ namespace BaGet.Core
 
             try
             {
-                using (var packageReader = new PackageArchiveReader(packageStream, leaveStreamOpen: true))
+                using var packageReader = new PackageArchiveReader(packageStream, leaveStreamOpen: true);
+
+                package = packageReader.GetPackageMetadata();
+                package.Published = _time.UtcNow;
+
+                nuspecStream = await packageReader.GetNuspecAsync(cancellationToken);
+                nuspecStream = await nuspecStream.AsTemporaryFileStreamAsync(cancellationToken);
+
+                if (package.HasReadme)
                 {
-                    package = packageReader.GetPackageMetadata();
-                    package.Published = _time.UtcNow;
+                    readmeStream = await packageReader.GetReadmeAsync(cancellationToken);
+                    readmeStream = await readmeStream.AsTemporaryFileStreamAsync(cancellationToken);
+                }
+                else
+                {
+                    readmeStream = null;
+                }
 
-                    nuspecStream = await packageReader.GetNuspecAsync(cancellationToken);
-                    nuspecStream = await nuspecStream.AsTemporaryFileStreamAsync(cancellationToken);
-
-                    if (package.HasReadme)
-                    {
-                        readmeStream = await packageReader.GetReadmeAsync(cancellationToken);
-                        readmeStream = await readmeStream.AsTemporaryFileStreamAsync(cancellationToken);
-                    }
-                    else
-                    {
-                        readmeStream = null;
-                    }
-
-                    if (package.HasEmbeddedIcon)
-                    {
-                        iconStream = await packageReader.GetIconAsync(cancellationToken);
-                        iconStream = await iconStream.AsTemporaryFileStreamAsync(cancellationToken);
-                    }
-                    else
-                    {
-                        iconStream = null;
-                    }
+                if (package.HasEmbeddedIcon)
+                {
+                    iconStream = await packageReader.GetIconAsync(cancellationToken);
+                    iconStream = await iconStream.AsTemporaryFileStreamAsync(cancellationToken);
+                }
+                else
+                {
+                    iconStream = null;
                 }
 
                 return new PackageIndexingContext
@@ -105,24 +102,23 @@ namespace BaGet.Core
 
         private PackageIndexingDelegate CreateIndexer(PackageIndexingContext context)
         {
+            // Create the "terminal" indexer that runs at the final step in the indexing pipeline.
+            // If we reach the end of the pipeline, the package has been indexed successfully and
+            // we can return a successful status code.
+            PackageIndexingDelegate indexer = () =>
+            {
+                var result = new PackageIndexingResult(PackageIndexingStatus.Success);
+                return Task.FromResult(result);
+            };
+
+            // Now add each indexer middleware to the pipeline.
             var middlewares = _services.GetRequiredService<IEnumerable<IPackageIndexingMiddleware>>();
-            PackageIndexingDelegate indexer = () => Task.FromResult(new PackageIndexingResult(PackageIndexingStatus.Success));
 
             foreach (var middleware in middlewares.Reverse())
             {
                 var next = indexer;
 
-                indexer = () =>
-                {
-                    // Rewind all streams before invoking the next middleware.
-                    context.PackageStream.Position = 0;
-                    context.NuspecStream.Position = 0;
-
-                    if (context.IconStream != null) context.IconStream.Position = 0;
-                    if (context.ReadmeStream != null) context.ReadmeStream.Position = 0;
-
-                    return middleware.IndexAsync(context, next);
-                };
+                indexer = () => middleware.IndexAsync(context, next);
             }
 
             return indexer;
