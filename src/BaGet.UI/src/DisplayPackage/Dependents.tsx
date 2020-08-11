@@ -2,6 +2,8 @@ import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import { config } from '../config';
 import * as React from 'react';
 
+import './Dependents.css'
+
 interface IDependentsProps {
   packageId: string;
 }
@@ -78,11 +80,12 @@ class Dependents extends React.Component<IDependentsProps, IDependentsState> {
                   <tr key={dependent.id}>
                     <td>
                       <a href={config.apiUrl + "/packages/" + dependent.id}>{dependent.id}</a>
-                      <p>{dependent.description}</p>
+                      <div>{dependent.description}</div>
                     </td>
                     <td>
                       <Icon iconName="Download" className="ms-Icon" />
-                      {dependent.downloads?.toLocaleString()}</td>
+                      <span>{dependent.downloads?.toLocaleString()}</span>
+                    </td>
                   </tr>
 
                 ))}
