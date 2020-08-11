@@ -7,7 +7,14 @@ interface IDependentsProps {
 
 interface IDependentsState {
   totalHits: number | undefined;
-  data: string[] | undefined;
+  data: IDependentState[] | undefined;
+}
+
+interface IDependentState {
+  id: string | undefined;
+  key: number | undefined;
+  description: string | undefined;
+  downloads: number | undefined;
 }
 
 class Dependents extends React.Component<IDependentsProps, IDependentsState> {
@@ -36,6 +43,7 @@ class Dependents extends React.Component<IDependentsProps, IDependentsState> {
       return response.json();
     }).then(json => {
       this.setState(json as IDependentsState);
+      console.log(json);
     // tslint:disable-next-line:no-console
     }).catch((e) => console.log("Failed to load dependents.", e));
   }
@@ -59,7 +67,7 @@ class Dependents extends React.Component<IDependentsProps, IDependentsState> {
           <div>
             <ul>
               {this.state.data.map(dependent => (
-                <li key={dependent}>{dependent}</li>
+                <li key={dependent.id}>{dependent.id}</li>
               ))}
             </ul>
           </div>
