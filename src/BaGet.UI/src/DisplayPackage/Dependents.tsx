@@ -65,11 +65,23 @@ class Dependents extends React.Component<IDependentsProps, IDependentsState> {
         <div>
           <p>{this.state.totalHits} {this.state.totalHits === 1 ? 'package depends' : 'packages depend' } on {this.props.packageId}:</p>
           <div>
-            <ul>
-              {this.state.data.map(dependent => (
-                <li key={dependent.id}>{dependent.id}</li>
-              ))}
-            </ul>
+            <table>
+              <thead>
+                <tr>
+                  <th>Package</th>
+                  <th>Downloads</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.state.data.map(dependent => (
+                  <tr key={dependent.id}>
+                    <td>{dependent.id}</td>
+                    <td>{dependent.downloads}</td>
+                  </tr>
+
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
     );
