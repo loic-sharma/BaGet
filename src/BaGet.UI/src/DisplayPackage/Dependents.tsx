@@ -50,6 +50,25 @@ class Dependents extends React.Component<IDependentsProps, IDependentsState> {
     }).catch((e) => console.log("Failed to load dependents.", e));
   }
 
+  private getDependentsMessage() {
+    const hits = this.state.totalHits ?? -1;
+    const packageId = this.props.packageId;
+
+    if(hits < 0) {
+      return ""
+    }
+
+    if(hits === 0) {
+      return `No packages depend on ${packageId}.`;
+    }
+
+    if(hits < 20) {
+      return `Showing ${hits} packages that depend on ${packageId}.`;
+    }
+
+    return `Showing the top 20 packages that depend on ${packageId}.`;
+  }
+
   public render() {
     if (!this.state.data) {
       return (
@@ -59,13 +78,13 @@ class Dependents extends React.Component<IDependentsProps, IDependentsState> {
 
     if (this.state.totalHits === 0) {
       return (
-        <div>No packages depend on {this.props.packageId}.</div>
+      <div>{this.getDependentsMessage()}</div>
       );
     }
 
     return (
         <div>
-          <p>{this.state.totalHits} {this.state.totalHits === 1 ? 'package depends' : 'packages depend' } on {this.props.packageId}:</p>
+          <p>{this.getDependentsMessage()}</p>
           <div>
             <table>
               <thead>
