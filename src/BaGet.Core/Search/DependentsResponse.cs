@@ -36,7 +36,7 @@ namespace BaGet.Core
         [JsonPropertyName("description")]
         public string Description { get; set; }
 
-        [JsonPropertyName("downloads")]
-        public long Downloads { get; set; }
+        [JsonPropertyName("totalDownloads")]
+        public long TotalDownloads { get; set; }
     }
 }

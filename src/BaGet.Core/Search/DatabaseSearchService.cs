@@ -129,7 +129,7 @@ namespace BaGet.Core
                     Id = r.Id,
                     Key = r.Key,
                     Description = r.Description,
-                    Downloads = r.Downloads
+                    TotalDownloads = r.Downloads
                 })
                 .Distinct()
                 .ToListAsync(cancellationToken);

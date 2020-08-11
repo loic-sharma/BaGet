@@ -167,7 +167,7 @@ namespace BaGet.Azure
                     Id = r.Document.Id,
                     Key = Int32.Parse(r.Document.Key),
                     Description = r.Document.Description,
-                    Downloads = r.Document.TotalDownloads
+                    TotalDownloads = r.Document.TotalDownloads
                 })
                 .ToList()
                 .AsReadOnly();
