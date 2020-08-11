@@ -163,7 +163,12 @@ namespace BaGet.Azure
 
             var response = await _searchClient.Documents.SearchAsync<PackageDocument>(query, parameters, cancellationToken: cancellationToken);
             var results = response.Results
-                .Select(r => r.Document.Id)
+                .Select(r => new DependentResponse() {
+                    Id = r.Document.Id,
+                    Key = Int32.Parse(r.Document.Key),
+                    Description = r.Document.Description,
+                    Downloads = r.Document.TotalDownloads
+                })
                 .ToList()
                 .AsReadOnly();
 
