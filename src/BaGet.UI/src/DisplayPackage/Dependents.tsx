@@ -1,3 +1,4 @@
+import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import { config } from '../config';
 import * as React from 'react';
 
@@ -68,15 +69,20 @@ class Dependents extends React.Component<IDependentsProps, IDependentsState> {
             <table>
               <thead>
                 <tr>
-                  <th>Package</th>
-                  <th>Downloads</th>
+                  <th className="col-sm-10">Package</th>
+                  <th className="col-sm-2">Downloads</th>
                 </tr>
               </thead>
               <tbody>
                 {this.state.data.map(dependent => (
                   <tr key={dependent.id}>
-                    <td>{dependent.id}</td>
-                    <td>{dependent.downloads}</td>
+                    <td>
+                      <a href={config.apiUrl + "/packages/" + dependent.id}>{dependent.id}</a>
+                      <p>{dependent.description}</p>
+                    </td>
+                    <td>
+                      <Icon iconName="Download" className="ms-Icon" />
+                      {dependent.downloads?.toLocaleString()}</td>
                   </tr>
 
                 ))}
