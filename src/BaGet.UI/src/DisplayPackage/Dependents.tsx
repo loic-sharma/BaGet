@@ -1,4 +1,5 @@
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
+import { Link } from 'office-ui-fabric-react';
 import { config } from '../config';
 import * as React from 'react';
 
@@ -15,7 +16,6 @@ interface IDependentsState {
 
 interface IDependentState {
   id: string | undefined;
-  key: number | undefined;
   description: string | undefined;
   totalDownloads: number | undefined;
 }
@@ -62,10 +62,6 @@ class Dependents extends React.Component<IDependentsProps, IDependentsState> {
       return `No packages depend on ${packageId}.`;
     }
 
-    if(hits < 20) {
-      return `Showing ${hits} packages that depend on ${packageId}.`;
-    }
-
     return `Showing the top 20 packages that depend on ${packageId}.`;
   }
 
@@ -97,7 +93,7 @@ class Dependents extends React.Component<IDependentsProps, IDependentsState> {
                 {this.state.data.map(dependent => (
                   <tr key={dependent.id}>
                     <td>
-                      <Link to {`/packages/${dependent.id}`}>{dependent.id}</Link>
+                      <Link to={`/packages/${dependent.id}`}>{dependent.id}</Link>
                       <div>{dependent.description}</div>
                     </td>
                     <td>
