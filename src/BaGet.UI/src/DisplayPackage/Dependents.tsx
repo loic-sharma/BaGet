@@ -54,11 +54,11 @@ class Dependents extends React.Component<IDependentsProps, IDependentsState> {
     const hits = this.state.totalHits ?? -1;
     const packageId = this.props.packageId;
 
-    if(hits < 0) {
+    if (hits < 0) {
       return ""
     }
 
-    if(hits === 0) {
+    if (hits === 0) {
       return `No packages depend on ${packageId}.`;
     }
 
