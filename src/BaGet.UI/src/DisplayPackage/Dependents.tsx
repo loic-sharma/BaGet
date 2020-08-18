@@ -97,7 +97,7 @@ class Dependents extends React.Component<IDependentsProps, IDependentsState> {
                 {this.state.data.map(dependent => (
                   <tr key={dependent.id}>
                     <td>
-                      <a href={config.apiUrl + "/packages/" + dependent.id}>{dependent.id}</a>
+                      <Link to {`/packages/${dependent.id}`}>{dependent.id}</Link>
                       <div>{dependent.description}</div>
                     </td>
                     <td>
