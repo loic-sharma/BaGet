@@ -251,7 +251,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
               }
             })()}
 
-            <ExpandableSection title="Dependents" expanded={false}>
+            <ExpandableSection title="Used By" expanded={false}>
               <Dependents packageId={this.state.package.id} />
             </ExpandableSection>
 

@@ -125,7 +125,12 @@ namespace BaGet.Core
                 .OrderByDescending(p => p.Downloads)
                 .Where(p => p.Dependencies.Any(d => d.Id == packageId))
                 .Take(20)
-                .Select(p => p.Id)
+                .Select(r => new DependentResult
+                {
+                    Id = r.Id,
+                    Description = r.Description,
+                    TotalDownloads = r.Downloads
+                })
                 .Distinct()
                 .ToListAsync(cancellationToken);
 
