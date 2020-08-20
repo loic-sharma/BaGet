@@ -14,7 +14,7 @@ interface ISearchResultsProps {
 
 interface IPackage {
   id: string;
-  authors: string;
+  authors: string[];
   totalDownloads: number;
   version: string;
   tags: string[];
@@ -196,7 +196,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                 <div className="col-sm-11">
                   <div>
                     <Link to={`/packages/${value.id}`} className="package-title">{value.id}</Link>
-                    <span>by: {value.authors}</span>
+                    <span>by: {value.authors.join(' ')}</span>
                   </div>
                   <ul className="info">
                     <li>
