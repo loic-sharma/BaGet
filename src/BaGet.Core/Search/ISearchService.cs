@@ -38,7 +38,7 @@ namespace BaGet.Core
         /// <param name="includeSemVer2">Whether packages that require SemVer 2.0.0 compatibility should be returned.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The package versions that matched the request.</returns>
-        Task<AutocompleteResponse> ListPackageVersionsAssync(
+        Task<AutocompleteResponse> ListPackageVersionsAsync(
             string packageId,
             bool includePrerelease,
             bool includeSemVer2,

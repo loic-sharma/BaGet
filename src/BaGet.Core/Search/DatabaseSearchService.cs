@@ -106,7 +106,7 @@ namespace BaGet.Core
             };
         }
 
-        public Task<AutocompleteResponse> ListPackageVersionsAssync(
+        public Task<AutocompleteResponse> ListPackageVersionsAsync(
             string packageId,
             bool includePrerelease,
             bool includeSemVer2,
