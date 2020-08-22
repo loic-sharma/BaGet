@@ -305,6 +305,14 @@ namespace BaGet.Tests
 }", json);
         }
 
+        [Fact]
+        public async Task PackageDependentsReturnsBadRequest()
+        {
+            using var response = await _client.GetAsync("v3/dependents");
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
         private string PrettifyJson(Stream jsonStream)
         {
             using var writer = new StringWriter();
