@@ -310,7 +310,7 @@ namespace BaGet.Tests
         {
             using var response = await _client.GetAsync("v3/dependents");
 
-            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
         private string PrettifyJson(Stream jsonStream)
