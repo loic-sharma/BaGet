@@ -137,7 +137,7 @@ namespace BaGet.Azure
         }
 
         public Task<AutocompleteResponse> ListPackageVersionsAsync(
-            AutocompleteRequest request,
+            VersionsRequest request,
             CancellationToken cancellationToken)
         {
             // TODO: Support versions autocomplete.

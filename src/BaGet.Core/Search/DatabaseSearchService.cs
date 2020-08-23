@@ -107,7 +107,7 @@ namespace BaGet.Core
         }
 
         public async Task<AutocompleteResponse> ListPackageVersionsAsync(
-            AutocompleteRequest request,
+            VersionsRequest request,
             CancellationToken cancellationToken)
         {
             IQueryable<Package> search = _context.Packages;

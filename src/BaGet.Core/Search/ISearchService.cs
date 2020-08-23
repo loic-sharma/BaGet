@@ -36,7 +36,7 @@ namespace BaGet.Core
         /// <param name="request">The autocomplete request.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The package versions that matched the request.</returns>
-        Task<AutocompleteResponse> ListPackageVersionsAsync(AutocompleteRequest request, CancellationToken cancellationToken);
+        Task<AutocompleteResponse> ListPackageVersionsAsync(VersionsRequest request, CancellationToken cancellationToken);
 
         /// <summary>
         /// Find the packages that depend on a given package.
