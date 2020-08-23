@@ -11,6 +11,7 @@ import { PackageType, InstallationInfo } from './InstallationInfo';
 import LicenseInfo from './LicenseInfo';
 import * as Registration from './Registration';
 import SourceRepository from './SourceRepository';
+import RepoDetails from './RepoDetails';
 import { Versions, IPackageVersion } from './Versions';
 
 import './DisplayPackage.css';
@@ -312,6 +313,10 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
               <h2>Authors</h2>
 
               <p>{(!this.state.package.authors) ? 'Unknown' : this.state.package.authors}</p>
+            </div>
+
+            <div>
+              <RepoDetails />
             </div>
           </aside>
         </div>
