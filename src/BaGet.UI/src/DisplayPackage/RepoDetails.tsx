@@ -1,13 +1,18 @@
 import * as React from 'react';
 
 interface IRepoDetailsProps {
+  url: string;
 }
 
 class RepoDetails extends React.Component<IRepoDetailsProps> {
 
   public render() {
-    return (
-        <h2>Repository Details</h2>
+    if (!this.props.url) {
+      return null;
+    }
+
+    return (  
+      <h2>Project Details</h2>
     );
   }
 }

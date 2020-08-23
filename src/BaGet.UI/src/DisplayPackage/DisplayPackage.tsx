@@ -316,7 +316,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
             </div>
 
             <div>
-              <RepoDetails />
+              <RepoDetails url={this.state.package.projectUrl}/>
             </div>
           </aside>
         </div>
