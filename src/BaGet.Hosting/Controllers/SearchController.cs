@@ -47,6 +47,8 @@ namespace BaGet.Hosting
             [FromQuery(Name = "id")] string versionsQuery = null,
             [FromQuery]bool prerelease = false,
             [FromQuery]string semVerLevel = null,
+            [FromQuery]int skip = 0,
+            [FromQuery]int take = 20,
 
             // These are unofficial parameters
             [FromQuery]string packageType = null,
@@ -57,6 +59,8 @@ namespace BaGet.Hosting
                 IncludePrerelease = prerelease,
                 IncludeSemVer2 = semVerLevel == "2.0.0",
                 PackageType = packageType,
+                Skip = skip,
+                Take = take
             };
 
             // Default to autocomplete, just like nuget.org does
