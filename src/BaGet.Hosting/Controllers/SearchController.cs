@@ -72,7 +72,7 @@ namespace BaGet.Hosting
             [FromQuery] string packageId = null,
             CancellationToken cancellationToken = default)
         {
-            if(string.IsNullOrWhiteSpace(packageId))
+            if (string.IsNullOrWhiteSpace(packageId))
             {
                 return BadRequest();
             }
