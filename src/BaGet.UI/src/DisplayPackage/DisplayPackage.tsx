@@ -315,9 +315,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
               <p>{(!this.state.package.authors) ? 'Unknown' : this.state.package.authors}</p>
             </div>
 
-            <div>
-              <RepoDetails url={this.state.package.projectUrl}/>
-            </div>
+            <RepoDetails url={this.state.package.projectUrl}/>
           </aside>
         </div>
       );
