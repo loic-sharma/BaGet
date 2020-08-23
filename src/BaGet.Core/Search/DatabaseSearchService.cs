@@ -129,8 +129,6 @@ namespace BaGet.Core
                 .Select(p => p.Version.ToString())
                 .ToListAsync(cancellationToken);
 
-            results.Sort();
-
             return new AutocompleteResponse
             {
                 TotalHits = results.Count,
