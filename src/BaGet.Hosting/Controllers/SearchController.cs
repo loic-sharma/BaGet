@@ -43,9 +43,8 @@ namespace BaGet.Hosting
         }
 
         public async Task<ActionResult<AutocompleteResponse>> AutocompleteAsync(
-            [FromQuery(Name = "q")] string query = null,
-            [FromQuery]int skip = 0,
-            [FromQuery]int take = 20,
+            [FromQuery(Name = "q")] string autocompleteQuery = null,
+            [FromQuery(Name = "id")] string versionsQuery = null,
             [FromQuery]bool prerelease = false,
             [FromQuery]string semVerLevel = null,
 
@@ -53,19 +52,29 @@ namespace BaGet.Hosting
             [FromQuery]string packageType = null,
             CancellationToken cancellationToken = default)
         {
-            // TODO: Support versions autocomplete.
-            // See: https://github.com/loic-sharma/BaGet/issues/291
             var request = new AutocompleteRequest
             {
-                Skip = skip,
-                Take = take,
                 IncludePrerelease = prerelease,
                 IncludeSemVer2 = semVerLevel == "2.0.0",
                 PackageType = packageType,
-                Query = query,
             };
 
-            return await _searchService.AutocompleteAsync(request, cancellationToken);
+            // Default to autocomplete, just like nuget.org does
+            if(autocompleteQuery != null)
+            {
+                request.Query = autocompleteQuery;
+
+                return await _searchService.AutocompleteAsync(request, cancellationToken);
+            }
+
+            if(versionsQuery != null)
+            {
+                request.Query = versionsQuery;
+
+                return await _searchService.ListPackageVersionsAsync(request, cancellationToken);
+            }
+
+            return new AutocompleteResponse();
         }
 
         public async Task<ActionResult<DependentsResponse>> DependentsAsync(

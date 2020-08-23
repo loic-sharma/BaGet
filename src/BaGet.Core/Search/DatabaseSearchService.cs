@@ -106,13 +106,38 @@ namespace BaGet.Core
             };
         }
 
-        public Task<AutocompleteResponse> ListPackageVersionsAsync(
+        public async Task<AutocompleteResponse> ListPackageVersionsAsync(
             AutocompleteRequest request,
             CancellationToken cancellationToken)
         {
-            // TODO: Support versions autocomplete.
-            // See: https://github.com/loic-sharma/BaGet/issues/291
-            throw new NotImplementedException();
+            IQueryable<Package> search = _context.Packages;
+
+            if (!string.IsNullOrEmpty(request.Query))
+            {
+                var query = request.Query.ToLower();
+                search = search.Where(p => p.Id.ToLower().Equals(query));
+            }
+
+            search = AddSearchFilters(
+                search,
+                request.IncludePrerelease,
+                request.IncludeSemVer2,
+                request.PackageType,
+                frameworks: null);
+
+            var results = await search
+                .Distinct()
+                .Select(p => p.Version.ToString())
+                .ToListAsync(cancellationToken);
+
+            results.Sort();
+
+            return new AutocompleteResponse
+            {
+                TotalHits = results.Count,
+                Data = results,
+                Context = AutocompleteContext.Default
+            };
         }
 
         public async Task<DependentsResponse> FindDependentsAsync(string packageId, CancellationToken cancellationToken)
