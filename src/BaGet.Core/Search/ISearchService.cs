@@ -33,16 +33,10 @@ namespace BaGet.Core
         /// Enumerate listed package versions.
         /// See: https://docs.microsoft.com/en-us/nuget/api/search-autocomplete-service-resource#enumerate-package-versions
         /// </summary>
-        /// <param name="packageId">The package ID.</param>
-        /// <param name="includePrerelease">Whether pre-release packages should be returned.</param>
-        /// <param name="includeSemVer2">Whether packages that require SemVer 2.0.0 compatibility should be returned.</param>
+        /// <param name="request">The autocomplete request.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The package versions that matched the request.</returns>
-        Task<AutocompleteResponse> ListPackageVersionsAsync(
-            string packageId,
-            bool includePrerelease,
-            bool includeSemVer2,
-            CancellationToken cancellationToken);
+        Task<AutocompleteResponse> ListPackageVersionsAsync(AutocompleteRequest request, CancellationToken cancellationToken);
 
         /// <summary>
         /// Find the packages that depend on a given package.

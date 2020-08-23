@@ -42,9 +42,7 @@ namespace BaGet.Core
         }
 
         public Task<AutocompleteResponse> ListPackageVersionsAsync(
-            string packageId,
-            bool includePrerelease,
-            bool includeSemVer2,
+            AutocompleteRequest request,
             CancellationToken cancellationToken)
         {
             return EmptyAutocompleteResponseTask;
