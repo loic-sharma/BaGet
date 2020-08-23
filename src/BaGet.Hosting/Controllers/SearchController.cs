@@ -64,21 +64,18 @@ namespace BaGet.Hosting
             };
 
             // Default to autocomplete, just like nuget.org does
-            if(autocompleteQuery != null)
-            {
-                request.Query = autocompleteQuery;
-
-                return await _searchService.AutocompleteAsync(request, cancellationToken);
-            }
-
-            if(versionsQuery != null)
+            if (versionsQuery != null && autocompleteQuery == null)
             {
                 request.Query = versionsQuery;
 
                 return await _searchService.ListPackageVersionsAsync(request, cancellationToken);
             }
+            else
+            {
+                request.Query = autocompleteQuery;
 
-            return new AutocompleteResponse();
+                return await _searchService.AutocompleteAsync(request, cancellationToken);
+            }
         }
 
         public async Task<ActionResult<DependentsResponse>> DependentsAsync(

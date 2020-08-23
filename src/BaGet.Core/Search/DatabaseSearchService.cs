@@ -126,7 +126,6 @@ namespace BaGet.Core
                 frameworks: null);
 
             var results = await search
-                .Distinct()
                 .Select(p => p.Version.ToString())
                 .ToListAsync(cancellationToken);
 
