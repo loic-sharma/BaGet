@@ -69,9 +69,14 @@ namespace BaGet.Hosting
         }
 
         public async Task<ActionResult<DependentsResponse>> DependentsAsync(
-            [FromQuery] string packageId,
+            [FromQuery] string packageId = null,
             CancellationToken cancellationToken = default)
         {
+            if (string.IsNullOrWhiteSpace(packageId))
+            {
+                return BadRequest();
+            }
+
             return await _searchService.FindDependentsAsync(packageId, cancellationToken);
         }
     }

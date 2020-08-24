@@ -290,6 +290,29 @@ namespace BaGet.Tests
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
+        [Fact]
+        public async Task PackageDependentsReturnsOk()
+        {
+            using var response = await _client.GetAsync("v3/dependents?packageId=DefaultPackage");
+
+            var content = await response.Content.ReadAsStreamAsync();
+            var json = PrettifyJson(content);
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal(@"{
+  ""totalHits"": 0,
+  ""data"": []
+}", json);
+        }
+
+        [Fact]
+        public async Task PackageDependentsReturnsBadRequest()
+        {
+            using var response = await _client.GetAsync("v3/dependents");
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
         private string PrettifyJson(Stream jsonStream)
         {
             using var writer = new StringWriter();
