@@ -49,6 +49,7 @@ pages:
   - Advanced:
     - Debugging: advanced/debugging.md
     - BaGet SDK: advanced/sdk.md
+    - AWS Secrets Manager: advanced/aws-secrets-manager.md
   - BaGet vs. other:
     - nuget.org: vs/nugetorg.md
     - NuGet.Server: vs/nugetserver.md
