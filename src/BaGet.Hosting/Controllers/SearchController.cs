@@ -61,9 +61,8 @@ namespace BaGet.Hosting
                 {
                     IncludePrerelease = prerelease,
                     IncludeSemVer2 = semVerLevel == "2.0.0",
-                    PackageType = packageType,
                 };
-                request.Query = versionsQuery;
+                request.PackageId = versionsQuery;
 
                 return await _searchService.ListPackageVersionsAsync(request, cancellationToken);
             }

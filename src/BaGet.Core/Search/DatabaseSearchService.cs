@@ -110,23 +110,20 @@ namespace BaGet.Core
             VersionsRequest request,
             CancellationToken cancellationToken)
         {
-            IQueryable<Package> search = _context.Packages;
-
-            if (!string.IsNullOrEmpty(request.Query))
-            {
-                var query = request.Query.ToLower();
-                search = search.Where(p => p.Id.ToLower().Equals(query));
-            }
+            var packageId = request.PackageId.ToLower();
+            IQueryable<Package> search = _context
+                .Packages
+                .Where(p => p.Id.ToLower().Equals(packageId));
 
             search = AddSearchFilters(
                 search,
                 request.IncludePrerelease,
                 request.IncludeSemVer2,
-                request.PackageType,
+                packageType: null,
                 frameworks: null);
 
             var results = await search
-                .Select(p => p.Version.ToString())
+                .Select(p => p.Version.ToNormalizedString())
                 .ToListAsync(cancellationToken);
 
             return new AutocompleteResponse

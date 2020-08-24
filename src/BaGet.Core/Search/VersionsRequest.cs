@@ -17,13 +17,8 @@ namespace BaGet.Core
         public bool IncludeSemVer2 { get; set; }
 
         /// <summary>
-        /// Filter results to a package type. If null, no filter is applied.
+        /// The package ID whose versions should be fetched.
         /// </summary>
-        public string PackageType { get; set; }
-
-        /// <summary>
-        /// The search query.
-        /// </summary>
-        public string Query { get; set; }
+        public string PackageId { get; set; }
     }
 }
