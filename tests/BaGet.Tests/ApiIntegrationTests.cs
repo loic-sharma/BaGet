@@ -131,6 +131,44 @@ namespace BaGet.Tests
         }
 
         [Fact]
+        public async Task AutocompleteVersionsReturnsOk()
+        {
+            await _factory.AddPackageAsync(PackageData.Default);
+
+            using var response = await _client.GetAsync("v3/autocomplete?id=DefaultPackage");
+            var content = await response.Content.ReadAsStreamAsync();
+            var json = PrettifyJson(content);
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal(@"{
+  ""@context"": {
+    ""@vocab"": ""http://schema.nuget.org/schema#""
+  },
+  ""totalHits"": 1,
+  ""data"": [
+    ""1.2.3""
+  ]
+}", json);
+        }
+
+        [Fact]
+        public async Task AutocompleteVersionsReturnsEmpty()
+        {
+            using var response = await _client.GetAsync("v3/autocomplete?id=PackageDoesNotExist");
+            var content = await response.Content.ReadAsStreamAsync();
+            var json = PrettifyJson(content);
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal(@"{
+  ""@context"": {
+    ""@vocab"": ""http://schema.nuget.org/schema#""
+  },
+  ""totalHits"": 0,
+  ""data"": []
+}", json);
+        }
+
+        [Fact]
         public async Task VersionListReturnsOk()
         {
             await _factory.AddPackageAsync(PackageData.Default);

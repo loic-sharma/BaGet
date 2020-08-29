@@ -54,15 +54,15 @@ namespace BaGet.Hosting
             [FromQuery]string packageType = null,
             CancellationToken cancellationToken = default)
         {
-            // Default to autocomplete, just like nuget.org does
+            // If only "id" is provided, find package versions. Otherwise, find package IDs.
             if (versionsQuery != null && autocompleteQuery == null)
             {
                 var request = new VersionsRequest
                 {
                     IncludePrerelease = prerelease,
                     IncludeSemVer2 = semVerLevel == "2.0.0",
+                    PackageId = versionsQuery,
                 };
-                request.PackageId = versionsQuery;
 
                 return await _searchService.ListPackageVersionsAsync(request, cancellationToken);
             }
@@ -74,11 +74,9 @@ namespace BaGet.Hosting
                     IncludeSemVer2 = semVerLevel == "2.0.0",
                     PackageType = packageType,
                     Skip = skip,
-                    Take = take
+                    Take = take,
+                    Query = autocompleteQuery,
                 };
-                request.Query = versionsQuery;
-
-                request.Query = autocompleteQuery;
 
                 return await _searchService.AutocompleteAsync(request, cancellationToken);
             }
