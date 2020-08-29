@@ -73,10 +73,8 @@ namespace BaGet.Azure
             };
         }
 
-        public Task<AutocompleteResponse> ListPackageVersionsAssync(
-            string packageId,
-            bool includePrerelease,
-            bool includeSemVer2,
+        public Task<AutocompleteResponse> ListPackageVersionsAsync(
+            VersionsRequest request,
             CancellationToken cancellationToken)
         {
             // TODO: Support versions autocomplete.
