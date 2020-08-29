@@ -123,7 +123,7 @@ namespace BaGet.Core
                 frameworks: null);
 
             var results = await search
-                .Select(p => p.Version.ToNormalizedString())
+                .Select(p => p.NormalizedVersionString)
                 .ToListAsync(cancellationToken);
 
             return new AutocompleteResponse
