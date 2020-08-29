@@ -43,29 +43,43 @@ namespace BaGet.Hosting
         }
 
         public async Task<ActionResult<AutocompleteResponse>> AutocompleteAsync(
-            [FromQuery(Name = "q")] string query = null,
-            [FromQuery]int skip = 0,
-            [FromQuery]int take = 20,
+            [FromQuery(Name = "q")] string autocompleteQuery = null,
+            [FromQuery(Name = "id")] string versionsQuery = null,
             [FromQuery]bool prerelease = false,
             [FromQuery]string semVerLevel = null,
+            [FromQuery]int skip = 0,
+            [FromQuery]int take = 20,
 
             // These are unofficial parameters
             [FromQuery]string packageType = null,
             CancellationToken cancellationToken = default)
         {
-            // TODO: Support versions autocomplete.
-            // See: https://github.com/loic-sharma/BaGet/issues/291
-            var request = new AutocompleteRequest
+            // If only "id" is provided, find package versions. Otherwise, find package IDs.
+            if (versionsQuery != null && autocompleteQuery == null)
             {
-                Skip = skip,
-                Take = take,
-                IncludePrerelease = prerelease,
-                IncludeSemVer2 = semVerLevel == "2.0.0",
-                PackageType = packageType,
-                Query = query,
-            };
+                var request = new VersionsRequest
+                {
+                    IncludePrerelease = prerelease,
+                    IncludeSemVer2 = semVerLevel == "2.0.0",
+                    PackageId = versionsQuery,
+                };
 
-            return await _searchService.AutocompleteAsync(request, cancellationToken);
+                return await _searchService.ListPackageVersionsAsync(request, cancellationToken);
+            }
+            else
+            {
+                var request = new AutocompleteRequest
+                {
+                    IncludePrerelease = prerelease,
+                    IncludeSemVer2 = semVerLevel == "2.0.0",
+                    PackageType = packageType,
+                    Skip = skip,
+                    Take = take,
+                    Query = autocompleteQuery,
+                };
+
+                return await _searchService.AutocompleteAsync(request, cancellationToken);
+            }
         }
 
         public async Task<ActionResult<DependentsResponse>> DependentsAsync(

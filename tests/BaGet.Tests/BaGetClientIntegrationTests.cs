@@ -100,6 +100,30 @@ namespace BaGet.Tests
         }
 
         [Fact]
+        public async Task AutocompleteVersions()
+        {
+            await _factory.AddPackageAsync(PackageData.Default);
+
+            var client = _clientFactory.CreateAutocompleteClient();
+            var results = await client.ListPackageVersionsAsync("DefaultPackage");
+
+            var result = Assert.Single(results.Data);
+
+            Assert.Equal(1, results.TotalHits);
+            Assert.Equal("1.2.3", result);
+        }
+
+        [Fact]
+        public async Task AutocompleteVersionsReturnsEmpty()
+        {
+            var client = _clientFactory.CreateAutocompleteClient();
+            var results = await client.ListPackageVersionsAsync("PackageDoesNotExist");
+
+            Assert.Empty(results.Data);
+            Assert.Equal(0, results.TotalHits);
+        }
+
+        [Fact]
         public async Task VersionListReturnsResults()
         {
             await _factory.AddPackageAsync(PackageData.Default);
