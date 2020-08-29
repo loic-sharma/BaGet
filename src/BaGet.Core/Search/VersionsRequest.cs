@@ -1,7 +1,7 @@
 namespace BaGet.Core
 {
     /// <summary>
-    /// The NuGet V3 enumerage package versions request.
+    /// The NuGet V3 enumerate package versions request.
     /// See: https://docs.microsoft.com/en-us/nuget/api/search-autocomplete-service-resource#request-parameters-1
     /// </summary>
     public class VersionsRequest
