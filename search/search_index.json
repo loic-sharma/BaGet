@@ -2,7 +2,7 @@
     "docs": [
         {
             "location": "/", 
-            "text": "BaGet\n\n\nBaGet (pronounced \"baguette\") is a lightweight NuGet and symbol server. It is \nopen source\n, cross-platform, and cloud ready!\n\n\n\n  \n\n\n\n\n\nRun BaGet\n\n\nYou can run BaGet on your preferred platform:\n\n\n\n\nOn your computer\n\n\nDocker\n\n\nAzure\n\n\nAWS\n\n\nGoogle Cloud\n\n\nAlibaba Cloud(Aliyun)\n\n\n\n\nBaGet SDK\n\n\nYou can also use the \nBaGet.Protocol\n package to interact with a NuGet server. For more information, please refer to the \nBaGet SDK\n guide.", 
+            "text": "BaGet\n\n\nBaGet (pronounced \"baguette\") is a lightweight NuGet and symbol server. It is \nopen source\n, cross-platform, and cloud ready!\n\n\n\n  \n\n\n\n\n\nRun BaGet\n\n\nYou can run BaGet on your preferred platform:\n\n\n\n\nOn your computer\n\n\nDocker\n\n\nAzure\n\n\nAWS\n\n\nGoogle Cloud\n\n\nAlibaba Cloud (Aliyun)\n\n\n\n\nBaGet SDK\n\n\nYou can also use the \nBaGet.Protocol\n package to interact with a NuGet server. For more information, please refer to the \nBaGet SDK\n guide.", 
             "title": "Overview"
         }, 
         {
@@ -12,7 +12,7 @@
         }, 
         {
             "location": "/#run-baget", 
-            "text": "You can run BaGet on your preferred platform:   On your computer  Docker  Azure  AWS  Google Cloud  Alibaba Cloud(Aliyun)", 
+            "text": "You can run BaGet on your preferred platform:   On your computer  Docker  Azure  AWS  Google Cloud  Alibaba Cloud (Aliyun)", 
             "title": "Run BaGet"
         }, 
         {
@@ -219,6 +219,26 @@
             "location": "/installation/gcp/#google-appengine", 
             "text": "BaGet can be hosted in Google AppEngine. See  here \nfor a tutorial on how to create a new AppEngine project.  Create a  app.yaml  file to publish the Docker container built by the Dockerfile in this repo. In the template\nbelow, make the following replacements:   PROJECT  - your GCP project, as returned by  gcloud config get-value project  REGION  -- the GCP region your Google Cloud SQL database is in, e.g.,  us-central1  or  us-west2  DBINSTANCE  -- the name of your Google Cloud SQL database instance  DBNAME  -- the name of the BaGet database on that instance (e.g.,  baget  in the instructions above)  PASSWORD  -- the password for the database root user  BUCKETNAME  -- the name of the Google Cloud Storage Bucket configured above   runtime :   custom  env :   flex  # The settings below are to reduce costs during testing and are not necessarily  # appropriate for production use. For more information, see:  # https://cloud.google.com/appengine/docs/flexible/dotnet/configuring-your-app-with-app-yaml  resources : \n   cpu :   1 \n   memory_gb :   0.5 \n   disk_size_gb :   10  beta_settings : \n   cloud_sql_instances :   PROJECT:REGION:DBINSTANCE  env_variables : \n   Database__Type :   MySql \n   Database__ConnectionString :   Server=/cloudsql/PROJECT:REGION:DBINSTANCE;User   Id=root;Password=PASSWORD;Database=DBNAME;SslMode=None \n   Storage__Type :   GoogleCloud \n   Storage__BucketName :   BUCKETNAME \n   Search__Type :   Database \n   ASPNETCORE_URLS :   http://0.0.0.0:8080   To publish the application, run  gcloud app deploy .", 
             "title": "Google AppEngine"
+        }, 
+        {
+            "location": "/installation/aliyun/", 
+            "text": "Use Alibaba (Aliyun) Object Storage Service\n\n\nYou can store packages to \nAlibaba(Aliyun) OSS\n.\n\n\nConfigure BaGet\n\n\nYou can modify BaGet's configurations by editing the \nappsettings.json\n file. For the full list of configurations, please refer to \nBaGet's configuration\n guide.\n\n\nAliyun OSS Storage\n\n\nUpdate the \nappsettings.json\n file:\n\n\n{\n\n    \n...\n\n\n    \nStorage\n:\n \n{\n\n        \nType\n:\n \nAliyunOss\n,\n\n        \nEndpoint\n:\n \noss-us-west-1.aliyuncs.com\n,\n\n        \nBucket\n:\n \nfoo\n,\n\n        \nAccessKey\n:\n \n,\n\n        \nAccessKeySecret\n:\n \n,\n\n        \nPrefix\n:\n \nlib/baget\n \n//\n \noptional\n\n    \n},\n\n\n    \n...\n\n\n}", 
+            "title": "Alibaba cloud"
+        }, 
+        {
+            "location": "/installation/aliyun/#use-alibaba-aliyun-object-storage-service", 
+            "text": "You can store packages to  Alibaba(Aliyun) OSS .", 
+            "title": "Use Alibaba (Aliyun) Object Storage Service"
+        }, 
+        {
+            "location": "/installation/aliyun/#configure-baget", 
+            "text": "You can modify BaGet's configurations by editing the  appsettings.json  file. For the full list of configurations, please refer to  BaGet's configuration  guide.", 
+            "title": "Configure BaGet"
+        }, 
+        {
+            "location": "/installation/aliyun/#aliyun-oss-storage", 
+            "text": "Update the  appsettings.json  file:  { \n     ... \n\n     Storage :   { \n         Type :   AliyunOss , \n         Endpoint :   oss-us-west-1.aliyuncs.com , \n         Bucket :   foo , \n         AccessKey :   , \n         AccessKeySecret :   , \n         Prefix :   lib/baget   //   optional \n     }, \n\n     ...  }", 
+            "title": "Aliyun OSS Storage"
         }, 
         {
             "location": "/installation/iis-proxy/", 
