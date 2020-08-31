@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using BaGet.Protocol;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
@@ -65,7 +66,8 @@ namespace BaGet.Core.Tests.Mirror
                     _packages.Object,
                     _upstream.Object,
                     _indexer.Object,
-                    Mock.Of<ILogger<MirrorService>>());
+                    Mock.Of<ILogger<MirrorService>>(),
+                    Mock.Of<IOptionsSnapshot<MirrorOptions>>());
             }
         }
     }

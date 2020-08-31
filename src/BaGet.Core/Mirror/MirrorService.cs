@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Protocol;
 using BaGet.Protocol.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NuGet.Versioning;
 
 namespace BaGet.Core
@@ -19,17 +21,19 @@ namespace BaGet.Core
         private readonly NuGetClient _upstreamClient;
         private readonly IPackageIndexingService _indexer;
         private readonly ILogger<MirrorService> _logger;
+        private readonly IOptionsSnapshot<MirrorOptions> _mirrorOptions;
 
         public MirrorService(
             IPackageService localPackages,
             NuGetClient upstreamClient,
             IPackageIndexingService indexer,
-            ILogger<MirrorService> logger)
+            ILogger<MirrorService> logger, IOptionsSnapshot<MirrorOptions> mirrorOptions)
         {
             _localPackages = localPackages ?? throw new ArgumentNullException(nameof(localPackages));
             _upstreamClient = upstreamClient ?? throw new ArgumentNullException(nameof(upstreamClient));
             _indexer = indexer ?? throw new ArgumentNullException(nameof(indexer));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mirrorOptions = mirrorOptions;
         }
 
         public async Task<IReadOnlyList<NuGetVersion>> FindPackageVersionsOrNullAsync(
@@ -55,6 +59,10 @@ namespace BaGet.Core
 
         public async Task<IReadOnlyList<Package>> FindPackagesOrNullAsync(string id, CancellationToken cancellationToken)
         {
+            if (IsPackageIdExcluded(id))
+            {
+                return null;
+            }
             var items = await RunOrNull(
                 id,
                 "metadata",
@@ -70,6 +78,10 @@ namespace BaGet.Core
 
         public async Task MirrorAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
+            if (IsPackageIdExcluded(id))
+            {
+                return;
+            }
             if (await _localPackages.ExistsAsync(id, version, cancellationToken))
             {
                 return;
@@ -242,6 +254,22 @@ namespace BaGet.Core
             {
                 packageStream?.Dispose();
             }
+        }
+
+        private bool IsPackageIdExcluded(string id)
+        {
+            if (_mirrorOptions.Value.Exclude == null)
+            {
+                return false;
+            }
+            
+            foreach (var exclude in _mirrorOptions.Value.Exclude)
+            {
+                var regexFilter = new Regex(exclude);
+                return regexFilter.IsMatch(id);
+            }
+
+            return false;
         }
     }
 }
