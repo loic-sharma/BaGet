@@ -1,5 +1,5 @@
 using System;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace BaGet.Protocol.Models
 {
@@ -15,19 +15,19 @@ namespace BaGet.Protocol.Models
         /// <summary>
         /// The URL to this item's corresponding <see cref="CatalogPage"/>.
         /// </summary>
-        [JsonProperty("@id")]
+        [JsonPropertyName("@id")]
         public string CatalogPageUrl { get; set; }
 
         /// <summary>
         /// A timestamp of the most recent commit in this page.
         /// </summary>
-        [JsonProperty("commitTimeStamp")]
+        [JsonPropertyName("commitTimeStamp")]
         public DateTimeOffset CommitTimestamp { get; set; }
 
         /// <summary>
         /// The number of items in the page.
         /// </summary>
-        [JsonProperty("count")]
+        [JsonPropertyName("count")]
         public int Count { get; set; }
     }
 }

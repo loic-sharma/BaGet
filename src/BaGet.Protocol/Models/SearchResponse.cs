@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace BaGet.Protocol.Models
 {
@@ -10,19 +10,19 @@ namespace BaGet.Protocol.Models
     /// </summary>
     public class SearchResponse
     {
-        [JsonProperty("@context")]
+        [JsonPropertyName("@context")]
         public SearchContext Context { get; set; }
 
         /// <summary>
         /// The total number of matches, disregarding skip and take.
         /// </summary>
-        [JsonProperty("totalHits")]
+        [JsonPropertyName("totalHits")]
         public long TotalHits { get; set; }
 
         /// <summary>
         /// The packages that matched the search query.
         /// </summary>
-        [JsonProperty("data")]
+        [JsonPropertyName("data")]
         public IReadOnlyList<SearchResult> Data { get; set; }
     }
 }

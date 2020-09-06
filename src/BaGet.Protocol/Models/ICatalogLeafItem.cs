@@ -26,10 +26,5 @@ namespace BaGet.Protocol.Models
         /// The package version of the catalog item.
         /// </summary>
         string PackageVersion { get; }
-
-        /// <summary>
-        /// The type of the current catalog leaf.
-        /// </summary>
-        CatalogLeafType Type { get; }
     }
 }

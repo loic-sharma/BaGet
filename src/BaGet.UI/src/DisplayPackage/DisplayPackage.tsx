@@ -36,7 +36,7 @@ interface IPackage {
   licenseUrl: string;
   downloadUrl: string;
   repositoryUrl: string;
-  repositoryType: string;
+  repositoryType?: string;
   releaseNotes: string;
   totalDownloads: number;
   packageType: PackageType;
@@ -251,7 +251,7 @@ class DisplayPackage extends React.Component<IDisplayPackageProps, IDisplayPacka
               }
             })()}
 
-            <ExpandableSection title="Dependents" expanded={false}>
+            <ExpandableSection title="Used By" expanded={false}>
               <Dependents packageId={this.state.package.id} />
             </ExpandableSection>
 

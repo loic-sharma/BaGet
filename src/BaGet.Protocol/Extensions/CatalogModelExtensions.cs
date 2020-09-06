@@ -142,9 +142,19 @@ namespace BaGet.Protocol
         /// </summary>
         /// <param name="leaf">The catalog leaf.</param>
         /// <returns>True if the catalog leaf represents a package delete.</returns>
-        public static bool IsPackageDelete(this ICatalogLeafItem leaf)
+        public static bool IsPackageDelete(this CatalogLeafItem leaf)
         {
-            return leaf.Type == CatalogLeafType.PackageDelete;
+            return leaf.Type == "nuget:PackageDelete";
+        }
+
+        /// <summary>
+        /// Determines if the provided catalog leaf is a package delete.
+        /// </summary>
+        /// <param name="leaf">The catalog leaf.</param>
+        /// <returns>True if the catalog leaf represents a package delete.</returns>
+        public static bool IsPackageDelete(this CatalogLeaf leaf)
+        {
+            return leaf.Type.FirstOrDefault() == "PackageDelete";
         }
 
         /// <summary>
@@ -152,9 +162,19 @@ namespace BaGet.Protocol
         /// </summary>
         /// <param name="leaf">The catalog leaf.</param>
         /// <returns>True if the catalog leaf contains package details.</returns>
-        public static bool IsPackageDetails(this ICatalogLeafItem leaf)
+        public static bool IsPackageDetails(this CatalogLeafItem leaf)
         {
-            return leaf.Type == CatalogLeafType.PackageDetails;
+            return leaf.Type == "nuget:PackageDetails";
+        }
+
+        /// <summary>
+        /// Determines if the provided catalog leaf is contains package details.
+        /// </summary>
+        /// <param name="leaf">The catalog leaf.</param>
+        /// <returns>True if the catalog leaf contains package details.</returns>
+        public static bool IsPackageDetails(this CatalogLeaf leaf)
+        {
+            return leaf.Type.FirstOrDefault() == "PackageDetails";
         }
 
         /// <summary>

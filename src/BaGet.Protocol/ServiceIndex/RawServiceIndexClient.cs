@@ -30,11 +30,9 @@ namespace BaGet.Protocol.Internal
         /// <inheritdoc />
         public async Task<ServiceIndexResponse> GetAsync(CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.DeserializeUrlAsync<ServiceIndexResponse>(
+            return await _httpClient.GetFromJsonAsync<ServiceIndexResponse>(
                 _serviceIndexUrl,
                 cancellationToken);
-
-            return response.GetResultOrThrow();
         }
     }
 }

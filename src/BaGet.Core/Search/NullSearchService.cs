@@ -24,7 +24,7 @@ namespace BaGet.Core
             Task.FromResult(new DependentsResponse
             {
                 TotalHits = 0,
-                Data = EmptyStringList
+                Data = new List<DependentResult>()
             });
 
         private static readonly Task<SearchResponse> EmptySearchResponseTask =
@@ -35,46 +35,27 @@ namespace BaGet.Core
             });
 
         public Task<AutocompleteResponse> AutocompleteAsync(
-            string query = null,
-            AutocompleteType type = AutocompleteType.PackageIds,
-            int skip = 0,
-            int take = 20,
-            bool includePrerelease = true,
-            bool includeSemVer2 = true,
-            CancellationToken cancellationToken = default)
+            AutocompleteRequest request,
+            CancellationToken cancellationToken)
         {
             return EmptyAutocompleteResponseTask;
         }
 
-        public Task<DependentsResponse> FindDependentsAsync(
-            string packageId,
-            int skip = 0,
-            int take = 20,
-            CancellationToken cancellationToken = default)
+        public Task<AutocompleteResponse> ListPackageVersionsAsync(
+            VersionsRequest request,
+            CancellationToken cancellationToken)
+        {
+            return EmptyAutocompleteResponseTask;
+        }
+
+        public Task<DependentsResponse> FindDependentsAsync(string packageId, CancellationToken cancellationToken)
         {
             return EmptyDependentsResponseTask;
         }
 
         public Task<SearchResponse> SearchAsync(
-            string query = null,
-            int skip = 0,
-            int take = 20,
-            bool includePrerelease = true,
-            bool includeSemVer2 = true,
-            string packageType = null,
-            string framework = null,
-            CancellationToken cancellationToken = default)
-        {
-            return EmptySearchResponseTask;
-        }
-
-        public Task<SearchResponse> SearchAsync(
-            string query = null,
-            int skip = 0,
-            int take = 20,
-            bool includePrerelease = true,
-            bool includeSemVer2 = true,
-            CancellationToken cancellationToken = default)
+            SearchRequest request,
+            CancellationToken cancellationToken)
         {
             return EmptySearchResponseTask;
         }

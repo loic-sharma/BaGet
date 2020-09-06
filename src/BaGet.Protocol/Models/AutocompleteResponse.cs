@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace BaGet.Protocol.Models
 {
@@ -10,18 +10,19 @@ namespace BaGet.Protocol.Models
     /// </summary>
     public class AutocompleteResponse
     {
+        [JsonPropertyName("@context")]
         public AutocompleteContext Context { get; set; }
 
         /// <summary>
         /// The total number of matches, disregarding skip and take.
         /// </summary>
-        [JsonProperty("totalHits")]
+        [JsonPropertyName("totalHits")]
         public long TotalHits { get; set; }
 
         /// <summary>
         /// The package IDs matched by the autocomplete query.
         /// </summary>
-        [JsonProperty("data")]
+        [JsonPropertyName("data")]
         public IReadOnlyList<string> Data { get; set; }
     }
 }

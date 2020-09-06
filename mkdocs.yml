@@ -40,6 +40,7 @@ pages:
     - Azure: installation/azure.md
     - AWS: installation/aws.md
     - Google cloud: installation/gcp.md
+    - Alibaba cloud: installation/aliyun.md
     - Windows IIS proxy: installation/iis-proxy.md
   - Configuration: configuration.md
   - Import:

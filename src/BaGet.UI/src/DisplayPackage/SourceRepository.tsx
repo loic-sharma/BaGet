@@ -3,7 +3,7 @@ import './SourceRepository.css';
 
 interface ISourceRepositoryProps {
   url: string;
-  type: string;
+  type?: string;
 }
 
 class SourceRepository extends React.Component<ISourceRepositoryProps> {

@@ -1,6 +1,6 @@
 using System;
-using BaGet.Protocol.Internal;
-using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace BaGet.Protocol.Models
 {
@@ -17,44 +17,43 @@ namespace BaGet.Protocol.Models
         /// <summary>
         /// The URL to the current catalog leaf.
         /// </summary>
-        [JsonProperty("@id")]
+        [JsonPropertyName("@id")]
         public string CatalogLeafUrl { get; set; }
 
         /// <summary>
         /// The type of the current catalog leaf.
         /// </summary>
-        [JsonProperty("@type")]
-        [JsonConverter(typeof(CatalogLeafTypeConverter))]
-        public CatalogLeafType Type { get; set; }
+        [JsonPropertyName("@type")]
+        public IReadOnlyList<string> Type { get; set; }
 
         /// <summary>
         /// The catalog commit ID associated with this catalog item.
         /// </summary>
-        [JsonProperty("catalog:commitId")]
+        [JsonPropertyName("catalog:commitId")]
         public string CommitId { get; set; }
 
         /// <summary>
         /// The commit timestamp of this catalog item.
         /// </summary>
-        [JsonProperty("catalog:commitTimeStamp")]
+        [JsonPropertyName("catalog:commitTimeStamp")]
         public DateTimeOffset CommitTimestamp { get; set; }
 
         /// <summary>
         /// The package ID of the catalog item.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string PackageId { get; set; }
 
         /// <summary>
         /// The published date of the package catalog item.
         /// </summary>
-        [JsonProperty("published")]
+        [JsonPropertyName("published")]
         public DateTimeOffset Published { get; set; }
 
         /// <summary>
         /// The package version of the catalog item.
         /// </summary>
-        [JsonProperty("version")]
+        [JsonPropertyName("version")]
         public string PackageVersion { get; set; }
     }
 }

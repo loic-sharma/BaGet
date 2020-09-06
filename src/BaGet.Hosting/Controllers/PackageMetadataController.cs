@@ -23,7 +23,7 @@ namespace BaGet.Hosting
 
         // GET v3/registration/{id}.json
         [HttpGet]
-        public async Task<ActionResult<RegistrationIndexResponse>> RegistrationIndexAsync(string id, CancellationToken cancellationToken)
+        public async Task<ActionResult<BaGetRegistrationIndexResponse>> RegistrationIndexAsync(string id, CancellationToken cancellationToken)
         {
             var index = await _metadata.GetRegistrationIndexOrNullAsync(id, cancellationToken);
             if (index == null)

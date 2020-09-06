@@ -39,9 +39,7 @@ namespace BaGet.Protocol.Internal
         {
             var url = AddSearchQueryString(_searchUrl, query, skip, take, includePrerelease, includeSemVer2, "q");
 
-            var response = await _httpClient.DeserializeUrlAsync<SearchResponse>(url, cancellationToken);
-
-            return response.GetResultOrThrow();
+            return await _httpClient.GetFromJsonAsync<SearchResponse>(url, cancellationToken);
         }
 
         internal static string AddSearchQueryString(

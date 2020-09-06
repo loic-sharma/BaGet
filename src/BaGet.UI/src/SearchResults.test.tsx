@@ -35,7 +35,7 @@ describe('Tests for SearchResults component', () => {
       data: [
         {
           id: 'BaGet.Authors',
-          authors: 'BaGet.Authors',
+          authors: ['BaGet.Authors'],
           totalDownloads: 999,
           version: '1.0',
           tags: ['NuGet'],

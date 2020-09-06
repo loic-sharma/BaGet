@@ -35,16 +35,9 @@ namespace BaGet.Protocol.Internal
             CancellationToken cancellationToken = default)
         {
             var id = packageId.ToLowerInvariant();
-
             var url = $"{_packageContentUrl}/{id}/index.json";
-            var response = await _httpClient.DeserializeUrlAsync<PackageVersionsResponse>(url, cancellationToken);
 
-            if (response.StatusCode == HttpStatusCode.NotFound)
-            {
-                return null;
-            }
-
-            return response.GetResultOrThrow();
+            return await _httpClient.GetFromJsonOrDefaultAsync<PackageVersionsResponse>(url, cancellationToken);
         }
 
         /// <inheritdoc />
