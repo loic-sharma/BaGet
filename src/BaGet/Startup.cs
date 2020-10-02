@@ -1,5 +1,6 @@
 using System;
 using BaGet.Core;
+using BaGet.Core.Health;
 using BaGet.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
@@ -51,6 +52,9 @@ namespace BaGet
             services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<IPackageService>);
             services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<ISearchService>);
             services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<ISearchIndexer>);
+
+            services.AddHealthChecks().AddCheck<DbContextHealthCheck>("Database");
+            services.AddHealthChecks().AddCheck<StorageHealthCheck>("Storage");
 
             services.AddCors();
         }
@@ -107,6 +111,8 @@ namespace BaGet
                 var api = new BaGetApi();
 
                 api.MapRoutes(endpoints);
+
+                endpoints.MapHealthChecks("/health");
             });
 
             app.UseSpa(spa =>
