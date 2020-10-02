@@ -53,6 +53,10 @@ namespace BaGet
             services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<ISearchService>);
             services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<ISearchIndexer>);
 
+            services.Configure<Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckServiceOptions>(options =>
+            {
+                options.Registrations.Clear();
+            });
             services.AddHealthChecks().AddCheck<DbContextHealthCheck>("Database");
             services.AddHealthChecks().AddCheck<StorageHealthCheck>("Storage");
 
