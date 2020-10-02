@@ -21,7 +21,7 @@ namespace BaGet.Core.Health
             var canConnect = await Context.Database.CanConnectAsync(cancellationToken);
             if(canConnect)
             {
-                return HealthCheckResult.Healthy("Ok, but I dont feel like it today.");
+                return HealthCheckResult.Healthy();
             }
             else
             {
