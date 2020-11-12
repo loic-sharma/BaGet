@@ -113,10 +113,15 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                 dropdownWidth={200}
                 onChange={this.onChangeFramework}
                 options={[
-                  {key: 'any', text: 'Any' },
+                  { key: 'any', text: 'Any' },
 
                   { key: 'divider1', text: '-', itemType: SelectableOptionMenuItemType.Divider },
-                  { key: 'header1', text: '.NET Standard', itemType: SelectableOptionMenuItemType.Header },
+                  { key: 'header1', text: '.NET', itemType: SelectableOptionMenuItemType.Header },
+
+                  { key: 'net5.0', text: '.NET 5.0' },
+
+                  { key: 'divider2', text: '-', itemType: SelectableOptionMenuItemType.Divider },
+                  { key: 'header2', text: '.NET Standard', itemType: SelectableOptionMenuItemType.Header },
 
                   { key: 'netstandard2.1', text: '.NET Standard 2.1' },
                   { key: 'netstandard2.0', text: '.NET Standard 2.0' },
@@ -128,8 +133,8 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                   { key: 'netstandard1.1', text: '.NET Standard 1.1' },
                   { key: 'netstandard1.0', text: '.NET Standard 1.0' },
 
-                  { key: 'divider2', text: '-', itemType: SelectableOptionMenuItemType.Divider },
-                  { key: 'header2', text: '.NET Core', itemType: SelectableOptionMenuItemType.Header },
+                  { key: 'divider3', text: '-', itemType: SelectableOptionMenuItemType.Divider },
+                  { key: 'header3', text: '.NET Core', itemType: SelectableOptionMenuItemType.Header },
 
                   { key: 'netcoreapp3.1', text: '.NET Core 3.1' },
                   { key: 'netcoreapp3.0', text: '.NET Core 3.0' },
@@ -138,8 +143,8 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                   { key: 'netcoreapp1.1', text: '.NET Core 1.1' },
                   { key: 'netcoreapp1.0', text: '.NET Core 1.0' },
 
-                  { key: 'divider3', text: '-', itemType: SelectableOptionMenuItemType.Divider },
-                  { key: 'header3', text: '.NET Framework', itemType: SelectableOptionMenuItemType.Header },
+                  { key: 'divider4', text: '-', itemType: SelectableOptionMenuItemType.Divider },
+                  { key: 'header4', text: '.NET Framework', itemType: SelectableOptionMenuItemType.Header },
 
                   { key: 'net48', text: '.NET Framework 4.8' },
                   { key: 'net472', text: '.NET Framework 4.7.2' },
