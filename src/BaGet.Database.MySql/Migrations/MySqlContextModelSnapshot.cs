@@ -88,7 +88,7 @@ namespace BaGet.Database.MySql.Migrations
                     b.Property<string>("ReleaseNotes")
                         .HasColumnName("ReleaseNotes")
                         .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasMaxLength(4000);
+                        .HasMaxLength(35000);
 
                     b.Property<string>("RepositoryType")
                         .HasColumnType("varchar(100) CHARACTER SET utf8mb4")

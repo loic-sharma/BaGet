@@ -90,8 +90,8 @@ namespace BaGet.Database.SqlServer.Migrations
 
                     b.Property<string>("ReleaseNotes")
                         .HasColumnName("ReleaseNotes")
-                        .HasColumnType("nvarchar(4000)")
-                        .HasMaxLength(4000);
+                        .HasColumnType("nvarchar(max)")
+                        .HasMaxLength(35000);
 
                     b.Property<string>("RepositoryType")
                         .HasColumnType("nvarchar(100)")

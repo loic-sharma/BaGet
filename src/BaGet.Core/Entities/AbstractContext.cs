@@ -18,6 +18,7 @@ namespace BaGet.Core
         public const int MaxPackageTypeVersionLength = 64;
         public const int MaxRepositoryTypeLength = 100;
         public const int MaxTargetFrameworkLength = 256;
+        public const int ReleaseNotesStringLength = 35000;
 
         public const int MaxPackageDependencyVersionRangeLength = 256;
 
@@ -69,7 +70,7 @@ namespace BaGet.Core
 
             package.Property(p => p.ReleaseNotes)
                 .HasColumnName("ReleaseNotes")
-                .HasMaxLength(DefaultMaxStringLength);
+                .HasMaxLength(ReleaseNotesStringLength);
 
             package.Property(p => p.Authors)
                 .HasMaxLength(DefaultMaxStringLength)
