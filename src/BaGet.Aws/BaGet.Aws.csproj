@@ -10,7 +10,7 @@
   <ItemGroup>
     <PackageReference Include="AWSSDK.S3" Version="3.3.110.20" />
     <PackageReference Include="AWSSDK.SecurityToken" Version="3.3.104.27" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(MicrosoftExtensionsPackageVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.1" />
   </ItemGroup>
 
   <ItemGroup>
