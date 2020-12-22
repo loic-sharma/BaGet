@@ -268,11 +268,10 @@ __pycache__/
 # Cake - Uncomment if you are using it
 # tools/
 
-# Ignore client app cache
-**/Baget.UI/.cache
-
-# Ignore client dist files
-**/Baget.UI/dist/
+# Ignore frontend files
+**/BaGet.UI/.cache
+**/BaGet.UI/.eslintcache
+**/BaGet.UI/dist/
 
 # Ignore database file
-**/baget.db 
+**/baget.db
