@@ -16,13 +16,13 @@ namespace BaGet.Core
     public class MirrorService : IMirrorService
     {
         private readonly IPackageService _localPackages;
-        private readonly NuGetClient _upstreamClient;
+        private readonly IMirrorNuGetClient _upstreamClient;
         private readonly IPackageIndexingService _indexer;
         private readonly ILogger<MirrorService> _logger;
 
         public MirrorService(
             IPackageService localPackages,
-            NuGetClient upstreamClient,
+            IMirrorNuGetClient upstreamClient,
             IPackageIndexingService indexer,
             ILogger<MirrorService> logger)
         {
@@ -30,6 +30,19 @@ namespace BaGet.Core
             _upstreamClient = upstreamClient ?? throw new ArgumentNullException(nameof(upstreamClient));
             _indexer = indexer ?? throw new ArgumentNullException(nameof(indexer));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
+        public static MirrorService Create(
+            IPackageService localPackages,
+            NuGetClient client,
+            IPackageIndexingService indexer,
+            ILogger<MirrorService> logger)
+        {
+            return new MirrorService(
+                localPackages,
+                new MirrorV3Client(client),
+                indexer,
+                logger);
         }
 
         public async Task<IReadOnlyList<NuGetVersion>> FindPackageVersionsOrNullAsync(

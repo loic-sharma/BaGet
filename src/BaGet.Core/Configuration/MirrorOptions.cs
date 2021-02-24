@@ -18,6 +18,11 @@ namespace BaGet.Core
         public Uri PackageSource { get; set; }
 
         /// <summary>
+        /// Whether or not the package source is a v2 package source feed.
+        /// </summary>
+        public bool Legacy { get; set; }
+
+        /// <summary>
         /// The time before a download from the package source times out.
         /// </summary>
         [Range(0, int.MaxValue)]

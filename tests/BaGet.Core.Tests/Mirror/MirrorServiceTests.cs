@@ -61,7 +61,7 @@ namespace BaGet.Core.Tests.Mirror
                 _upstream = new Mock<NuGetClient>();
                 _indexer = new Mock<IPackageIndexingService>();
 
-                _target = new MirrorService(
+                _target = MirrorService.Create(
                     _packages.Object,
                     _upstream.Object,
                     _indexer.Object,
