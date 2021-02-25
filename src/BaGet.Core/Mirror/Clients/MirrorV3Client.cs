@@ -18,19 +18,19 @@ namespace BaGet.Core
             _client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
-        public Task<Stream> DownloadPackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
+        public async Task<Stream> DownloadPackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
-            return _client.DownloadPackageAsync(id, version, cancellationToken);
+            return await _client.DownloadPackageAsync(id, version, cancellationToken);
         }
 
-        public Task<IReadOnlyList<PackageMetadata>> GetPackageMetadataAsync(string id, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<PackageMetadata>> GetPackageMetadataAsync(string id, CancellationToken cancellationToken)
         {
-            return _client.GetPackageMetadataAsync(id, cancellationToken);
+            return await _client.GetPackageMetadataAsync(id, cancellationToken);
         }
 
-        public Task<IReadOnlyList<NuGetVersion>> ListPackageVersionsAsync(string id, bool includeUnlisted, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<NuGetVersion>> ListPackageVersionsAsync(string id, bool includeUnlisted, CancellationToken cancellationToken)
         {
-            return _client.ListPackageVersionsAsync(id, includeUnlisted, cancellationToken);
+            return await _client.ListPackageVersionsAsync(id, includeUnlisted, cancellationToken);
         }
     }
 }
