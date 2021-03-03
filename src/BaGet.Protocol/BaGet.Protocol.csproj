@@ -11,7 +11,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsPackageVersion)" />
     <PackageReference Include="NuGet.Frameworks" Version="$(NuGetPackageVersion)" />
     <PackageReference Include="NuGet.Versioning" Version="$(NuGetPackageVersion)" />
-    <PackageReference Include="System.Text.Json" Version="4.7.2" />
+    <PackageReference Include="System.Text.Json" Version="5.0.0" />
   </ItemGroup>
 
 </Project>
