@@ -99,11 +99,14 @@ namespace BaGet.Core
             services.TryAddTransient<DatabaseSearchService>();
             services.TryAddTransient<FileStorageService>();
             services.TryAddTransient<MirrorService>();
+            services.TryAddTransient<MirrorV2Client>();
+            services.TryAddTransient<MirrorV3Client>();
             services.TryAddTransient<NullMirrorService>();
             services.TryAddSingleton<NullStorageService>();
             services.TryAddTransient<PackageService>();
 
             services.TryAddTransient(IMirrorServiceFactory);
+            services.TryAddTransient(IMirrorNuGetClientFactory);
         }
 
         private static void AddDefaultProviders(this IServiceCollection services)
@@ -195,8 +198,16 @@ namespace BaGet.Core
         {
             var options = provider.GetRequiredService<IOptionsSnapshot<MirrorOptions>>();
             var service = options.Value.Enabled ? typeof(MirrorService) : typeof(NullMirrorService);
-
+            
             return (IMirrorService)provider.GetRequiredService(service);
+        }
+
+        private static IMirrorNuGetClient IMirrorNuGetClientFactory(IServiceProvider provider)
+        {
+            var options = provider.GetRequiredService<IOptionsSnapshot<MirrorOptions>>();
+            var service = options.Value.Legacy ? typeof(MirrorV2Client) : typeof(MirrorV3Client);
+
+            return (IMirrorNuGetClient)provider.GetRequiredService(service);
         }
     }
 }
