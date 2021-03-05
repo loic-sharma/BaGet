@@ -23,6 +23,11 @@ namespace BaGet
                 name: Routes.IndexRouteName,
                 pattern: "v3/index.json",
                 defaults: new { controller = "ServiceIndex", action = "Get" });
+
+            endpoints.MapControllerRoute(
+                name: Routes.RepositorySignaturesRouteName,
+                pattern: "v3/repository-signatures/5.0.0/index.json",
+                defaults: new { controller = "ServiceIndex", action = "RepositorySignatures" });
         }
 
         public void MapPackagePublishRoutes(IEndpointRouteBuilder endpoints)

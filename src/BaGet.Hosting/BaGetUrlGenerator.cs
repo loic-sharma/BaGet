@@ -68,6 +68,14 @@ namespace BaGet.Hosting
                 values: null);
         }
 
+        public string GetRepositorySignaturesResourceUrl()
+        {
+            return _linkGenerator.GetUriByRouteValues(
+                _httpContextAccessor.HttpContext,
+                Routes.RepositorySignaturesRouteName,
+                values: null);
+        }
+
         public string GetRegistrationIndexUrl(string id)
         {
             return _linkGenerator.GetUriByRouteValues(

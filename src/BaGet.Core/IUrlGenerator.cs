@@ -49,6 +49,8 @@ namespace BaGet.Core
         /// </summary>
         string GetAutocompleteResourceUrl();
 
+        string GetRepositorySignaturesResourceUrl();
+
         /// <summary>
         /// Get the URL for the entry point of a package's metadata.
         /// See: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource#registration-index

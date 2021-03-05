@@ -25,5 +25,29 @@ namespace BaGet.Hosting
         {
             return await _serviceIndex.GetAsync(cancellationToken);
         }
+
+        // GET v3/repository-signatures/5.0.0/index.json
+        [HttpGet]
+        public IActionResult RepositorySignatures()
+        {
+            var content = @"
+{
+  ""allRepositorySigned"": true,
+  ""signingCertificates"": [
+    {
+      ""fingerprints"": {
+        ""2.16.840.1.101.3.4.2.1"": ""0e5f38f57dc1bcc806d8494f4f90fbcedd988b46760709cbeec6f4219aa6157d""
+      },
+      ""subject"": ""CN=NuGet.org Repository by Microsoft, O=NuGet.org Repository by Microsoft, L=Redmond, S=Washington, C=US"",
+      ""issuer"": ""CN=DigiCert SHA2 Assured ID Code Signing CA, OU=www.digicert.com, O=DigiCert Inc, C=US"",
+      ""notBefore"": ""2018-04-10T00:00:00.0000000Z"",
+      ""notAfter"": ""2021-04-14T12:00:00.0000000Z"",
+      ""contentUrl"": ""https://api.nuget.org/v3-index/repository-signatures/certificates/0e5f38f57dc1bcc806d8494f4f90fbcedd988b46760709cbeec6f4219aa6157d.crt""
+    }
+  ]
+}";
+
+            return Content(content, "application/json");
+        }
     }
 }

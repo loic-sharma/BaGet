@@ -9,6 +9,7 @@ namespace BaGet.Hosting
         public const string RelistRouteName = "relist";
         public const string SearchRouteName = "search";
         public const string AutocompleteRouteName = "autocomplete";
+        public const string RepositorySignaturesRouteName = "repository-signatures";
         public const string DependentsRouteName = "dependents";
         public const string RegistrationIndexRouteName = "registration-index";
         public const string RegistrationLeafRouteName = "registration-leaf";
