@@ -38,3 +38,62 @@ Stay tuned, more features are planned!
 5. Navigate to `..\BaGet`
 6. Start the service with `dotnet run`
 7. Open the URL `http://localhost:5000/v3/index.json` in your browser
+
+## Helm
+
+### Package/Install
+
+* Clone repo then run helm package
+
+```
+helm package baget
+```
+
+You can then push that chart to any helm repository you want and install from there
+
+```
+helm install -g myrepo/baget
+```
+
+* Install without package
+
+```
+helm install -g baget
+```
+
+Modify the isntallation by either editing the `values.yaml` file or passing the parameters you want to change with `--set`
+
+```
+helm install -g baget --set fullname=nuget,persistence.enabled=true,persistence.stoageClass=someclass
+```
+
+### Configure
+
+| Parmeter                      | Description                                             | Default                           |
+|-------------------------------|---------------------------------------------------------|-----------------------------------|
+| `fullname`                    | Name of the deployment                                  | `baget`                           |
+| `gracePeriod`                 | terminationGracePeriodSeconds setting                   | `10`                              |
+| `image`                       | Name of the image to deploy                             | `loicsharma/baget`                |
+| `imageVersion`                | Version of the image to deploy                          | `latest`                          |
+| `namespaceOverride`           | Override context namespace                              | ``                                |
+| `replicas`                    | Number of pods to deploy                                | `1`                               |
+| `env.apiKey`                  | API key users will use to auth                          | ``                                |
+| `env.storageType`             | Type of storage to be used                              | `FileSystem`                      |
+| `env.storagePath`             | Path to use for storage                                 | `/var/baget/packages`             |
+| `env.databaseType`            | Type of database                                        | `Sqlite`                          |
+| `env.databaseConnectionString`| Connection string for db                                | `Data Source=/var/baget/baget.db` |
+| `env.searchType`              | Type of search to carry out                             | `Database`                        |
+| `ingress.enabled`             | Enable and create an ingress                            | `false`                           |
+| `ingress.hosts`               | External DNS of the app                                 | `name: "", tls: false, secret: ""`|
+| `persistence.acceesMode`      | Storage access mode                                     | `ReadWriteOnce`                   |
+| `persistence.enabled`         | Enable and use persistent storage                       | `false`                           |
+| `persistence.path`            | Path to mount pvc                                       | `/var/baget`                      |
+| `persistence.size`            | Size of the pvc                                         | `10G`                             |
+| `persistence.storageClass`    | Storage class for pvc                                   | ``                                |
+| `persistence.volumeName`      | Name of existing pv                                     | ``                                |
+| `resources.requests`          | Compute resource requests                               | `mem: 100Mi, cpu: 100m`           |
+| `resources.limits`            | Compute resource limits                                 | `mem: 250Mi, cpu: 200m`           |
+| `service.enabled`             | Enable and create service                               | `true`                            |
+| `service.NodePort`            | Specify Node port (relies on `service.type: NodePort`)  | ``                                |
+| `service.serviceName`         | Name of the service                                     | `{{ .Values.fullname }}-svc`      |
+| `service.type`                | Type of service to create                               | `ClusterIP`                       |

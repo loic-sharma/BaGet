@@ -1,0 +1,47 @@
+{{- if not .Values.persistence.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.fullname }}
+  {{- if .Values.namespaceOverride }}
+  namespace: {{ .Values.namespaceOverride }}
+  {{- end }}
+  {{- if .Values.annotations }}
+  annotations:
+    {{ toYaml .Values.annotations | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "baget.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.fullname }}
+  strategy:
+  template:
+    metadata:
+      labels:
+        {{- include "baget.labels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: baget
+        image: {{ .Values.image }}:{{ .Values.imageVersion }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        env:
+        - name: ApiKey
+          value: {{ .Values.env.apiKey }}
+        - name: Storage__Type
+          value: {{ .Values.env.storageType }}
+        - name: Storage__Path
+          value: {{ .Values.env.storagePath }}
+        - name: Database__Type
+          value: {{.Values.env.databaseType }}
+        - name: Database__ConnectionString
+          value: {{ .Values.env.databaseConnectionString}}
+        - name: Search__Type
+          value: {{ .Values.env.searchType }}
+        {{- if .Values.resources }}
+        resources:
+          {{ toYaml .Values.resources | nindent 12 }}
+        {{- end }}
+{{- end -}}      
