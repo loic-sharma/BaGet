@@ -32,14 +32,19 @@ namespace BaGet.Hosting
         {
             var content = @"
 {
-  ""fingerprints"": {
-    ""2.16.840.1.101.3.4.2.1"": ""4c1e35171b864f1a3a4b472def336259286fd8596f32b4dc4c0212e69caa3388""
-  },
-  ""subject"": ""CN=Test certificate for testing NuGet package signing"",
-  ""issuer"": ""CN=Test certificate for testing NuGet package signing"",
-  ""notBefore"": ""2021-03-31T21:29:11.0000000Z"",
-  ""notAfter"": ""2021-03-31T23:30:00.0000000Z"",
-  ""contentUrl"": ""https://loshardev0.blob.core.windows.net/api/593DC447F9EC0A334B88D455B1857D311B9C3965.crt""
+  ""allRepositorySigned"": true,
+  ""signingCertificates"": [
+    {
+      ""fingerprints"": {
+        ""2.16.840.1.101.3.4.2.1"": ""4c1e35171b864f1a3a4b472def336259286fd8596f32b4dc4c0212e69caa3388""
+      },
+      ""subject"": ""CN=Test certificate for testing NuGet package signing"",
+      ""issuer"": ""CN=Test certificate for testing NuGet package signing"",
+      ""notBefore"": ""2021-03-31T21:29:11.0000000Z"",
+      ""notAfter"": ""2021-03-31T23:30:00.0000000Z"",
+      ""contentUrl"": ""https://loshardev0.blob.core.windows.net/api/593DC447F9EC0A334B88D455B1857D311B9C3965.crt""
+    }
+  ]
 }";
 
             return Content(content, "application/json");
