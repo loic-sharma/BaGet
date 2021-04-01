@@ -91,8 +91,8 @@ namespace BaGet.Database.PostgreSql.Migrations
 
                     b.Property<string>("ReleaseNotes")
                         .HasColumnName("ReleaseNotes")
-                        .HasColumnType("character varying(4000)")
-                        .HasMaxLength(4000);
+                        .HasColumnType("character varying(35000)")
+                        .HasMaxLength(35000);
 
                     b.Property<string>("RepositoryType")
                         .HasColumnType("character varying(100)")
