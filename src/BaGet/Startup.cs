@@ -75,6 +75,7 @@ namespace BaGet
             app.AddAliyunOssStorage();
             app.AddAwsS3Storage();
             app.AddAzureBlobStorage();
+            app.AddBceBosStorage();
             app.AddGoogleCloudStorage();
 
             // Add search providers.
