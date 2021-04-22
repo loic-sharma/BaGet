@@ -1,6 +1,7 @@
 using System;
 using BaGet.Core;
 using BaGet.Hosting;
+using BaGet.Minio;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
@@ -74,6 +75,7 @@ namespace BaGet
             app.AddFileStorage();
             app.AddAliyunOssStorage();
             app.AddAwsS3Storage();
+            app.AddMinioStorage();
             app.AddAzureBlobStorage();
             app.AddGoogleCloudStorage();
 
