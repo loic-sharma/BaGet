@@ -24,8 +24,8 @@ namespace BaGet.Minio
             {
                 var options = provider.GetRequiredService<IOptions<MinioStorageOptions>>().Value;
 
-                var client = new MinioClient(options.Endpoint, options.AccessKey, options.SecretKey);
-                    // options.Region ?? string.Empty);
+                var client = new MinioClient(options.Endpoint, options.AccessKey, options.SecretKey,
+                    options.Region ?? string.Empty);
 
                 if (options.Secure) client.WithSSL();
 
