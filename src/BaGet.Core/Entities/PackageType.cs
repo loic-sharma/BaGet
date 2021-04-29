@@ -8,6 +8,7 @@ namespace BaGet.Core
         public string Name { get; set; }
         public string Version { get; set; }
 
+        public int PackageKey { get; set; }
         public Package Package { get; set; }
     }
 }
