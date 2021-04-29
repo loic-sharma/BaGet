@@ -77,3 +77,34 @@
   text-decoration: underline;
   color: #23527c;
 }
+
+.footer {
+  background-color: #002440;
+  color: #e3ebf1;
+  font-size: 1em;
+  display: table;
+  height: 1px;
+  width: 100%;
+}
+
+.footer .footer-heading {
+  display: block;
+  margin-bottom: 11px;
+  font-size: 20px;
+}
+
+.footer .container {
+  margin-top: 50px;
+  margin-bottom: 50px;
+  background-color: #002440;
+}
+
+.footer .footer-release-info {
+  padding-left: 0;
+  font-size: .85em;
+  margin-top: 20px;
+}
+
+.footer a {
+  color: #e3ebf1;
+}
