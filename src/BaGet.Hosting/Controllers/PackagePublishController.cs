@@ -1,7 +1,9 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -11,6 +13,8 @@ namespace BaGet.Hosting
 {
     public class PackagePublishController : Controller
     {
+        private const int MaxReasonPhraseLength = 512;
+
         private readonly IAuthenticationService _authentication;
         private readonly IPackageIndexingService _indexer;
         private readonly IPackageService _packages;
@@ -56,19 +60,34 @@ namespace BaGet.Hosting
 
                     var result = await _indexer.IndexAsync(uploadStream, cancellationToken);
 
-                    switch (result)
+                    switch (result.Status)
                     {
-                        case PackageIndexingResult.InvalidPackage:
+                        case PackageIndexingStatus.InvalidPackage:
                             HttpContext.Response.StatusCode = 400;
                             break;
 
-                        case PackageIndexingResult.PackageAlreadyExists:
+                        case PackageIndexingStatus.PackageAlreadyExists:
                             HttpContext.Response.StatusCode = 409;
                             break;
 
-                        case PackageIndexingResult.Success:
+                        case PackageIndexingStatus.UnexpectedError:
+                            HttpContext.Response.StatusCode = 500;
+                            break;
+
+                        case PackageIndexingStatus.Success:
                             HttpContext.Response.StatusCode = 201;
                             break;
+                    }
+
+                    if (result.Messages.Any())
+                    {
+                        var reasonPhrase = string.Join(". ", result.Messages);
+                        if (reasonPhrase.Length > MaxReasonPhraseLength)
+                        {
+                            reasonPhrase = reasonPhrase.Substring(0, MaxReasonPhraseLength - 3) + "...";
+                        }
+
+                        HttpContext.Features.Get<IHttpResponseFeature>().ReasonPhrase = reasonPhrase;
                     }
                 }
             }

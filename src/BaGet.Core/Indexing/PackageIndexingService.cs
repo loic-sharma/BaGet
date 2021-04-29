@@ -1,165 +1,127 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using NuGet.Packaging;
 
 namespace BaGet.Core
 {
     public class PackageIndexingService : IPackageIndexingService
     {
-        private readonly IPackageService _packages;
-        private readonly IPackageStorageService _storage;
-        private readonly ISearchIndexer _search;
+        private readonly IServiceProvider _services;
         private readonly SystemTime _time;
-        private readonly IOptionsSnapshot<BaGetOptions> _options;
         private readonly ILogger<PackageIndexingService> _logger;
 
         public PackageIndexingService(
-            IPackageService packages,
-            IPackageStorageService storage,
-            ISearchIndexer search,
+            IServiceProvider services,
             SystemTime time,
-            IOptionsSnapshot<BaGetOptions> options,
             ILogger<PackageIndexingService> logger)
         {
-            _packages = packages ?? throw new ArgumentNullException(nameof(packages));
-            _storage = storage ?? throw new ArgumentNullException(nameof(storage));
-            _search = search ?? throw new ArgumentNullException(nameof(search));
+            _services = services ?? throw new ArgumentNullException(nameof(services));
             _time = time ?? throw new ArgumentNullException(nameof(time));
-            _options = options ?? throw new ArgumentNullException(nameof(options));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<PackageIndexingResult> IndexAsync(Stream packageStream, CancellationToken cancellationToken)
         {
+            using var context = await CreateContextOrNullAsync(packageStream, cancellationToken);
+            if (context == null)
+            {
+                return new PackageIndexingResult(PackageIndexingStatus.InvalidPackage);
+            }
+
+            return await CreateIndexer(context).Invoke();
+        }
+
+        private async Task<PackageIndexingContext> CreateContextOrNullAsync(
+            Stream packageStream,
+            CancellationToken cancellationToken)
+        {
             // Try to extract all the necessary information from the package.
             Package package;
-            Stream nuspecStream;
-            Stream readmeStream;
-            Stream iconStream;
+            Stream nuspecStream = null;
+            Stream readmeStream = null;
+            Stream iconStream = null;
 
             try
             {
-                using (var packageReader = new PackageArchiveReader(packageStream, leaveStreamOpen: true))
+                using var packageReader = new PackageArchiveReader(packageStream, leaveStreamOpen: true);
+
+                package = packageReader.GetPackageMetadata();
+                package.Published = _time.UtcNow;
+
+                nuspecStream = await packageReader.GetNuspecAsync(cancellationToken);
+                nuspecStream = await nuspecStream.AsTemporaryFileStreamAsync(cancellationToken);
+
+                if (package.HasReadme)
                 {
-                    package = packageReader.GetPackageMetadata();
-                    package.Published = _time.UtcNow;
-
-                    nuspecStream = await packageReader.GetNuspecAsync(cancellationToken);
-                    nuspecStream = await nuspecStream.AsTemporaryFileStreamAsync();
-
-                    if (package.HasReadme)
-                    {
-                        readmeStream = await packageReader.GetReadmeAsync(cancellationToken);
-                        readmeStream = await readmeStream.AsTemporaryFileStreamAsync();
-                    }
-                    else
-                    {
-                        readmeStream = null;
-                    }
-
-                    if (package.HasEmbeddedIcon)
-                    {
-                        iconStream = await packageReader.GetIconAsync(cancellationToken);
-                        iconStream = await iconStream.AsTemporaryFileStreamAsync();
-                    }
-                    else
-                    {
-                        iconStream = null;
-                    }
+                    readmeStream = await packageReader.GetReadmeAsync(cancellationToken);
+                    readmeStream = await readmeStream.AsTemporaryFileStreamAsync(cancellationToken);
                 }
+                else
+                {
+                    readmeStream = null;
+                }
+
+                if (package.HasEmbeddedIcon)
+                {
+                    iconStream = await packageReader.GetIconAsync(cancellationToken);
+                    iconStream = await iconStream.AsTemporaryFileStreamAsync(cancellationToken);
+                }
+                else
+                {
+                    iconStream = null;
+                }
+
+                return new PackageIndexingContext
+                {
+                    Package = package,
+                    PackageStream = packageStream,
+                    NuspecStream = nuspecStream,
+                    IconStream = iconStream,
+                    ReadmeStream = readmeStream,
+                    CancellationToken = cancellationToken,
+                };
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Uploaded package is invalid");
 
-                return PackageIndexingResult.InvalidPackage;
-            }
+                packageStream?.Dispose();
+                nuspecStream?.Dispose();
+                iconStream?.Dispose();
+                readmeStream?.Dispose();
 
-            // The package is well-formed. Ensure this is a new package.
-            if (await _packages.ExistsAsync(package.Id, package.Version, cancellationToken))
+                return null;
+            }
+        }
+
+        private PackageIndexingDelegate CreateIndexer(PackageIndexingContext context)
+        {
+            // Create the "terminal" indexer that runs at the final step in the indexing pipeline.
+            // If we reach the end of the pipeline, the package has been indexed successfully and
+            // we can return a successful status code.
+            PackageIndexingDelegate indexer = () =>
             {
-                if (!_options.Value.AllowPackageOverwrites)
-                {
-                    return PackageIndexingResult.PackageAlreadyExists;
-                }
+                var result = new PackageIndexingResult(PackageIndexingStatus.Success);
+                return Task.FromResult(result);
+            };
 
-                await _packages.HardDeletePackageAsync(package.Id, package.Version, cancellationToken);
-                await _storage.DeleteAsync(package.Id, package.Version, cancellationToken);
-            }
+            // Now add each indexer middleware to the pipeline.
+            var middlewares = _services.GetRequiredService<IEnumerable<IPackageIndexingMiddleware>>();
 
-            // TODO: Add more package validations
-            // TODO: Call PackageArchiveReader.ValidatePackageEntriesAsync
-            _logger.LogInformation(
-                "Validated package {PackageId} {PackageVersion}, persisting content to storage...",
-                package.Id,
-                package.NormalizedVersionString);
-
-            try
+            foreach (var middleware in middlewares.Reverse())
             {
-                packageStream.Position = 0;
+                var next = indexer;
 
-                await _storage.SavePackageContentAsync(
-                    package,
-                    packageStream,
-                    nuspecStream,
-                    readmeStream,
-                    iconStream,
-                    cancellationToken);
-            }
-            catch (Exception e)
-            {
-                // This may happen due to concurrent pushes.
-                // TODO: Make IPackageStorageService.SavePackageContentAsync return a result enum so this
-                // can be properly handled.
-                _logger.LogError(
-                    e,
-                    "Failed to persist package {PackageId} {PackageVersion} content to storage",
-                    package.Id,
-                    package.NormalizedVersionString);
-
-                throw;
+                indexer = () => middleware.IndexAsync(context, next);
             }
 
-            _logger.LogInformation(
-                "Persisted package {Id} {Version} content to storage, saving metadata to database...",
-                package.Id,
-                package.NormalizedVersionString);
-
-            var result = await _packages.AddAsync(package, cancellationToken);
-            if (result == PackageAddResult.PackageAlreadyExists)
-            {
-                _logger.LogWarning(
-                    "Package {Id} {Version} metadata already exists in database",
-                    package.Id,
-                    package.NormalizedVersionString);
-
-                return PackageIndexingResult.PackageAlreadyExists;
-            }
-
-            if (result != PackageAddResult.Success)
-            {
-                _logger.LogError($"Unknown {nameof(PackageAddResult)} value: {{PackageAddResult}}", result);
-
-                throw new InvalidOperationException($"Unknown {nameof(PackageAddResult)} value: {result}");
-            }
-
-            _logger.LogInformation(
-                "Successfully persisted package {Id} {Version} metadata to database. Indexing in search...",
-                package.Id,
-                package.NormalizedVersionString);
-
-            await _search.IndexAsync(package, cancellationToken);
-
-            _logger.LogInformation(
-                "Successfully indexed package {Id} {Version} in search",
-                package.Id,
-                package.NormalizedVersionString);
-
-            return PackageIndexingResult.Success;
+            return indexer;
         }
     }
 }

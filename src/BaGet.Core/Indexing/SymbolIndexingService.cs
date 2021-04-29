@@ -145,25 +145,23 @@ namespace BaGet.Core
 
             try
             {
-                using (var rawPdbStream = await symbolPackage.GetStreamAsync(pdbPath, cancellationToken))
+                pdbStream = await symbolPackage.GetStreamAsync(pdbPath, cancellationToken);
+                pdbStream = await pdbStream.AsTemporaryFileStreamAsync(cancellationToken);
+
+                string signature;
+                using (var pdbReaderProvider = MetadataReaderProvider.FromPortablePdbStream(pdbStream, MetadataStreamOptions.LeaveOpen))
                 {
-                    pdbStream = await rawPdbStream.AsTemporaryFileStreamAsync();
+                    var reader = pdbReaderProvider.GetMetadataReader();
+                    var id = new BlobContentId(reader.DebugMetadataHeader.Id);
 
-                    string signature;
-                    using (var pdbReaderProvider = MetadataReaderProvider.FromPortablePdbStream(pdbStream, MetadataStreamOptions.LeaveOpen))
-                    {
-                        var reader = pdbReaderProvider.GetMetadataReader();
-                        var id = new BlobContentId(reader.DebugMetadataHeader.Id);
-
-                        signature = id.Guid.ToString("N").ToUpperInvariant();
-                    }
-
-                    var fileName = Path.GetFileName(pdbPath).ToLowerInvariant();
-                    var key = $"{signature}ffffffff";
-
-                    pdbStream.Position = 0;
-                    result = new PortablePdb(fileName, key, pdbStream);
+                    signature = id.Guid.ToString("N").ToUpperInvariant();
                 }
+
+                var fileName = Path.GetFileName(pdbPath).ToLowerInvariant();
+                var key = $"{signature}ffffffff";
+
+                pdbStream.Position = 0;
+                result = new PortablePdb(fileName, key, pdbStream);
             }
             finally
             {
