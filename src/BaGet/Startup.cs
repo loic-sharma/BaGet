@@ -25,8 +25,6 @@ namespace BaGet
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddBaGetOptions<IISServerOptions>(nameof(IISServerOptions));
-
             // TODO: Ideally we'd use:
             //
             //       services.ConfigureOptions<ConfigureBaGetOptions>();
@@ -39,6 +37,8 @@ namespace BaGet
             services.AddTransient<IConfigureOptions<ForwardedHeadersOptions>, ConfigureBaGetOptions>();
             services.AddTransient<IConfigureOptions<IISServerOptions>, ConfigureBaGetOptions>();
             services.AddTransient<IValidateOptions<BaGetOptions>, ConfigureBaGetOptions>();
+
+            services.AddBaGetOptions<IISServerOptions>(nameof(IISServerOptions));
 
             services.AddSpaStaticFiles(ConfigureSpaStaticFiles);
             services.AddBaGetWebApplication(ConfigureBaGetApplication);
