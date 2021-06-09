@@ -24,7 +24,13 @@ namespace BaGet.Core
             Stream pdbStream,
             CancellationToken cancellationToken)
         {
-            var path = GetPathForKey(filename, key);
+            var path = new Blob()
+            {
+                Name = key,
+                PackageId = filename,
+                Path =  GetPathForKey(filename, key)
+            };
+
             var result = await _storage.PutAsync(path, pdbStream, PdbContentType, cancellationToken);
 
             if (result == StoragePutResult.Conflict)
@@ -35,8 +41,12 @@ namespace BaGet.Core
 
         public async Task<Stream> GetPortablePdbContentStreamOrNullAsync(string filename, string key)
         {
-            var path = GetPathForKey(filename, key);
-
+            var path = new Blob()
+            {
+                Name = key,
+                PackageId = filename,
+                Path =  GetPathForKey(filename, key)
+            };
             try
             {
                 return await _storage.GetAsync(path);
@@ -52,7 +62,7 @@ namespace BaGet.Core
             // Ensure the filename doesn't try to escape out of the current directory.
             var tempPath = Path.GetDirectoryName(Path.GetTempPath());
             var expandedPath = Path.GetDirectoryName(Path.Combine(tempPath, filename));
-            
+
             if (expandedPath != tempPath)
             {
                 throw new ArgumentException(nameof(filename));

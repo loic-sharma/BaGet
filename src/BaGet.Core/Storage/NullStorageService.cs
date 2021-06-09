@@ -10,23 +10,23 @@ namespace BaGet.Core
     /// </summary>
     public class NullStorageService : IStorageService
     {
-        public Task DeleteAsync(string path, CancellationToken cancellationToken = default)
+        public Task DeleteAsync(Blob path, CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;
         }
 
-        public Task<Stream> GetAsync(string path, CancellationToken cancellationToken = default)
+        public Task<Stream> GetAsync(Blob path, CancellationToken cancellationToken = default)
         {
             return Task.FromResult<Stream>(null);
         }
 
-        public Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
+        public Task<Uri> GetDownloadUriAsync(Blob path, CancellationToken cancellationToken = default)
         {
             return Task.FromResult<Uri>(null);
         }
 
         public Task<StoragePutResult> PutAsync(
-            string path,
+            Blob path,
             Stream content,
             string contentType,
             CancellationToken cancellationToken = default)

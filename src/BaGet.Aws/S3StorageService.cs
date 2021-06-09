@@ -29,12 +29,12 @@ namespace BaGet.Aws
                 _prefix += Separator;
         }
 
-        private string PrepareKey(string path)
+        private string PrepareKey(Blob path)
         {
-            return _prefix + path.Replace("\\", Separator);
+            return _prefix + path.Path.Replace("\\", Separator);
         }
 
-        public async Task<Stream> GetAsync(string path, CancellationToken cancellationToken = default)
+        public async Task<Stream> GetAsync(Blob path, CancellationToken cancellationToken = default)
         {
             var stream = new MemoryStream();
 
@@ -58,7 +58,7 @@ namespace BaGet.Aws
             return stream;
         }
 
-        public Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
+        public Task<Uri> GetDownloadUriAsync(Blob path, CancellationToken cancellationToken = default)
         {
             var url = _client.GetPreSignedURL(new GetPreSignedUrlRequest
             {
@@ -69,7 +69,7 @@ namespace BaGet.Aws
             return Task.FromResult(new Uri(url));
         }
 
-        public async Task<StoragePutResult> PutAsync(string path, Stream content, string contentType, CancellationToken cancellationToken = default)
+        public async Task<StoragePutResult> PutAsync(Blob path, Stream content, string contentType, CancellationToken cancellationToken = default)
         {
             // TODO: Uploads should be idempotent. This should fail if and only if the blob
             // already exists but has different content.
@@ -94,7 +94,7 @@ namespace BaGet.Aws
             return StoragePutResult.Success;
         }
 
-        public async Task DeleteAsync(string path, CancellationToken cancellationToken = default)
+        public async Task DeleteAsync(Blob path, CancellationToken cancellationToken = default)
         {
             await _client.DeleteObjectAsync(_bucket, PrepareKey(path), cancellationToken);
         }

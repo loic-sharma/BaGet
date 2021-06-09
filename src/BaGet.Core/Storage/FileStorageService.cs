@@ -26,27 +26,27 @@ namespace BaGet.Core
                 _storePath += Path.DirectorySeparatorChar;
         }
 
-        public Task<Stream> GetAsync(string path, CancellationToken cancellationToken = default)
+        public Task<Stream> GetAsync(Blob blob, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            path = GetFullPath(path);
+            var path = GetFullPath(blob.Path);
             var content = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
 
             return Task.FromResult<Stream>(content);
         }
 
-        public Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
+        public Task<Uri> GetDownloadUriAsync(Blob blob, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var result = new Uri(GetFullPath(path));
+            var result = new Uri(GetFullPath(blob.Path));
 
             return Task.FromResult(result);
         }
 
         public async Task<StoragePutResult> PutAsync(
-            string path,
+            Blob blob,
             Stream content,
             string contentType,
             CancellationToken cancellationToken = default)
@@ -56,7 +56,7 @@ namespace BaGet.Core
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            path = GetFullPath(path);
+            var path = GetFullPath(blob.Path);
 
             // Ensure that the path exists.
             Directory.CreateDirectory(Path.GetDirectoryName(path));
@@ -81,13 +81,13 @@ namespace BaGet.Core
             }
         }
 
-        public Task DeleteAsync(string path, CancellationToken cancellationToken = default)
+        public Task DeleteAsync(Blob blob, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             try
             {
-                File.Delete(GetFullPath(path));
+                File.Delete(GetFullPath(blob.Path));
             }
             catch (DirectoryNotFoundException)
             {

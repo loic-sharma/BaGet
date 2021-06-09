@@ -17,7 +17,7 @@ namespace BaGet.Core.Tests.Services
             public async Task ThrowsIfStorePathDoesNotExist()
             {
                 await Assert.ThrowsAsync<DirectoryNotFoundException>(() =>
-                    _target.GetAsync("hello.txt"));
+                    _target.GetAsync(new Blob("hello.txt")));
             }
 
             [Fact]
@@ -27,10 +27,10 @@ namespace BaGet.Core.Tests.Services
                 Directory.CreateDirectory(_storePath);
 
                 await Assert.ThrowsAsync<FileNotFoundException>(() =>
-                    _target.GetAsync("hello.txt"));
+                    _target.GetAsync(new Blob("hello.txt")));
 
                 await Assert.ThrowsAsync<DirectoryNotFoundException>(() =>
-                    _target.GetAsync("hello/world.txt"));
+                    _target.GetAsync(new Blob("hello/world.txt")));
             }
 
             [Fact]
@@ -39,11 +39,11 @@ namespace BaGet.Core.Tests.Services
                 // Arrange
                 using (var content = StringStream("Hello world"))
                 {
-                    await _target.PutAsync("hello.txt", content, "text/plain");
+                    await _target.PutAsync(new Blob("hello.txt"), content, "text/plain");
                 }
 
                 // Act
-                var result = await _target.GetAsync("hello.txt");
+                var result = await _target.GetAsync(new Blob("hello.txt"));
 
                 // Assert
                 Assert.Equal("Hello world", await ToStringAsync(result));
@@ -55,7 +55,7 @@ namespace BaGet.Core.Tests.Services
                 foreach (var path in OutsideStorePathData)
                 {
                     await Assert.ThrowsAsync<ArgumentException>(async () =>
-                        await _target.GetAsync(path));
+                        await _target.GetAsync(new Blob(path)));
                 }
             }
         }
@@ -65,7 +65,7 @@ namespace BaGet.Core.Tests.Services
             [Fact]
             public async Task CreatesUriEvenIfDoesntExist()
             {
-                var result = await _target.GetDownloadUriAsync("test.txt");
+                var result = await _target.GetDownloadUriAsync(new Blob("test.txt"));
                 var expected = new Uri(Path.Combine(_storePath, "test.txt"));
 
                 Assert.Equal(expected, result);
@@ -77,7 +77,7 @@ namespace BaGet.Core.Tests.Services
                 foreach (var path in OutsideStorePathData)
                 {
                     await Assert.ThrowsAsync<ArgumentException>(async () =>
-                        await _target.GetDownloadUriAsync(path));
+                        await _target.GetDownloadUriAsync(new Blob(path)));
                 }
             }
         }
@@ -90,7 +90,7 @@ namespace BaGet.Core.Tests.Services
                 StoragePutResult result;
                 using (var content = StringStream("Hello world"))
                 {
-                    result = await _target.PutAsync("test.txt", content, "text/plain");
+                    result = await _target.PutAsync(new Blob("test.txt"), content, "text/plain");
                 }
 
                 var path = Path.Combine(_storePath, "test.txt");
@@ -113,7 +113,7 @@ namespace BaGet.Core.Tests.Services
                 using (var content = StringStream("Hello world"))
                 {
                     // Act
-                    result = await _target.PutAsync("test.txt", content, "text/plain");
+                    result = await _target.PutAsync(new Blob("test.txt"), content, "text/plain");
                 }
 
                 // Assert
@@ -133,7 +133,7 @@ namespace BaGet.Core.Tests.Services
                 using (var content = StringStream("foo bar"))
                 {
                     // Act
-                    result = await _target.PutAsync("test.txt", content, "text/plain");
+                    result = await _target.PutAsync(new Blob("test.txt"), content, "text/plain");
                 }
 
                 // Assert
@@ -148,7 +148,7 @@ namespace BaGet.Core.Tests.Services
                     using (var content = StringStream("Hello world"))
                     {
                         await Assert.ThrowsAsync<ArgumentException>(async () =>
-                            await _target.PutAsync(path, content, "text/plain"));
+                            await _target.PutAsync(new Blob(path), content, "text/plain"));
                     }
                 }
             }
@@ -159,7 +159,7 @@ namespace BaGet.Core.Tests.Services
             [Fact]
             public async Task DoesNotThrowIfPathDoesNotExist()
             {
-                await _target.DeleteAsync("test.txt");
+                await _target.DeleteAsync(new Blob("test.txt"));
             }
 
             [Fact]
@@ -172,7 +172,7 @@ namespace BaGet.Core.Tests.Services
                 await File.WriteAllTextAsync(path, "Hello world");
 
                 // Act & Assert
-                await _target.DeleteAsync("test.txt");
+                await _target.DeleteAsync(new Blob("test.txt"));
 
                 Assert.False(File.Exists(path));
             }
@@ -183,7 +183,7 @@ namespace BaGet.Core.Tests.Services
                 foreach (var path in OutsideStorePathData)
                 {
                     await Assert.ThrowsAsync<ArgumentException>(async () =>
-                        await _target.DeleteAsync(path));
+                        await _target.DeleteAsync(new Blob(path)));
                 }
             }
         }

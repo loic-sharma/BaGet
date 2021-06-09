@@ -33,11 +33,15 @@ namespace BaGet.Aliyun
             return _prefix + path.Replace("\\", Separator);
         }
 
-        public async Task<Stream> GetAsync(string path, CancellationToken cancellationToken = default)
+        public async Task<Stream> GetAsync(Blob blob, CancellationToken cancellationToken = default)
         {
             try
             {
-                var ossObject = await Task.Factory.FromAsync(_client.BeginGetObject, _client.EndGetObject, _bucket, PrepareKey(path), null);
+                var ossObject = await Task.Factory.FromAsync(
+                    _client.BeginGetObject,
+                    _client.EndGetObject,
+                    _bucket,
+                    PrepareKey(blob.Path), null);
 
                 return ossObject.ResponseStream;
             }
@@ -48,14 +52,14 @@ namespace BaGet.Aliyun
             }
         }
 
-        public Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
+        public Task<Uri> GetDownloadUriAsync(Blob blob, CancellationToken cancellationToken = default)
         {
-            var uri = _client.GeneratePresignedUri(_bucket, PrepareKey(path));
+            var uri = _client.GeneratePresignedUri(_bucket, PrepareKey(blob.Path));
 
             return Task.FromResult(uri);
         }
 
-        public async Task<StoragePutResult> PutAsync(string path, Stream content, string contentType, CancellationToken cancellationToken = default)
+        public async Task<StoragePutResult> PutAsync(Blob blob, Stream content, string contentType, CancellationToken cancellationToken = default)
         {
             // TODO: Uploads should be idempotent. This should fail if and only if the blob
             // already exists but has different content.
@@ -65,7 +69,7 @@ namespace BaGet.Aliyun
                 ContentType = contentType,
             };
 
-            var putResult = await Task<PutObjectResult>.Factory.FromAsync(_client.BeginPutObject, _client.EndPutObject, _bucket, PrepareKey(path), content, metadata);
+            var putResult = await Task<PutObjectResult>.Factory.FromAsync(_client.BeginPutObject, _client.EndPutObject, _bucket, PrepareKey(blob.Path), content, metadata);
 
             switch (putResult.HttpStatusCode)
             {
@@ -84,9 +88,9 @@ namespace BaGet.Aliyun
             }
         }
 
-        public Task DeleteAsync(string path, CancellationToken cancellationToken = default)
+        public Task DeleteAsync(Blob blob, CancellationToken cancellationToken = default)
         {
-            _client.DeleteObject(_bucket, PrepareKey(path));
+            _client.DeleteObject(_bucket, PrepareKey(blob.Path));
             return Task.CompletedTask;
         }
     }

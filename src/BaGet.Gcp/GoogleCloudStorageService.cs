@@ -24,24 +24,24 @@ namespace BaGet.Gcp
             _bucketName = options.Value.BucketName;
         }
 
-        public async Task<Stream> GetAsync(string path, CancellationToken cancellationToken = default)
+        public async Task<Stream> GetAsync(Blob blob, CancellationToken cancellationToken = default)
         {
             using (var storage = await StorageClient.CreateAsync())
             {
                 var stream = new MemoryStream();
-                await storage.DownloadObjectAsync(_bucketName, CoercePath(path), stream, cancellationToken: cancellationToken);
+                await storage.DownloadObjectAsync(_bucketName, CoercePath(blob.Path), stream, cancellationToken: cancellationToken);
                 stream.Position = 0;
                 return stream;
             }
         }
 
-        public Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
+        public Task<Uri> GetDownloadUriAsync(Blob blob, CancellationToken cancellationToken = default)
         {
             // returns an Authenticated Browser Download URL: https://cloud.google.com/storage/docs/request-endpoints#cookieauth
-            return Task.FromResult(new Uri($"https://storage.googleapis.com/{_bucketName}/{CoercePath(path).TrimStart('/')}"));
+            return Task.FromResult(new Uri($"https://storage.googleapis.com/{_bucketName}/{CoercePath(blob.Path).TrimStart('/')}"));
         }
 
-        public async Task<StoragePutResult> PutAsync(string path, Stream content, string contentType, CancellationToken cancellationToken = default)
+        public async Task<StoragePutResult> PutAsync(Blob blob, Stream content, string contentType, CancellationToken cancellationToken = default)
         {
             using (var storage = await StorageClient.CreateAsync())
             using (var seekableContent = new MemoryStream())
@@ -49,7 +49,7 @@ namespace BaGet.Gcp
                 await content.CopyToAsync(seekableContent, 65536, cancellationToken);
                 seekableContent.Position = 0;
 
-                var objectName = CoercePath(path);
+                var objectName = CoercePath(blob.Path);
 
                 try
                 {
@@ -75,13 +75,13 @@ namespace BaGet.Gcp
             }
         }
 
-        public async Task DeleteAsync(string path, CancellationToken cancellationToken = default)
+        public async Task DeleteAsync(Blob blob, CancellationToken cancellationToken = default)
         {
             using (var storage = await StorageClient.CreateAsync())
             {
                 try
                 {
-                    var obj = await storage.GetObjectAsync(_bucketName, CoercePath(path), cancellationToken: cancellationToken);
+                    var obj = await storage.GetObjectAsync(_bucketName, CoercePath(blob.Path), cancellationToken: cancellationToken);
                     await storage.DeleteObjectAsync(obj, cancellationToken: cancellationToken);
                 }
                 catch (GoogleApiException e) when (e.HttpStatusCode == HttpStatusCode.NotFound)

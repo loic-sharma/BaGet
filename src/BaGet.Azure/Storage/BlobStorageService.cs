@@ -18,43 +18,43 @@ namespace BaGet.Azure
             _container = container ?? throw new ArgumentNullException(nameof(container));
         }
 
-        public async Task<Stream> GetAsync(string path, CancellationToken cancellationToken)
+        public async Task<Stream> GetAsync(Blob blob, CancellationToken cancellationToken)
         {
             return await _container
-                .GetBlockBlobReference(path)
+                .GetBlockBlobReference(blob.Path)
                 .OpenReadAsync(cancellationToken);
         }
 
-        public Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken)
+        public Task<Uri> GetDownloadUriAsync(Blob blob, CancellationToken cancellationToken)
         {
             // TODO: Make expiry time configurable.
-            var blob = _container.GetBlockBlobReference(path);
+            var blobRef = _container.GetBlockBlobReference(blob.Path);
             var accessPolicy = new SharedAccessBlobPolicy
             {
                 SharedAccessExpiryTime = DateTimeOffset.Now.Add(TimeSpan.FromMinutes(10)),
                 Permissions = SharedAccessBlobPermissions.Read
             };
 
-            var signature = blob.GetSharedAccessSignature(accessPolicy);
-            var result = new Uri(blob.Uri, signature);
+            var signature = blobRef.GetSharedAccessSignature(accessPolicy);
+            var result = new Uri(blobRef.Uri, signature);
 
             return Task.FromResult(result);
         }
 
         public async Task<StoragePutResult> PutAsync(
-            string path,
+            Blob blob,
             Stream content,
             string contentType,
             CancellationToken cancellationToken)
         {
-            var blob = _container.GetBlockBlobReference(path);
+            var blobRef = _container.GetBlockBlobReference(blob.Path);
             var condition = AccessCondition.GenerateIfNotExistsCondition();
 
-            blob.Properties.ContentType = contentType;
+            blobRef.Properties.ContentType = contentType;
 
             try
             {
-                await blob.UploadFromStreamAsync(
+                await blobRef.UploadFromStreamAsync(
                     content,
                     condition,
                     options: null,
@@ -65,7 +65,7 @@ namespace BaGet.Azure
             }
             catch (StorageException e) when (e.IsAlreadyExistsException())
             {
-                using (var targetStream = await blob.OpenReadAsync(cancellationToken))
+                using (var targetStream = await blobRef.OpenReadAsync(cancellationToken))
                 {
                     content.Position = 0;
                     return content.Matches(targetStream)
@@ -75,10 +75,10 @@ namespace BaGet.Azure
             }
         }
 
-        public async Task DeleteAsync(string path, CancellationToken cancellationToken)
+        public async Task DeleteAsync(Blob blob, CancellationToken cancellationToken)
         {
             await _container
-                .GetBlockBlobReference(path)
+                .GetBlockBlobReference(blob.Path)
                 .DeleteIfExistsAsync(cancellationToken);
         }
     }

@@ -43,10 +43,30 @@ namespace BaGet.Core
             var lowercasedId = package.Id.ToLowerInvariant();
             var lowercasedNormalizedVersion = package.NormalizedVersionString.ToLowerInvariant();
 
-            var packagePath = PackagePath(lowercasedId, lowercasedNormalizedVersion);
-            var nuspecPath = NuspecPath(lowercasedId, lowercasedNormalizedVersion);
-            var readmePath = ReadmePath(lowercasedId, lowercasedNormalizedVersion);
-            var iconPath = IconPath(lowercasedId, lowercasedNormalizedVersion);
+            var packagePath = new Blob()
+            {
+                Name = lowercasedNormalizedVersion,
+                PackageId = lowercasedId,
+                Path = PackagePath(lowercasedId, lowercasedNormalizedVersion)
+            };
+            var nuspecPath = new Blob()
+            {
+                Name = lowercasedNormalizedVersion,
+                PackageId = lowercasedId,
+                Path = NuspecPath(lowercasedId, lowercasedNormalizedVersion)
+            };
+            var readmePath = new Blob()
+            {
+                Name = lowercasedNormalizedVersion,
+                PackageId = lowercasedId,
+                Path = ReadmePath(lowercasedId, lowercasedNormalizedVersion)
+            };
+            var iconPath =  new Blob()
+            {
+                Name = lowercasedNormalizedVersion,
+                PackageId = lowercasedId,
+                Path = IconPath(lowercasedId, lowercasedNormalizedVersion)
+            };
 
             _logger.LogInformation(
                 "Storing package {PackageId} {PackageVersion} at {Path}...",
@@ -165,10 +185,30 @@ namespace BaGet.Core
             var lowercasedId = id.ToLowerInvariant();
             var lowercasedNormalizedVersion = version.ToNormalizedString().ToLowerInvariant();
 
-            var packagePath = PackagePath(lowercasedId, lowercasedNormalizedVersion);
-            var nuspecPath = NuspecPath(lowercasedId, lowercasedNormalizedVersion);
-            var readmePath = ReadmePath(lowercasedId, lowercasedNormalizedVersion);
-            var iconPath = IconPath(lowercasedId, lowercasedNormalizedVersion);
+            var packagePath = new Blob()
+            {
+                Name = lowercasedNormalizedVersion,
+                PackageId = lowercasedId,
+                Path = PackagePath(lowercasedId, lowercasedNormalizedVersion)
+            };
+            var nuspecPath = new Blob()
+            {
+                Name = lowercasedNormalizedVersion,
+                PackageId = lowercasedId,
+                Path = NuspecPath(lowercasedId, lowercasedNormalizedVersion)
+            };
+            var readmePath = new Blob()
+            {
+                Name = lowercasedNormalizedVersion,
+                PackageId = lowercasedId,
+                Path = ReadmePath(lowercasedId, lowercasedNormalizedVersion)
+            };
+            var iconPath =  new Blob()
+            {
+                Name = lowercasedNormalizedVersion,
+                PackageId = lowercasedId,
+                Path = IconPath(lowercasedId, lowercasedNormalizedVersion)
+            };
 
             await _storage.DeleteAsync(packagePath, cancellationToken);
             await _storage.DeleteAsync(nuspecPath, cancellationToken);
@@ -184,7 +224,12 @@ namespace BaGet.Core
         {
             var lowercasedId = id.ToLowerInvariant();
             var lowercasedNormalizedVersion = version.ToNormalizedString().ToLowerInvariant();
-            var path = pathFunc(lowercasedId, lowercasedNormalizedVersion);
+            var path =new Blob()
+            {
+                Name = lowercasedNormalizedVersion,
+                PackageId = lowercasedId,
+                Path =  pathFunc(lowercasedId, lowercasedNormalizedVersion)
+            };
 
             try
             {
