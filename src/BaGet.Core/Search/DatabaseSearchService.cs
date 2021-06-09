@@ -75,7 +75,7 @@ namespace BaGet.Core
             AutocompleteRequest request,
             CancellationToken cancellationToken)
         {
-            IQueryable<Package> search = _context.Packages;
+            IQueryable<Package> search = _context.PackagesQueryable;
 
             if (!string.IsNullOrEmpty(request.Query))
             {
@@ -112,7 +112,7 @@ namespace BaGet.Core
         {
             var packageId = request.PackageId.ToLower();
             IQueryable<Package> search = _context
-                .Packages
+                .PackagesQueryable
                 .Where(p => p.Id.ToLower().Equals(packageId));
 
             search = AddSearchFilters(
@@ -137,7 +137,7 @@ namespace BaGet.Core
         public async Task<DependentsResponse> FindDependentsAsync(string packageId, CancellationToken cancellationToken)
         {
             var results = await _context
-                .Packages
+                .PackagesQueryable
                 .Where(p => p.Listed)
                 .OrderByDescending(p => p.Downloads)
                 .Where(p => p.Dependencies.Any(d => d.Id == packageId))
@@ -163,7 +163,7 @@ namespace BaGet.Core
             CancellationToken cancellationToken)
         {
             var frameworks = GetCompatibleFrameworksOrNull(request.Framework);
-            IQueryable<Package> search = _context.Packages;
+            IQueryable<Package> search = _context.PackagesQueryable;
 
             search = AddSearchFilters(
                 search,
@@ -192,13 +192,13 @@ namespace BaGet.Core
             //   2. Find all package versions for these package IDs
             if (_context.SupportsLimitInSubqueries)
             {
-                search = _context.Packages.Where(p => packageIds.Contains(p.Id));
+                search = _context.PackagesQueryable.Where(p => packageIds.Contains(p.Id));
             }
             else
             {
                 var packageIdResults = await packageIds.ToListAsync(cancellationToken);
 
-                search = _context.Packages.Where(p => packageIdResults.Contains(p.Id));
+                search = _context.PackagesQueryable.Where(p => packageIdResults.Contains(p.Id));
             }
 
             search = AddSearchFilters(

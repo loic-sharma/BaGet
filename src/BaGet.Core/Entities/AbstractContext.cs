@@ -1,7 +1,11 @@
+using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace BaGet.Core
 {
@@ -25,6 +29,8 @@ namespace BaGet.Core
             : base(options)
         { }
 
+        public IQueryable<Package> PackagesQueryable => Packages.AsQueryable();
+
         public DbSet<Package> Packages { get; set; }
         public DbSet<PackageDependency> PackageDependencies { get; set; }
         public DbSet<PackageType> PackageTypes { get; set; }
@@ -35,7 +41,36 @@ namespace BaGet.Core
         public virtual async Task RunMigrationsAsync(CancellationToken cancellationToken)
             => await Database.MigrateAsync(cancellationToken);
 
+        public Task RunCreateDatabaseAsync(CancellationToken cancellationToken)
+        {
+            var dbCreator = Database.GetService<IRelationalDatabaseCreator>();
+
+            dbCreator.Create();
+            Database.Migrate();
+            return Task.CompletedTask;
+        }
+
+        public Task AddAsync(Package package)
+        {
+            Packages.Add(package);
+            return Task.CompletedTask;
+        }
+
+        public Task RemoveAsync(Package package)
+        {
+            Packages.Remove(package);
+            return Task.CompletedTask;
+        }
+
         public abstract bool IsUniqueConstraintViolationException(DbUpdateException exception);
+
+        public virtual bool IsUniqueConstraintViolationException(Exception exception)
+        {
+            if (exception is DbUpdateException dbUpdateException)
+                return IsUniqueConstraintViolationException(dbUpdateException);
+
+            return false;
+        }
 
         public virtual bool SupportsLimitInSubqueries => true;
 

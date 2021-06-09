@@ -92,13 +92,8 @@ namespace BaGet.Tests
                         // pauses the debugger repeatedly if CLR exceptions are enabled.
                         // See: https://github.com/dotnet/efcore/blob/644d3c8c3a604fd0121d90eaf34f14870e19bcff/src/EFCore.Sqlite.Core/Storage/Internal/SqliteDatabaseCreator.cs#L88-L98
                         var ctx = scope.ServiceProvider.GetRequiredService<IContext>();
-                        var dbCreator = ctx.Database.GetService<IRelationalDatabaseCreator>();
-
-                        dbCreator.Create();
-                        ctx.Database.Migrate();
-
                         // Seed the application with test data.
-
+                        ctx.RunCreateDatabaseAsync(CancellationToken.None);
                     }
                 });
         }

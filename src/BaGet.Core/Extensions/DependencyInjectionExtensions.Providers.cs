@@ -72,10 +72,19 @@ namespace BaGet.Core
             Action<IServiceProvider, DbContextOptionsBuilder> configureContext)
             where TContext : DbContext, IContext
         {
+            services.AddDbContext<TContext>(configureContext);
+            services.AddBaGetGenericContextProvider<TContext>(databaseType);
+            return services;
+        }
+
+        public static IServiceCollection AddBaGetGenericContextProvider<TContext>(
+            this IServiceCollection services,
+            string databaseType)
+            where TContext : IContext
+        {
             services.TryAddScoped<IContext>(provider => provider.GetRequiredService<TContext>());
             services.TryAddTransient<IPackageService>(provider => provider.GetRequiredService<PackageService>());
 
-            services.AddDbContext<TContext>(configureContext);
 
             services.AddProvider<IContext>((provider, config) =>
             {

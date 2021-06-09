@@ -21,7 +21,7 @@ namespace BaGet.Core
         {
             try
             {
-                _context.Packages.Add(package);
+                await _context.AddAsync(package);
 
                 await _context.SaveChangesAsync(cancellationToken);
 
@@ -37,7 +37,7 @@ namespace BaGet.Core
         public async Task<bool> ExistsAsync(string id, CancellationToken cancellationToken)
         {
             return await _context
-                .Packages
+                .PackagesQueryable
                 .Where(p => p.Id == id)
                 .AnyAsync(cancellationToken);
         }
@@ -45,7 +45,7 @@ namespace BaGet.Core
         public async Task<bool> ExistsAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
             return await _context
-                .Packages
+                .PackagesQueryable
                 .Where(p => p.Id == id)
                 .Where(p => p.NormalizedVersionString == version.ToNormalizedString())
                 .AnyAsync(cancellationToken);
@@ -53,7 +53,7 @@ namespace BaGet.Core
 
         public async Task<IReadOnlyList<Package>> FindAsync(string id, bool includeUnlisted, CancellationToken cancellationToken)
         {
-            var query = _context.Packages
+            var query = _context.PackagesQueryable
                 .Include(p => p.Dependencies)
                 .Include(p => p.PackageTypes)
                 .Include(p => p.TargetFrameworks)
@@ -73,7 +73,7 @@ namespace BaGet.Core
             bool includeUnlisted,
             CancellationToken cancellationToken)
         {
-            var query = _context.Packages
+            var query = _context.PackagesQueryable
                 .Include(p => p.Dependencies)
                 .Include(p => p.TargetFrameworks)
                 .Where(p => p.Id == id)
@@ -104,7 +104,7 @@ namespace BaGet.Core
 
         public async Task<bool> HardDeletePackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
-            var package = await _context.Packages
+            var package = await _context.PackagesQueryable
                 .Where(p => p.Id == id)
                 .Where(p => p.NormalizedVersionString == version.ToNormalizedString())
                 .Include(p => p.Dependencies)
@@ -116,7 +116,7 @@ namespace BaGet.Core
                 return false;
             }
 
-            _context.Packages.Remove(package);
+            await _context.RemoveAsync(package);
             await _context.SaveChangesAsync(cancellationToken);
 
             return true;
@@ -128,7 +128,7 @@ namespace BaGet.Core
             Action<Package> action,
             CancellationToken cancellationToken)
         {
-            var package = await _context.Packages
+            var package = await _context.PackagesQueryable
                 .Where(p => p.Id == id)
                 .Where(p => p.NormalizedVersionString == version.ToNormalizedString())
                 .FirstOrDefaultAsync();

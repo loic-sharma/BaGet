@@ -29,7 +29,7 @@ namespace BaGet.Core
         public async Task ImportAsync(CancellationToken cancellationToken)
         {
             var packageDownloads = await _downloadsSource.GetPackageDownloadsAsync();
-            var packages = await _context.Packages.CountAsync();
+            var packages = await _context.PackagesQueryable.CountAsync();
             var batches = (packages / BatchSize) + 1;
 
             for (var batch = 0; batch < batches; batch++)
@@ -57,7 +57,7 @@ namespace BaGet.Core
         }
 
         private Task<List<Package>> GetBatchAsync(int batch, CancellationToken cancellationToken)
-            => _context.Packages
+            => _context.PackagesQueryable
                 .OrderBy(p => p.Key)
                 .Skip(batch * BatchSize)
                 .Take(BatchSize)
