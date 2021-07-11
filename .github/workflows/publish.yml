@@ -7,6 +7,10 @@ on:
         description: 'Package version'
         required: true
         default: '1.0.0-preview1'
+      packageSource:
+        description: 'Package source'
+        required: true
+        default: 'https://api.nuget.org/v3/index.json'
 
 jobs:
   build:
@@ -28,4 +32,4 @@ jobs:
     - name: Pack
       run: dotnet pack --configuration Release -p:PackageVersion=${{ github.event.inputs.packageVersion }}
     - name: Push
-      run: dotnet nuget push **/*.nupkg -s https://apidev.nugettest.org/v3/index.json -k ${{secrets.NUGET_API_KEY}}
+      run: dotnet nuget push **/*.nupkg -s ${{ github.event.inputs.packageSource }} -k ${{secrets.NUGET_API_KEY}}
