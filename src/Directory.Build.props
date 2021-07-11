@@ -1,28 +1,38 @@
 <Project>
 
+  <!-- Package properties -->
   <PropertyGroup>
+    <Authors>Loic Sharma</Authors>
+    <Copyright>Copyright (c) Loic Sharma 2021</Copyright>
     <Product>BaGet</Product>
 
+    <PackageIcon>packageIcon.png</PackageIcon>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageVersion Condition="'$(PackageVersion)' == ''">0.1.0-prerelease</PackageVersion>
     <PackageProjectUrl>https://loic-sharma.github.io/BaGet/</PackageProjectUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageIconUrl>https://raw.githubusercontent.com/NuGet/Media/master/Images/MainLogo/256x256/nuget_256.png</PackageIconUrl>
-
-    <RepositoryUrl>https://github.com/loic-sharma/BaGet</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-
-    <LangVersion>7.2</LangVersion>
-    <NoWarn>1591</NoWarn>
   </PropertyGroup>
 
+  <!-- Compiler properties -->
   <PropertyGroup>
-    <DebugType>portable</DebugType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <LangVersion>7.2</LangVersion>
+
+    <!-- Don't warn if there are missing XMl comment for publicly visible type or member-->
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
+  <!-- Debugging properties -->
+  <PropertyGroup>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <DebugType>portable</DebugType>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(CI)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
   <!-- NuGet dependencies shared across projects -->
@@ -33,12 +43,12 @@
     <NuGetPackageVersion>5.4.0</NuGetPackageVersion>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0-preview.2" />
+  <ItemGroup Condition="'$(DOTNET_RUNNING_IN_CONTAINER)' == ''">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(CI)' == 'true' AND '$(DOTNET_RUNNING_IN_CONTAINER)' == ''">
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
+  <ItemGroup>
+    <None Include="../packageIcon.png" Pack="true" PackagePath=""/>
   </ItemGroup>
 
 </Project>
