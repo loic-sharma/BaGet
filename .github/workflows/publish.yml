@@ -1,0 +1,31 @@
+name: Publish to nuget.org
+
+on:
+  workflow_dispatch:
+    inputs:
+      packageVersion:
+        description: 'Package version'
+        required: true
+        default: '1.0.0-preview1'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+    - name: Pack
+      run: dotnet pack --configuration Release -p:PackageVersion=${{ github.event.inputs.packageVersion }}
+    - name: Push
+      run: dotnet nuget push ./bin/Release/*.nupkg -s https://dev.nugettest.org/v3/index.json -k ${{secrets.NUGET_API_KEY}}
