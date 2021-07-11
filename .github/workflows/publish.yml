@@ -28,4 +28,4 @@ jobs:
     - name: Pack
       run: dotnet pack --configuration Release -p:PackageVersion=${{ github.event.inputs.packageVersion }}
     - name: Push
-      run: dotnet nuget push ./bin/Release/*.nupkg -s https://dev.nugettest.org/v3/index.json -k ${{secrets.NUGET_API_KEY}}
+      run: dotnet nuget push ./bin/Release/*.nupkg -s https://apidev.nugettest.org/v3/index.json -k ${{secrets.NUGET_API_KEY}}
