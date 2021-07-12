@@ -375,6 +375,18 @@ namespace BaGet.Tests
         }
 
         [Fact]
+        public async Task PrefixedSymbolDownloadReturnsOk()
+        {
+            await _factory.AddPackageAsync(_packageStream);
+            await _factory.AddSymbolPackageAsync(_symbolPackageStream);
+
+            using var response = await _client.GetAsync(
+                "api/download/symbols/testprefix/testdata.pdb/16F71ED8DD574AA2AD4A22D29E9C981Bffffffff/testdata.pdb");
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
+        [Fact]
         public async Task SymbolDownloadReturnsNotFound()
         {
             using var response = await _client.GetAsync(
