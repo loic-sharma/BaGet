@@ -39,7 +39,7 @@ namespace BaGet.Tests {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BaGet.Tests.TestData", typeof(TestData).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BaGet.Tests.TestData.TestData", typeof(TestData).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,7 +61,7 @@ namespace BaGet.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {&quot;version&quot;:&quot;3.0.0&quot;,&quot;resources&quot;:[{&quot;@id&quot;:&quot;http://localhost/api/v2/package&quot;,&quot;@type&quot;:&quot;PackagePublish/2.0.0&quot;,&quot;comment&quot;:null},{&quot;@id&quot;:&quot;http://localhost/api/v2/symbol&quot;,&quot;@type&quot;:&quot;SymbolPackagePublish/4.9.0&quot;,&quot;comment&quot;:null},{&quot;@id&quot;:&quot;http://localhost/v3/search&quot;,&quot;@type&quot;:&quot;SearchQueryService&quot;,&quot;comment&quot;:null},{&quot;@id&quot;:&quot;http://localhost/v3/search&quot;,&quot;@type&quot;:&quot;SearchQueryService/3.0.0-beta&quot;,&quot;comment&quot;:null},{&quot;@id&quot;:&quot;http://localhost/v3/search&quot;,&quot;@type&quot;:&quot;SearchQueryService/3.0.0-rc&quot;,&quot;comment&quot;:null},{&quot;@id&quot;:&quot;http://localhost/v3/registra [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to {&quot;version&quot;:&quot;3.0.0&quot;,&quot;resources&quot;:[{&quot;@id&quot;:&quot;http://localhost/api/v2/package&quot;,&quot;@type&quot;:&quot;PackagePublish/2.0.0&quot;},{&quot;@id&quot;:&quot;http://localhost/api/v2/symbol&quot;,&quot;@type&quot;:&quot;SymbolPackagePublish/4.9.0&quot;},{&quot;@id&quot;:&quot;http://localhost/v3/search&quot;,&quot;@type&quot;:&quot;SearchQueryService&quot;},{&quot;@id&quot;:&quot;http://localhost/v3/search&quot;,&quot;@type&quot;:&quot;SearchQueryService/3.0.0-beta&quot;},{&quot;@id&quot;:&quot;http://localhost/v3/search&quot;,&quot;@type&quot;:&quot;SearchQueryService/3.0.0-rc&quot;},{&quot;@id&quot;:&quot;http://localhost/v3/registration&quot;,&quot;@type&quot;:&quot;RegistrationsBaseUrl&quot;},{&quot;@id&quot;:&quot;http://localhost/v3/registrat [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ServiceIndex {
             get {

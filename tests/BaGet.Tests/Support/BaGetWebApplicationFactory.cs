@@ -96,9 +96,6 @@ namespace BaGet.Tests
 
                         dbCreator.Create();
                         ctx.Database.Migrate();
-
-                        // Seed the application with test data.
-
                     }
                 });
         }
@@ -119,6 +116,25 @@ namespace BaGet.Tests
 
                 var result = await indexer.IndexAsync(package, cancellationToken);
                 if (result != PackageIndexingResult.Success)
+                {
+                    throw new InvalidOperationException($"Unexpected indexing result {result}");
+                }
+            }
+        }
+
+        public static async Task AddSymbolPackageAsync(
+            this WebApplicationFactory<Startup> factory,
+            Stream symbolPackage,
+            CancellationToken cancellationToken = default)
+        {
+            var scopeFactory = factory.Services.GetRequiredService<IServiceScopeFactory>();
+
+            using (var scope = scopeFactory.CreateScope())
+            {
+                var indexer = scope.ServiceProvider.GetRequiredService<ISymbolIndexingService>();
+
+                var result = await indexer.IndexAsync(symbolPackage, cancellationToken);
+                if (result != SymbolIndexingResult.Success)
                 {
                     throw new InvalidOperationException($"Unexpected indexing result {result}");
                 }
