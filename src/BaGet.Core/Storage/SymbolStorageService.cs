@@ -62,6 +62,8 @@ namespace BaGet.Core
             {
                 throw new ArgumentException(nameof(key));
             }
+            
+            key = key.Substring(0,32) + "ffffffff";
 
             return Path.Combine(
                 SymbolsPathPrefix,
