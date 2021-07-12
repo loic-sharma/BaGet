@@ -14,10 +14,16 @@ namespace BaGet.Tests
         private readonly WebApplicationFactory<Startup> _factory;
         private readonly HttpClient _client;
 
+        private readonly Stream _packageStream;
+        private readonly Stream _symbolPackageStream;
+
         public ApiIntegrationTests(BaGetWebApplicationFactory factory, ITestOutputHelper output)
         {
             _factory = factory.WithOutput(output);
             _client = _factory.CreateClient();
+
+            _packageStream = TestResources.GetResourceStream(TestResources.Package);
+            _symbolPackageStream = TestResources.GetResourceStream(TestResources.SymbolPackage);
         }
 
         [Fact]
@@ -33,7 +39,7 @@ namespace BaGet.Tests
         [Fact]
         public async Task SearchReturnsOk()
         {
-            await _factory.AddPackageAsync(PackageData.Default);
+            await _factory.AddPackageAsync(_packageStream);
 
             using var response = await _client.GetAsync("v3/search");
             var content = await response.Content.ReadAsStreamAsync();
@@ -48,23 +54,23 @@ namespace BaGet.Tests
   ""totalHits"": 1,
   ""data"": [
     {
-      ""id"": ""DefaultPackage"",
+      ""id"": ""TestData"",
       ""version"": ""1.2.3"",
-      ""description"": ""Default package description"",
+      ""description"": ""Test description"",
       ""authors"": [
-        ""Default package author""
+        ""Test author""
       ],
       ""iconUrl"": """",
       ""licenseUrl"": """",
       ""projectUrl"": """",
-      ""registration"": ""http://localhost/v3/registration/defaultpackage/index.json"",
+      ""registration"": ""http://localhost/v3/registration/testdata/index.json"",
       ""summary"": """",
       ""tags"": [],
       ""title"": """",
       ""totalDownloads"": 0,
       ""versions"": [
         {
-          ""@id"": ""http://localhost/v3/registration/defaultpackage/1.2.3.json"",
+          ""@id"": ""http://localhost/v3/registration/testdata/1.2.3.json"",
           ""version"": ""1.2.3"",
           ""downloads"": 0
         }
@@ -95,7 +101,7 @@ namespace BaGet.Tests
         [Fact]
         public async Task AutocompleteReturnsOk()
         {
-            await _factory.AddPackageAsync(PackageData.Default);
+            await _factory.AddPackageAsync(_packageStream);
 
             using var response = await _client.GetAsync("v3/autocomplete");
             var content = await response.Content.ReadAsStreamAsync();
@@ -108,7 +114,7 @@ namespace BaGet.Tests
   },
   ""totalHits"": 1,
   ""data"": [
-    ""DefaultPackage""
+    ""TestData""
   ]
 }", json);
         }
@@ -133,9 +139,9 @@ namespace BaGet.Tests
         [Fact]
         public async Task AutocompleteVersionsReturnsOk()
         {
-            await _factory.AddPackageAsync(PackageData.Default);
+            await _factory.AddPackageAsync(_packageStream);
 
-            using var response = await _client.GetAsync("v3/autocomplete?id=DefaultPackage");
+            using var response = await _client.GetAsync("v3/autocomplete?id=TestData");
             var content = await response.Content.ReadAsStreamAsync();
             var json = PrettifyJson(content);
 
@@ -171,9 +177,9 @@ namespace BaGet.Tests
         [Fact]
         public async Task VersionListReturnsOk()
         {
-            await _factory.AddPackageAsync(PackageData.Default);
+            await _factory.AddPackageAsync(_packageStream);
 
-            var response = await _client.GetAsync("v3/package/DefaultPackage/index.json");
+            var response = await _client.GetAsync("v3/package/TestData/index.json");
             var content = await response.Content.ReadAsStringAsync();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -191,9 +197,9 @@ namespace BaGet.Tests
         [Fact]
         public async Task PackageDownloadReturnsOk()
         {
-            await _factory.AddPackageAsync(PackageData.Default);
+            await _factory.AddPackageAsync(_packageStream);
 
-            using var response = await _client.GetAsync("v3/package/DefaultPackage/1.2.3/DefaultPackage.1.2.3.nupkg");
+            using var response = await _client.GetAsync("v3/package/TestData/1.2.3/TestData.1.2.3.nupkg");
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
@@ -210,10 +216,10 @@ namespace BaGet.Tests
         [Fact]
         public async Task NuspecDownloadReturnsOk()
         {
-            await _factory.AddPackageAsync(PackageData.Default);
+            await _factory.AddPackageAsync(_packageStream);
 
             using var response = await _client.GetAsync(
-                "v3/package/DefaultPackage/1.2.3/DefaultPackage.1.2.3.nuspec");
+                "v3/package/TestData/1.2.3/TestData.1.2.3.nuspec");
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
@@ -230,15 +236,15 @@ namespace BaGet.Tests
         [Fact]
         public async Task PackageMetadataReturnsOk()
         {
-            await _factory.AddPackageAsync(PackageData.Default);
+            await _factory.AddPackageAsync(_packageStream);
 
-            using var response = await _client.GetAsync("v3/registration/DefaultPackage/index.json");
+            using var response = await _client.GetAsync("v3/registration/TestData/index.json");
             var content = await response.Content.ReadAsStreamAsync();
             var json = PrettifyJson(content);
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(@"{
-  ""@id"": ""http://localhost/v3/registration/defaultpackage/index.json"",
+  ""@id"": ""http://localhost/v3/registration/testdata/index.json"",
   ""@type"": [
     ""catalog:CatalogRoot"",
     ""PackageRegistration"",
@@ -247,14 +253,14 @@ namespace BaGet.Tests
   ""count"": 1,
   ""items"": [
     {
-      ""@id"": ""http://localhost/v3/registration/defaultpackage/index.json"",
+      ""@id"": ""http://localhost/v3/registration/testdata/index.json"",
       ""count"": 1,
       ""lower"": ""1.2.3"",
       ""upper"": ""1.2.3"",
       ""items"": [
         {
-          ""@id"": ""http://localhost/v3/registration/defaultpackage/1.2.3.json"",
-          ""packageContent"": ""http://localhost/v3/package/defaultpackage/1.2.3/defaultpackage.1.2.3.nupkg"",
+          ""@id"": ""http://localhost/v3/registration/testdata/1.2.3.json"",
+          ""packageContent"": ""http://localhost/v3/package/testdata/1.2.3/testdata.1.2.3.nupkg"",
           ""catalogEntry"": {
             ""downloads"": 0,
             ""hasReadme"": false,
@@ -263,17 +269,22 @@ namespace BaGet.Tests
             ],
             ""releaseNotes"": """",
             ""repositoryUrl"": """",
-            ""id"": ""DefaultPackage"",
+            ""id"": ""TestData"",
             ""version"": ""1.2.3"",
-            ""authors"": ""Default package author"",
-            ""dependencyGroups"": [],
-            ""description"": ""Default package description"",
+            ""authors"": ""Test author"",
+            ""dependencyGroups"": [
+              {
+                ""targetFramework"": ""net50"",
+                ""dependencies"": []
+              }
+            ],
+            ""description"": ""Test description"",
             ""iconUrl"": """",
             ""language"": """",
             ""licenseUrl"": """",
             ""listed"": true,
             ""minClientVersion"": """",
-            ""packageContent"": ""http://localhost/v3/package/defaultpackage/1.2.3/defaultpackage.1.2.3.nupkg"",
+            ""packageContent"": ""http://localhost/v3/package/testdata/1.2.3/testdata.1.2.3.nupkg"",
             ""projectUrl"": """",
             ""published"": ""2020-01-01T00:00:00Z"",
             ""requireLicenseAcceptance"": false,
@@ -300,23 +311,23 @@ namespace BaGet.Tests
         [Fact]
         public async Task PackageMetadataLeafReturnsOk()
         {
-            await _factory.AddPackageAsync(PackageData.Default);
+            await _factory.AddPackageAsync(_packageStream);
 
-            using var response = await _client.GetAsync("v3/registration/DefaultPackage/1.2.3.json");
+            using var response = await _client.GetAsync("v3/registration/TestData/1.2.3.json");
             var content = await response.Content.ReadAsStreamAsync();
             var json = PrettifyJson(content);
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(@"{
-  ""@id"": ""http://localhost/v3/registration/defaultpackage/1.2.3.json"",
+  ""@id"": ""http://localhost/v3/registration/testdata/1.2.3.json"",
   ""@type"": [
     ""Package"",
     ""http://schema.nuget.org/catalog#Permalink""
   ],
   ""listed"": true,
-  ""packageContent"": ""http://localhost/v3/package/defaultpackage/1.2.3/defaultpackage.1.2.3.nupkg"",
+  ""packageContent"": ""http://localhost/v3/package/testdata/1.2.3/testdata.1.2.3.nupkg"",
   ""published"": ""2020-01-01T00:00:00Z"",
-  ""registration"": ""http://localhost/v3/registration/defaultpackage/index.json""
+  ""registration"": ""http://localhost/v3/registration/testdata/index.json""
 }", json);
         }
 
@@ -331,7 +342,7 @@ namespace BaGet.Tests
         [Fact]
         public async Task PackageDependentsReturnsOk()
         {
-            using var response = await _client.GetAsync("v3/dependents?packageId=DefaultPackage");
+            using var response = await _client.GetAsync("v3/dependents?packageId=TestData");
 
             var content = await response.Content.ReadAsStreamAsync();
             var json = PrettifyJson(content);
@@ -349,6 +360,27 @@ namespace BaGet.Tests
             using var response = await _client.GetAsync("v3/dependents");
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task SymbolDownloadReturnsOk()
+        {
+            await _factory.AddPackageAsync(_packageStream);
+            await _factory.AddSymbolPackageAsync(_symbolPackageStream);
+
+            using var response = await _client.GetAsync(
+                "api/download/symbols/testdata.pdb/16F71ED8DD574AA2AD4A22D29E9C981Bffffffff/testdata.pdb");
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task SymbolDownloadReturnsNotFound()
+        {
+            using var response = await _client.GetAsync(
+                "api/download/symbols/doesnotexist.pdb/16F71ED8DD574AA2AD4A22D29E9C981Bffffffff/doesnotexist.pdb");
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         private string PrettifyJson(Stream jsonStream)

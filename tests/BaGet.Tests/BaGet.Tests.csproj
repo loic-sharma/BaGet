@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -20,17 +20,24 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="TestData.Designer.cs">
-      <DependentUpon>TestData.resx</DependentUpon>
+    <Compile Update="TestData\TestData.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+      <DependentUpon>TestData.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="TestData.resx">
+    <EmbeddedResource Update="TestData\TestData.resx">
       <LastGenOutput>TestData.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
+      <CustomToolNamespace>BaGet.Tests</CustomToolNamespace>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestData\TestData.1.2.3.nupkg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestData\TestData.1.2.3.snupkg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
 
