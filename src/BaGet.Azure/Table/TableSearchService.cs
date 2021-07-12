@@ -47,6 +47,30 @@ namespace BaGet.Azure
                 request.IncludeSemVer2,
                 cancellationToken);
 
+            for (var i = 0; i < results.Count; i++)
+            {
+                var pack = results[i];
+                var remove = false;
+
+                if (request.Framework != null)
+                {
+                    pack.RemoveAll(e => !e.TargetFrameworks.Contains(request.Framework));
+                    if (pack.Count == 0) remove = true;
+                }
+
+                if (request.PackageType != null)
+                {
+                    pack.RemoveAll(e => !e.PackageTypes.Contains(request.PackageType));
+                    if (pack.Count == 0) remove = true;
+                }
+
+                if (remove)
+                {
+                    results.RemoveAt(i);
+                    i--;
+                }
+            }
+
             return new SearchResponse
             {
                 TotalHits = results.Count,
