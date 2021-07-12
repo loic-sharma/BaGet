@@ -374,14 +374,16 @@ namespace BaGet.Tests
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
-        [Fact]
-        public async Task PrefixedSymbolDownloadReturnsOk()
+        [Theory]
+        [InlineData("api/download/symbols/testdata.pdb/16F71ED8DD574AA2AD4A22D29E9C981B1/testdata.pdb")]
+        [InlineData("api/download/symbols/testdata.pdb/16F71ED8DD574AA2AD4A22D29E9C981B/testdata.pdb")]
+        [InlineData("api/download/symbols/testprefix/testdata.pdb/16F71ED8DD574AA2AD4A22D29E9C981Bffffffff/testdata.pdb")]
+        public async Task MalformedSymbolDownloadReturnsOk(string uri)
         {
             await _factory.AddPackageAsync(_packageStream);
             await _factory.AddSymbolPackageAsync(_symbolPackageStream);
 
-            using var response = await _client.GetAsync(
-                "api/download/symbols/testprefix/testdata.pdb/16F71ED8DD574AA2AD4A22D29E9C981Bffffffff/testdata.pdb");
+            using var response = await _client.GetAsync(uri);
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
