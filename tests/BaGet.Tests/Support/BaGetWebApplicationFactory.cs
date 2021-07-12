@@ -140,6 +140,5 @@ namespace BaGet.Tests
                 }
             }
         }
-
     }
 }
