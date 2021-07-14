@@ -31,10 +31,23 @@ namespace BaGet
             {
                 var options = provider.GetRequiredService<IOptions<S3StorageOptions>>().Value;
 
+                if (options.ForcePathStyle)
+                {
+                    // Required to support presigned urls generation for MiniO configured to us-east-1 region
+                    AWSConfigsS3.UseSignatureVersion4 = true; 
+                }
+
                 var config = new AmazonS3Config
                 {
-                    RegionEndpoint = RegionEndpoint.GetBySystemName(options.Region)
+                    RegionEndpoint = RegionEndpoint.GetBySystemName(options.Region),
+                    ForcePathStyle = options.ForcePathStyle,
+                    UseHttp = options.UseHttp
                 };
+
+                if (!string.IsNullOrWhiteSpace(options.ServiceUrl))
+                {
+                    config.ServiceURL = options.ServiceUrl;
+                }
 
                 if (options.UseInstanceProfile)
                 {
