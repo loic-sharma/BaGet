@@ -38,6 +38,7 @@ namespace BaGet
             {
                 "AliyunOss",
                 "AwsS3",
+                "Minio",
                 "AzureBlobStorage",
                 "Filesystem",
                 "GoogleCloud",
