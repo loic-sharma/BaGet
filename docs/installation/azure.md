@@ -11,6 +11,10 @@ Use Azure to scale BaGet. You can store metadata on [Azure SQL Database](https:/
 * Table Storage
 * High availability setup
 
+## Run BaGet
+
+Configure the BaGet code to run using one of the other run methods such as on local computer, Microsoft IIS or Docker.
+
 ## Configure BaGet
 
 You can modify BaGet's configurations by editing the `appsettings.json` file. For the full list of configurations, please refer to [BaGet's configuration](../configuration.md) guide.
