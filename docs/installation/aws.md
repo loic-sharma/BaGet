@@ -22,12 +22,17 @@ Update the `appsettings.json` file:
         "Region": "us-west-1",
         "Bucket": "foo",
         "AccessKey": "",
-        "SecretKey": ""
+        "SecretKey": "",
+        "ServiceUrl": "",
+        "UseHttp": false,
+        "ForcePathStyle": false
     },
 
     ...
 }
 ```
+
+To support MiniO as S3 compatible storage backend provide MiniO installation url in `ServiceUrl`, set `ForcePathStyle` to true.
 
 ### Amazon RDS
 

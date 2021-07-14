@@ -22,5 +22,11 @@ namespace BaGet.Aws
         public bool UseInstanceProfile { get; set; }
 
         public string AssumeRoleArn { get; set; }
+
+        public bool ForcePathStyle { get; set; } = false;
+
+        public string ServiceUrl { get; set; }
+
+        public bool UseHttp { get; set; }
     }
 }
