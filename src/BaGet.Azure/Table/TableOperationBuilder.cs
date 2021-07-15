@@ -22,7 +22,7 @@ namespace BaGet.Azure
                 PartitionKey = package.Id.ToLowerInvariant(),
                 RowKey = normalizedVersion.ToLowerInvariant(),
 
-                Id = package.Id,
+                Identifier = package.Id,
                 NormalizedVersion = normalizedVersion,
                 OriginalVersion = version.ToFullString(),
                 Authors = JsonConvert.SerializeObject(package.Authors),

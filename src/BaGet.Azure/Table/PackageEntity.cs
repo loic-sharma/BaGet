@@ -15,7 +15,7 @@ namespace BaGet.Azure
         {
         }
 
-        public string Id { get; set; }
+        public string Identifier { get; set; }
         public string NormalizedVersion { get; set; }
         public string OriginalVersion { get; set; }
         public string Authors { get; set; }
