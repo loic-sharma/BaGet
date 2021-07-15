@@ -201,7 +201,7 @@ namespace BaGet.Azure
         private string ToAutocompleteResult(IReadOnlyList<PackageEntity> packages)
         {
             // TODO: This should find the latest version and return its package Id.
-            return packages.Last().Id;
+            return packages.Last().Identifier;
         }
 
         private SearchResult ToSearchResult(IReadOnlyList<PackageEntity> packages)
@@ -218,7 +218,7 @@ namespace BaGet.Azure
                 totalDownloads += package.Downloads;
                 versions.Add(new SearchResultVersion
                 {
-                    RegistrationLeafUrl = _url.GetRegistrationLeafUrl(package.Id, version),
+                    RegistrationLeafUrl = _url.GetRegistrationLeafUrl(package.Identifier, version),
                     Version = package.NormalizedVersion,
                     Downloads = package.Downloads,
                 });
@@ -231,19 +231,19 @@ namespace BaGet.Azure
             }
 
             var iconUrl = latest.HasEmbeddedIcon
-                ? _url.GetPackageIconDownloadUrl(latest.Id, latestVersion)
+                ? _url.GetPackageIconDownloadUrl(latest.Identifier, latestVersion)
                 : latest.IconUrl;
 
             return new SearchResult
             {
-                PackageId = latest.Id,
+                PackageId = latest.Identifier,
                 Version = latest.NormalizedVersion,
                 Description = latest.Description,
                 Authors = JsonConvert.DeserializeObject<string[]>(latest.Authors),
                 IconUrl = iconUrl,
                 LicenseUrl = latest.LicenseUrl,
                 ProjectUrl = latest.ProjectUrl,
-                RegistrationIndexUrl = _url.GetRegistrationIndexUrl(latest.Id),
+                RegistrationIndexUrl = _url.GetRegistrationIndexUrl(latest.Identifier),
                 Summary = latest.Summary,
                 Tags = JsonConvert.DeserializeObject<string[]>(latest.Tags),
                 Title = latest.Title,

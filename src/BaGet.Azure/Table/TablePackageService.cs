@@ -221,7 +221,7 @@ namespace BaGet.Azure
 
             return new Package
             {
-                Id = entity.Id,
+                Id = entity.Identifier,
                 NormalizedVersionString = entity.NormalizedVersion,
                 OriginalVersionString = entity.OriginalVersion,
 
