@@ -274,7 +274,7 @@ namespace BaGet.Tests
             ""authors"": ""Test author"",
             ""dependencyGroups"": [
               {
-                ""targetFramework"": ""net50"",
+                ""targetFramework"": ""net5.0"",
                 ""dependencies"": []
               }
             ],
