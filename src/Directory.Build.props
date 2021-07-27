@@ -40,7 +40,7 @@
     <MicrosoftAspNetCorePackageVersion>3.1.1</MicrosoftAspNetCorePackageVersion>
     <MicrosoftEntityFrameworkCorePackageVersion>3.1.1</MicrosoftEntityFrameworkCorePackageVersion>
     <MicrosoftExtensionsPackageVersion>3.1.1</MicrosoftExtensionsPackageVersion>
-    <NuGetPackageVersion>5.4.0</NuGetPackageVersion>
+    <NuGetPackageVersion>5.10.0</NuGetPackageVersion>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(DOTNET_RUNNING_IN_CONTAINER)' == ''">
