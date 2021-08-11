@@ -1,0 +1,9 @@
+.project-stats > :last-child {
+    margin-left: 2rem;
+}
+
+.last-committed {
+    font-style: italic;
+    color: rgb(119, 119, 119);
+    margin-top: 1rem;
+}
