@@ -138,7 +138,7 @@ namespace BaGet.Core.Tests.Services
                 Assert.True(_puts.ContainsKey(ReadmePath));
             }
 
-            [Fact(Skip = "This behavior isn't implemented yet")]
+            [Fact]
             public async Task DoesNotThrowIfContentAlreadyExistsAndContentsMatch()
             {
                 // Arrange
@@ -171,7 +171,7 @@ namespace BaGet.Core.Tests.Services
 
                     Assert.True(_puts.ContainsKey(IconPath));
                     Assert.Equal("My icon", await ToStringAsync(_puts[IconPath].Content));
-                    Assert.Equal("image/icon", _puts[IconPath].ContentType);
+                    Assert.Equal("image/xyz", _puts[IconPath].ContentType);
                 }
             }
 
