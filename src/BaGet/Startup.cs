@@ -1,12 +1,13 @@
 using System;
 using BaGet.Core;
-using BaGet.Hosting;
+using BaGet.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
-using Microsoft.AspNetCore.SpaServices.StaticFiles;
+// TODO Delete
+// using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+// using Microsoft.AspNetCore.SpaServices.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -40,7 +41,8 @@ namespace BaGet
             services.AddTransient<IConfigureOptions<IISServerOptions>, ConfigureBaGetOptions>();
             services.AddTransient<IValidateOptions<BaGetOptions>, ConfigureBaGetOptions>();
 
-            services.AddSpaStaticFiles(ConfigureSpaStaticFiles);
+            // TODO: Delete
+            // services.AddSpaStaticFiles(ConfigureSpaStaticFiles);
             services.AddBaGetWebApplication(ConfigureBaGetApplication);
 
             // You can swap between implementations of subsystems like storage and search using BaGet's configuration.
@@ -55,11 +57,12 @@ namespace BaGet
             services.AddCors();
         }
 
-        private void ConfigureSpaStaticFiles(SpaStaticFilesOptions options)
-        {
-            // In production, the UI files will be served from this directory
-            options.RootPath = "BaGet.UI/build";
-        }
+        // TODO: Delete
+        // private void ConfigureSpaStaticFiles(SpaStaticFilesOptions options)
+        // {
+        //     // In production, the UI files will be served from this directory
+        //     options.RootPath = "BaGet.UI/build";
+        // }
 
         private void ConfigureBaGetApplication(BaGetApplication app)
         {
@@ -95,8 +98,10 @@ namespace BaGet
             app.UseForwardedHeaders();
             app.UsePathBase(options.PathBase);
 
-            app.UseSpaStaticFiles();
+            // TODO: Delete
+            // app.UseSpaStaticFiles();
 
+            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseCors(ConfigureBaGetOptions.CorsPolicy);
@@ -104,20 +109,21 @@ namespace BaGet
 
             app.UseEndpoints(endpoints =>
             {
-                var api = new BaGetApi();
+                var baget = new BaGetEndpointBuilder();
 
-                api.MapRoutes(endpoints);
+                baget.MapEndpoints(endpoints);
             });
 
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "../BaGet.UI";
-
-                if (env.IsDevelopment())
-                {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
-                }
-            });
+            // TODO: Delete
+            // app.UseSpa(spa =>
+            // {
+            //     spa.Options.SourcePath = "../BaGet.UI";
+            //
+            //     if (env.IsDevelopment())
+            //     {
+            //         spa.UseReactDevelopmentServer(npmScript: "start");
+            //     }
+            // });
         }
     }
 }

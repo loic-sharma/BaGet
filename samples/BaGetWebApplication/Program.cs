@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using BaGet.Hosting;
+using BaGet.Web;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
@@ -10,9 +10,9 @@ namespace BaGetWebApplication
         public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
-            
+
             await host.RunMigrationsAsync();
-            host.Run();
+            await host.RunAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

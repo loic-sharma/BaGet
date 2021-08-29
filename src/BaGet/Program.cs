@@ -1,8 +1,7 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using BaGet.Core;
-using BaGet.Hosting;
+using BaGet.Web;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
