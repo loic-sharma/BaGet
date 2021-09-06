@@ -32,7 +32,7 @@ namespace BaGet.Protocol
 
                 using (var stream = await response.Content.ReadAsStreamAsync())
                 {
-                    return await JsonSerializer.DeserializeAsync<TResult>(stream);
+                    return await JsonSerializer.DeserializeAsync<TResult>(stream, cancellationToken: cancellationToken);
                 }
             }
         }
@@ -65,7 +65,7 @@ namespace BaGet.Protocol
 
                 using (var stream = await response.Content.ReadAsStreamAsync())
                 {
-                    return await JsonSerializer.DeserializeAsync<TResult>(stream);
+                    return await JsonSerializer.DeserializeAsync<TResult>(stream, cancellationToken: cancellationToken);
                 }
             }
         }

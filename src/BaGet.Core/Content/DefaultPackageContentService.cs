@@ -33,20 +33,10 @@ namespace BaGet.Core
             string id,
             CancellationToken cancellationToken = default)
         {
-            // First, attempt to find all package versions using the upstream source.
-            var versions = await _mirror.FindPackageVersionsOrNullAsync(id, cancellationToken);
-
-            if (versions == null)
+            var versions = await _mirror.FindPackageVersionsAsync(id, cancellationToken);
+            if (!versions.Any())
             {
-                // Fallback to the local packages if mirroring is disabled.
-                var packages = await _packages.FindAsync(id, includeUnlisted: true, cancellationToken);
-
-                if (!packages.Any())
-                {
-                    return null;
-                }
-
-                versions = packages.Select(p => p.Version).ToList();
+                return null;
             }
 
             return new PackageVersionsResponse

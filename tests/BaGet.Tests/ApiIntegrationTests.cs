@@ -1,26 +1,25 @@
+using System;
 using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Newtonsoft.Json;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace BaGet.Tests
 {
-    public class ApiIntegrationTests : IClassFixture<BaGetWebApplicationFactory>
+    public class ApiIntegrationTests : IDisposable
     {
-        private readonly WebApplicationFactory<Startup> _factory;
+        private readonly BaGetApplication _app;
         private readonly HttpClient _client;
 
         private readonly Stream _packageStream;
         private readonly Stream _symbolPackageStream;
 
-        public ApiIntegrationTests(BaGetWebApplicationFactory factory, ITestOutputHelper output)
+        public ApiIntegrationTests(ITestOutputHelper output)
         {
-            _factory = factory.WithOutput(output);
-            _client = _factory.CreateClient();
+            _app = new BaGetApplication(output);
+            _client = _app.CreateClient();
 
             _packageStream = TestResources.GetResourceStream(TestResources.Package);
             _symbolPackageStream = TestResources.GetResourceStream(TestResources.SymbolPackage);
@@ -39,11 +38,11 @@ namespace BaGet.Tests
         [Fact]
         public async Task SearchReturnsOk()
         {
-            await _factory.AddPackageAsync(_packageStream);
+            await _app.AddPackageAsync(_packageStream);
 
             using var response = await _client.GetAsync("v3/search");
             var content = await response.Content.ReadAsStreamAsync();
-            var json = PrettifyJson(content);
+            var json = content.ToPrettifiedJson();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(@"{
@@ -85,7 +84,7 @@ namespace BaGet.Tests
         {
             using var response = await _client.GetAsync("v3/search?q=PackageDoesNotExist");
             var content = await response.Content.ReadAsStreamAsync();
-            var json = PrettifyJson(content);
+            var json = content.ToPrettifiedJson();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(@"{
@@ -101,11 +100,11 @@ namespace BaGet.Tests
         [Fact]
         public async Task AutocompleteReturnsOk()
         {
-            await _factory.AddPackageAsync(_packageStream);
+            await _app.AddPackageAsync(_packageStream);
 
             using var response = await _client.GetAsync("v3/autocomplete");
             var content = await response.Content.ReadAsStreamAsync();
-            var json = PrettifyJson(content);
+            var json = content.ToPrettifiedJson();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(@"{
@@ -124,7 +123,7 @@ namespace BaGet.Tests
         {
             using var response = await _client.GetAsync("v3/autocomplete?q=PackageDoesNotExist");
             var content = await response.Content.ReadAsStreamAsync();
-            var json = PrettifyJson(content);
+            var json = content.ToPrettifiedJson();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(@"{
@@ -139,11 +138,11 @@ namespace BaGet.Tests
         [Fact]
         public async Task AutocompleteVersionsReturnsOk()
         {
-            await _factory.AddPackageAsync(_packageStream);
+            await _app.AddPackageAsync(_packageStream);
 
             using var response = await _client.GetAsync("v3/autocomplete?id=TestData");
             var content = await response.Content.ReadAsStreamAsync();
-            var json = PrettifyJson(content);
+            var json = content.ToPrettifiedJson();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(@"{
@@ -162,7 +161,7 @@ namespace BaGet.Tests
         {
             using var response = await _client.GetAsync("v3/autocomplete?id=PackageDoesNotExist");
             var content = await response.Content.ReadAsStreamAsync();
-            var json = PrettifyJson(content);
+            var json = content.ToPrettifiedJson();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(@"{
@@ -177,7 +176,7 @@ namespace BaGet.Tests
         [Fact]
         public async Task VersionListReturnsOk()
         {
-            await _factory.AddPackageAsync(_packageStream);
+            await _app.AddPackageAsync(_packageStream);
 
             var response = await _client.GetAsync("v3/package/TestData/index.json");
             var content = await response.Content.ReadAsStringAsync();
@@ -197,7 +196,7 @@ namespace BaGet.Tests
         [Fact]
         public async Task PackageDownloadReturnsOk()
         {
-            await _factory.AddPackageAsync(_packageStream);
+            await _app.AddPackageAsync(_packageStream);
 
             using var response = await _client.GetAsync("v3/package/TestData/1.2.3/TestData.1.2.3.nupkg");
 
@@ -216,7 +215,7 @@ namespace BaGet.Tests
         [Fact]
         public async Task NuspecDownloadReturnsOk()
         {
-            await _factory.AddPackageAsync(_packageStream);
+            await _app.AddPackageAsync(_packageStream);
 
             using var response = await _client.GetAsync(
                 "v3/package/TestData/1.2.3/TestData.1.2.3.nuspec");
@@ -236,11 +235,11 @@ namespace BaGet.Tests
         [Fact]
         public async Task PackageMetadataReturnsOk()
         {
-            await _factory.AddPackageAsync(_packageStream);
+            await _app.AddPackageAsync(_packageStream);
 
             using var response = await _client.GetAsync("v3/registration/TestData/index.json");
             var content = await response.Content.ReadAsStreamAsync();
-            var json = PrettifyJson(content);
+            var json = content.ToPrettifiedJson();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(@"{
@@ -311,11 +310,11 @@ namespace BaGet.Tests
         [Fact]
         public async Task PackageMetadataLeafReturnsOk()
         {
-            await _factory.AddPackageAsync(_packageStream);
+            await _app.AddPackageAsync(_packageStream);
 
             using var response = await _client.GetAsync("v3/registration/TestData/1.2.3.json");
             var content = await response.Content.ReadAsStreamAsync();
-            var json = PrettifyJson(content);
+            var json = content.ToPrettifiedJson();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(@"{
@@ -345,7 +344,7 @@ namespace BaGet.Tests
             using var response = await _client.GetAsync("v3/dependents?packageId=TestData");
 
             var content = await response.Content.ReadAsStreamAsync();
-            var json = PrettifyJson(content);
+            var json = content.ToPrettifiedJson();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(@"{
@@ -365,8 +364,8 @@ namespace BaGet.Tests
         [Fact]
         public async Task SymbolDownloadReturnsOk()
         {
-            await _factory.AddPackageAsync(_packageStream);
-            await _factory.AddSymbolPackageAsync(_symbolPackageStream);
+            await _app.AddPackageAsync(_packageStream);
+            await _app.AddSymbolPackageAsync(_symbolPackageStream);
 
             using var response = await _client.GetAsync(
                 "api/download/symbols/testdata.pdb/16F71ED8DD574AA2AD4A22D29E9C981Bffffffff/testdata.pdb");
@@ -380,8 +379,8 @@ namespace BaGet.Tests
         [InlineData("api/download/symbols/testprefix/testdata.pdb/16F71ED8DD574AA2AD4A22D29E9C981Bffffffff/testdata.pdb")]
         public async Task MalformedSymbolDownloadReturnsOk(string uri)
         {
-            await _factory.AddPackageAsync(_packageStream);
-            await _factory.AddSymbolPackageAsync(_symbolPackageStream);
+            await _app.AddPackageAsync(_packageStream);
+            await _app.AddSymbolPackageAsync(_symbolPackageStream);
 
             using var response = await _client.GetAsync(uri);
 
@@ -397,20 +396,10 @@ namespace BaGet.Tests
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
-        private string PrettifyJson(Stream jsonStream)
+        public void Dispose()
         {
-            using var writer = new StringWriter();
-            using var jsonWriter = new JsonTextWriter(writer)
-            {
-                Formatting = Formatting.Indented,
-                DateTimeZoneHandling = DateTimeZoneHandling.Utc
-            };
-
-            using var reader = new StreamReader(jsonStream);
-            using var jsonReader = new JsonTextReader(reader);
-
-            jsonWriter.WriteToken(jsonReader);
-            return writer.ToString();
+            _app.Dispose();
+            _client.Dispose();
         }
     }
 }

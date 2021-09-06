@@ -17,10 +17,10 @@ namespace BaGet.Core
         /// <param name="id">The package's id to lookup</param>
         /// <param name="cancellationToken">The token to cancel the lookup</param>
         /// <returns>
-        /// The package's versions, or null if the package cannot be found on the
-        /// configured upstream source. This includes unlisted versions.
+        /// The package's versions, or an empty list if the package cannot be found.
+        /// This includes unlisted versions.
         /// </returns>
-        Task<IReadOnlyList<NuGetVersion>> FindPackageVersionsOrNullAsync(string id, CancellationToken cancellationToken);
+        Task<IReadOnlyList<NuGetVersion>> FindPackageVersionsAsync(string id, CancellationToken cancellationToken);
 
         /// <summary>
         /// Attempt to find a package's metadata using mirroring. This will merge
@@ -29,10 +29,10 @@ namespace BaGet.Core
         /// <param name="id">The package's id to lookup</param>
         /// <param name="cancellationToken">The token to cancel the lookup</param>
         /// <returns>
-        /// The package's metadata, or null if the package cannot be found on the configured
-        /// upstream source.
+        /// The metadata for all versions of a package, including unlisted versions.
+        /// Returns an empty list if the package cannot be found.
         /// </returns>
-        Task<IReadOnlyList<Package>> FindPackagesOrNullAsync(string id, CancellationToken cancellationToken);
+        Task<IReadOnlyList<Package>> FindPackagesAsync(string id, CancellationToken cancellationToken);
 
         /// <summary>
         /// If the package is unknown, attempt to index it from an upstream source.
