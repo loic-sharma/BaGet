@@ -59,8 +59,8 @@ namespace BaGet.Core
             if (!localPackages.Any()) return upstreamPackages;
 
             // Merge the local packages into the upstream packages.
-            var result = upstreamPackages.ToDictionary(p => new PackageIdentity(p.Id, p.Version));
-            var local = localPackages.ToDictionary(p => new PackageIdentity(p.Id, p.Version));
+            var result = upstreamPackages.ToDictionary(p => p.Version);
+            var local = localPackages.ToDictionary(p => p.Version);
 
             foreach (var localPackage in local)
             {
@@ -113,7 +113,7 @@ namespace BaGet.Core
                 PackageTypes = new List<PackageType>(),
                 RepositoryUrl = null,
                 RepositoryType = null,
-                Tags = metadata.Tags.ToArray(),
+                Tags = metadata.Tags?.ToArray() ?? Array.Empty<string>(),
 
                 Dependencies = FindDependencies(metadata)
             };
@@ -133,7 +133,7 @@ namespace BaGet.Core
 
         private string[] ParseAuthors(string authors)
         {
-            if (string.IsNullOrEmpty(authors)) return new string[0];
+            if (string.IsNullOrEmpty(authors)) return Array.Empty<string>();
 
             return authors
                 .Split(new[] { ',', ';', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries)
@@ -215,8 +215,6 @@ namespace BaGet.Core
                     "Failed to download package {PackageId} {PackageVersion}",
                     id,
                     version);
-
-                return;
             }
             catch (Exception e)
             {

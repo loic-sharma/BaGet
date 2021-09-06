@@ -12,7 +12,6 @@ namespace BaGet.Tests
     {
         private readonly BaGetApplication _upstream;
         private readonly BaGetApplication _downstream;
-        private readonly HttpClient _upstreamClient;
         private readonly HttpClient _downstreamClient;
         private readonly Stream _packageStream;
 
@@ -21,9 +20,7 @@ namespace BaGet.Tests
             _upstream = new BaGetApplication(output);
             _downstream = new BaGetApplication(output, _upstream.CreateClient());
 
-            _upstreamClient = _upstream.CreateClient();
             _downstreamClient = _downstream.CreateClient();
-
             _packageStream = TestResources.GetResourceStream(TestResources.Package);
         }
 
