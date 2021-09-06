@@ -16,13 +16,13 @@ namespace BaGet.Core
     public class MirrorService : IMirrorService
     {
         private readonly IPackageService _localPackages;
-        private readonly IMirrorNuGetClient _upstreamClient;
+        private readonly IMirrorClient _upstreamClient;
         private readonly IPackageIndexingService _indexer;
         private readonly ILogger<MirrorService> _logger;
 
         public MirrorService(
             IPackageService localPackages,
-            IMirrorNuGetClient upstreamClient,
+            IMirrorClient upstreamClient,
             IPackageIndexingService indexer,
             ILogger<MirrorService> logger)
         {
@@ -32,53 +32,42 @@ namespace BaGet.Core
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public static MirrorService Create(
-            IPackageService localPackages,
-            NuGetClient client,
-            IPackageIndexingService indexer,
-            ILogger<MirrorService> logger)
-        {
-            return new MirrorService(
-                localPackages,
-                new MirrorV3Client(client),
-                indexer,
-                logger);
-        }
-
-        public async Task<IReadOnlyList<NuGetVersion>> FindPackageVersionsOrNullAsync(
+        public async Task<IReadOnlyList<NuGetVersion>> FindPackageVersionsAsync(
             string id,
             CancellationToken cancellationToken)
         {
-            var upstreamVersions = await RunOrNull(
-                id,
-                "versions",
-                () => _upstreamClient.ListPackageVersionsAsync(id, includeUnlisted: true, cancellationToken));
-
-            if (upstreamVersions == null || !upstreamVersions.Any())
-            {
-                return null;
-            }
+            var upstreamVersions = await _upstreamClient.ListPackageVersionsAsync(id, cancellationToken);
 
             // Merge the local package versions into the upstream package versions.
             var localPackages = await _localPackages.FindAsync(id, includeUnlisted: true, cancellationToken);
             var localVersions = localPackages.Select(p => p.Version);
 
+            if (!upstreamVersions.Any()) return localVersions.ToList();
+            if (!localPackages.Any()) return upstreamVersions;
+
             return upstreamVersions.Concat(localVersions).Distinct().ToList();
         }
 
-        public async Task<IReadOnlyList<Package>> FindPackagesOrNullAsync(string id, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<Package>> FindPackagesAsync(string id, CancellationToken cancellationToken)
         {
-            var items = await RunOrNull(
-                id,
-                "metadata",
-                () => _upstreamClient.GetPackageMetadataAsync(id, cancellationToken));
+            var upstreamPackageMetadata = await _upstreamClient.GetPackageMetadataAsync(id, cancellationToken);
 
-            if (items == null || !items.Any())
+            var upstreamPackages = upstreamPackageMetadata.Select(ToPackage).ToList();
+            var localPackages = await _localPackages.FindAsync(id, includeUnlisted: true, cancellationToken);
+
+            if (!upstreamPackages.Any()) return localPackages;
+            if (!localPackages.Any()) return upstreamPackages;
+
+            // Merge the local packages into the upstream packages.
+            var result = upstreamPackages.ToDictionary(p => new PackageIdentity(p.Id, p.Version));
+            var local = localPackages.ToDictionary(p => new PackageIdentity(p.Id, p.Version));
+
+            foreach (var localPackage in local)
             {
-                return null;
+                result[localPackage.Key] = localPackage.Value;
             }
 
-            return items.Select(ToPackage).ToList();
+            return result.Values.ToList();
         }
 
         public async Task MirrorAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
@@ -189,20 +178,6 @@ namespace BaGet.Core
             });
         }
 
-        private async Task<T> RunOrNull<T>(string id, string data, Func<Task<T>> x)
-            where T : class
-        {
-            try
-            {
-                return await x();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Unable to mirror package {Package}'s upstream {Data}", id, data);
-                return null;
-            }
-        }
-
         private async Task IndexFromSourceAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -218,7 +193,7 @@ namespace BaGet.Core
             {
                 using (var stream = await _upstreamClient.DownloadPackageAsync(id, version, cancellationToken))
                 {
-                    packageStream = await stream.AsTemporaryFileStreamAsync();
+                    packageStream = await stream.AsTemporaryFileStreamAsync(cancellationToken);
                 }
 
                 _logger.LogInformation(

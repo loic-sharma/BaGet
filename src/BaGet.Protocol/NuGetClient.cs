@@ -199,7 +199,7 @@ namespace BaGet.Protocol
         }
 
         /// <summary>
-        /// Find the metadata for all versions of a package.
+        /// Find the metadata for all versions of a package, including unlisted versions.
         /// </summary>
         /// <param name="packageId">The package ID.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>

@@ -30,8 +30,8 @@ namespace BaGet.Core
             string packageId,
             CancellationToken cancellationToken = default)
         {
-            var packages = await FindPackagesOrNullAsync(packageId, cancellationToken);
-            if (packages == null)
+            var packages = await _mirror.FindPackagesAsync(packageId, cancellationToken);
+            if (!packages.Any())
             {
                 return null;
             }
@@ -63,7 +63,7 @@ namespace BaGet.Core
             string packageId,
             CancellationToken cancellationToken)
         {
-            var upstreamPackages = await _mirror.FindPackagesOrNullAsync(packageId, cancellationToken);
+            var upstreamPackages = await _mirror.FindPackagesAsync(packageId, cancellationToken);
             var localPackages = await _packages.FindAsync(packageId, includeUnlisted: true, cancellationToken);
 
             if (upstreamPackages == null)
@@ -73,7 +73,7 @@ namespace BaGet.Core
                     : null;
             }
 
-            // Mrge the local packages into the upstream packages.
+            // Merge the local packages into the upstream packages.
             var result = upstreamPackages.ToDictionary(p => new PackageIdentity(p.Id, p.Version));
             var local = localPackages.ToDictionary(p => new PackageIdentity(p.Id, p.Version));
 
