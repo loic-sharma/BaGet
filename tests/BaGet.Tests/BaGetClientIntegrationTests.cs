@@ -1,9 +1,9 @@
 using System;
 using System.IO;
+using System.Net.Http;
 using System.Threading.Tasks;
 using BaGet.Protocol;
 using BaGet.Protocol.Models;
-using Microsoft.AspNetCore.Mvc.Testing;
 using NuGet.Versioning;
 using Xunit;
 using Xunit.Abstractions;
@@ -13,25 +13,23 @@ namespace BaGet.Tests
     /// <summary>
     /// Uses BaGet's client SDK to interact with the BaGet test host.
     /// </summary>
-    public class BaGetClientIntegrationTests : IClassFixture<BaGetWebApplicationFactory>
+    public class BaGetClientIntegrationTests : IDisposable
     {
-        private readonly WebApplicationFactory<Startup> _factory;
+        private readonly BaGetApplication _app;
+        private readonly HttpClient _httpClient;
         private readonly NuGetClientFactory _clientFactory;
         private readonly NuGetClient _client;
 
         private readonly Stream _packageStream;
 
-        public BaGetClientIntegrationTests(
-            BaGetWebApplicationFactory factory,
-            ITestOutputHelper output)
+        public BaGetClientIntegrationTests(ITestOutputHelper output)
         {
-            _factory = factory.WithOutput(output);
+            _app = new BaGetApplication(output);
 
-            var serviceIndexUrl = new Uri(_factory.Server.BaseAddress, "v3/index.json");
+            var serviceIndexUrl = new Uri(_app.Server.BaseAddress, "v3/index.json");
 
-            var httpClient = _factory.CreateDefaultClient();
-
-            _clientFactory = new NuGetClientFactory(httpClient, serviceIndexUrl.AbsoluteUri);
+            _httpClient = _app.CreateClient();
+            _clientFactory = new NuGetClientFactory(_httpClient, serviceIndexUrl.AbsoluteUri);
             _client = new NuGetClient(_clientFactory);
 
             _packageStream = TestResources.GetResourceStream(TestResources.Package);
@@ -57,7 +55,7 @@ namespace BaGet.Tests
         [Fact]
         public async Task SearchReturnsResults()
         {
-            await _factory.AddPackageAsync(_packageStream);
+            await _app.AddPackageAsync(_packageStream);
 
             var results = await _client.SearchAsync();
 
@@ -86,7 +84,7 @@ namespace BaGet.Tests
         [Fact]
         public async Task AutocompleteReturnsResults()
         {
-            await _factory.AddPackageAsync(_packageStream);
+            await _app.AddPackageAsync(_packageStream);
 
             var results = await _client.AutocompleteAsync();
 
@@ -106,7 +104,7 @@ namespace BaGet.Tests
         [Fact]
         public async Task AutocompleteVersions()
         {
-            await _factory.AddPackageAsync(_packageStream);
+            await _app.AddPackageAsync(_packageStream);
 
             var client = _clientFactory.CreateAutocompleteClient();
             var results = await client.ListPackageVersionsAsync("TestData");
@@ -130,7 +128,7 @@ namespace BaGet.Tests
         [Fact]
         public async Task VersionListReturnsResults()
         {
-            await _factory.AddPackageAsync(_packageStream);
+            await _app.AddPackageAsync(_packageStream);
 
             var versions = await _client.ListPackageVersionsAsync("TestData");
 
@@ -153,7 +151,7 @@ namespace BaGet.Tests
         [InlineData("PackageDoesNotExists", "1.0.0", false)]
         public async Task PackageDownloadWorks(string packageId, string packageVersion, bool exists)
         {
-            await _factory.AddPackageAsync(_packageStream);
+            await _app.AddPackageAsync(_packageStream);
 
             try
             {
@@ -180,7 +178,7 @@ namespace BaGet.Tests
         [InlineData("PackageDoesNotExists", "1.0.0", false)]
         public async Task ManifestDownloadWorks(string packageId, string packageVersion, bool exists)
         {
-            await _factory.AddPackageAsync(_packageStream);
+            await _app.AddPackageAsync(_packageStream);
 
             try
             {
@@ -204,7 +202,7 @@ namespace BaGet.Tests
         [Fact]
         public async Task PackageMetadataReturnsOk()
         {
-            await _factory.AddPackageAsync(_packageStream);
+            await _app.AddPackageAsync(_packageStream);
 
             var packages = await _client.GetPackageMetadataAsync("TestData");
 
@@ -223,6 +221,12 @@ namespace BaGet.Tests
             var packages = await _client.GetPackageMetadataAsync("PackageDoesNotExist");
 
             Assert.Empty(packages);
+        }
+
+        public void Dispose()
+        {
+            _app.Dispose();
+            _httpClient.Dispose();
         }
     }
 }
