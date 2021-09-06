@@ -3,7 +3,6 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -43,7 +42,7 @@ namespace BaGet.Tests
 
             using var response = await _client.GetAsync("v3/search");
             var content = await response.Content.ReadAsStreamAsync();
-            var json = PrettifyJson(content);
+            var json = content.ToPrettifiedJson();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(@"{
@@ -85,7 +84,7 @@ namespace BaGet.Tests
         {
             using var response = await _client.GetAsync("v3/search?q=PackageDoesNotExist");
             var content = await response.Content.ReadAsStreamAsync();
-            var json = PrettifyJson(content);
+            var json = content.ToPrettifiedJson();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(@"{
@@ -105,7 +104,7 @@ namespace BaGet.Tests
 
             using var response = await _client.GetAsync("v3/autocomplete");
             var content = await response.Content.ReadAsStreamAsync();
-            var json = PrettifyJson(content);
+            var json = content.ToPrettifiedJson();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(@"{
@@ -124,7 +123,7 @@ namespace BaGet.Tests
         {
             using var response = await _client.GetAsync("v3/autocomplete?q=PackageDoesNotExist");
             var content = await response.Content.ReadAsStreamAsync();
-            var json = PrettifyJson(content);
+            var json = content.ToPrettifiedJson();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(@"{
@@ -143,7 +142,7 @@ namespace BaGet.Tests
 
             using var response = await _client.GetAsync("v3/autocomplete?id=TestData");
             var content = await response.Content.ReadAsStreamAsync();
-            var json = PrettifyJson(content);
+            var json = content.ToPrettifiedJson();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(@"{
@@ -162,7 +161,7 @@ namespace BaGet.Tests
         {
             using var response = await _client.GetAsync("v3/autocomplete?id=PackageDoesNotExist");
             var content = await response.Content.ReadAsStreamAsync();
-            var json = PrettifyJson(content);
+            var json = content.ToPrettifiedJson();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(@"{
@@ -240,7 +239,7 @@ namespace BaGet.Tests
 
             using var response = await _client.GetAsync("v3/registration/TestData/index.json");
             var content = await response.Content.ReadAsStreamAsync();
-            var json = PrettifyJson(content);
+            var json = content.ToPrettifiedJson();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(@"{
@@ -315,7 +314,7 @@ namespace BaGet.Tests
 
             using var response = await _client.GetAsync("v3/registration/TestData/1.2.3.json");
             var content = await response.Content.ReadAsStreamAsync();
-            var json = PrettifyJson(content);
+            var json = content.ToPrettifiedJson();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(@"{
@@ -345,7 +344,7 @@ namespace BaGet.Tests
             using var response = await _client.GetAsync("v3/dependents?packageId=TestData");
 
             var content = await response.Content.ReadAsStreamAsync();
-            var json = PrettifyJson(content);
+            var json = content.ToPrettifiedJson();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(@"{
@@ -401,22 +400,6 @@ namespace BaGet.Tests
         {
             _app.Dispose();
             _client.Dispose();
-        }
-
-        private string PrettifyJson(Stream jsonStream)
-        {
-            using var writer = new StringWriter();
-            using var jsonWriter = new JsonTextWriter(writer)
-            {
-                Formatting = Formatting.Indented,
-                DateTimeZoneHandling = DateTimeZoneHandling.Utc
-            };
-
-            using var reader = new StreamReader(jsonStream);
-            using var jsonReader = new JsonTextReader(reader);
-
-            jsonWriter.WriteToken(jsonReader);
-            return writer.ToString();
         }
     }
 }
