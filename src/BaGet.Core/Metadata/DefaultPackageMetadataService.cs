@@ -58,31 +58,5 @@ namespace BaGet.Core
 
             return _builder.BuildLeaf(package);
         }
-
-        private async Task<IReadOnlyList<Package>> FindPackagesOrNullAsync(
-            string packageId,
-            CancellationToken cancellationToken)
-        {
-            var upstreamPackages = await _mirror.FindPackagesAsync(packageId, cancellationToken);
-            var localPackages = await _packages.FindAsync(packageId, includeUnlisted: true, cancellationToken);
-
-            if (upstreamPackages == null)
-            {
-                return localPackages.Any()
-                    ? localPackages
-                    : null;
-            }
-
-            // Merge the local packages into the upstream packages.
-            var result = upstreamPackages.ToDictionary(p => new PackageIdentity(p.Id, p.Version));
-            var local = localPackages.ToDictionary(p => new PackageIdentity(p.Id, p.Version));
-
-            foreach (var localPackage in local)
-            {
-                result[localPackage.Key] = localPackage.Value;
-            }
-
-            return result.Values.ToList();
-        }
     }
 }
