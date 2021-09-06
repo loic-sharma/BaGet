@@ -1,8 +1,9 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Protocol;
 using BaGet.Protocol.Models;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -204,22 +205,78 @@ namespace BaGet.Core.Tests.Mirror
 
         public class MirrorAsync : FactsBase
         {
+            private readonly string _id = "MyPackage";
+            private readonly NuGetVersion _version = new NuGetVersion("1.0.0");
+
             [Fact]
             public async Task SkipsIfAlreadyMirrored()
             {
-                await Task.Yield();
+                _packages
+                    .Setup(p => p.ExistsAsync(_id, _version, _cancellationToken))
+                    .ReturnsAsync(true);
+
+                await _target.MirrorAsync(_id, _version, _cancellationToken);
+
+                _indexer.Verify(
+                    i => i.IndexAsync(It.IsAny<Stream>(), _cancellationToken),
+                    Times.Never);
             }
 
             [Fact]
             public async Task SkipsIfUpstreamDoesntHavePackage()
             {
-                await Task.Yield();
+                _packages
+                    .Setup(p => p.ExistsAsync(_id, _version, _cancellationToken))
+                    .ReturnsAsync(false);
+
+                _upstream
+                    .Setup(u => u.DownloadPackageAsync(_id, _version, _cancellationToken))
+                    .ThrowsAsync(new PackageNotFoundException(_id, _version));
+
+                await _target.MirrorAsync(_id, _version, _cancellationToken);
+
+                _indexer.Verify(
+                    i => i.IndexAsync(It.IsAny<Stream>(), _cancellationToken),
+                    Times.Never);
+            }
+
+            [Fact]
+            public async Task SkipsIfUpstreamThrows()
+            {
+                _packages
+                    .Setup(p => p.ExistsAsync(_id, _version, _cancellationToken))
+                    .ReturnsAsync(false);
+
+                _upstream
+                    .Setup(u => u.DownloadPackageAsync(_id, _version, _cancellationToken))
+                    .ThrowsAsync(new InvalidOperationException("Hello world"));
+
+                await _target.MirrorAsync(_id, _version, _cancellationToken);
+
+                _indexer.Verify(
+                    i => i.IndexAsync(It.IsAny<Stream>(), _cancellationToken),
+                    Times.Never);
             }
 
             [Fact]
             public async Task MirrorsPackage()
             {
-                await Task.Yield();
+                _packages
+                    .Setup(p => p.ExistsAsync(_id, _version, _cancellationToken))
+                    .ReturnsAsync(false);
+
+                using (var downloadStream = new MemoryStream())
+                {
+                    _upstream
+                        .Setup(u => u.DownloadPackageAsync(_id, _version, _cancellationToken))
+                        .ReturnsAsync(downloadStream);
+
+                    await _target.MirrorAsync(_id, _version, _cancellationToken);
+
+                    _indexer.Verify(
+                        i => i.IndexAsync(It.IsAny<Stream>(), _cancellationToken),
+                        Times.Once);
+                }
             }
         }
 
@@ -228,8 +285,8 @@ namespace BaGet.Core.Tests.Mirror
             protected readonly Mock<IPackageService> _packages;
             protected readonly Mock<IMirrorClient> _upstream;
             protected readonly Mock<IPackageIndexingService> _indexer;
-            protected readonly CancellationToken _cancellationToken = CancellationToken.None;
 
+            protected readonly CancellationToken _cancellationToken = CancellationToken.None;
             protected readonly MirrorService _target;
 
             public FactsBase()
