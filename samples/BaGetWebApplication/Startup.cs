@@ -34,9 +34,7 @@ namespace BaGetWebApplication
                 var baget = new BaGetEndpointBuilder();
 
                 baget.MapEndpoints(endpoints);
-
-
             });
         }
-    }   // TODO: Test Razor pages work.
+    }
 }
