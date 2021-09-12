@@ -1,14 +1,19 @@
 ﻿@page
-@model UploadModel
+@inject IUrlGenerator _url
+
 @{
     ViewData["Title"] = "Upload package";
+
+    var baseUrl = Url.PageLink("/Index");
+    var publishUrl = _url.GetPackagePublishResourceUrl();
+    var serviceIndexUrl = _url.GetServiceIndexUrl();
 }
 
 <div class="col-sm-12">
     <h1>Upload</h1>
     <hr class="breadcrumb-divider" />
 
-    <div>You can push packages using the service index <code>@Model.ServiceIndexUrl</code>.</div>
+    <div>You can push packages using the service index <code>@serviceIndexUrl</code>.</div>
 
     <div class="tabbed-info" x-data="{ tabs: tabs, active: tabs[0] }">
         <ul class="nav">
@@ -53,19 +58,19 @@
     let tabs = [
         {
             name: ".NET CLI",
-            content: ["dotnet nuget push -s @Model.ServiceIndexUrl package.nupkg"],
+            content: ["dotnet nuget push -s @serviceIndexUrl package.nupkg"],
             documentation: "https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-nuget-push",
         },
 
         {
             name: "NuGet",
-            content: ["nuget push -Source @Model.ServiceIndexUrl package.nupkg"],
+            content: ["nuget push -Source @serviceIndexUrl package.nupkg"],
             documentation: "https://docs.microsoft.com/en-us/nuget/tools/cli-ref-push",
         },
 
         {
             name: "Paket",
-            content: ["paket push --url @Model.BaseUrl package.nupkg"],
+            content: ["paket push --url @baseUrl package.nupkg"],
             documentation: "https://fsprojects.github.io/Paket/paket-push.html",
         },
 
@@ -73,8 +78,8 @@
         {
             name: "PowerShellGet",
             content: [
-                "Register-PSRepository -Name \"BaGet\" -SourceLocation \"@Model.ServiceIndexUrl\" "
-                  + "-PublishLocation \"@Model.PublishUrl\" -InstallationPolicy \"Trusted\"",
+                "Register-PSRepository -Name \"BaGet\" -SourceLocation \"@serviceIndexUrl\" "
+                  + "-PublishLocation \"@publishUrl\" -InstallationPolicy \"Trusted\"",
                 "Publish-Module -Name PS-Module -Repository BaGet"
             ],
             documentation: "https://docs.microsoft.com/en-us/powershell/module/powershellget/publish-module",
