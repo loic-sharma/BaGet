@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core;
-using BaGet.Protocol.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using NuGet.Frameworks;
 using NuGet.Versioning;
 
@@ -47,23 +43,23 @@ namespace BaGet.Web
             var packages = await _mirror.FindPackagesAsync(id, cancellationToken);
             var listedPackages = packages.Where(p => p.Listed).ToList();
 
-            if (!listedPackages.Any())
+            // Try to find the requested version.
+            if (NuGetVersion.TryParse(version, out var requestedVersion))
+            {
+                Package = packages.SingleOrDefault(p => p.Version == requestedVersion);
+            }
+
+            // Otherwise try to display the latest version.
+            if (Package == null)
+            {
+                Package = listedPackages.OrderByDescending(p => p.Version).FirstOrDefault();
+            }
+
+            if (Package == null)
             {
                 Package = new Package { Id = id };
                 Found = false;
                 return;
-            }
-
-            // Try to find the requested version.
-            if (NuGetVersion.TryParse(version, out var requestedVersion))
-            {
-                Package = listedPackages.SingleOrDefault(p => p.Version == requestedVersion);
-            }
-
-            // Otherwise display the latest version.
-            if (Package == null)
-            {
-                Package = listedPackages.OrderByDescending(p => p.Version).First();
             }
 
             var packageVersion = Package.Version;

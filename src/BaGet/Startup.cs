@@ -5,9 +5,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
-// TODO Delete
-// using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
-// using Microsoft.AspNetCore.SpaServices.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,7 +19,7 @@ namespace BaGet
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -41,8 +38,6 @@ namespace BaGet
             services.AddTransient<IConfigureOptions<IISServerOptions>, ConfigureBaGetOptions>();
             services.AddTransient<IValidateOptions<BaGetOptions>, ConfigureBaGetOptions>();
 
-            // TODO: Delete
-            // services.AddSpaStaticFiles(ConfigureSpaStaticFiles);
             services.AddBaGetWebApplication(ConfigureBaGetApplication);
 
             // You can swap between implementations of subsystems like storage and search using BaGet's configuration.
@@ -56,13 +51,6 @@ namespace BaGet
 
             services.AddCors();
         }
-
-        // TODO: Delete
-        // private void ConfigureSpaStaticFiles(SpaStaticFilesOptions options)
-        // {
-        //     // In production, the UI files will be served from this directory
-        //     options.RootPath = "BaGet.UI/build";
-        // }
 
         private void ConfigureBaGetApplication(BaGetApplication app)
         {
@@ -98,9 +86,6 @@ namespace BaGet
             app.UseForwardedHeaders();
             app.UsePathBase(options.PathBase);
 
-            // TODO: Delete
-            // app.UseSpaStaticFiles();
-
             app.UseStaticFiles();
             app.UseRouting();
 
@@ -113,17 +98,6 @@ namespace BaGet
 
                 baget.MapEndpoints(endpoints);
             });
-
-            // TODO: Delete
-            // app.UseSpa(spa =>
-            // {
-            //     spa.Options.SourcePath = "../BaGet.UI";
-            //
-            //     if (env.IsDevelopment())
-            //     {
-            //         spa.UseReactDevelopmentServer(npmScript: "start");
-            //     }
-            // });
         }
     }
 }
