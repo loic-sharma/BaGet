@@ -29,7 +29,6 @@ namespace BaGet.Core
         {
             _logger.LogInformation("Fetching package downloads...");
 
-            var serializer = new JsonSerializer();
             var results = new Dictionary<string, Dictionary<string, long>>();
 
             using (var downloadsStream = await GetDownloadsStreamAsync())
