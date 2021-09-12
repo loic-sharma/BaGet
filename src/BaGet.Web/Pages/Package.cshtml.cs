@@ -28,8 +28,8 @@ namespace BaGet.Web
         public Package Package { get; private set; }
 
         public IReadOnlyList<DependencyGroupModel> DependencyGroups { get; private set; }
-        public bool IsDotnetTool { get; private set; }
         public bool IsDotnetTemplate { get; private set; }
+        public bool IsDotnetTool { get; private set; }
         public DateTime LastUpdated { get; private set; }
         public long TotalDownloads { get; private set; }
         public IReadOnlyList<VersionModel> Versions { get; private set; }
@@ -66,8 +66,8 @@ namespace BaGet.Web
 
             Found = true;
             DependencyGroups = ToDependencyGroups(Package);
-            IsDotnetTool = Package.PackageTypes.Any(t => t.Name.Equals("DotnetTool", StringComparison.OrdinalIgnoreCase));
             IsDotnetTemplate = Package.PackageTypes.Any(t => t.Name.Equals("Template", StringComparison.OrdinalIgnoreCase));
+            IsDotnetTool = Package.PackageTypes.Any(t => t.Name.Equals("DotnetTool", StringComparison.OrdinalIgnoreCase));
             LastUpdated = packages.Max(p => p.Published);
             TotalDownloads = packages.Sum(p => p.Downloads);
             Versions = ToVersions(listedPackages, packageVersion);
@@ -117,25 +117,34 @@ namespace BaGet.Web
                 return targetFramework;
             }
 
-            // Defer to NuGet client logic for .NET 5 and newer.
-            if (framework.Version.Major >= 5 &&
-                framework.Framework.Equals(FrameworkConstants.FrameworkIdentifiers.NetCoreApp,
-                    StringComparison.OrdinalIgnoreCase))
+            string frameworkName;
+            if (framework.Framework.Equals(FrameworkConstants.FrameworkIdentifiers.NetCoreApp,
+                StringComparison.OrdinalIgnoreCase))
             {
-                return framework.ToString();
+                frameworkName = (framework.Version.Major >= 5)
+                    ? ".NET"
+                    : ".NET Core";
+            }
+            else if (framework.Framework.Equals(FrameworkConstants.FrameworkIdentifiers.NetStandard,
+                StringComparison.OrdinalIgnoreCase))
+            {
+                frameworkName = ".NET Standard";
+            }
+            else if (framework.Framework.Equals(FrameworkConstants.FrameworkIdentifiers.Net,
+                StringComparison.OrdinalIgnoreCase))
+            {
+                frameworkName = ".NET Framework";
+            }
+            else
+            {
+                frameworkName = framework.Framework;
             }
 
-            // Don't bother with portable class library
-            if (framework.Framework.Equals(".NETPortable", StringComparison.OrdinalIgnoreCase))
-            {
-                return targetFramework;
-            }
-
-            var version = (framework.Version.Build == 0)
+            var frameworkVersion = (framework.Version.Build == 0)
                 ? framework.Version.ToString(2)
                 : framework.Version.ToString(3);
 
-            return $"{framework.Framework} {version}";
+            return $"{frameworkName} {frameworkVersion}";
         }
 
         private IReadOnlyList<VersionModel> ToVersions(IReadOnlyList<Package> packages, NuGetVersion selectedVersion)
