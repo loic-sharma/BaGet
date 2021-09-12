@@ -18,8 +18,6 @@
 }
 else
 {
-    @:Tabs for other package types
-
     <div class="row display-package">
         <aside class="col-sm-1 package-icon">
             <img src="@(Model.IconUrl ?? Url.Content("~/_content/BaGet.Web/images/default-package-icon-256x256.png"))"
@@ -211,11 +209,23 @@ else
         let tabs = [
             @if (Model.IsDotnetTemplate)
             {
-                // TODO
+                <text>
+                {
+                    name: ".NET CLI",
+                    prefix: ">",
+                    content: ["dotnet new --install @Model.Package.Id::@Model.Package.NormalizedVersionString"],
+                },
+                </text>
             }
             else if (Model.IsDotnetTool)
             {
-                // TODO
+                <text>
+                {
+                    name: ".NET CLI",
+                    prefix: ">",
+                    content: ["dotnet tool install --global @Model.Package.Id --version @Model.Package.NormalizedVersionString"],
+                },
+                </text>
             }
             else
             {
