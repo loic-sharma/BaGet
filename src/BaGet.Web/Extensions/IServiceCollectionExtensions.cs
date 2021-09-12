@@ -2,9 +2,7 @@ using System;
 using BaGet.Core;
 using BaGet.Web;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace BaGet
 {
@@ -24,12 +22,7 @@ namespace BaGet
                     options.JsonSerializerOptions.IgnoreNullValues = true;
                 });
 
-            services.AddRazorPages()
-                // TODO: Only add during development, otherwise this adds filewatchers on production
-                // See: https://docs.microsoft.com/en-us/aspnet/core/mvc/views/view-compilation?view=aspnetcore-5.0&tabs=netcore-cli#conditionally-enable-runtime-compilation-in-an-existing-project-1
-                .AddRazorRuntimeCompilation();
-
-            services.AddSingleton<IConfigureOptions<MvcRazorRuntimeCompilationOptions>, ConfigureRazorRuntimeCompilation>();
+            services.AddRazorPages();
 
             services.AddHttpContextAccessor();
             services.AddTransient<IUrlGenerator, BaGetUrlGenerator>();

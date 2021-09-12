@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <PackageReference Include="Humanizer" Version="2.11.10" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="$(MicrosoftAspNetCorePackageVersion)" />
   </ItemGroup>
 
   <ItemGroup>
