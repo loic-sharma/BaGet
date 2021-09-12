@@ -2,64 +2,17 @@
 @model PackageModel
 
 @{
-    // TODO: Move these to model.
-    var NotFound = false;
-
-    var Package = new
-    {
-        Id = "Newtonsoft.Json",
-        Version = "12.0.1",
-        Description = "My package description!",
-        Icon = new Uri("https://api.nuget.org/v3-flatcontainer/newtonsoft.json/13.0.1-beta2/icon"),
-        UpdatedAt = DateTime.UtcNow.AddHours(-2),
-        TotalDownloads = 536496,
-
-        IsDependency = true,
-        IsDotnetTool = true,
-        IsDotnetTemplate = true,
-
-        Versions = new[]
-        {
-            new
-            {
-                Version = "2.0.0",
-                Downloads = 123,
-                Date = DateTime.Now,
-                Selected = true,
-            },
-            new
-            {
-                Version = "1.0.0",
-                Downloads = 500,
-                Date = DateTime.Now.AddDays(-1),
-                Selected = false,
-            }
-        },
-
-        DependencyGroups = new[]
-        {
-            new
-            {
-                TargetFramework = ".NET Standard 2.0",
-                Dependencies = new[]
-                {
-                    new { PackageId = "Newtonsoft.Json", Range = "(>= 12.0.1)" },
-                    new { PackageId = "Azure.Core", Range = "(>= 1.0.1)" }
-                }
-            }
-        },
-    };
-
-    ViewData["Title"] = $"{Package.Id} {Package.Version}";
-
+    ViewData["Title"] = Model.Found
+        ? Model.Package.Id + " " + Model.Package.NormalizedVersionString
+        : Model.Package.Id;
 }
 
-@if (NotFound)
+@if (!Model.Found)
 {
     <div>
         <h2>Oops, package not found...</h2>
-        <p>Could not find package '@Model.Id'.</p>
-        <p>You can try searching on <a href="https://www.nuget.org/packages?q=@Uri.EscapeDataString(Model.Id)" target="_blank" rel="noopener noreferrer">nuget.org</a> package.</p>
+        <p>Could not find package '@Model.Package.Id'.</p>
+        <p>You can try searching on <a href="https://www.nuget.org/packages?q=@Uri.EscapeDataString(Model.Package.Id)" target="_blank" rel="noopener noreferrer">nuget.org</a> package.</p>
         <p>Think there's a problem? Consider taking a look at our <a href="https://loic-sharma.github.io/BaGet/" target="_blank" rel="noopener noreferrer">documentation</a> or asking for help on our <a href="https://github.com/loic-sharma/BaGet/issues" target="_blank" rel="noopener noreferrer">GitHub project</a></p>
     </div>
 }
@@ -69,7 +22,7 @@ else
 
     <div class="row display-package">
         <aside class="col-sm-1 package-icon">
-            <img src="@Package.Icon"
+            <img src="@(Model.IconUrl ?? Url.Content("~/_content/BaGet.Web/images/default-package-icon-256x256.png"))"
                  class="img-responsive"
                  onerror="this.src='@Url.Content("~/_content/BaGet.Web/images/default-package-icon-256x256.png")'"
                  alt="The package icon" />
@@ -78,11 +31,9 @@ else
         <article class="col-sm-8 package-details-main">
             <div class="package-title">
                 <h1>
-                    @Package.Id
+                    @Model.Package.Id
 
-                    @Model.Id
-
-                    <small class="text-nowrap">@Package.Version</small>
+                    <small class="text-nowrap">@Model.Package.NormalizedVersionString</small>
                 </h1>
             </div>
 
@@ -111,22 +62,22 @@ else
                 </div>
             </div>
 
-            <div class="package-description">@Package.Description</div>
+            <div class="package-description">@Model.Package.Description</div>
 
             @{ ExpandableSection(
                 "Dependencies",
                 expanded: false,
                 @<div class="dependency-groups">
-                    @if (!Package.DependencyGroups.Any())
+                    @if (!Model.DependencyGroups.Any())
                     {
                         @:This package has no dependencies.
                     }
                     else
                     {
-                        foreach (var group in Package.DependencyGroups)
+                        foreach (var group in Model.DependencyGroups)
                         {
                             <h4>
-                                <span>@group.TargetFramework</span>
+                                <span>@group.Name</span>
                             </h4>
 
                             <ul class="list-unstyled dependency-group">
@@ -139,7 +90,7 @@ else
                                             @dependency.PackageId
                                         </a>
 
-                                        <span> @dependency.Range</span>
+                                        <span> @dependency.VersionSpec</span>
                                     </li>
                                 }
                             </ul>
@@ -159,21 +110,21 @@ else
                             </tr>
                         </thead>
                         <tbody class="no-border">
-                            @for (var i = 0; i < Package.Versions.Length; i++)
+                            @for (var i = 0; i < Model.Versions.Count; i++)
                             {
-                                var version = Package.Versions[i];
+                                var version = Model.Versions[i];
                                 var alwaysShow = Json.Serialize(i < DefaultVisibleVersions);
 
                                 <tr class="@(version.Selected ? "bg-info" : "")" x-show="showAll || @alwaysShow">
-                                    <td><a asp-page="Package" asp-route-version="@version.Version">@version.Version</a></td>
+                                    <td><a asp-page="Package" asp-route-version="@version.Version">@version.Version.ToNormalizedString()</a></td>
                                     <td>@version.Downloads.ToString("N0")</td>
-                                    <td>@version.Date.ToShortDateString()</td>
+                                    <td>@version.LastUpdated.ToShortDateString()</td>
                                 </tr>
                             }
                         </tbody>
                     </table>
 
-                    @if (Package.Versions.Length > DefaultVisibleVersions)
+                    @if (Model.Versions.Count > DefaultVisibleVersions)
                     {
                         <button type="button" class="link-button" @@click="showAll = !showAll">
                             <i class="ms-Icon" x-bind:class="{ 'ms-Icon--CalculatorAddition': !showAll, 'ms-Icon--CalculatorSubtract': showAll }"></i>
@@ -192,39 +143,36 @@ else
                 <ul class="list-unstyled ms-Icon-ul">
                     <li>
                         <i class="ms-Icon ms-Icon--History"></i>
-                        Last updated @Package.UpdatedAt.Humanize()
+                        Last updated @Model.LastUpdated.Humanize()
                     </li>
 
-                    @if (true)@* TODO: Has project URL*@
+                    @if (Model.Package.ProjectUrlString != null)
                     {
                         <li>
                             <i class="ms-Icon ms-Icon--Globe"></i>
-                            <a href="#">Project URL</a>
+                            <a href="@Model.Package.ProjectUrlString">Project URL</a>
                         </li>
                     }
 
-                    @if (true)@* TODO: Has repository URL*@
+                    @if (Model.Package.RepositoryUrlString != null)
                     {
                         <li>
                             <img class="icon" aria-hidden="true" alt="GitHub logo" src="@Url.Content("~/_content/BaGet.Web/images/github-32x32.png")" />
-                            <a href="#">Source code</a>
+                            <a href="@Model.Package.RepositoryUrlString">Source code</a>
                         </li>
                     }
 
-                    @if (true)@* TODO: Has licnese URL*@
+                    @if (Model.LicenseUrl != null)
                     {
                         <li>
                             <i class="ms-Icon ms-Icon--Certificate"></i>
-                            <a href="#">License</a>
+                            <a href="@Model.LicenseUrl">License</a>
                         </li>
                     }
 
-                    @* TODO: Source repository *@
-                    @* TODO: License *@
-
                     <li>
                         <i class="ms-Icon ms-Icon--CloudDownload"></i>
-                        <a href="#">Download package</a>
+                        <a href="@Model.PackageDownloadUrl">Download package</a>
                     </li>
                 </ul>
             </div>
@@ -235,45 +183,58 @@ else
                 <ul class="list-unstyled ms-Icon-ul">
                     <li>
                         <i class="ms-Icon ms-Icon--Download"></i>
-                        @Package.TotalDownloads.ToString("N0") total downloads
+                        @Model.TotalDownloads.ToString("N0") total downloads
                     </li>
 
                     <li>
                         <i class="ms-Icon ms-Icon--Giftbox"></i>
-                        @Package.Versions[0].Downloads.ToString("N0") downloads of current version
+                        @Model.Package.Downloads.ToString("N0") downloads of current version
                     </li>
                 </ul>
             </div>
 
-            <div>
-                <h2>Authors</h2>
+            @if (Model.Package.Authors.Any())
+            {
+                <div>
+                    <h2>Authors</h2>
 
-                <p>Author 1, author 2</p>
-            </div>
+                    <p>@string.Join(", ", Model.Package.Authors)</p>
+                </div>
+            }
         </aside>
     </div>
 }
 
-<script type="text/javascript">
-    let tabs = [
-        // TODO: ALL TABS FOR ALL PACKAGE TYPES
-        @if (Package.IsDependency)
-        {
-            <text>
+@if (Model.Found)
+{
+    <script type="text/javascript">
+        let tabs = [
+            @if (Model.IsDotnetTemplate)
             {
-                name: ".NET CLI",
-                prefix: ">",
-                content: ["dotnet add package @Package.Id --version @Package.Version"],
-            },
-            {
-                name: "PackageReference",
-                prefix: "",
-                content: ["<PackageReference Include=\"@Package.Id\" Version=\"@Package.Version\">"]
+                // TODO
             }
-            </text>
-        }
-    ];
-</script>
+            else if (Model.IsDotnetTool)
+            {
+                // TODO
+            }
+            else
+            {
+                <text>
+                {
+                    name: ".NET CLI",
+                    prefix: ">",
+                    content: ["dotnet add package @Model.Package.Id --version @Model.Package.NormalizedVersionString"],
+                },
+                {
+                    name: "PackageReference",
+                    prefix: "",
+                    content: ["<PackageReference Include=\"@Model.Package.Id\" Version=\"@Model.Package.NormalizedVersionString\">"]
+                }
+                </text>
+            }
+        ];
+    </script>
+}
 
 @functions {
 
