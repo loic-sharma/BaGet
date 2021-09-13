@@ -11,6 +11,7 @@ namespace BaGet.Web.Tests
 {
     public class PackageModelFacts
     {
+        private readonly Mock<IPackageContentService> _content;
         private readonly Mock<IMirrorService> _mirror;
         private readonly Mock<IUrlGenerator> _url;
         private readonly PackageModel _target;
@@ -19,10 +20,12 @@ namespace BaGet.Web.Tests
 
         public PackageModelFacts()
         {
+            _content = new Mock<IPackageContentService>();
             _mirror = new Mock<IMirrorService>();
             _url = new Mock<IUrlGenerator>();
             _target = new PackageModel(
                 _mirror.Object,
+                _content.Object,
                 _url.Object);
         }
 

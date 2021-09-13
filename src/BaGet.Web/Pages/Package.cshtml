@@ -60,7 +60,21 @@ else
                 </div>
             </div>
 
-            <div class="package-description">@Model.Package.Description</div>
+            @{
+                ExpandableSection(
+                    "Readme",
+                    expanded: false,
+                    @<div>
+                        @if (Model.Readme == null)
+                        {
+                            <div class="package-description">@Model.Package.Description</div>
+                        }
+                        else
+                        {
+                            <div class="package-readme">@Model.Readme</div>
+                        }
+                    </div>);
+            }
 
             @{ ExpandableSection(
                 "Dependencies",

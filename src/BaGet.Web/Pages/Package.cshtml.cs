@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core;
+using Markdig;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using NuGet.Frameworks;
 using NuGet.Versioning;
@@ -12,14 +15,26 @@ namespace BaGet.Web
 {
     public class PackageModel : PageModel
     {
+        private static readonly MarkdownPipeline MarkdownPipeline;
+
         private readonly IMirrorService _mirror;
+        private readonly IPackageContentService _content;
         private readonly IUrlGenerator _url;
+
+        static PackageModel()
+        {
+            MarkdownPipeline = new MarkdownPipelineBuilder()
+                .UseAdvancedExtensions()
+                .Build();
+        }
 
         public PackageModel(
             IMirrorService mirror,
+            IPackageContentService content,
             IUrlGenerator url)
         {
             _mirror = mirror ?? throw new ArgumentNullException(nameof(mirror));
+            _content = content ?? throw new ArgumentNullException(nameof(content));
             _url = url ?? throw new ArgumentNullException(nameof(url));
         }
 
@@ -27,12 +42,15 @@ namespace BaGet.Web
 
         public Package Package { get; private set; }
 
-        public IReadOnlyList<DependencyGroupModel> DependencyGroups { get; private set; }
         public bool IsDotnetTemplate { get; private set; }
         public bool IsDotnetTool { get; private set; }
         public DateTime LastUpdated { get; private set; }
         public long TotalDownloads { get; private set; }
+
+        public IReadOnlyList<DependencyGroupModel> DependencyGroups { get; private set; }
         public IReadOnlyList<VersionModel> Versions { get; private set; }
+
+        public HtmlString Readme { get; private set; }
 
         public string IconUrl { get; private set; }
         public string LicenseUrl { get; private set; }
@@ -65,12 +83,18 @@ namespace BaGet.Web
             var packageVersion = Package.Version;
 
             Found = true;
-            DependencyGroups = ToDependencyGroups(Package);
             IsDotnetTemplate = Package.PackageTypes.Any(t => t.Name.Equals("Template", StringComparison.OrdinalIgnoreCase));
             IsDotnetTool = Package.PackageTypes.Any(t => t.Name.Equals("DotnetTool", StringComparison.OrdinalIgnoreCase));
             LastUpdated = packages.Max(p => p.Published);
             TotalDownloads = packages.Sum(p => p.Downloads);
+
+            DependencyGroups = ToDependencyGroups(Package);
             Versions = ToVersions(listedPackages, packageVersion);
+
+            if (Package.HasReadme)
+            {
+                Readme = await GetReadmeHtmlStringOrNullAsync(Package.Id, packageVersion, cancellationToken);
+            }
 
             IconUrl = Package.HasEmbeddedIcon
                 ? _url.GetPackageIconDownloadUrl(Package.Id, packageVersion)
@@ -159,6 +183,26 @@ namespace BaGet.Web
                 })
                 .OrderByDescending(m => m.Version)
                 .ToList();
+        }
+
+        private async Task<HtmlString> GetReadmeHtmlStringOrNullAsync(
+            string packageId,
+            NuGetVersion packageVersion,
+            CancellationToken cancellationToken)
+        {
+            string readme;
+            using (var readmeStream = await _content.GetPackageReadmeStreamOrNullAsync(packageId, packageVersion, cancellationToken))
+            {
+                if (readmeStream == null) return null;
+
+                using (var reader = new StreamReader(readmeStream))
+                {
+                    readme = await reader.ReadToEndAsync();
+                }
+            }
+
+            var readmeHtml = Markdown.ToHtml(readme, MarkdownPipeline);
+            return new HtmlString(readmeHtml);
         }
 
         public class DependencyGroupModel
