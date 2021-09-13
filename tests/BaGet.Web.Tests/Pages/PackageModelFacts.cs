@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core;
 using Moq;
+using NuGet.Versioning;
 using Xunit;
 
 namespace BaGet.Web.Tests
@@ -261,9 +263,46 @@ namespace BaGet.Web.Tests
             Assert.Equal(now, _target.LastUpdated);
         }
 
+        [Fact]
+        public async Task RendersReadme()
+        {
+            using (var readmeStream = new MemoryStream())
+            {
+                using (var streamWriter = new StreamWriter(readmeStream, leaveOpen: true))
+                {
+                    await streamWriter.WriteLineAsync("# My readme");
+                    await streamWriter.WriteLineAsync("Hello world!");
+                    await streamWriter.FlushAsync();
+                }
+
+                readmeStream.Position = 0;
+
+                _mirror
+                    .Setup(m => m.FindPackagesAsync("testpackage", _cancellation))
+                    .ReturnsAsync(new List<Package>
+                    {
+                        CreatePackage("1.0.0", hasReadme: true),
+                    });
+
+                _content
+                    .Setup(c => c.GetPackageReadmeStreamOrNullAsync(
+                        "testpackage",
+                        It.Is<NuGetVersion>(v => v.OriginalVersion == "1.0.0"),
+                        _cancellation))
+                    .ReturnsAsync(readmeStream);
+
+                await _target.OnGetAsync("testpackage", "1.0.0", _cancellation);
+
+                Assert.Equal(
+                    "<h1 id=\"my-readme\">My readme</h1>\n<p>Hello world!</p>\n",
+                    _target.Readme.Value);
+            }
+        }
+
         private Package CreatePackage(
             string version,
             long downloads = 0,
+            bool hasReadme = false,
             bool listed = true,
             DateTime? published = null,
             IEnumerable<PackageDependency> dependencies = null,
@@ -277,6 +316,7 @@ namespace BaGet.Web.Tests
             {
                 Id = "testpackage",
                 Downloads = downloads,
+                HasReadme = hasReadme,
                 Listed = listed,
                 NormalizedVersionString = version,
                 Published = published.Value,
