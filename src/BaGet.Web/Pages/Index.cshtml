@@ -106,7 +106,7 @@ else
     {
         <div class="row search-result">
             <div class="col-sm-1 hidden-xs hidden-sm">
-                <img src="@IconLink(package)"
+                <img src="@package.IconUrl"
                      class="package-icon img-responsive"
                      onerror="this.src='@Url.Content("~/_content/BaGet.Web/images/default-package-icon-256x256.png")'"
                      alt="The package icon" />
@@ -234,16 +234,5 @@ else
             framework,
             prerelease,
         });
-    }
-
-    private string IconLink(SearchResult package)
-    {
-        return Url.RouteUrl(
-            Routes.PackageDownloadIconRouteName,
-            new
-            {
-                id = package.PackageId,
-                version = package.Version
-            });
     }
 }
