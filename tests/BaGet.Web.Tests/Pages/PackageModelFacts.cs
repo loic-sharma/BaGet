@@ -15,6 +15,7 @@ namespace BaGet.Web.Tests
     {
         private readonly Mock<IPackageContentService> _content;
         private readonly Mock<IMirrorService> _mirror;
+        private readonly Mock<ISearchService> _search;
         private readonly Mock<IUrlGenerator> _url;
         private readonly PackageModel _target;
 
@@ -24,11 +25,17 @@ namespace BaGet.Web.Tests
         {
             _content = new Mock<IPackageContentService>();
             _mirror = new Mock<IMirrorService>();
+            _search = new Mock<ISearchService>();
             _url = new Mock<IUrlGenerator>();
             _target = new PackageModel(
                 _mirror.Object,
                 _content.Object,
+                _search.Object,
                 _url.Object);
+
+            _search
+                .Setup(s => s.FindDependentsAsync("testpackage", _cancellation))
+                .ReturnsAsync(new DependentsResponse());
         }
 
         [Fact]
@@ -161,6 +168,34 @@ namespace BaGet.Web.Tests
             Assert.True(_target.Found);
             Assert.Equal(expectDotnetTemplate, _target.IsDotnetTemplate);
             Assert.Equal(expectDotnetTool, _target.IsDotnetTool);
+        }
+
+        [Fact]
+        public async Task FindsDependentPackages()
+        {
+            _mirror
+                .Setup(m => m.FindPackagesAsync("testpackage", _cancellation))
+                .ReturnsAsync(new List<Package>
+                {
+                    CreatePackage("1.0.0")
+                });
+
+            _search
+                .Setup(s => s.FindDependentsAsync("testpackage", _cancellation))
+                .ReturnsAsync(new DependentsResponse
+                {
+                    Data = new List<DependentResult>
+                    {
+                        new DependentResult  { Id = "Used by 1" },
+                        new DependentResult  { Id = "Used by 2" },
+                    }
+                });
+
+            await _target.OnGetAsync("testpackage", "1.0.0", _cancellation);
+
+            Assert.Equal(2, _target.UsedBy.Count);
+            Assert.Equal("Used by 1", _target.UsedBy[0].Id);
+            Assert.Equal("Used by 2", _target.UsedBy[1].Id);
         }
 
         [Fact]

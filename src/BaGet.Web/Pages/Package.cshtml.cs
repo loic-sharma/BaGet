@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,6 +19,7 @@ namespace BaGet.Web
 
         private readonly IMirrorService _mirror;
         private readonly IPackageContentService _content;
+        private readonly ISearchService _search;
         private readonly IUrlGenerator _url;
 
         static PackageModel()
@@ -31,10 +32,12 @@ namespace BaGet.Web
         public PackageModel(
             IMirrorService mirror,
             IPackageContentService content,
+            ISearchService search,
             IUrlGenerator url)
         {
             _mirror = mirror ?? throw new ArgumentNullException(nameof(mirror));
             _content = content ?? throw new ArgumentNullException(nameof(content));
+            _search = search ?? throw new ArgumentNullException(nameof(search));
             _url = url ?? throw new ArgumentNullException(nameof(url));
         }
 
@@ -47,6 +50,7 @@ namespace BaGet.Web
         public DateTime LastUpdated { get; private set; }
         public long TotalDownloads { get; private set; }
 
+        public IReadOnlyList<DependentResult> UsedBy { get; set; }
         public IReadOnlyList<DependencyGroupModel> DependencyGroups { get; private set; }
         public IReadOnlyList<VersionModel> Versions { get; private set; }
 
@@ -88,6 +92,9 @@ namespace BaGet.Web
             LastUpdated = packages.Max(p => p.Published);
             TotalDownloads = packages.Sum(p => p.Downloads);
 
+            var dependents = await _search.FindDependentsAsync(Package.Id, cancellationToken);
+
+            UsedBy = dependents.Data;
             DependencyGroups = ToDependencyGroups(Package);
             Versions = ToVersions(listedPackages, packageVersion);
 

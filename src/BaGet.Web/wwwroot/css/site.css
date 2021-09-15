@@ -389,6 +389,26 @@ h4 {
     margin-right: 5px;
 }
 
+.display-package .package-used-by td, .display-package .package-used-by th {
+  padding: 8px 8px 8px 15px;
+}
+
+.display-package .package-used-by thead tr {
+  border-bottom: 2px solid #d3d3d3;
+}
+
+.display-package .package-used-by tbody tr {
+  border-bottom: 1px solid #d3d3d3;
+}
+
+.display-package .package-used-by td div {
+  margin-top: 4px;
+}
+
+.display-package .package-used-by td span {
+  margin-left: 3px;
+}
+
 .dependency-groups h4 {
     line-height: 1.4;
 }
