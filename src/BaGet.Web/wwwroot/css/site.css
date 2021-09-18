@@ -1,0 +1,429 @@
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+/* Layout
+-------------------------------------------------- */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: inherit;
+    font-weight: 100;
+    line-height: 1.1;
+    color: inherit;
+}
+
+h1, h2, h3, p {
+    margin-bottom: 24px;
+}
+
+h1 {
+    margin-top: 15px;
+}
+
+h2, h3 {
+    margin-top: 40px;
+}
+
+h4 {
+    margin-top: 11px;
+    margin-bottom: 11px;
+    font-size: 20px;
+}
+
+.img-responsive {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+.ms-Icon-ul {
+    margin-left: 24px;
+}
+
+.ms-Icon-ul li {
+    position: relative;
+}
+
+.ms-Icon-ul li i.ms-Icon {
+    position: absolute;
+    left: -24px;
+}
+
+.alert {
+    padding: 8px 8px;
+    border: 1px solid transparent;
+    border-radius: 0;
+}
+
+.alert-warning {
+    color: #000;
+    background-color: #fff4ce;
+    border-color: #fff4ce;
+}
+
+/* Navigation
+-------------------------------------------------- */
+#navbar ul {
+    margin-left: -15px;
+}
+
+.navbar-inverse {
+    background-color: #004880;
+    border-color: #002b4d;
+}
+
+.navbar {
+    border-radius: 0;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    font-weight: 100;
+    color: #e3ebf1;
+}
+
+.navbar-nav > li > a {
+    line-height: 22px;
+}
+
+.navbar-inverse .navbar-nav a.active {
+    color: #e3ebf1;
+}
+
+.navbar-inverse .navbar-nav a.active,
+.navbar-inverse .navbar-nav a.active:hover,
+.navbar-inverse .navbar-nav a.active:focus {
+    background-color: transparent;
+}
+
+.navbar-inverse .navbar-nav > .active > a:hover {
+    color: #fff;
+}
+
+.navbar-inverse .navbar-nav a.active span {
+    padding: 5px 0;
+    border-bottom: 1px solid #fff;
+}
+
+.nav > li {
+    position: relative;
+    display: block;
+}
+
+.nav > li > a {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+}
+
+.search-container {
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+
+.search-container .form-control {
+    border-radius: 0;
+}
+
+.search-container button {
+  height: 34px;
+  color: #fff;
+  background-color: #d87e00;
+  border-color: #bf6f00;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.search-container button:active,
+.search-container button:active:focus,
+.search-container button:active:hover,
+.search-container button:focus,
+.search-container button:hover {
+  background-color: #a56000;
+  border-color: #814b00;
+}
+
+.link-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline;
+    margin: 0;
+    padding: 0;
+    color: #337ab7;
+}
+
+.link-button:hover,
+.link-button:focus {
+    outline: none;
+    text-decoration: underline;
+    color: #23527c;
+}
+
+/* Index page
+-------------------------------------------------- */
+.search-options {
+    margin-bottom: 20px;
+}
+
+.search-options span.ms-Checkbox-text {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.search-options .form-group {
+    margin-right: 10px;
+}
+
+.search-options select, .search-options #prerelease {
+    margin-left: 10px;
+}
+
+.search-dropdown {
+    margin-left: 5px;
+    display: inline-block;
+    width: auto;
+    vertical-align: middle;
+}
+
+.search-result {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.search-result .package-title {
+    font-size: 24px;
+    font-weight: 300;
+    line-height: .9;
+    margin-right: 5px;
+}
+
+.search-result .info {
+    padding-left: 0;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    margin-left: -5px;
+    line-height: 20px;
+    color: #666;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.search-result .info span:not(:first-child) {
+    padding-left: 10px;
+}
+
+.search-result .info li {
+    display: inline;
+}
+
+.search-result .info li + li {
+    padding-left: 10px;
+    margin-left: 10px;
+    border-color: #dbdbdb;
+    border-width: 1px;
+    border-left-style: solid;
+}
+
+.search-result .ms-Icon {
+    position: relative;
+    top: 2px;
+    margin-right: 2px;
+}
+
+.search-result .tags {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Tabbed instructions, used on upload and package page
+-------------------------------------------------- */
+.tabbed-info {
+    font-size: 0.8em;
+    margin-top: 15px;
+}
+
+.tabbed-info ul {
+    margin-left: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    list-style: none;
+    border: 0;
+    width: 750px;
+}
+
+.tabbed-info li {
+    padding: 0;
+    margin-right: 5px;
+    margin-bottom: 0;
+    float: left;
+    position: relative;
+    display: block;
+}
+
+.tabbed-info li a {
+    padding: 5px 10px;
+    margin: 0;
+    color: #000;
+    background-color: #eaeaea;
+    border: 0;
+    position: relative;
+    display: block;
+    text-decoration: none;
+}
+
+.tabbed-info li.active a {
+    font-weight: 600;
+    color: #fff;
+    text-decoration: underline;
+    background-color: #002440;
+}
+
+.tabbed-info .content {
+    display: table;
+    height: 1px;
+}
+
+.tabbed-info .content .script {
+    display: table-cell;
+    width: 100%;
+    max-width: 1px;
+    padding: 0 10px 8px 10px;
+    font-family: Consolas, Menlo, Monaco, "Courier New", monospace;
+    line-height: 1.5;
+    color: #fff;
+    background-color: #002440;
+    border-color: #002440;
+    border-style: solid;
+    border-width: 1px 0 1px 1px;
+}
+
+.tabbed-info .content .script .script-line:before {
+    content: "> ";
+}
+
+.tabbed-info .content .copy-button {
+    display: table-cell;
+}
+
+.tabbed-info .content .copy-button button {
+    height: 100%;
+    min-height: 42px;
+    vertical-align: baseline;
+    border-radius: 0px;
+}
+
+/* Package page
+-------------------------------------------------- */
+.display-package .package-icon {
+    margin-top: 15px;
+}
+
+@media screen and (max-width: 768px) {
+  .display-package .package-icon img {
+    margin-left: auto;
+    margin-right: auto;
+    max-height: 60px;
+    max-width: 60px;
+  }
+}
+
+.display-package .package-title {
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.display-package h1 small {
+    margin-left: 10px;
+    font-size: 45%;
+}
+
+.display-package .tabbed-info {
+    margin-bottom: 20px;
+}
+
+.display-package .package-description {
+    white-space: pre-wrap;
+}
+
+.display-package .package-readme img {
+    max-width: 100%;
+}
+
+.display-package .package-release-notes {
+    white-space: pre-wrap;
+}
+
+.package-details-info {
+    margin-top: -25px;
+}
+
+.package-details-info .ms-Icon-ul li {
+    margin-bottom: 15px;
+}
+
+.package-details-info .icon {
+  position: absolute;
+  left: -24px;
+  width: 16px;
+  height: 16px;
+  margin-top: 3px;
+}
+
+.display-package .expandable-section h2 button {
+    color: #000;
+    text-decoration: none;
+}
+
+.display-package .expandable-section h2 .ms-Icon {
+    font-size: 0.6em;
+    position: relative;
+    top: -2px;
+    margin-right: 5px;
+}
+
+.display-package .package-used-by td, .display-package .package-used-by th {
+  padding: 8px 8px 8px 15px;
+}
+
+.display-package .package-used-by thead tr {
+  border-bottom: 2px solid #d3d3d3;
+}
+
+.display-package .package-used-by tbody tr {
+  border-bottom: 1px solid #d3d3d3;
+}
+
+.display-package .package-used-by td div {
+  margin-top: 4px;
+}
+
+.display-package .package-used-by td span {
+  margin-left: 3px;
+}
+
+.dependency-groups h4 {
+    line-height: 1.4;
+}
+
+.dependency-groups h4 > span {
+    border-bottom: 1px solid #d8d8d8;
+    margin-bottom: 3px;
+}
+
+.dependency-group li span {
+    color: #666;
+}
+
+.display-package .version-list .ms-Icon {
+    position: relative;
+    top: 2px;
+    margin-right: 5px;
+}

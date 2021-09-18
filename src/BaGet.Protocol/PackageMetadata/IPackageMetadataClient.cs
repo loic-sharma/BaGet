@@ -1,13 +1,12 @@
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Protocol.Models;
-using NuGet.Versioning;
 
 namespace BaGet.Protocol
 {
     /// <summary>
     /// The Package Metadata client, used to fetch packages' metadata.
-    /// 
+    ///
     /// See https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
     /// </summary>
     public interface IPackageMetadataClient

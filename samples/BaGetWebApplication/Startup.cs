@@ -1,8 +1,6 @@
 using BaGet;
-using BaGet.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -27,24 +25,15 @@ namespace BaGetWebApplication
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
             {
                 // Add BaGet's endpoints.
-                var api = new BaGetApi();
+                var baget = new BaGetEndpointBuilder();
 
-                api.MapRoutes(endpoints);
-
-                // Add a "welcome" endpoint to help you find the package source.
-                // This is optional, you can remove this endpoint if you'd like.
-                endpoints.MapGet("/", async context =>
-                {
-                    var url = context.RequestServices.GetRequiredService<IUrlGenerator>();
-                    var packageSource = url.GetServiceIndexUrl();
-
-                    await context.Response.WriteAsync($"Package source URL: '{packageSource}'");
-                });
+                baget.MapEndpoints(endpoints);
             });
         }
     }

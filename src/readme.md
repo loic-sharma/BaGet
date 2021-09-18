@@ -4,9 +4,8 @@ These folders contain the core components of BaGet:
 
 * `BaGet` - The app's entry point that glues everything together.
 * `BaGet.Core` - BaGet's core logic and services.
-* `BaGet.Hosting` - The services that implement [the NuGet server APIs](https://docs.microsoft.com/en-us/nuget/api/overview) using `BaGet.Core`.
+* `BaGet.Web` - The [NuGet server APIs](https://docs.microsoft.com/en-us/nuget/api/overview) and web UI.
 * `BaGet.Protocol` - Libraries to interact with [NuGet servers' APIs](https://docs.microsoft.com/en-us/nuget/api/overview).
-* `BaGet.UI` - BaGet's React frontend.
 
 These folders contain database-specific components of BaGet:
 

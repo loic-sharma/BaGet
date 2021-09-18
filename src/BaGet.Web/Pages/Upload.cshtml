@@ -1,0 +1,88 @@
+﻿@page
+@inject IUrlGenerator _url
+
+@{
+    ViewData["Title"] = "Upload package";
+
+    var baseUrl = Url.PageLink("/Index");
+    var publishUrl = _url.GetPackagePublishResourceUrl();
+    var serviceIndexUrl = _url.GetServiceIndexUrl();
+}
+
+<div class="col-sm-12">
+    <h1>Upload</h1>
+    <hr class="breadcrumb-divider" />
+
+    <div>You can push packages using the service index <code>@serviceIndexUrl</code>.</div>
+
+    <div class="tabbed-info" x-data="{ tabs: tabs, active: tabs[0] }">
+        <ul class="nav">
+            <template x-for="tab in tabs" :key="tab.name">
+                <li x-bind:class="{ 'active': active.name === tab.name }">
+                    <a href="#" x-text="tab.name" @@click="active = tab"></a>
+                </li>
+            </template>
+        </ul>
+
+        <div class="content">
+            <div class="script">
+                <template x-for="line in active.content">
+                    <div class="script-line" x-text="line"></div>
+                </template>
+            </div>
+
+            <div class="copy-button">
+                <button class="btn btn-default btn-warning"
+                        type="button"
+                        data-tottle="popover"
+                        data-placement="bottom"
+                        data-content="Copied"
+                        @@click="window.baget.copyTextToClipboard(active.content.join('\n'), $el)">
+                    <i class="ms-Icon ms-Icon--Copy"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="icon-text alert alert-warning">
+            For more information, please refer to
+            <a target="_blank"
+               rel="noopener noreferrer"
+               x-bind:href="active.documentation"
+               x-text="`${active.name}'s documentation`">
+            </a>.
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    let tabs = [
+        {
+            name: ".NET CLI",
+            content: ["dotnet nuget push -s @serviceIndexUrl package.nupkg"],
+            documentation: "https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-nuget-push",
+        },
+
+        {
+            name: "NuGet",
+            content: ["nuget push -Source @serviceIndexUrl package.nupkg"],
+            documentation: "https://docs.microsoft.com/en-us/nuget/tools/cli-ref-push",
+        },
+
+        {
+            name: "Paket",
+            content: ["paket push --url @baseUrl package.nupkg"],
+            documentation: "https://fsprojects.github.io/Paket/paket-push.html",
+        },
+
+        // TODO: This is broken...
+        {
+            name: "PowerShellGet",
+            content: [
+                "Register-PSRepository -Name \"BaGet\" -SourceLocation \"@serviceIndexUrl\" "
+                  + "-PublishLocation \"@publishUrl\" -InstallationPolicy \"Trusted\"",
+                "Publish-Module -Name PS-Module -Repository BaGet"
+            ],
+            documentation: "https://docs.microsoft.com/en-us/powershell/module/powershellget/publish-module",
+        },
+    ];
+</script>

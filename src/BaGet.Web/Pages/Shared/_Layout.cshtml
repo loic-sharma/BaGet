@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="BaGet">
+    <meta name="author" content="Loic Sharma">
+
+    <link rel="shortcut icon" href="~/_content/BaGet.Web/favicon.ico">
+
+    <link rel="stylesheet" href="~/_content/BaGet.Web/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/_content/BaGet.Web/lib/office-ui-fabric-core/dist/css/fabric.min.css" />
+    <link rel="stylesheet" href="~/_content/BaGet.Web/css/site.css" />
+
+    <title>@ViewData["Title"] - BaGet</title>
+</head>
+<body>
+    <header>
+
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container">
+                <div class="row">
+                    <div id="navbar" class="col-sm-12">
+                        <ul class="nav navbar-nav" role="tablist">
+                            <li role="presentation"><a asp-area="" asp-page="/Index" role="tab" nav-link><span>Packages</span></a></li>
+                            <li role="presentation"><a asp-area="" asp-page="/Upload" role="tab" nav-link><span>Upload</span></a></li>
+                            <li role="presentation">
+                                <a role="tab" href="https://loic-sharma.github.io/BaGet/" target="_blank" rel="noopener noreferrer">
+                                    <span>Documentation</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="container search-container">
+                <div class="row">
+                    <form class="col-sm-12" action="@Url.Page("/Index")" method="get">
+                        <div class="input-group">
+                            <input type="text"
+                                   name="q"
+                                   value="@ViewData["SearchQuery"]"
+                                   class="form-control"
+                                   autoComplete="off"
+                                   placeholder="Search packages..." />
+
+                            <span class="input-group-btn">
+                                <button type="submit"
+                                        class="btn btn-default"
+                                        title="Search for packages">
+                                    <span class="ms-Icon ms-Icon--Search" aria-hidden="true"></span>
+                                </button>
+                            </span>
+                        </div>
+
+                        @await RenderSectionAsync("SearchForm", required: false)
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section role="main" class="container main-container">
+        @RenderBody()
+    </section>
+
+    <script src="~/_content/BaGet.Web/lib/alpinejs/dist/alpine.js"></script>
+
+    <script src="~/_content/BaGet.Web/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/_content/BaGet.Web/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/_content/BaGet.Web/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

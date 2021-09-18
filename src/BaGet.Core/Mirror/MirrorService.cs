@@ -11,8 +11,6 @@ using NuGet.Versioning;
 
 namespace BaGet.Core
 {
-    using PackageIdentity = NuGet.Packaging.Core.PackageIdentity;
-
     public class MirrorService : IMirrorService
     {
         private readonly IPackageService _localPackages;

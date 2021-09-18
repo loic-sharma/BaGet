@@ -1,0 +1,264 @@
+@page
+@using BaGet.Protocol.Models
+@model IndexModel
+
+@{
+    ViewData["Title"] = "Packages";
+    ViewData["SearchQuery"] = Model.Query;
+}
+
+@section SearchForm
+{
+    @* The search query is in a form in the header. The search filters are bindings on this Razor page.
+    @* Pass the Razor bindings back up to the header's search form. *@
+    @if (Model.PackageType != "any")
+    {
+        <input type="hidden" name="packageType" value="@Model.PackageType" />
+    }
+
+    @if (Model.Framework != "any")
+    {
+        <input type="hidden" name="framework" value="@Model.Framework" />
+    }
+
+    @if (Model.Prerelease != true)
+    {
+        <input type="hidden" name="prerelease" value="False" />
+    }
+}
+
+<div class="search-options form-inline">
+    <div class="form-group">
+        <label>Package type:</label>
+
+        <div class="search-dropdown">
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="package-type" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    @PackageTypes.GetValueOrDefault(Model.PackageType, "Other")
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="package-type">
+                    @foreach (var packageType in PackageTypes)
+                    {
+                        <li><a href="@SearchLink(packageType: packageType.Key, page: 1)">@packageType.Value</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Framework:</label>
+
+        <div class="search-dropdown">
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="framework" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    @TargetFrameworks.GetValueOrDefault(Model.Framework, "Other")
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="framework">
+                    @foreach (var framework in TargetFrameworks)
+                    {
+                        @if (framework.Key.StartsWith("divider"))
+                        {
+                            <li role="separator" class="divider"></li>
+                        }
+                        else if (framework.Key.StartsWith("header"))
+                        {
+                            <li class="dropdown-header">@framework.Value</li>
+                        }
+                        else
+                        {
+                            <li><a href="@SearchLink(framework: framework.Key, page: 1)">@framework.Value</a></li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group form-check">
+        <label for="prerelease">Include prerelease:</label>
+
+        <input
+            type="checkbox"
+            id="prerelease"
+            @(Model.Prerelease ? "checked='checked'" : "")
+            onclick="window.location.href='@SearchLink(prerelease: !Model.Prerelease, page: 1)'" />
+    </div>
+</div>
+
+@if (Model.Packages.Count == 0)
+{
+    <div>
+        <h2>Oops, nothing here...</h2>
+        <p>
+            It looks like there's no package here to see. Take a look below for useful links.
+        </p>
+        <p><a asp-page="/Upload">Upload a package</a></p>
+        <p><a href="https://loic-sharma.github.io/BaGet/" target="_blank" rel="noopener noreferrer">BaGet documentation</a></p>
+        <p><a href="https://github.com/loic-sharma/BaGet/issues" target="_blank" rel="noopener noreferrer">BaGet issues</a></p>
+    </div>
+}
+else
+{
+    @foreach (var package in Model.Packages)
+    {
+        <div class="row search-result">
+            <div class="col-sm-1 hidden-xs hidden-sm">
+                <img src="@package.IconUrl"
+                     class="package-icon img-responsive"
+                     onerror="this.src='@Url.Content("~/_content/BaGet.Web/images/default-package-icon-256x256.png")'"
+                     alt="The package icon" />
+            </div>
+            <div class="col-sm-11">
+                <div>
+                    <a asp-page="Package"
+                       asp-route-id="@package.PackageId"
+                       asp-route-version="@package.Version"
+                       class="package-title">
+                        @package.PackageId
+                    </a>
+                    <span>by: @string.Join(" ", package.Authors)</span>
+                </div>
+                <ul class="info">
+                    <li>
+                        <span>
+                            <i class="ms-Icon ms-Icon--Download"></i>
+                            @package.TotalDownloads.ToMetric() total downloads
+                        </span>
+                    </li>
+                    <li>
+                        <span>
+                            <i class="ms-Icon ms-Icon--Flag"></i>
+                            Latest version: @package.Version
+                        </span>
+                    </li>
+                    @if (package.Tags.Any())
+                    {
+                        <li>
+                            <span class="tags">
+                                <i class="ms-Icon ms-Icon--Tag"></i>
+                                @string.Join(" ", package.Tags)
+                            </span>
+                        </li>
+                    }
+                </ul>
+                <div>
+                    @package.Description
+                </div>
+            </div>
+        </div>
+    }
+
+    var showPreviousLink = Model.PageIndex > 1;
+    var showNextLink = Model.Packages.Count >= IndexModel.ResultsPerPage;
+
+    if (showPreviousLink || showNextLink)
+    {
+        <nav aria-label="Search page navigation">
+            <ul class="pager">
+                @if (showPreviousLink)
+                {
+                    <li><a href="@SearchLink(page:Model.PageIndex - 1)">Previous</a></li>
+                }
+
+                @if (showNextLink)
+                {
+                    <li><a href="@SearchLink(page: Model.PageIndex + 1)">Next</a></li>
+                }
+            </ul>
+        </nav>
+    }
+}
+
+@functions {
+
+    private IReadOnlyDictionary<string, string> PackageTypes { get; } = new Dictionary<string, string>()
+    {
+        { "any", "Any" },
+        { "dependency", "Dependency" },
+        { "dotnettool", ".NET tool" },
+        { "dotnettemplate", ".NET template" },
+    };
+
+    private IReadOnlyDictionary<string, string> TargetFrameworks { get; } = new Dictionary<string, string>()
+    {
+        { "any", "Any" },
+
+        { "divider1", "-" },
+        { "header1", ".NET" },
+
+        { "net5.0", ".NET 5.0" },
+
+        { "divider2", "-" },
+        { "header2", ".NET Standard" },
+
+        { "netstandard2.1", ".NET Standard 2.1" },
+        { "netstandard2.0", ".NET Standard 2.0" },
+        { "netstandard1.6", ".NET Standard 1.6" },
+        { "netstandard1.5", ".NET Standard 1.5" },
+        { "netstandard1.4", ".NET Standard 1.4" },
+        { "netstandard1.3", ".NET Standard 1.3" },
+        { "netstandard1.2", ".NET Standard 1.2" },
+        { "netstandard1.1", ".NET Standard 1.1" },
+        { "netstandard1.0", ".NET Standard 1.0" },
+
+        { "divider3", "-" },
+        { "header3", ".NET Core" },
+
+        { "netcoreapp3.1", ".NET Core 3.1" },
+        { "netcoreapp3.0", ".NET Core 3.0" },
+        { "netcoreapp2.2", ".NET Core 2.2" },
+        { "netcoreapp2.1", ".NET Core 2.1" },
+        { "netcoreapp1.1", ".NET Core 1.1" },
+        { "netcoreapp1.0", ".NET Core 1.0" },
+
+        { "divider4", "-" },
+        { "header4", ".NET Framework" },
+
+        { "net48", ".NET Framework 4.8" },
+        { "net472", ".NET Framework 4.7.2" },
+        { "net471", ".NET Framework 4.7.1" },
+        { "net463", ".NET Framework 4.6.3" },
+        { "net462", ".NET Framework 4.6.2" },
+        { "net461", ".NET Framework 4.6.1" },
+        { "net46", ".NET Framework 4.6" },
+        { "net452", ".NET Framework 4.5.2" },
+        { "net451", ".NET Framework 4.5.1" },
+        { "net45", ".NET Framework 4.5" },
+        { "net403", ".NET Framework 4.0.3" },
+        { "net4", ".NET Framework 4" },
+        { "net35", ".NET Framework 3.5" },
+        { "net2", ".NET Framework 2" },
+        { "net11", ".NET Framework 1.1" },
+    };
+
+    private string SearchLink(
+        string packageType = null,
+        string framework = null,
+        bool? prerelease = null,
+        int? page = null)
+    {
+        // Use model's value if the argument was skipped.
+        packageType = packageType ?? Model.PackageType;
+        framework = framework ?? Model.Framework;
+        prerelease = prerelease ?? Model.Prerelease;
+        page = page ?? Model.PageIndex;
+
+        // Remove query parameters that have default value
+        if (packageType == "any") packageType = null;
+        if (framework == "any") framework = null;
+        if (prerelease == true) prerelease = null;
+        if (page == 1) page = null;
+
+        return Url.Page("Index", new
+        {
+            q = Model.Query,
+            p = page,
+            packageType,
+            framework,
+            prerelease,
+        });
+    }
+}

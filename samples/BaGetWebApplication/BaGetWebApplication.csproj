@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\BaGet.Database.Sqlite\BaGet.Database.Sqlite.csproj" />
-    <ProjectReference Include="..\..\src\BaGet.Hosting\BaGet.Hosting.csproj" />
+    <ProjectReference Include="..\..\src\BaGet.Web\BaGet.Web.csproj" />
   </ItemGroup>
 
 </Project>
