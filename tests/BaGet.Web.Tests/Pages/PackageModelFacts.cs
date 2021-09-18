@@ -124,7 +124,7 @@ namespace BaGet.Web.Tests
         }
 
         [Fact]
-        public async Task FallsbackToLatestListedVersion()
+        public async Task FallsBackToLatestListedVersion()
         {
             _mirror
                 .Setup(m => m.FindPackagesAsync("testpackage", _cancellation))

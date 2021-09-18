@@ -40,7 +40,7 @@
                 <ul class="dropdown-menu" aria-labelledby="package-type">
                     @foreach (var packageType in PackageTypes)
                     {
-                        <li><a href="@SearchLink(packageType: packageType.Key)">@packageType.Value</a></li>
+                        <li><a href="@SearchLink(packageType: packageType.Key, page: 1)">@packageType.Value</a></li>
                     }
                 </ul>
             </div>
@@ -69,7 +69,7 @@
                         }
                         else
                         {
-                            <li><a href="@SearchLink(framework: framework.Key)">@framework.Value</a></li>
+                            <li><a href="@SearchLink(framework: framework.Key, page: 1)">@framework.Value</a></li>
                         }
                     }
                 </ul>
@@ -84,7 +84,7 @@
             type="checkbox"
             id="prerelease"
             @(Model.Prerelease ? "checked='checked'" : "")
-            onclick="window.location.href='@SearchLink(prerelease: !Model.Prerelease)'" />
+            onclick="window.location.href='@SearchLink(prerelease: !Model.Prerelease, page: 1)'" />
     </div>
 </div>
 
@@ -149,6 +149,26 @@ else
                 </div>
             </div>
         </div>
+    }
+
+    var showPreviousLink = Model.PageIndex > 1;
+    var showNextLink = Model.Packages.Count >= IndexModel.ResultsPerPage;
+
+    if (showPreviousLink || showNextLink)
+    {
+        <nav aria-label="Search page navigation">
+            <ul class="pager">
+                @if (showPreviousLink)
+                {
+                    <li><a href="@SearchLink(page:Model.PageIndex - 1)">Previous</a></li>
+                }
+
+                @if (showNextLink)
+                {
+                    <li><a href="@SearchLink(page: Model.PageIndex + 1)">Next</a></li>
+                }
+            </ul>
+        </nav>
     }
 }
 
@@ -215,21 +235,27 @@ else
     };
 
     private string SearchLink(
-        string packageType = null, string framework = null, bool? prerelease = null)
+        string packageType = null,
+        string framework = null,
+        bool? prerelease = null,
+        int? page = null)
     {
         // Use model's value if the argument was skipped.
         packageType = packageType ?? Model.PackageType;
         framework = framework ?? Model.Framework;
         prerelease = prerelease ?? Model.Prerelease;
+        page = page ?? Model.PageIndex;
 
         // Remove query parameters that have default value
         if (packageType == "any") packageType = null;
         if (framework == "any") framework = null;
         if (prerelease == true) prerelease = null;
+        if (page == 1) page = null;
 
         return Url.Page("Index", new
         {
             q = Model.Query,
+            p = page,
             packageType,
             framework,
             prerelease,
