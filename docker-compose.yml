@@ -1,0 +1,58 @@
+version: '3'
+services:
+  api:
+    image: loicsharma/baget
+    container_name: bagetserver
+    hostname: bagetserver
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "21235:80"
+      - "21236:443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Release
+      - ApiKey=y9x5MfH6VD75vpQX
+      - PackageDeletionBehavior=Unlist
+      - AllowPackageOverwrites=true
+      - Storage__Type=FileSystem
+      - Storage__Path=/var/baget/packages
+      # - Database__Type=Sqlite
+      # - Database__ConnectionString=Data Source=/var/baget/baget.db
+      - Database__Type=MySql
+      - Database__ConnectionString=Server=bagetmyslq;Database=db;Uid=user;Pwd=password
+      - Search__Type=Database
+      - Mirror__Enable=true
+      - Mirror__PackageSource="https://api.nuget.org/v3/index.json"
+    volumes: 
+      - /tmp/bagetdata:/var/baget
+    networks:
+      - nuget
+  db:
+    image: mysql:5.7
+    container_name: bagetmyslq
+    hostname: bagetmyslq
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - my-db:/tmp/bagetdata/mysql
+    networks:
+      - nuget
+# Names our volume
+
+volumes:
+  nugetdata:
+    driver: local
+  my-db:
+    driver: local
+networks:
+  nuget:
