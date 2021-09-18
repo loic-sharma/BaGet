@@ -3,8 +3,6 @@ WORKDIR /app
 EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
-RUN apt-get install -y nodejs
 WORKDIR /src
 COPY /src .
 RUN dotnet restore BaGet
