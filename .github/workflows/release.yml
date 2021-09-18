@@ -1,4 +1,4 @@
-name: Release to nuget.org and Docker Hub
+name: Release BaGet
 
 on:
   workflow_dispatch:
@@ -32,9 +32,9 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Pack
-      run: dotnet pack --configuration Release -p:PackageVersion=${{ github.event.inputs.releaseVersion }}
+      run: dotnet pack --configuration Release -p:PackageVersion=${{ github.event.inputs.releaseVersion }} --output artifacts
     - name: Push
-      run: dotnet nuget push **/*.nupkg -s ${{ github.event.inputs.packageSource }} -k ${{secrets.NUGET_API_KEY}}
+      run: dotnet nuget push artifacts/*.nupkg -s ${{ github.event.inputs.packageSource }} -k ${{secrets.NUGET_API_KEY}}
 
   release_docker_image:
     name: Release Docker image to Docker Hub
