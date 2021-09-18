@@ -9,6 +9,7 @@ namespace BaGet.Core
         public string VersionRange { get; set; }
         public string TargetFramework { get; set; }
 
+        public int? PackageKey { get; set; }
         public Package Package { get; set; }
     }
 }
