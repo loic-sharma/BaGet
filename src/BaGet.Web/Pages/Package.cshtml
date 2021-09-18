@@ -76,7 +76,8 @@ else
                     </div>);
             }
 
-            @{
+            @if (!Model.IsDotnetTemplate && !Model.IsDotnetTool)
+            {
                 ExpandableSection("Used By", expanded: false,
                     @<div class="package-used-by">
                         @if (!Model.UsedBy.Any())
