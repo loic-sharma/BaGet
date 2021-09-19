@@ -121,6 +121,7 @@ namespace BaGet.Web
                     {
                         Name = PrettifyTargetFramework(group.Key),
                         Dependencies = group
+                            .Where(d => d.Id != null)
                             .Select(d => new DependencyModel
                             {
                                 PackageId = d.Id,

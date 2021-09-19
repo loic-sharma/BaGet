@@ -139,17 +139,24 @@ else
                             </h4>
 
                             <ul class="list-unstyled dependency-group">
-                                @foreach (var dependency in group.Dependencies)
+                                @if (!group.Dependencies.Any())
                                 {
-                                    <li>
-                                        <a asp-page="Package"
-                                           asp-route-id="@dependency.PackageId"
-                                           asp-route-version="@null">
-                                            @dependency.PackageId
-                                        </a>
+                                    <li>No dependencies.</li>
+                                }
+                                else
+                                {
+                                    @foreach (var dependency in group.Dependencies)
+                                    {
+                                        <li>
+                                            <a asp-page="Package"
+                                               asp-route-id="@dependency.PackageId"
+                                               asp-route-version="@null">
+                                                @dependency.PackageId
+                                            </a>
 
-                                        <span> @dependency.VersionSpec</span>
-                                    </li>
+                                            <span> @dependency.VersionSpec</span>
+                                        </li>
+                                    }
                                 }
                             </ul>
                         }
