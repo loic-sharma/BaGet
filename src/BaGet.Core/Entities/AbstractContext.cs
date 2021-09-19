@@ -68,8 +68,7 @@ namespace BaGet.Core
                 .HasMaxLength(MaxPackageVersionLength);
 
             package.Property(p => p.ReleaseNotes)
-                .HasColumnName("ReleaseNotes")
-                .HasMaxLength(DefaultMaxStringLength);
+                .HasColumnName("ReleaseNotes");
 
             package.Property(p => p.Authors)
                 .HasMaxLength(DefaultMaxStringLength)

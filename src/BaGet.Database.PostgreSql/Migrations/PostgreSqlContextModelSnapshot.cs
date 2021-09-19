@@ -17,7 +17,7 @@ namespace BaGet.Database.PostgreSql.Migrations
             modelBuilder
                 .HasAnnotation("Npgsql:PostgresExtension:citext", ",,")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "3.1.1")
+                .HasAnnotation("ProductVersion", "3.1.18")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("BaGet.Core.Package", b =>
@@ -91,8 +91,7 @@ namespace BaGet.Database.PostgreSql.Migrations
 
                     b.Property<string>("ReleaseNotes")
                         .HasColumnName("ReleaseNotes")
-                        .HasColumnType("character varying(4000)")
-                        .HasMaxLength(4000);
+                        .HasColumnType("text");
 
                     b.Property<string>("RepositoryType")
                         .HasColumnType("character varying(100)")
