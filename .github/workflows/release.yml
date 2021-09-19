@@ -34,7 +34,8 @@ jobs:
     - name: Pack
       run: dotnet pack --configuration Release -p:PackageVersion=${{ github.event.inputs.releaseVersion }} --output artifacts
     - name: Push
-      run: dotnet nuget push artifacts/*.nupkg -s ${{ github.event.inputs.packageSource }} -k ${{secrets.NUGET_API_KEY}}
+      run: dotnet nuget push "*" -s ${{ github.event.inputs.packageSource }} -k ${{secrets.NUGET_API_KEY}}
+      working-directory: artifacts
 
   release_docker_image:
     name: Release Docker image to Docker Hub
