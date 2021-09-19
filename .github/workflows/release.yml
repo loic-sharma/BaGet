@@ -12,32 +12,62 @@ on:
         required: true
         default: 'https://api.nuget.org/v3/index.json'
 
+env:
+  Version: ${{ github.event.inputs.releaseVersion }}
+  PackageVersion: ${{ github.event.inputs.releaseVersion }}
+
 jobs:
+  verify:
+    name: Run tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
+    - name: Test
+      run: dotnet test --verbosity normal
+
+  release_zip:
+    needs: verify
+    name: Release BaGet.zip to GitHub
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
+    - name: Publish
+      run: dotnet publish src/BaGet --configuration Release --output artifacts
+    - name: Upload
+      uses: actions/upload-artifact@v2
+      with:
+        name: BaGet
+        path: artifacts
+
   release_packages:
+    needs: verify
     name: Release packages to nuget.org
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
-
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.x
-
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
     - name: Pack
-      run: dotnet pack --configuration Release -p:PackageVersion=${{ github.event.inputs.releaseVersion }} --output artifacts
+      run: dotnet pack --configuration Release --output artifacts
     - name: Push
       run: dotnet nuget push "*" -s ${{ github.event.inputs.packageSource }} -k ${{secrets.NUGET_API_KEY}}
       working-directory: artifacts
 
   release_docker_image:
+    needs: verify
     name: Release Docker image to Docker Hub
     runs-on: ubuntu-latest
 
