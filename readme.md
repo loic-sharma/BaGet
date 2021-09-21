@@ -23,7 +23,7 @@ For more information, please refer to [our documentation](https://loic-sharma.gi
 * [Dockerized](https://loic-sharma.github.io/BaGet/#running-baget-on-docker)
 * [Cloud ready](https://loic-sharma.github.io/BaGet/cloud/azure/)
 * [Supports read-through caching](https://loic-sharma.github.io/BaGet/configuration/#enabling-read-through-caching)
-* Can index the entirety of nuget.org. See [this documentation](https://loic-sharma.github.io/BaGet/tools/mirroring/)
+* Can index the entirety of nuget.org. See [this documentation](https://loic-sharma.github.io/BaGet/import/nugetorg/#mirroring)
 * Coming soon: Supports [private feeds](https://loic-sharma.github.io/BaGet/private-feeds/)
 * And more!
 
