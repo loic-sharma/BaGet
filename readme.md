@@ -1,6 +1,6 @@
 # BaGet :baguette_bread:
 
-[![Build Status](https://sharml.visualstudio.com/BaGet/_apis/build/status/loic-sharma.BaGet)](https://sharml.visualstudio.com/BaGet/_build/latest?definitionId=2) [![Join the chat at https://gitter.im/BaGetServer/community](https://badges.gitter.im/BaGetServer/community.svg)](https://gitter.im/BaGetServer/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Twitter](https://img.shields.io/twitter/follow/bagetapp?label=Follow)](https://twitter.com/bagetapp)
+![Build status](https://img.shields.io/github/workflow/status/loic-sharma/BaGet/Build/main) [![Discord](https://img.shields.io/discord/889377258068930591)](https://discord.gg/MWbhpf66mk) [![Twitter](https://img.shields.io/twitter/follow/bagetapp?label=Follow)](https://twitter.com/bagetapp)
 
 A lightweight [NuGet](https://docs.microsoft.com/en-us/nuget/what-is-nuget) and [Symbol](https://docs.microsoft.com/en-us/windows/desktop/debug/symbol-servers-and-symbol-stores) server.
 
