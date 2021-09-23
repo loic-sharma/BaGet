@@ -14,7 +14,7 @@ namespace BaGet.Database.MySql.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.1")
+                .HasAnnotation("ProductVersion", "3.1.18")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("BaGet.Core.Package", b =>
@@ -87,8 +87,7 @@ namespace BaGet.Database.MySql.Migrations
 
                     b.Property<string>("ReleaseNotes")
                         .HasColumnName("ReleaseNotes")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasMaxLength(4000);
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("RepositoryType")
                         .HasColumnType("varchar(100) CHARACTER SET utf8mb4")

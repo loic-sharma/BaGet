@@ -14,7 +14,7 @@ namespace BaGet.Database.Sqlite.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.1");
+                .HasAnnotation("ProductVersion", "3.1.18");
 
             modelBuilder.Entity("BaGet.Core.Package", b =>
                 {
@@ -86,8 +86,7 @@ namespace BaGet.Database.Sqlite.Migrations
 
                     b.Property<string>("ReleaseNotes")
                         .HasColumnName("ReleaseNotes")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(4000);
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("RepositoryType")
                         .HasColumnType("TEXT")
