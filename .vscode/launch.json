@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/BaGet/bin/Debug/netcoreapp2.2/BaGet.dll",
+            "program": "${workspaceFolder}/src/BaGet/bin/Debug/netcoreapp3.1/BaGet.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/BaGet",
             "stopAtEntry": false,
