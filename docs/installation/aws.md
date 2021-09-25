@@ -32,7 +32,25 @@ Update the `appsettings.json` file:
 }
 ```
 
-To support MiniO as S3 compatible storage backend provide MiniO installation url in `ServiceUrl`, set `ForcePathStyle` to true.
+To use MinIO as an S3 compatible storage backend, provide the MinIO installation URL in `ServiceUrl` and set `ForcePathStyle` to `true`:
+
+```json
+{
+    ...
+
+    "Storage": {
+        "Type": "AwsS3",
+        "Region": "us-west-1",
+        "Bucket": "foo",
+        "AccessKey": "",
+        "SecretKey": "",
+        "ServiceUrl": "",
+        "ForcePathStyle": false,
+        "UseHttp": false
+    },
+
+    ...
+}
 
 ### Amazon RDS
 
