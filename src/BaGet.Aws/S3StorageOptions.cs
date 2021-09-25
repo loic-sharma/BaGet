@@ -23,7 +23,7 @@ namespace BaGet.Aws
 
         public string AssumeRoleArn { get; set; }
 
-        public bool ForcePathStyle { get; set; } = false;
+        public bool ForcePathStyle { get; set; }
 
         public string ServiceUrl { get; set; }
 
