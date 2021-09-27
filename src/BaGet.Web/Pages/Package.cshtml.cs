@@ -107,7 +107,7 @@ namespace BaGet.Web
                 ? _url.GetPackageIconDownloadUrl(Package.Id, packageVersion)
                 : Package.IconUrlString;
             LicenseUrl = Package.LicenseUrlString;
-            PackageDownloadUrl = _url.GetPackageDownloadUrl(Package.Id, packageVersion);
+            PackageDownloadUrl = _url.GetPackageDownloadUrl(Package);
         }
 
         private IReadOnlyList<DependencyGroupModel> ToDependencyGroups(Package package)

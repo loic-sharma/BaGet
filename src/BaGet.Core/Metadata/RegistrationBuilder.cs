@@ -52,7 +52,7 @@ namespace BaGet.Core
                 Listed = package.Listed,
                 Published = package.Published,
                 RegistrationLeafUrl = _url.GetRegistrationLeafUrl(id, version),
-                PackageContentUrl = _url.GetPackageDownloadUrl(id, version),
+                PackageContentUrl = _url.GetPackageDownloadUrl(package),
                 RegistrationIndexUrl = _url.GetRegistrationIndexUrl(id)
             };
         }
@@ -61,7 +61,7 @@ namespace BaGet.Core
             new BaGetRegistrationIndexPageItem
             {
                 RegistrationLeafUrl = _url.GetRegistrationLeafUrl(package.Id, package.Version),
-                PackageContentUrl = _url.GetPackageDownloadUrl(package.Id, package.Version),
+                PackageContentUrl = _url.GetPackageDownloadUrl(package),
                 PackageMetadata = new BaGetPackageMetadata
                 {
                     PackageId = package.Id,
@@ -78,7 +78,7 @@ namespace BaGet.Core
                     Listed = package.Listed,
                     MinClientVersion = package.MinClientVersion,
                     ReleaseNotes = package.ReleaseNotes,
-                    PackageContentUrl = _url.GetPackageDownloadUrl(package.Id, package.Version),
+                    PackageContentUrl = _url.GetPackageDownloadUrl(package),
                     PackageTypes = package.PackageTypes.Select(t => t.Name).ToList(),
                     ProjectUrl = package.ProjectUrlString,
                     RepositoryUrl = package.RepositoryUrlString,

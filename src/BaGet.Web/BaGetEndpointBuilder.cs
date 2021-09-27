@@ -17,12 +17,13 @@ namespace BaGet
             MapSearchRoutes(endpoints);
             MapPackageMetadataRoutes(endpoints);
             MapPackageContentRoutes(endpoints);
+            MapV2ApiRoutes(endpoints);
         }
 
         public void MapServiceIndexRoutes(IEndpointRouteBuilder endpoints)
         {
             endpoints.MapControllerRoute(
-                name: Routes.IndexRouteName,
+                name: Routes.V3IndexRouteName,
                 pattern: "v3/index.json",
                 defaults: new { controller = "ServiceIndex", action = "Get" });
         }
@@ -125,6 +126,34 @@ namespace BaGet
                 name: Routes.PackageDownloadIconRouteName,
                 pattern: "v3/package/{id}/{version}/icon",
                 defaults: new { controller = "PackageContent", action = "DownloadIcon" });
+        }
+
+        public void MapV2ApiRoutes(IEndpointRouteBuilder endpoints)
+        {
+            endpoints.MapControllerRoute(
+                name: Routes.V2IndexRouteName,
+                pattern: "api/v2",
+                defaults: new { controller = "V2Api", action = "Index" });
+
+            endpoints.MapControllerRoute(
+                name: Routes.V2ListRouteName,
+                pattern: "api/v2/Packages()",
+                defaults: new { controller = "V2Api", action = "List" });
+
+            endpoints.MapControllerRoute(
+                name: Routes.V2SearchRouteName,
+                pattern: "api/v2/Search()",
+                defaults: new { controller = "V2Api", action = "Search" });
+
+            endpoints.MapControllerRoute(
+                name: Routes.V2PackageRouteName,
+                pattern: "api/v2/FindPackagesById()",
+                defaults: new { controller = "V2Api", action = "Package" });
+
+            endpoints.MapControllerRoute(
+                name: Routes.V2PackageVersionRouteName,
+                pattern: "api/v2/Packages(Id='{id}',Version='{version}')",
+                defaults: new { controller = "V2Api", action = "PackageVersion" });
         }
     }
 }

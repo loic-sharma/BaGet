@@ -1,8 +1,8 @@
 namespace BaGet.Web
 {
-    public class Routes
+    public static class Routes
     {
-        public const string IndexRouteName = "index";
+        public const string V3IndexRouteName = "index";
         public const string UploadPackageRouteName = "upload-package";
         public const string UploadSymbolRouteName = "upload-symbol";
         public const string DeleteRouteName = "delete";
@@ -19,5 +19,11 @@ namespace BaGet.Web
         public const string PackageDownloadIconRouteName = "package-download-icon";
         public const string SymbolDownloadRouteName = "symbol-download";
         public const string PrefixedSymbolDownloadRouteName = "prefixed-symbol-download";
+
+        public const string V2IndexRouteName = "v2-service-index";
+        public const string V2ListRouteName = "v2-list";
+        public const string V2SearchRouteName = "v2-search";
+        public const string V2PackageRouteName = "v2-package";
+        public const string V2PackageVersionRouteName = "v2-package-version";
     }
 }

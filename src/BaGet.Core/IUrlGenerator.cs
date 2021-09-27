@@ -11,7 +11,7 @@ namespace BaGet.Core
         /// Get the URL for the package source (also known as the "service index").
         /// See: https://docs.microsoft.com/en-us/nuget/api/service-index
         /// </summary>
-        string GetServiceIndexUrl();
+        string GetServiceIndexV3Url();
 
         /// <summary>
         /// Get the URL for the root of the package content resource.
@@ -84,6 +84,13 @@ namespace BaGet.Core
         /// Get the URL to download a package (.nupkg).
         /// See: https://docs.microsoft.com/en-us/nuget/api/package-base-address-resource#download-package-content-nupkg
         /// </summary>
+        /// <param name="package">The package to download</param>
+        string GetPackageDownloadUrl(Package package);
+
+        /// <summary>
+        /// Get the URL to download a package (.nupkg).
+        /// See: https://docs.microsoft.com/en-us/nuget/api/package-base-address-resource#download-package-content-nupkg
+        /// </summary>
         /// <param name="id">The package's ID</param>
         /// <param name="version">The package's version</param>
         string GetPackageDownloadUrl(string id, NuGetVersion version);
@@ -101,5 +108,16 @@ namespace BaGet.Core
         /// <param name="id">The package's ID</param>
         /// <param name="version">The package's version</param>
         string GetPackageIconDownloadUrl(string id, NuGetVersion version);
+
+        /// <summary>
+        /// Get the URL for the package source that implements the legacy NuGet V2 API.
+        /// </summary>
+        string GetServiceIndexV2Url();
+
+        /// <summary>
+        /// Get the URL for the metadata of a single package version.
+        /// </summary>
+        /// <param name="package">The package to lookup</param>
+        string GetPackageVersionV2Url(Package package);
     }
 }
