@@ -74,6 +74,7 @@ namespace BaGet.Core
             services.TryAddSingleton<IFrameworkCompatibilityService, FrameworkCompatibilityService>();
             services.TryAddSingleton<IPackageDownloadsSource, PackageDownloadsJsonSource>();
 
+            services.TryAddSingleton<ISearchResponseBuilder, SearchResponseBuilder>();
             services.TryAddSingleton<NuGetClient>();
             services.TryAddSingleton<NullSearchIndexer>();
             services.TryAddSingleton<NullSearchService>();

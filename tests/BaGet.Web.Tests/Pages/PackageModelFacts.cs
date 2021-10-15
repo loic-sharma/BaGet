@@ -184,10 +184,10 @@ namespace BaGet.Web.Tests
                 .Setup(s => s.FindDependentsAsync("testpackage", _cancellation))
                 .ReturnsAsync(new DependentsResponse
                 {
-                    Data = new List<DependentResult>
+                    Data = new List<PackageDependent>
                     {
-                        new DependentResult  { Id = "Used by 1" },
-                        new DependentResult  { Id = "Used by 2" },
+                        new PackageDependent  { Id = "Used by 1" },
+                        new PackageDependent  { Id = "Used by 2" },
                     }
                 });
 
