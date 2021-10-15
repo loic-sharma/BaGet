@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 using BaGet.Core;
 using BaGet.Protocol.Models;
 using Microsoft.Azure.Cosmos.Table;
-using Newtonsoft.Json;
-using NuGet.Versioning;
 
 namespace BaGet.Azure
 {
@@ -15,31 +13,22 @@ namespace BaGet.Azure
     {
         private const string TableName = "Packages";
 
-        private static readonly IReadOnlyList<string> EmptyStringList = new List<string>();
-
-        private static readonly Task<DependentsResponse> EmptyDependentsResponseTask =
-            Task.FromResult(new DependentsResponse
-            {
-                TotalHits = 0,
-                Data = new List<DependentResult>()
-            });
-
         private readonly CloudTable _table;
-        private readonly IUrlGenerator _url;
+        private readonly ISearchResponseBuilder _responseBuilder;
 
         public TableSearchService(
             CloudTableClient client,
-            IUrlGenerator url)
+            ISearchResponseBuilder responseBuilder)
         {
             _table = client?.GetTableReference(TableName) ?? throw new ArgumentNullException(nameof(client));
-            _url = url ?? throw new ArgumentNullException(nameof(url));
+            _responseBuilder = responseBuilder ?? throw new ArgumentNullException(nameof(responseBuilder));
         }
 
         public async Task<SearchResponse> SearchAsync(
             SearchRequest request,
             CancellationToken cancellationToken)
         {
-            var results = await SearchInternalAsync(
+            var results = await SearchAsync(
                 request.Query,
                 request.Skip,
                 request.Take,
@@ -47,18 +36,14 @@ namespace BaGet.Azure
                 request.IncludeSemVer2,
                 cancellationToken);
 
-            return new SearchResponse
-            {
-                TotalHits = results.Count,
-                Data = results.Select(ToSearchResult).ToList()
-            };
+            return _responseBuilder.BuildSearch(results);
         }
 
         public async Task<AutocompleteResponse> AutocompleteAsync(
             AutocompleteRequest request,
             CancellationToken cancellationToken)
         {
-            var results = await SearchInternalAsync(
+            var results = await SearchAsync(
                 request.Query,
                 request.Skip,
                 request.Take,
@@ -66,11 +51,9 @@ namespace BaGet.Azure
                 request.IncludeSemVer2,
                 cancellationToken);
 
-            return new AutocompleteResponse
-            {
-                TotalHits = results.Count,
-                Data = results.Select(ToAutocompleteResult).ToList(),
-            };
+            var packageIds = results.Select(p => p.PackageId).ToList();
+
+            return _responseBuilder.BuildAutocomplete(packageIds);
         }
 
         public Task<AutocompleteResponse> ListPackageVersionsAsync(
@@ -79,15 +62,19 @@ namespace BaGet.Azure
         {
             // TODO: Support versions autocomplete.
             // See: https://github.com/loic-sharma/BaGet/issues/291
-            throw new NotImplementedException();
+            var response = _responseBuilder.BuildAutocomplete(new List<string>());
+
+            return Task.FromResult(response);
         }
 
         public Task<DependentsResponse> FindDependentsAsync(string packageId, CancellationToken cancellationToken)
         {
-            return EmptyDependentsResponseTask;
+            var response = _responseBuilder.BuildDependents(new List<PackageDependent>());
+
+            return Task.FromResult(response);
         }
 
-        private async Task<List<List<PackageEntity>>> SearchInternalAsync(
+        private async Task<List<PackageRegistration>> SearchAsync(
             string searchText,
             int skip,
             int take,
@@ -99,9 +86,25 @@ namespace BaGet.Azure
             query = query.Where(GenerateSearchFilter(searchText, includePrerelease, includeSemVer2));
             query.TakeCount = 500;
 
-            string lastPartitionKey = null;
-            var results = new List<List<PackageEntity>>();
+            var results = await LoadPackagesAsync(query, maxPartitions: skip + take, cancellationToken);
 
+            return results
+                .GroupBy(p => p.Id, StringComparer.OrdinalIgnoreCase)
+                .Select(group => new PackageRegistration(group.Key, group.ToList()))
+                .Skip(skip)
+                .Take(take)
+                .ToList();
+        }
+
+        private async Task<IReadOnlyList<Package>> LoadPackagesAsync(
+            TableQuery<PackageEntity> query,
+            int maxPartitions,
+            CancellationToken cancellationToken)
+        {
+            var results = new List<Package>();
+
+            var partitions = 0;
+            string lastPartitionKey = null;
             TableContinuationToken token = null;
             do
             {
@@ -113,16 +116,21 @@ namespace BaGet.Azure
                 {
                     if (lastPartitionKey != result.PartitionKey)
                     {
-                        results.Add(new List<PackageEntity>());
                         lastPartitionKey = result.PartitionKey;
+                        partitions++;
+
+                        if (partitions > maxPartitions)
+                        {
+                            break;
+                        }
                     }
 
-                    results.Last().Add(result);
+                    results.Add(result.AsPackage());
                 }
             }
-            while (token != null && results.Count < take + skip);
+            while (token != null);
 
-            return results.Skip(skip).Take(take).ToList();
+            return results;
         }
 
         private string GenerateSearchFilter(string searchText, bool includePrerelease, bool includeSemVer2)
@@ -132,7 +140,7 @@ namespace BaGet.Azure
             if (!string.IsNullOrWhiteSpace(searchText))
             {
                 // Filter to rows where the "searchText" prefix matches on the partition key.
-                var prefix = searchText?.TrimEnd().Split(separator: null).Last() ?? string.Empty;
+                var prefix = searchText.TrimEnd().Split(separator: null).Last();
 
                 var prefixLower = prefix;
                 var prefixUpper = prefix + "~";
@@ -196,60 +204,6 @@ namespace BaGet.Azure
                     QueryComparisons.Equal,
                     givenValue: false);
             }
-        }
-
-        private string ToAutocompleteResult(IReadOnlyList<PackageEntity> packages)
-        {
-            // TODO: This should find the latest version and return its package Id.
-            return packages.Last().Id;
-        }
-
-        private SearchResult ToSearchResult(IReadOnlyList<PackageEntity> packages)
-        {
-            NuGetVersion latestVersion = null;
-            PackageEntity latest = null;
-            var versions = new List<SearchResultVersion>();
-            long totalDownloads = 0;
-
-            foreach (var package in packages)
-            {
-                var version = NuGetVersion.Parse(package.OriginalVersion);
-
-                totalDownloads += package.Downloads;
-                versions.Add(new SearchResultVersion
-                {
-                    RegistrationLeafUrl = _url.GetRegistrationLeafUrl(package.Id, version),
-                    Version = package.NormalizedVersion,
-                    Downloads = package.Downloads,
-                });
-
-                if (latestVersion == null || version > latestVersion)
-                {
-                    latest = package;
-                    latestVersion = version;
-                }
-            }
-
-            var iconUrl = latest.HasEmbeddedIcon
-                ? _url.GetPackageIconDownloadUrl(latest.Id, latestVersion)
-                : latest.IconUrl;
-
-            return new SearchResult
-            {
-                PackageId = latest.Id,
-                Version = latest.NormalizedVersion,
-                Description = latest.Description,
-                Authors = JsonConvert.DeserializeObject<string[]>(latest.Authors),
-                IconUrl = iconUrl,
-                LicenseUrl = latest.LicenseUrl,
-                ProjectUrl = latest.ProjectUrl,
-                RegistrationIndexUrl = _url.GetRegistrationIndexUrl(latest.Id),
-                Summary = latest.Summary,
-                Tags = JsonConvert.DeserializeObject<string[]>(latest.Tags),
-                Title = latest.Title,
-                TotalDownloads = totalDownloads,
-                Versions = versions,
-            };
         }
     }
 }

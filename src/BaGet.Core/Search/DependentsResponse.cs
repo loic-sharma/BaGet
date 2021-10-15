@@ -19,13 +19,13 @@ namespace BaGet.Core
         /// The package IDs matched by the dependent query.
         /// </summary>
         [JsonPropertyName("data")]
-        public IReadOnlyList<DependentResult> Data { get; set; }
+        public IReadOnlyList<PackageDependent> Data { get; set; }
     }
 
     /// <summary>
     /// A package that depends on the queried package.
     /// </summary>
-    public class DependentResult
+    public class PackageDependent
     {
         /// <summary>
         /// The dependent package id.

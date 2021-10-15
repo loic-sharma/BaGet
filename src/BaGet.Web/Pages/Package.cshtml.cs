@@ -50,7 +50,7 @@ namespace BaGet.Web
         public DateTime LastUpdated { get; private set; }
         public long TotalDownloads { get; private set; }
 
-        public IReadOnlyList<DependentResult> UsedBy { get; set; }
+        public IReadOnlyList<PackageDependent> UsedBy { get; set; }
         public IReadOnlyList<DependencyGroupModel> DependencyGroups { get; private set; }
         public IReadOnlyList<VersionModel> Versions { get; private set; }
 

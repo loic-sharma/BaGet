@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using BaGet.Core;
 using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using NuGet.Versioning;
 
 namespace BaGet.Azure
@@ -64,7 +63,7 @@ namespace BaGet.Azure
                         id.ToLowerInvariant(),
                         version.ToNormalizedString().ToLowerInvariant());
 
-                    var result = await _table.ExecuteAsync(operation);
+                    var result = await _table.ExecuteAsync(operation, cancellationToken);
                     var entity = result.Result as PackageDownloadsEntity;
 
                     if (entity == null)
@@ -80,6 +79,7 @@ namespace BaGet.Azure
                 catch (StorageException e)
                     when (attempt < MaxPreconditionFailures && e.IsPreconditionFailedException())
                 {
+                    attempt++;
                     _logger.LogWarning(
                         e,
                         $"Retrying due to precondition failure, attempt {{Attempt}} of {MaxPreconditionFailures}..",
@@ -111,10 +111,9 @@ namespace BaGet.Azure
                 version.ToNormalizedString().ToLowerInvariant(),
                 MinimalColumnSet);
 
-            var result = await _table.ExecuteAsync(operation, cancellationToken);
-            var entity = result.Result as PackageEntity;
+            var execution = await _table.ExecuteAsync(operation, cancellationToken);
 
-            return entity != null;
+            return execution.Result is PackageEntity;
         }
 
         public async Task<IReadOnlyList<Package>> FindAsync(string id, bool includeUnlisted, CancellationToken cancellationToken)
@@ -142,7 +141,7 @@ namespace BaGet.Azure
                 token = segment.ContinuationToken;
 
                 // Write out the properties for each entity returned.
-                results.AddRange(segment.Results.Select(AsPackage));
+                results.AddRange(segment.Results.Select(r => r.AsPackage()));
             }
             while (token != null);
 
@@ -173,7 +172,7 @@ namespace BaGet.Azure
                 return null;
             }
 
-            return AsPackage(entity);
+            return entity.AsPackage();
         }
 
         public async Task<bool> HardDeletePackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
@@ -211,73 +210,6 @@ namespace BaGet.Azure
             }
 
             return true;
-        }
-
-        private Package AsPackage(PackageEntity entity)
-        {
-            var targetFrameworks = JsonConvert.DeserializeObject<List<string>>(entity.TargetFrameworks)
-                .Select(f => new TargetFramework { Moniker = f })
-                .ToList();
-
-            return new Package
-            {
-                Id = entity.Id,
-                NormalizedVersionString = entity.NormalizedVersion,
-                OriginalVersionString = entity.OriginalVersion,
-
-                Authors = JsonConvert.DeserializeObject<string[]>(entity.Authors),
-                Description = entity.Description,
-                Downloads = entity.Downloads,
-                HasReadme = entity.HasReadme,
-                HasEmbeddedIcon = entity.HasEmbeddedIcon,
-                IsPrerelease = entity.IsPrerelease,
-                Language = entity.Language,
-                Listed = entity.Listed,
-                MinClientVersion = entity.MinClientVersion,
-                Published = entity.Published,
-                RequireLicenseAcceptance = entity.RequireLicenseAcceptance,
-                SemVerLevel = (SemVerLevel)entity.SemVerLevel,
-                Summary = entity.Summary,
-                Title = entity.Title,
-                ReleaseNotes = entity.ReleaseNotes,
-                IconUrl = ParseUri(entity.IconUrl),
-                LicenseUrl = ParseUri(entity.LicenseUrl),
-                ProjectUrl = ParseUri(entity.ProjectUrl),
-                RepositoryUrl = ParseUri(entity.RepositoryUrl),
-                RepositoryType = entity.RepositoryType,
-                Tags = JsonConvert.DeserializeObject<string[]>(entity.Tags),
-                Dependencies = ParseDependencies(entity.Dependencies),
-                PackageTypes = ParsePackageTypes(entity.PackageTypes),
-                TargetFrameworks = targetFrameworks,
-            };
-        }
-
-        private Uri ParseUri(string input)
-        {
-            return string.IsNullOrEmpty(input) ? null : new Uri(input);
-        }
-
-        private List<PackageDependency> ParseDependencies(string input)
-        {
-            return JsonConvert.DeserializeObject<List<DependencyModel>>(input)
-                .Select(e => new PackageDependency
-                {
-                    Id = e.Id,
-                    VersionRange = e.VersionRange,
-                    TargetFramework = e.TargetFramework,
-                })
-                .ToList();
-        }
-
-        private List<PackageType> ParsePackageTypes(string input)
-        {
-            return JsonConvert.DeserializeObject<List<PackageTypeModel>>(input)
-                .Select(e => new PackageType
-                {
-                    Name = e.Name,
-                    Version = e.Version
-                })
-                .ToList();
         }
     }
 }

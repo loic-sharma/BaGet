@@ -24,7 +24,7 @@ namespace BaGet.Core
             Task.FromResult(new DependentsResponse
             {
                 TotalHits = 0,
-                Data = new List<DependentResult>()
+                Data = new List<PackageDependent>()
             });
 
         private static readonly Task<SearchResponse> EmptySearchResponseTask =

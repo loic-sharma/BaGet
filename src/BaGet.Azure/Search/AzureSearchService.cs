@@ -161,7 +161,7 @@ namespace BaGet.Azure
 
             var response = await _searchClient.Documents.SearchAsync<PackageDocument>(query, parameters, cancellationToken: cancellationToken);
             var results = response.Results
-                .Select(r => new DependentResult
+                .Select(r => new PackageDependent
                 {
                     Id = r.Document.Id,
                     Description = r.Document.Description,
