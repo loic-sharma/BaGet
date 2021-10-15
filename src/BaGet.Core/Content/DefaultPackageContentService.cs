@@ -79,10 +79,7 @@ namespace BaGet.Core
 
         public async Task<Stream> GetPackageReadmeStreamOrNullAsync(string id, NuGetVersion version, CancellationToken cancellationToken = default)
         {
-            // Allow read-through caching if it is configured.
-            await _mirror.MirrorAsync(id, version, cancellationToken);
-
-            var package = await _packages.FindOrNullAsync(id, version, includeUnlisted: true, cancellationToken);
+            var package = await _mirror.FindPackageOrNullAsync(id, version, cancellationToken);
             if (!package.HasReadme)
             {
                 return null;
@@ -93,10 +90,7 @@ namespace BaGet.Core
 
         public async Task<Stream> GetPackageIconStreamOrNullAsync(string id, NuGetVersion version, CancellationToken cancellationToken = default)
         {
-            // Allow read-through caching if it is configured.
-            await _mirror.MirrorAsync(id, version, cancellationToken);
-
-            var package = await _packages.FindOrNullAsync(id, version, includeUnlisted: true, cancellationToken);
+            var package = await _mirror.FindPackageOrNullAsync(id, version, cancellationToken);
             if (!package.HasEmbeddedIcon)
             {
                 return null;
