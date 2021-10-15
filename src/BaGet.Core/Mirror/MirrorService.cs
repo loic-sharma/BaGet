@@ -68,6 +68,16 @@ namespace BaGet.Core
             return result.Values.ToList();
         }
 
+        public async Task<Package> FindPackageOrNullAsync(
+            string id,
+            NuGetVersion version,
+            CancellationToken cancellationToken)
+        {
+            await MirrorAsync(id, version, cancellationToken);
+
+            return await _localPackages.FindOrNullAsync(id, version, includeUnlisted: true, cancellationToken);
+        }
+
         public async Task MirrorAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
             if (await _localPackages.ExistsAsync(id, version, cancellationToken))

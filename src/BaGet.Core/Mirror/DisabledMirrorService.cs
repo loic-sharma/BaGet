@@ -19,6 +19,14 @@ namespace BaGet.Core
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));
         }
 
+        public async Task<Package> FindPackageOrNullAsync(
+            string id,
+            NuGetVersion version,
+            CancellationToken cancellationToken)
+        {
+            return await _packages.FindOrNullAsync(id, version, includeUnlisted: true, cancellationToken);
+        }
+
         public async Task<IReadOnlyList<NuGetVersion>> FindPackageVersionsAsync(string id, CancellationToken cancellationToken)
         {
             var packages = await _packages.FindAsync(id, includeUnlisted: true, cancellationToken);

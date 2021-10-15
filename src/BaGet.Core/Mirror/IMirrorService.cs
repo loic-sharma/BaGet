@@ -35,6 +35,19 @@ namespace BaGet.Core
         Task<IReadOnlyList<Package>> FindPackagesAsync(string id, CancellationToken cancellationToken);
 
         /// <summary>
+        /// Attempt to find a package's metadata using mirroring. This will merge
+        /// results from the configured upstream source with the locally indexed packages.
+        /// </summary>
+        /// <param name="id">The package's id to lookup</param>
+        /// <param name="version">The package's version to lookup</param>
+        /// <param name="cancellationToken">The token to cancel the lookup</param>
+        /// <returns>
+        /// The metadata for single version of a package.
+        /// Returns null if the package does not exist.
+        /// </returns>
+        Task<Package> FindPackageOrNullAsync(string id, NuGetVersion version, CancellationToken cancellationToken);
+
+        /// <summary>
         /// If the package is unknown, attempt to index it from an upstream source.
         /// </summary>
         /// <param name="id">The package's id</param>
