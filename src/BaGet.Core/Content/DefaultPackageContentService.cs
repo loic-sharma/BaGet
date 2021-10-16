@@ -10,22 +10,22 @@ namespace BaGet.Core
 {
     /// <summary>
     /// Implements the NuGet Package Content resource. Supports read-through caching.
-    /// Tracks state in a database (<see cref="IPackageService"/>) and stores packages
+    /// Tracks state in a database (<see cref="IPackageDatabase"/>) and stores packages
     /// using <see cref="IPackageStorageService"/>.
     /// </summary>
     public class DefaultPackageContentService : IPackageContentService
     {
-        private readonly IMirrorService _mirror;
         private readonly IPackageService _packages;
+        private readonly IPackageDownloads _downloads;
         private readonly IPackageStorageService _storage;
 
         public DefaultPackageContentService(
-            IMirrorService mirror,
             IPackageService packages,
+            IPackageDownloads downloads,
             IPackageStorageService storage)
         {
-            _mirror = mirror ?? throw new ArgumentNullException(nameof(mirror));
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));
+            _downloads = downloads ?? throw new ArgumentNullException(nameof(downloads));
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
         }
 
@@ -33,7 +33,7 @@ namespace BaGet.Core
             string id,
             CancellationToken cancellationToken = default)
         {
-            var versions = await _mirror.FindPackageVersionsAsync(id, cancellationToken);
+            var versions = await _packages.FindPackageVersionsAsync(id, cancellationToken);
             if (!versions.Any())
             {
                 return null;
@@ -53,22 +53,17 @@ namespace BaGet.Core
             NuGetVersion version,
             CancellationToken cancellationToken = default)
         {
-            // Allow read-through caching if it is configured.
-            await _mirror.MirrorAsync(id, version, cancellationToken);
-
-            if (!await _packages.AddDownloadAsync(id, version, cancellationToken))
+            if (!await _packages.ExistsAsync(id, version, cancellationToken))
             {
                 return null;
             }
 
+            await _downloads.AddAsync(id, version, cancellationToken);
             return await _storage.GetPackageStreamAsync(id, version, cancellationToken);
         }
 
         public async Task<Stream> GetPackageManifestStreamOrNullAsync(string id, NuGetVersion version, CancellationToken cancellationToken = default)
         {
-            // Allow read-through caching if it is configured.
-            await _mirror.MirrorAsync(id, version, cancellationToken);
-
             if (!await _packages.ExistsAsync(id, version, cancellationToken))
             {
                 return null;
@@ -79,7 +74,7 @@ namespace BaGet.Core
 
         public async Task<Stream> GetPackageReadmeStreamOrNullAsync(string id, NuGetVersion version, CancellationToken cancellationToken = default)
         {
-            var package = await _mirror.FindPackageOrNullAsync(id, version, cancellationToken);
+            var package = await _packages.FindPackageOrNullAsync(id, version, cancellationToken);
             if (!package.HasReadme)
             {
                 return null;
@@ -90,7 +85,7 @@ namespace BaGet.Core
 
         public async Task<Stream> GetPackageIconStreamOrNullAsync(string id, NuGetVersion version, CancellationToken cancellationToken = default)
         {
-            var package = await _mirror.FindPackageOrNullAsync(id, version, cancellationToken);
+            var package = await _packages.FindPackageOrNullAsync(id, version, cancellationToken);
             if (!package.HasEmbeddedIcon)
             {
                 return null;

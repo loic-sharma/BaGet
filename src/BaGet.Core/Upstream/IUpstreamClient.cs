@@ -1,5 +1,4 @@
-﻿using BaGet.Protocol.Models;
-using NuGet.Versioning;
+﻿using NuGet.Versioning;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -10,7 +9,7 @@ namespace BaGet.Core
     /// <summary>
     /// A client to interact with an upstream package source.
     /// </summary>
-    public interface IMirrorClient
+    public interface IUpstreamClient
     {
         /// <summary>
         /// Try to get the metadata for all versions of a package from the upstream package source. Returns empty
@@ -34,15 +33,18 @@ namespace BaGet.Core
         /// The metadata for all versions of a package, including unlisted versions.
         /// Returns an empty list if the package could not be found.
         /// </returns>
-        Task<IReadOnlyList<PackageMetadata>> GetPackageMetadataAsync(string id, CancellationToken cancellationToken);
+        Task<IReadOnlyList<Package>> ListPackagesAsync(string id, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Download a package from the upstream package source. Throws if the package does not exist.
+        /// Download a package from the upstream package source. Returns null if the package does not exist.
         /// </summary>
         /// <param name="id">The package ID to download.</param>
         /// <param name="version">The package version to download.</param>
         /// <param name="cancellationToken"></param>
-        /// <returns>The package stream. May not be buffered or seekable.</returns>
-        Task<Stream> DownloadPackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken);
+        /// <returns>
+        /// The package stream or null if the package could not be found.
+        /// The stream is guaranteed to be seekable.
+        /// </returns>
+        Task<Stream> DownloadPackageOrNullAsync(string id, NuGetVersion version, CancellationToken cancellationToken);
     }
 }

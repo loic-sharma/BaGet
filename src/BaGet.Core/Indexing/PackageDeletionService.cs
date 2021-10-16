@@ -9,13 +9,13 @@ namespace BaGet.Core
 {
     public class PackageDeletionService : IPackageDeletionService
     {
-        private readonly IPackageService _packages;
+        private readonly IPackageDatabase _packages;
         private readonly IPackageStorageService _storage;
         private readonly BaGetOptions _options;
         private readonly ILogger<PackageDeletionService> _logger;
 
         public PackageDeletionService(
-            IPackageService packages,
+            IPackageDatabase packages,
             IPackageStorageService storage,
             IOptionsSnapshot<BaGetOptions> options,
             ILogger<PackageDeletionService> logger)

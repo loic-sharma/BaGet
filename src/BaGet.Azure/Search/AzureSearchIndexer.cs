@@ -8,13 +8,13 @@ namespace BaGet.Azure
 {
     public class AzureSearchIndexer : ISearchIndexer
     {
-        private readonly IPackageService _packages;
+        private readonly IPackageDatabase _packages;
         private readonly IndexActionBuilder _actionBuilder;
         private readonly AzureSearchBatchIndexer _batchIndexer;
         private readonly ILogger<AzureSearchIndexer> _logger;
 
         public AzureSearchIndexer(
-            IPackageService packages,
+            IPackageDatabase packages,
             IndexActionBuilder actionBuilder,
             AzureSearchBatchIndexer batchIndexer,
             ILogger<AzureSearchIndexer> logger)

@@ -1,147 +1,132 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using NuGet.Versioning;
 
 namespace BaGet.Core
 {
     public class PackageService : IPackageService
     {
-        private readonly IContext _context;
+        private readonly IPackageDatabase _db;
+        private readonly IUpstreamClient _upstream;
+        private readonly IPackageIndexingService _indexer;
+        private readonly ILogger<PackageService> _logger;
 
-        public PackageService(IContext context)
+        public PackageService(
+            IPackageDatabase db,
+            IUpstreamClient upstream,
+            IPackageIndexingService indexer,
+            ILogger<PackageService> logger)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _db = db ?? throw new ArgumentNullException(nameof(db));
+            _upstream = upstream ?? throw new ArgumentNullException(nameof(upstream));
+            _indexer = indexer ?? throw new ArgumentNullException(nameof(indexer));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<PackageAddResult> AddAsync(Package package, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<NuGetVersion>> FindPackageVersionsAsync(
+            string id,
+            CancellationToken cancellationToken)
         {
-            try
-            {
-                _context.Packages.Add(package);
+            var upstreamVersions = await _upstream.ListPackageVersionsAsync(id, cancellationToken);
 
-                await _context.SaveChangesAsync(cancellationToken);
+            // Merge the local package versions into the upstream package versions.
+            var localPackages = await _db.FindAsync(id, includeUnlisted: true, cancellationToken);
+            var localVersions = localPackages.Select(p => p.Version);
 
-                return PackageAddResult.Success;
-            }
-            catch (DbUpdateException e)
-                when (_context.IsUniqueConstraintViolationException(e))
-            {
-                return PackageAddResult.PackageAlreadyExists;
-            }
+            if (!upstreamVersions.Any()) return localVersions.ToList();
+            if (!localPackages.Any()) return upstreamVersions;
+
+            return upstreamVersions.Concat(localVersions).Distinct().ToList();
         }
 
-        public async Task<bool> ExistsAsync(string id, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<Package>> FindPackagesAsync(string id, CancellationToken cancellationToken)
         {
-            return await _context
-                .Packages
-                .Where(p => p.Id == id)
-                .AnyAsync(cancellationToken);
+            var upstreamPackages = await _upstream.ListPackagesAsync(id, cancellationToken);
+            var localPackages = await _db.FindAsync(id, includeUnlisted: true, cancellationToken);
+
+            if (!upstreamPackages.Any()) return localPackages;
+            if (!localPackages.Any()) return upstreamPackages;
+
+            // Merge the local packages into the upstream packages.
+            var result = upstreamPackages.ToDictionary(p => p.Version);
+            var local = localPackages.ToDictionary(p => p.Version);
+
+            foreach (var localPackage in local)
+            {
+                result[localPackage.Key] = localPackage.Value;
+            }
+
+            return result.Values.ToList();
+        }
+
+        public async Task<Package> FindPackageOrNullAsync(
+            string id,
+            NuGetVersion version,
+            CancellationToken cancellationToken)
+        {
+            await MirrorAsync(id, version, cancellationToken);
+
+            return await _db.FindOrNullAsync(id, version, includeUnlisted: true, cancellationToken);
         }
 
         public async Task<bool> ExistsAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
-            return await _context
-                .Packages
-                .Where(p => p.Id == id)
-                .Where(p => p.NormalizedVersionString == version.ToNormalizedString())
-                .AnyAsync(cancellationToken);
+            await MirrorAsync(id, version, cancellationToken);
+
+            return await _db.ExistsAsync(id, version, cancellationToken);
         }
 
-        public async Task<IReadOnlyList<Package>> FindAsync(string id, bool includeUnlisted, CancellationToken cancellationToken)
+        private async Task MirrorAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
-            var query = _context.Packages
-                .Include(p => p.Dependencies)
-                .Include(p => p.PackageTypes)
-                .Include(p => p.TargetFrameworks)
-                .Where(p => p.Id == id);
-
-            if (!includeUnlisted)
+            if (await _db.ExistsAsync(id, version, cancellationToken))
             {
-                query = query.Where(p => p.Listed);
+                return;
             }
 
-            return (await query.ToListAsync(cancellationToken)).AsReadOnly();
-        }
+            _logger.LogInformation(
+                "Package {PackageId} {PackageVersion} does not exist locally. Indexing from upstream feed...",
+                id,
+                version);
 
-        public Task<Package> FindOrNullAsync(
-            string id,
-            NuGetVersion version,
-            bool includeUnlisted,
-            CancellationToken cancellationToken)
-        {
-            var query = _context.Packages
-                .Include(p => p.Dependencies)
-                .Include(p => p.TargetFrameworks)
-                .Where(p => p.Id == id)
-                .Where(p => p.NormalizedVersionString == version.ToNormalizedString());
-
-            if (!includeUnlisted)
+            try
             {
-                query = query.Where(p => p.Listed);
+                using (var packageStream = await _upstream.DownloadPackageOrNullAsync(id, version, cancellationToken))
+                {
+                    if (packageStream == null)
+                    {
+                        _logger.LogWarning(
+                            "Failed to download package {PackageId} {PackageVersion}",
+                            id,
+                            version);
+                        return;
+                    }
+
+                    _logger.LogInformation(
+                        "Downloaded package {PackageId} {PackageVersion}, indexing...",
+                        id,
+                        version);
+
+                    var result = await _indexer.IndexAsync(packageStream, cancellationToken);
+
+                    _logger.LogInformation(
+                        "Finished indexing package {PackageId} {PackageVersion} from upstream feed with result {Result}",
+                        id,
+                        version,
+                        result);
+                }
             }
-
-            return query.FirstOrDefaultAsync(cancellationToken);
-        }
-
-        public Task<bool> UnlistPackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
-        {
-            return TryUpdatePackageAsync(id, version, p => p.Listed = false, cancellationToken);
-        }
-
-        public Task<bool> RelistPackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
-        {
-            return TryUpdatePackageAsync(id, version, p => p.Listed = true, cancellationToken);
-        }
-
-        public Task<bool> AddDownloadAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
-        {
-            return TryUpdatePackageAsync(id, version, p => p.Downloads += 1, cancellationToken);
-        }
-
-        public async Task<bool> HardDeletePackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
-        {
-            var package = await _context.Packages
-                .Where(p => p.Id == id)
-                .Where(p => p.NormalizedVersionString == version.ToNormalizedString())
-                .Include(p => p.Dependencies)
-                .Include(p => p.TargetFrameworks)
-                .FirstOrDefaultAsync(cancellationToken);
-
-            if (package == null)
+            catch (Exception e)
             {
-                return false;
+                _logger.LogError(
+                    e,
+                    "Failed to index package {PackageId} {PackageVersion} from upstream",
+                    id,
+                    version);
             }
-
-            _context.Packages.Remove(package);
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return true;
-        }
-
-        private async Task<bool> TryUpdatePackageAsync(
-            string id,
-            NuGetVersion version,
-            Action<Package> action,
-            CancellationToken cancellationToken)
-        {
-            var package = await _context.Packages
-                .Where(p => p.Id == id)
-                .Where(p => p.NormalizedVersionString == version.ToNormalizedString())
-                .FirstOrDefaultAsync();
-
-            if (package != null)
-            {
-                action(package);
-                await _context.SaveChangesAsync(cancellationToken);
-
-                return true;
-            }
-
-            return false;
         }
     }
 }

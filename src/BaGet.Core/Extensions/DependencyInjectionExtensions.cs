@@ -90,8 +90,10 @@ namespace BaGet.Core
             services.TryAddTransient<IAuthenticationService, ApiKeyAuthenticationService>();
             services.TryAddTransient<IPackageContentService, DefaultPackageContentService>();
             services.TryAddTransient<IPackageDeletionService, PackageDeletionService>();
+            services.TryAddTransient<IPackageDownloads, PackageDownloads>();
             services.TryAddTransient<IPackageIndexingService, PackageIndexingService>();
             services.TryAddTransient<IPackageMetadataService, DefaultPackageMetadataService>();
+            services.TryAddTransient<IPackageService, PackageService>();
             services.TryAddTransient<IPackageStorageService, PackageStorageService>();
             services.TryAddTransient<IServiceIndexService, BaGetServiceIndex>();
             services.TryAddTransient<ISymbolIndexingService, SymbolIndexingService>();
@@ -99,15 +101,13 @@ namespace BaGet.Core
 
             services.TryAddTransient<DatabaseSearchService>();
             services.TryAddTransient<FileStorageService>();
-            services.TryAddTransient<MirrorService>();
-            services.TryAddTransient<MirrorV2Client>();
-            services.TryAddTransient<MirrorV3Client>();
-            services.TryAddTransient<DisabledMirrorService>();
+            services.TryAddTransient<V2UpstreamClient>();
+            services.TryAddTransient<V3UpstreamClient>();
+            services.TryAddTransient<DisabledUpstreamClient>();
             services.TryAddSingleton<NullStorageService>();
-            services.TryAddTransient<PackageService>();
+            services.TryAddTransient<PackageDatabase>();
 
-            services.TryAddTransient(IMirrorServiceFactory);
-            services.TryAddTransient(IMirrorClientFactory);
+            services.TryAddTransient(UpstreamClientFactory);
         }
 
         private static void AddDefaultProviders(this IServiceCollection services)
@@ -195,20 +195,25 @@ namespace BaGet.Core
                 options.Value.PackageSource.ToString());
         }
 
-        private static IMirrorService IMirrorServiceFactory(IServiceProvider provider)
+        private static IUpstreamClient UpstreamClientFactory(IServiceProvider provider)
         {
             var options = provider.GetRequiredService<IOptionsSnapshot<MirrorOptions>>();
-            var service = options.Value.Enabled ? typeof(MirrorService) : typeof(DisabledMirrorService);
 
-            return (IMirrorService)provider.GetRequiredService(service);
-        }
+            // TODO: Convert to switch expression.
+            if (!options.Value.Enabled)
+            {
+                return provider.GetRequiredService<DisabledUpstreamClient>();
+            }
 
-        private static IMirrorClient IMirrorClientFactory(IServiceProvider provider)
-        {
-            var options = provider.GetRequiredService<IOptionsSnapshot<MirrorOptions>>();
-            var service = options.Value.Legacy ? typeof(MirrorV2Client) : typeof(MirrorV3Client);
+            else if (options.Value.Legacy)
+            {
+                return provider.GetRequiredService<V2UpstreamClient>();
+            }
 
-            return (IMirrorClient)provider.GetRequiredService(service);
+            else
+            {
+                return provider.GetRequiredService<V3UpstreamClient>();
+            }
         }
     }
 }
