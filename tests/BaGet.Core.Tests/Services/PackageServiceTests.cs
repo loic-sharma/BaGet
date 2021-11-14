@@ -212,6 +212,9 @@ namespace BaGet.Core.Tests.Services
                 var expected = new Package();
 
                 _db
+                    .Setup(p => p.ExistsAsync(_id, _version, _cancellationToken))
+                    .ReturnsAsync(true);
+                _db
                     .Setup(p => p.FindOrNullAsync(_id, _version,  /*includeUnlisted:*/ true, _cancellationToken))
                     .ReturnsAsync(expected);
 

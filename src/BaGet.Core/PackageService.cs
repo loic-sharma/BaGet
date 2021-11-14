@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -68,23 +68,31 @@ namespace BaGet.Core
             NuGetVersion version,
             CancellationToken cancellationToken)
         {
-            await MirrorAsync(id, version, cancellationToken);
+            if (!await MirrorAsync(id, version, cancellationToken))
+            {
+                return null;
+            }
 
             return await _db.FindOrNullAsync(id, version, includeUnlisted: true, cancellationToken);
         }
 
         public async Task<bool> ExistsAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
-            await MirrorAsync(id, version, cancellationToken);
-
-            return await _db.ExistsAsync(id, version, cancellationToken);
+            return await MirrorAsync(id, version, cancellationToken);
         }
 
-        private async Task MirrorAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
+        /// <summary>
+        /// Index the package from an upstream if it does not exist locally.
+        /// </summary>
+        /// <param name="id">The package ID to index from an upstream.</param>
+        /// <param name="version">The package version to index from an upstream.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>True if the package exists locally or was indexed from an upstream source.</returns>
+        private async Task<bool> MirrorAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
             if (await _db.ExistsAsync(id, version, cancellationToken))
             {
-                return;
+                return true;
             }
 
             _logger.LogInformation(
@@ -102,7 +110,7 @@ namespace BaGet.Core
                             "Failed to download package {PackageId} {PackageVersion}",
                             id,
                             version);
-                        return;
+                        return false;
                     }
 
                     _logger.LogInformation(
@@ -117,6 +125,8 @@ namespace BaGet.Core
                         id,
                         version,
                         result);
+
+                    return result == PackageIndexingResult.Success;
                 }
             }
             catch (Exception e)
@@ -126,6 +136,8 @@ namespace BaGet.Core
                     "Failed to index package {PackageId} {PackageVersion} from upstream",
                     id,
                     version);
+
+                return false;
             }
         }
     }

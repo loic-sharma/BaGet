@@ -95,20 +95,35 @@ namespace BaGet.Core
             CancellationToken cancellationToken)
         {
             var packageStream = new MemoryStream();
-            var resource = await _repository.GetResourceAsync<FindPackageByIdResource>(cancellationToken);
-            var success = await resource.CopyNupkgToStreamAsync(
-                id, version, packageStream, _cache, _ngLogger,
-                cancellationToken);
 
-            if (!success)
+            try
             {
+                var resource = await _repository.GetResourceAsync<FindPackageByIdResource>(cancellationToken);
+                var success = await resource.CopyNupkgToStreamAsync(
+                    id, version, packageStream, _cache, _ngLogger,
+                    cancellationToken);
+
+                if (!success)
+                {
+                    packageStream.Dispose();
+                    return null;
+                }
+
+                packageStream.Position = 0;
+
+                return packageStream;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(
+                    e,
+                    "Failed to index package {Id} {Version} from upstream",
+                    id,
+                    version);
+
                 packageStream.Dispose();
                 return null;
             }
-
-            packageStream.Seek(0, SeekOrigin.Begin);
-
-            return packageStream;
         }
 
         public void Dispose() => _cache.Dispose();
