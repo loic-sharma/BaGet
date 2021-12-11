@@ -13,7 +13,7 @@ namespace BaGet.Azure
     /// <summary>
     /// Stores the metadata of packages using Azure Table Storage.
     /// </summary>
-    public partial class TablePackageDatabase : IPackageDatabase
+    public class TablePackageDatabase : IPackageDatabase
     {
         private const string TableName = "Packages";
         private const int MaxPreconditionFailures = 5;
