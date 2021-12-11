@@ -45,7 +45,7 @@ namespace BaGet
             // activated. BaGet will run through all its providers until it finds one that is active.
             services.AddScoped(DependencyInjectionExtensions.GetServiceFromProviders<IContext>);
             services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<IStorageService>);
-            services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<IPackageService>);
+            services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<IPackageDatabase>);
             services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<ISearchService>);
             services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<ISearchIndexer>);
 

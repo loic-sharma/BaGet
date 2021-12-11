@@ -12,9 +12,9 @@ namespace BaGet.Core
     /// </summary>
     public class DisabledMirrorService : IMirrorService
     {
-        private readonly IPackageService _packages;
+        private readonly IPackageDatabase _packages;
 
-        public DisabledMirrorService(IPackageService packages)
+        public DisabledMirrorService(IPackageDatabase packages)
         {
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));
         }

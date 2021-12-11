@@ -24,12 +24,12 @@ namespace BaGet.Core
             ".p7s"
         };
 
-        private readonly IPackageService _packages;
+        private readonly IPackageDatabase _packages;
         private readonly ISymbolStorageService _storage;
         private readonly ILogger<SymbolIndexingService> _logger;
 
         public SymbolIndexingService(
-            IPackageService packages,
+            IPackageDatabase packages,
             ISymbolStorageService storage,
             ILogger<SymbolIndexingService> logger)
         {

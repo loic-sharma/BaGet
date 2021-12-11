@@ -13,19 +13,19 @@ namespace BaGet.Azure
     /// <summary>
     /// Stores the metadata of packages using Azure Table Storage.
     /// </summary>
-    public partial class TablePackageService : IPackageService
+    public class TablePackageDatabase : IPackageDatabase
     {
         private const string TableName = "Packages";
         private const int MaxPreconditionFailures = 5;
 
         private readonly TableOperationBuilder _operationBuilder;
         private readonly CloudTable _table;
-        private readonly ILogger<TablePackageService> _logger;
+        private readonly ILogger<TablePackageDatabase> _logger;
 
-        public TablePackageService(
+        public TablePackageDatabase(
             TableOperationBuilder operationBuilder,
             CloudTableClient client,
-            ILogger<TablePackageService> logger)
+            ILogger<TablePackageDatabase> logger)
         {
             _operationBuilder = operationBuilder ?? throw new ArgumentNullException(nameof(operationBuilder));
             _table = client?.GetTableReference(TableName) ?? throw new ArgumentNullException(nameof(client));

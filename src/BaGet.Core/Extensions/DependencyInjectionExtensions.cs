@@ -104,7 +104,7 @@ namespace BaGet.Core
             services.TryAddTransient<MirrorV3Client>();
             services.TryAddTransient<DisabledMirrorService>();
             services.TryAddSingleton<NullStorageService>();
-            services.TryAddTransient<PackageService>();
+            services.TryAddTransient<PackageDatabase>();
 
             services.TryAddTransient(IMirrorServiceFactory);
             services.TryAddTransient(IMirrorClientFactory);

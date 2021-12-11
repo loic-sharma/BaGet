@@ -10,18 +10,18 @@ namespace BaGet.Core
 {
     /// <summary>
     /// Implements the NuGet Package Content resource. Supports read-through caching.
-    /// Tracks state in a database (<see cref="IPackageService"/>) and stores packages
+    /// Tracks state in a database (<see cref="IPackageDatabase"/>) and stores packages
     /// using <see cref="IPackageStorageService"/>.
     /// </summary>
     public class DefaultPackageContentService : IPackageContentService
     {
         private readonly IMirrorService _mirror;
-        private readonly IPackageService _packages;
+        private readonly IPackageDatabase _packages;
         private readonly IPackageStorageService _storage;
 
         public DefaultPackageContentService(
             IMirrorService mirror,
-            IPackageService packages,
+            IPackageDatabase packages,
             IPackageStorageService storage)
         {
             _mirror = mirror ?? throw new ArgumentNullException(nameof(mirror));

@@ -13,7 +13,7 @@ namespace BaGet.Web
     {
         private readonly IAuthenticationService _authentication;
         private readonly IPackageIndexingService _indexer;
-        private readonly IPackageService _packages;
+        private readonly IPackageDatabase _packages;
         private readonly IPackageDeletionService _deleteService;
         private readonly IOptionsSnapshot<BaGetOptions> _options;
         private readonly ILogger<PackagePublishController> _logger;
@@ -21,7 +21,7 @@ namespace BaGet.Web
         public PackagePublishController(
             IAuthenticationService authentication,
             IPackageIndexingService indexer,
-            IPackageService packages,
+            IPackageDatabase packages,
             IPackageDeletionService deletionService,
             IOptionsSnapshot<BaGetOptions> options,
             ILogger<PackagePublishController> logger)

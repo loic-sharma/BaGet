@@ -21,10 +21,10 @@ namespace BaGet
         {
             app.Services.AddBaGetOptions<AzureTableOptions>(nameof(BaGetOptions.Database));
 
-            app.Services.AddTransient<TablePackageService>();
+            app.Services.AddTransient<TablePackageDatabase>();
             app.Services.AddTransient<TableOperationBuilder>();
             app.Services.AddTransient<TableSearchService>();
-            app.Services.TryAddTransient<IPackageService>(provider => provider.GetRequiredService<TablePackageService>());
+            app.Services.TryAddTransient<IPackageDatabase>(provider => provider.GetRequiredService<TablePackageDatabase>());
             app.Services.TryAddTransient<ISearchService>(provider => provider.GetRequiredService<TableSearchService>());
             app.Services.TryAddTransient<ISearchIndexer>(provider => provider.GetRequiredService<NullSearchIndexer>());
 
@@ -42,11 +42,11 @@ namespace BaGet
                 return account.CreateCloudTableClient();
             });
 
-            app.Services.AddProvider<IPackageService>((provider, config) =>
+            app.Services.AddProvider<IPackageDatabase>((provider, config) =>
             {
                 if (!config.HasDatabaseType("AzureTable")) return null;
 
-                return provider.GetRequiredService<TablePackageService>();
+                return provider.GetRequiredService<TablePackageDatabase>();
             });
 
             app.Services.AddProvider<ISearchService>((provider, config) =>

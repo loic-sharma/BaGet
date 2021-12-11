@@ -11,12 +11,12 @@ namespace BaGet.Core
     public class DefaultPackageMetadataService : IPackageMetadataService
     {
         private readonly IMirrorService _mirror;
-        private readonly IPackageService _packages;
+        private readonly IPackageDatabase _packages;
         private readonly RegistrationBuilder _builder;
 
         public DefaultPackageMetadataService(
             IMirrorService mirror,
-            IPackageService packages,
+            IPackageDatabase packages,
             RegistrationBuilder builder)
         {
             _mirror = mirror ?? throw new ArgumentNullException(nameof(mirror));

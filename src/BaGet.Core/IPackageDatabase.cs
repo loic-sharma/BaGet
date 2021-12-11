@@ -9,7 +9,7 @@ namespace BaGet.Core
     /// The "source of truth" for packages' state. Packages' content
     /// are stored by the <see cref="IPackageStorageService"/>.
     /// </summary>
-    public interface IPackageService
+    public interface IPackageDatabase
     {
         /// <summary>
         /// Attempt to add a new package to the database.
@@ -98,7 +98,7 @@ namespace BaGet.Core
 
     /// <summary>
     /// The result of attempting to add the package to the database.
-    /// See <see cref="IPackageService.AddAsync(Package, CancellationToken)"/>
+    /// See <see cref="IPackageDatabase.AddAsync(Package, CancellationToken)"/>
     /// </summary>
     public enum PackageAddResult
     {

@@ -8,7 +8,7 @@ namespace BaGet.Core.Tests.Services
 {
     public class PackageIndexingServiceTests
     {
-        private readonly Mock<IPackageService> _packages;
+        private readonly Mock<IPackageDatabase> _packages;
         private readonly Mock<IPackageStorageService> _storage;
         private readonly Mock<ISearchIndexer> _search;
         private readonly Mock<SystemTime> _time;
@@ -16,7 +16,7 @@ namespace BaGet.Core.Tests.Services
 
         public PackageIndexingServiceTests()
         {
-            _packages = new Mock<IPackageService>();
+            _packages = new Mock<IPackageDatabase>();
             _storage = new Mock<IPackageStorageService>();
             _search = new Mock<ISearchIndexer>();
             _time = new Mock<SystemTime>();

@@ -5,7 +5,7 @@ using Xunit;
 
 namespace BaGet.Core.Tests.Services
 {
-    public class PackageServiceTests
+    public class PackageDatabaseTests
     {
         public class AddAsync : FactsBase
         {
@@ -192,12 +192,12 @@ namespace BaGet.Core.Tests.Services
         public class FactsBase
         {
             protected readonly Mock<IContext> _context;
-            protected readonly PackageService _target;
+            protected readonly PackageDatabase _target;
 
             public FactsBase()
             {
                 _context = new Mock<IContext>();
-                _target = new PackageService(_context.Object);
+                _target = new PackageDatabase(_context.Object);
             }
         }
     }

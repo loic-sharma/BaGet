@@ -282,7 +282,7 @@ namespace BaGet.Core.Tests.Mirror
 
         public class FactsBase
         {
-            protected readonly Mock<IPackageService> _packages;
+            protected readonly Mock<IPackageDatabase> _packages;
             protected readonly Mock<IMirrorClient> _upstream;
             protected readonly Mock<IPackageIndexingService> _indexer;
 
@@ -291,7 +291,7 @@ namespace BaGet.Core.Tests.Mirror
 
             public FactsBase()
             {
-                _packages = new Mock<IPackageService>();
+                _packages = new Mock<IPackageDatabase>();
                 _upstream = new Mock<IMirrorClient>();
                 _indexer = new Mock<IPackageIndexingService>();
 
