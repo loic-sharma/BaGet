@@ -13,13 +13,13 @@ namespace BaGet.Core
 {
     public class MirrorService : IMirrorService
     {
-        private readonly IPackageService _localPackages;
+        private readonly IPackageDatabase _localPackages;
         private readonly IMirrorClient _upstreamClient;
         private readonly IPackageIndexingService _indexer;
         private readonly ILogger<MirrorService> _logger;
 
         public MirrorService(
-            IPackageService localPackages,
+            IPackageDatabase localPackages,
             IMirrorClient upstreamClient,
             IPackageIndexingService indexer,
             ILogger<MirrorService> logger)

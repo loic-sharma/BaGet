@@ -73,7 +73,7 @@ namespace BaGet.Core
             where TContext : DbContext, IContext
         {
             services.TryAddScoped<IContext>(provider => provider.GetRequiredService<TContext>());
-            services.TryAddTransient<IPackageService>(provider => provider.GetRequiredService<PackageService>());
+            services.TryAddTransient<IPackageDatabase>(provider => provider.GetRequiredService<PackageDatabase>());
 
             services.AddDbContext<TContext>(configureContext);
 
@@ -84,11 +84,11 @@ namespace BaGet.Core
                 return provider.GetRequiredService<TContext>();
             });
 
-            services.AddProvider<IPackageService>((provider, config) =>
+            services.AddProvider<IPackageDatabase>((provider, config) =>
             {
                 if (!config.HasDatabaseType(databaseType)) return null;
 
-                return provider.GetRequiredService<PackageService>();
+                return provider.GetRequiredService<PackageDatabase>();
             });
 
             services.AddProvider<ISearchIndexer>((provider, config) =>

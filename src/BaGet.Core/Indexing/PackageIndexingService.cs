@@ -10,7 +10,7 @@ namespace BaGet.Core
 {
     public class PackageIndexingService : IPackageIndexingService
     {
-        private readonly IPackageService _packages;
+        private readonly IPackageDatabase _packages;
         private readonly IPackageStorageService _storage;
         private readonly ISearchIndexer _search;
         private readonly SystemTime _time;
@@ -18,7 +18,7 @@ namespace BaGet.Core
         private readonly ILogger<PackageIndexingService> _logger;
 
         public PackageIndexingService(
-            IPackageService packages,
+            IPackageDatabase packages,
             IPackageStorageService storage,
             ISearchIndexer search,
             SystemTime time,

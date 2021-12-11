@@ -8,11 +8,11 @@ using NuGet.Versioning;
 
 namespace BaGet.Core
 {
-    public class PackageService : IPackageService
+    public class PackageDatabase : IPackageDatabase
     {
         private readonly IContext _context;
 
-        public PackageService(IContext context)
+        public PackageDatabase(IContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
