@@ -18,7 +18,7 @@ namespace BaGet.Web
             _linkGenerator = linkGenerator ?? throw new ArgumentNullException(nameof(linkGenerator));
         }
 
-        public string GetServiceIndexV3Url()
+        public string GetServiceIndexUrl()
         {
             return _linkGenerator.GetUriByRouteValues(
                 _httpContextAccessor.HttpContext,
@@ -168,7 +168,7 @@ namespace BaGet.Web
                 values: null);
         }
 
-        public string GetPackageVersionV2Url(Package package)
+        public string GetPackageMetadataV2Url(Package package)
         {
             return _linkGenerator.GetUriByRouteValues(
                 _httpContextAccessor.HttpContext,

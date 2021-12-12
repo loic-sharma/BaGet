@@ -3,6 +3,7 @@ using System.Xml.Linq;
 
 namespace BaGet.Core
 {
+    // TODO: comments
     public interface IV2Builder
     {
         XElement BuildIndex();

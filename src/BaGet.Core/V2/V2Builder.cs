@@ -45,7 +45,7 @@ namespace BaGet.Core
 
                 packages.Select(package =>
                 {
-                    var packageV2Url = _url.GetPackageVersionV2Url(package);
+                    var packageV2Url = _url.GetPackageMetadataV2Url(package);
                     var downloadUrl = _url.GetPackageDownloadUrl(package);
 
                     return new XElement(
@@ -69,7 +69,7 @@ namespace BaGet.Core
         {
             // See: https://joelverhagen.github.io/NuGetUndocs/#endpoint-get-a-single-package
             var serviceIndex = _url.GetServiceIndexV2Url();
-            var packageV2Url = _url.GetPackageVersionV2Url(package);
+            var packageV2Url = _url.GetPackageMetadataV2Url(package);
             var downloadUrl = _url.GetPackageDownloadUrl(package);
 
             return new XElement(
