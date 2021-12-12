@@ -268,5 +268,7 @@ __pycache__/
 # Cake - Uncomment if you are using it
 # tools/
 
-# Ignore database file
+# Ignore database files
 **/baget.db
+**/baget.db-shm
+**/baget.db-wal

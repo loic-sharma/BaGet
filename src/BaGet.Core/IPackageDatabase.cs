@@ -83,8 +83,8 @@ namespace BaGet.Core
         /// <param name="id">The id of the package to update.</param>
         /// <param name="version">The id of the package to update.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
-        /// <returns>False if the package does not exist.</returns>
-        Task<bool> AddDownloadAsync(string id, NuGetVersion version, CancellationToken cancellationToken);
+        /// <returns>Task that completes when the package's download has been incremented.</returns>
+        Task AddDownloadAsync(string id, NuGetVersion version, CancellationToken cancellationToken);
 
         /// <summary>
         /// Completely remove the package from the database.

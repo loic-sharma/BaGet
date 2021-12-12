@@ -48,7 +48,7 @@ namespace BaGet.Azure
             return PackageAddResult.Success;
         }
 
-        public async Task<bool> AddDownloadAsync(
+        public async Task AddDownloadAsync(
             string id,
             NuGetVersion version,
             CancellationToken cancellationToken)
@@ -68,13 +68,13 @@ namespace BaGet.Azure
 
                     if (entity == null)
                     {
-                        return false;
+                        return;
                     }
 
                     entity.Downloads += 1;
 
                     await _table.ExecuteAsync(TableOperation.Merge(entity), cancellationToken);
-                    return true;
+                    return;
                 }
                 catch (StorageException e)
                     when (attempt < MaxPreconditionFailures && e.IsPreconditionFailedException())

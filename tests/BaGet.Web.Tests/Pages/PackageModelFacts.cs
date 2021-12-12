@@ -14,7 +14,7 @@ namespace BaGet.Web.Tests
     public class PackageModelFacts
     {
         private readonly Mock<IPackageContentService> _content;
-        private readonly Mock<IMirrorService> _mirror;
+        private readonly Mock<IPackageService> _packages;
         private readonly Mock<ISearchService> _search;
         private readonly Mock<IUrlGenerator> _url;
         private readonly PackageModel _target;
@@ -24,11 +24,11 @@ namespace BaGet.Web.Tests
         public PackageModelFacts()
         {
             _content = new Mock<IPackageContentService>();
-            _mirror = new Mock<IMirrorService>();
+            _packages = new Mock<IPackageService>();
             _search = new Mock<ISearchService>();
             _url = new Mock<IUrlGenerator>();
             _target = new PackageModel(
-                _mirror.Object,
+                _packages.Object,
                 _content.Object,
                 _search.Object,
                 _url.Object);
@@ -41,7 +41,7 @@ namespace BaGet.Web.Tests
         [Fact]
         public async Task ReturnsNotFound()
         {
-            _mirror
+            _packages
                 .Setup(m => m.FindPackagesAsync("testpackage", _cancellation))
                 .ReturnsAsync(new List<Package>());
 
@@ -56,7 +56,7 @@ namespace BaGet.Web.Tests
         [Fact]
         public async Task ReturnsNotFoundIfAllUnlisted()
         {
-            _mirror
+            _packages
                 .Setup(m => m.FindPackagesAsync("testpackage", _cancellation))
                 .ReturnsAsync(new List<Package>
                 {
@@ -74,7 +74,7 @@ namespace BaGet.Web.Tests
         [Fact]
         public async Task ReturnsRequestedVersion()
         {
-            _mirror
+            _packages
                 .Setup(m => m.FindPackagesAsync("testpackage", _cancellation))
                 .ReturnsAsync(new List<Package>
                 {
@@ -101,7 +101,7 @@ namespace BaGet.Web.Tests
         [Fact]
         public async Task ReturnsRequestedUnlistedVersion()
         {
-            _mirror
+            _packages
                 .Setup(m => m.FindPackagesAsync("testpackage", _cancellation))
                 .ReturnsAsync(new List<Package>
                 {
@@ -126,7 +126,7 @@ namespace BaGet.Web.Tests
         [Fact]
         public async Task FallsBackToLatestListedVersion()
         {
-            _mirror
+            _packages
                 .Setup(m => m.FindPackagesAsync("testpackage", _cancellation))
                 .ReturnsAsync(new List<Package>
                 {
@@ -156,7 +156,7 @@ namespace BaGet.Web.Tests
         [InlineData(new[] { "tEmPlAte", "dOtNeTtOoL" }, /*expectDotnetTemplate: */ true, /*expectDotnetTool: */ true)]
         public async Task HandlesPackageTypes(IEnumerable<string> packageTypes, bool expectDotnetTemplate, bool expectDotnetTool)
         {
-            _mirror
+            _packages
                 .Setup(m => m.FindPackagesAsync("testpackage", _cancellation))
                 .ReturnsAsync(new List<Package>
                 {
@@ -173,7 +173,7 @@ namespace BaGet.Web.Tests
         [Fact]
         public async Task FindsDependentPackages()
         {
-            _mirror
+            _packages
                 .Setup(m => m.FindPackagesAsync("testpackage", _cancellation))
                 .ReturnsAsync(new List<Package>
                 {
@@ -201,7 +201,7 @@ namespace BaGet.Web.Tests
         [Fact]
         public async Task GroupsVersions()
         {
-            _mirror
+            _packages
                 .Setup(m => m.FindPackagesAsync("testpackage", _cancellation))
                 .ReturnsAsync(new List<Package>
                 {
@@ -256,7 +256,7 @@ namespace BaGet.Web.Tests
         [InlineData("net4.8", ".NET Framework 4.8")]
         public async Task PrettifiesTargetFramework(string targetFramework, string expectedResult)
         {
-            _mirror
+            _packages
                 .Setup(m => m.FindPackagesAsync("testpackage", _cancellation))
                 .ReturnsAsync(new List<Package>
                 {
@@ -283,7 +283,7 @@ namespace BaGet.Web.Tests
         {
             var now = DateTime.Now;
 
-            _mirror
+            _packages
                 .Setup(m => m.FindPackagesAsync("testpackage", _cancellation))
                 .ReturnsAsync(new List<Package>
                 {
@@ -312,7 +312,7 @@ namespace BaGet.Web.Tests
 
                 readmeStream.Position = 0;
 
-                _mirror
+                _packages
                     .Setup(m => m.FindPackagesAsync("testpackage", _cancellation))
                     .ReturnsAsync(new List<Package>
                     {
