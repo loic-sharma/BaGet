@@ -17,17 +17,17 @@ namespace BaGet.Web
     [Produces("application/xml")]
     public class V2ApiController : Controller
     {
+        private readonly IPackageService _packages;
         private readonly ISearchService _search;
-        private readonly IMirrorService _mirror;
         private readonly IV2Builder _builder;
 
         public V2ApiController(
+            IPackageService packages,
             ISearchService search,
-            IMirrorService mirror,
             IV2Builder builder)
         {
+            _packages = packages ?? throw new ArgumentNullException(nameof(packages));
             _search = search ?? throw new ArgumentNullException(nameof(search));
-            _mirror = mirror ?? throw new ArgumentNullException(nameof(mirror));
             _builder = builder ?? throw new ArgumentNullException(nameof(builder));
         }
 
@@ -135,7 +135,7 @@ namespace BaGet.Web
         {
             id = id?.Trim('\'');
 
-            var packages = await _mirror.FindPackagesAsync(id, cancellationToken);
+            var packages = await _packages.FindPackagesAsync(id, cancellationToken);
             if (!packages.Any())
             {
                 return NotFound();
@@ -151,7 +151,7 @@ namespace BaGet.Web
                 return BadRequest();
             }
 
-            var package = await _mirror.FindPackageOrNullAsync(id, nugetVersion, cancellationToken);
+            var package = await _packages.FindPackageOrNullAsync(id, nugetVersion, cancellationToken);
             if (package == null)
             {
                 return NotFound();
