@@ -9,22 +9,17 @@ using NuGet.Versioning;
 namespace BaGet.Core
 {
     /// <summary>
-    /// Implements the NuGet Package Content resource. Supports read-through caching.
-    /// Tracks state in a database (<see cref="IPackageDatabase"/>) and stores packages
-    /// using <see cref="IPackageStorageService"/>.
+    /// Implements the NuGet Package Content resource in NuGet's V3 protocol.
     /// </summary>
     public class DefaultPackageContentService : IPackageContentService
     {
-        private readonly IMirrorService _mirror;
-        private readonly IPackageDatabase _packages;
+        private readonly IPackageService _packages;
         private readonly IPackageStorageService _storage;
 
         public DefaultPackageContentService(
-            IMirrorService mirror,
-            IPackageDatabase packages,
+            IPackageService packages,
             IPackageStorageService storage)
         {
-            _mirror = mirror ?? throw new ArgumentNullException(nameof(mirror));
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
         }
@@ -33,7 +28,7 @@ namespace BaGet.Core
             string id,
             CancellationToken cancellationToken = default)
         {
-            var versions = await _mirror.FindPackageVersionsAsync(id, cancellationToken);
+            var versions = await _packages.FindPackageVersionsAsync(id, cancellationToken);
             if (!versions.Any())
             {
                 return null;
@@ -53,22 +48,17 @@ namespace BaGet.Core
             NuGetVersion version,
             CancellationToken cancellationToken = default)
         {
-            // Allow read-through caching if it is configured.
-            await _mirror.MirrorAsync(id, version, cancellationToken);
-
-            if (!await _packages.AddDownloadAsync(id, version, cancellationToken))
+            if (!await _packages.ExistsAsync(id, version, cancellationToken))
             {
                 return null;
             }
 
+            await _packages.AddDownloadAsync(id, version, cancellationToken);
             return await _storage.GetPackageStreamAsync(id, version, cancellationToken);
         }
 
         public async Task<Stream> GetPackageManifestStreamOrNullAsync(string id, NuGetVersion version, CancellationToken cancellationToken = default)
         {
-            // Allow read-through caching if it is configured.
-            await _mirror.MirrorAsync(id, version, cancellationToken);
-
             if (!await _packages.ExistsAsync(id, version, cancellationToken))
             {
                 return null;
@@ -79,11 +69,8 @@ namespace BaGet.Core
 
         public async Task<Stream> GetPackageReadmeStreamOrNullAsync(string id, NuGetVersion version, CancellationToken cancellationToken = default)
         {
-            // Allow read-through caching if it is configured.
-            await _mirror.MirrorAsync(id, version, cancellationToken);
-
-            var package = await _packages.FindOrNullAsync(id, version, includeUnlisted: true, cancellationToken);
-            if (!package.HasReadme)
+            var package = await _packages.FindPackageOrNullAsync(id, version, cancellationToken);
+            if (package == null || !package.HasReadme)
             {
                 return null;
             }
@@ -93,11 +80,8 @@ namespace BaGet.Core
 
         public async Task<Stream> GetPackageIconStreamOrNullAsync(string id, NuGetVersion version, CancellationToken cancellationToken = default)
         {
-            // Allow read-through caching if it is configured.
-            await _mirror.MirrorAsync(id, version, cancellationToken);
-
-            var package = await _packages.FindOrNullAsync(id, version, includeUnlisted: true, cancellationToken);
-            if (!package.HasEmbeddedIcon)
+            var package = await _packages.FindPackageOrNullAsync(id, version, cancellationToken);
+            if (package == null || !package.HasEmbeddedIcon)
             {
                 return null;
             }

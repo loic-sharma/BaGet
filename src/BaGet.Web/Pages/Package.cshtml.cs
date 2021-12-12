@@ -17,7 +17,7 @@ namespace BaGet.Web
     {
         private static readonly MarkdownPipeline MarkdownPipeline;
 
-        private readonly IMirrorService _mirror;
+        private readonly IPackageService _packages;
         private readonly IPackageContentService _content;
         private readonly ISearchService _search;
         private readonly IUrlGenerator _url;
@@ -30,12 +30,12 @@ namespace BaGet.Web
         }
 
         public PackageModel(
-            IMirrorService mirror,
+            IPackageService packages,
             IPackageContentService content,
             ISearchService search,
             IUrlGenerator url)
         {
-            _mirror = mirror ?? throw new ArgumentNullException(nameof(mirror));
+            _packages = packages ?? throw new ArgumentNullException(nameof(packages));
             _content = content ?? throw new ArgumentNullException(nameof(content));
             _search = search ?? throw new ArgumentNullException(nameof(search));
             _url = url ?? throw new ArgumentNullException(nameof(url));
@@ -62,7 +62,7 @@ namespace BaGet.Web
 
         public async Task OnGetAsync(string id, string version, CancellationToken cancellationToken)
         {
-            var packages = await _mirror.FindPackagesAsync(id, cancellationToken);
+            var packages = await _packages.FindPackagesAsync(id, cancellationToken);
             var listedPackages = packages.Where(p => p.Listed).ToList();
 
             // Try to find the requested version.

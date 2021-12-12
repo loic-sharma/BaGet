@@ -11,7 +11,7 @@ using Xunit;
 
 namespace BaGet.Core.Tests
 {
-    public class MirrorServiceTests
+    public class PackageServiceTests
     {
         public class FindPackageVersionsAsync : FactsBase
         {
@@ -286,7 +286,7 @@ namespace BaGet.Core.Tests
             protected readonly Mock<IPackageIndexingService> _indexer;
 
             protected readonly CancellationToken _cancellationToken = CancellationToken.None;
-            protected readonly MirrorService _target;
+            protected readonly PackageService _target;
 
             public FactsBase()
             {
@@ -294,11 +294,11 @@ namespace BaGet.Core.Tests
                 _upstream = new Mock<IUpstreamClient>();
                 _indexer = new Mock<IPackageIndexingService>();
 
-                _target = new MirrorService(
+                _target = new PackageService(
                     _packages.Object,
                     _upstream.Object,
                     _indexer.Object,
-                    Mock.Of<ILogger<MirrorService>>());
+                    Mock.Of<ILogger<PackageService>>());
             }
         }
     }
