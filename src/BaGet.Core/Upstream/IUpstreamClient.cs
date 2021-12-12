@@ -13,13 +13,13 @@ namespace BaGet.Core
     public interface IUpstreamClient
     {
         /// <summary>
-        /// Try to get the metadata for all versions of a package from the upstream package source. Returns empty
+        /// Try to get all versions of a package from the upstream package source. Returns empty
         /// if the package could not be found.
         /// </summary>
         /// <param name="id">The package ID to lookup</param>
         /// <param name="cancellationToken"></param>
         /// <returns>
-        /// The metadata for all versions of a package, including unlisted packages.
+        /// All versions of a package, including unlisted packages.
         /// Returns an empty list if the package could not be found.
         /// </returns>
         Task<IReadOnlyList<NuGetVersion>> ListPackageVersionsAsync(string id, CancellationToken cancellationToken);
