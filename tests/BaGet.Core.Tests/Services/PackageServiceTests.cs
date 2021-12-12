@@ -97,7 +97,7 @@ namespace BaGet.Core.Tests
                 localPackages = localPackages ?? new List<Package>();
                 upstreamPackages = upstreamPackages ?? new List<NuGetVersion>();
 
-                _packages
+                _db
                     .Setup(p => p.FindAsync(
                         "MyPackage",
                         /*includeUnlisted: */ true,
@@ -187,7 +187,7 @@ namespace BaGet.Core.Tests
                 localPackages = localPackages ?? new List<Package>();
                 upstreamPackages = upstreamPackages ?? new List<Package>();
 
-                _packages
+                _db
                     .Setup(p => p.FindAsync(
                         "MyPackage",
                         /*includeUnlisted: */ true,
@@ -202,19 +202,85 @@ namespace BaGet.Core.Tests
             }
         }
 
-        public class MirrorAsync : FactsBase
+        public class FindPackageOrNullAsync : MirrorAsync
         {
-            private readonly string _id = "MyPackage";
-            private readonly NuGetVersion _version = new NuGetVersion("1.0.0");
+            protected override async Task TargetAsync()
+                => await _target.FindPackageOrNullAsync(_id, _version, _cancellationToken);
+
+            [Fact]
+            public async Task ExistsInDatabase()
+            {
+                var expected = new Package();
+
+                _db
+                    .Setup(p => p.ExistsAsync(_id, _version, _cancellationToken))
+                    .ReturnsAsync(true);
+                _db
+                    .Setup(p => p.FindOrNullAsync(_id, _version,  /*includeUnlisted:*/ true, _cancellationToken))
+                    .ReturnsAsync(expected);
+
+                var result = await _target.FindPackageOrNullAsync(_id, _version, _cancellationToken);
+
+                Assert.Same(expected, result);
+            }
+
+            [Fact]
+            public async Task DoesNotExistInDatabase()
+            {
+                _db
+                    .Setup(p => p.FindOrNullAsync(_id, _version,  /*includeUnlisted:*/ true, _cancellationToken))
+                    .ReturnsAsync((Package)null);
+
+                var result = await _target.FindPackageOrNullAsync(_id, _version, _cancellationToken);
+
+                Assert.Null(result);
+            }
+        }
+
+        public class ExistsAsync : MirrorAsync
+        {
+            protected override async Task TargetAsync() => await _target.ExistsAsync(_id, _version, _cancellationToken);
+
+            [Fact]
+            public async Task ExistsInDatabase()
+            {
+                _db
+                    .Setup(p => p.ExistsAsync(_id, _version, _cancellationToken))
+                    .ReturnsAsync(true);
+
+                var result = await _target.ExistsAsync(_id, _version, _cancellationToken);
+
+                Assert.True(result);
+            }
+
+            [Fact]
+            public async Task DoesNotExistInDatabase()
+            {
+                _db
+                    .Setup(p => p.ExistsAsync(_id, _version, _cancellationToken))
+                    .ReturnsAsync(false);
+
+                var result = await _target.ExistsAsync(_id, _version, _cancellationToken);
+
+                Assert.False(result);
+            }
+        }
+
+        public abstract class MirrorAsync : FactsBase
+        {
+            protected readonly string _id = "MyPackage";
+            protected readonly NuGetVersion _version = new NuGetVersion("1.0.0");
+
+            protected abstract Task TargetAsync();
 
             [Fact]
             public async Task SkipsIfAlreadyMirrored()
             {
-                _packages
+                _db
                     .Setup(p => p.ExistsAsync(_id, _version, _cancellationToken))
                     .ReturnsAsync(true);
 
-                await _target.MirrorAsync(_id, _version, _cancellationToken);
+                await TargetAsync();
 
                 _indexer.Verify(
                     i => i.IndexAsync(It.IsAny<Stream>(), _cancellationToken),
@@ -224,7 +290,7 @@ namespace BaGet.Core.Tests
             [Fact]
             public async Task SkipsIfUpstreamDoesntHavePackage()
             {
-                _packages
+                _db
                     .Setup(p => p.ExistsAsync(_id, _version, _cancellationToken))
                     .ReturnsAsync(false);
 
@@ -232,7 +298,7 @@ namespace BaGet.Core.Tests
                     .Setup(u => u.DownloadPackageOrNullAsync(_id, _version, _cancellationToken))
                     .ReturnsAsync((Stream)null);
 
-                await _target.MirrorAsync(_id, _version, _cancellationToken);
+                await TargetAsync();
 
                 _indexer.Verify(
                     i => i.IndexAsync(It.IsAny<Stream>(), _cancellationToken),
@@ -242,7 +308,7 @@ namespace BaGet.Core.Tests
             [Fact]
             public async Task SkipsIfUpstreamThrows()
             {
-                _packages
+                _db
                     .Setup(p => p.ExistsAsync(_id, _version, _cancellationToken))
                     .ReturnsAsync(false);
 
@@ -250,7 +316,7 @@ namespace BaGet.Core.Tests
                     .Setup(u => u.DownloadPackageOrNullAsync(_id, _version, _cancellationToken))
                     .ThrowsAsync(new InvalidOperationException("Hello world"));
 
-                await _target.MirrorAsync(_id, _version, _cancellationToken);
+                await TargetAsync();
 
                 _indexer.Verify(
                     i => i.IndexAsync(It.IsAny<Stream>(), _cancellationToken),
@@ -260,7 +326,7 @@ namespace BaGet.Core.Tests
             [Fact]
             public async Task MirrorsPackage()
             {
-                _packages
+                _db
                     .Setup(p => p.ExistsAsync(_id, _version, _cancellationToken))
                     .ReturnsAsync(false);
 
@@ -270,7 +336,7 @@ namespace BaGet.Core.Tests
                         .Setup(u => u.DownloadPackageOrNullAsync(_id, _version, _cancellationToken))
                         .ReturnsAsync(downloadStream);
 
-                    await _target.MirrorAsync(_id, _version, _cancellationToken);
+                    await TargetAsync();
 
                     _indexer.Verify(
                         i => i.IndexAsync(It.IsAny<Stream>(), _cancellationToken),
@@ -281,21 +347,21 @@ namespace BaGet.Core.Tests
 
         public class FactsBase
         {
-            protected readonly Mock<IPackageDatabase> _packages;
+            protected readonly Mock<IPackageDatabase> _db;
             protected readonly Mock<IUpstreamClient> _upstream;
             protected readonly Mock<IPackageIndexingService> _indexer;
 
             protected readonly CancellationToken _cancellationToken = CancellationToken.None;
             protected readonly PackageService _target;
 
-            public FactsBase()
+            protected FactsBase()
             {
-                _packages = new Mock<IPackageDatabase>();
+                _db = new Mock<IPackageDatabase>();
                 _upstream = new Mock<IUpstreamClient>();
                 _indexer = new Mock<IPackageIndexingService>();
 
                 _target = new PackageService(
-                    _packages.Object,
+                    _db.Object,
                     _upstream.Object,
                     _indexer.Object,
                     Mock.Of<ILogger<PackageService>>());
