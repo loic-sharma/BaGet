@@ -83,7 +83,7 @@ namespace BaGet.Core
                 return new List<NuGetVersion>();
             }
         }
-        
+
         private Package ToPackage(PackageMetadata metadata)
         {
             var version = metadata.ParseVersion();
