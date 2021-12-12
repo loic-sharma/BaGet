@@ -4,13 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Protocol.Models;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NuGet.Versioning;
 using Xunit;
 
-namespace BaGet.Core.Tests.Mirror
+namespace BaGet.Core.Tests
 {
     public class MirrorServiceTests
     {
@@ -144,10 +143,10 @@ namespace BaGet.Core.Tests.Mirror
             [Fact]
             public async Task ReturnsUpstreamPackages()
             {
-                Setup(upstreamPackages: new List<PackageMetadata>
+                Setup(upstreamPackages: new List<Package>
                 {
-                    new PackageMetadata { Version = "1.0.0" },
-                    new PackageMetadata { Version = "2.0.0" },
+                    new Package { Version = new NuGetVersion("1.0.0") },
+                    new Package { Version = new NuGetVersion("2.0.0") },
                 });
 
                 var results = await _target.FindPackagesAsync("MyPackage", _cancellationToken);
@@ -166,10 +165,10 @@ namespace BaGet.Core.Tests.Mirror
                         new Package { Version = new NuGetVersion("1.0.0") },
                         new Package { Version = new NuGetVersion("2.0.0") },
                     },
-                    upstreamPackages: new List<PackageMetadata>
+                    upstreamPackages: new List<Package>
                     {
-                        new PackageMetadata { Version = "2.0.0" },
-                        new PackageMetadata { Version = "3.0.0" },
+                        new Package { Version = new NuGetVersion("2.0.0") },
+                        new Package { Version = new NuGetVersion("3.0.0") },
                     });
 
                 var results = await _target.FindPackagesAsync("MyPackage", _cancellationToken);
@@ -183,10 +182,10 @@ namespace BaGet.Core.Tests.Mirror
 
             private void Setup(
                 IReadOnlyList<Package> localPackages = null,
-                IReadOnlyList<PackageMetadata> upstreamPackages = null)
+                IReadOnlyList<Package> upstreamPackages = null)
             {
                 localPackages = localPackages ?? new List<Package>();
-                upstreamPackages = upstreamPackages ?? new List<PackageMetadata>();
+                upstreamPackages = upstreamPackages ?? new List<Package>();
 
                 _packages
                     .Setup(p => p.FindAsync(
@@ -196,7 +195,7 @@ namespace BaGet.Core.Tests.Mirror
                     .ReturnsAsync(localPackages);
 
                 _upstream
-                    .Setup(u => u.GetPackageMetadataAsync(
+                    .Setup(u => u.ListPackagesAsync(
                         "MyPackage",
                         _cancellationToken))
                     .ReturnsAsync(upstreamPackages);
@@ -230,8 +229,8 @@ namespace BaGet.Core.Tests.Mirror
                     .ReturnsAsync(false);
 
                 _upstream
-                    .Setup(u => u.DownloadPackageAsync(_id, _version, _cancellationToken))
-                    .ThrowsAsync(new PackageNotFoundException(_id, _version));
+                    .Setup(u => u.DownloadPackageOrNullAsync(_id, _version, _cancellationToken))
+                    .ReturnsAsync((Stream)null);
 
                 await _target.MirrorAsync(_id, _version, _cancellationToken);
 
@@ -248,7 +247,7 @@ namespace BaGet.Core.Tests.Mirror
                     .ReturnsAsync(false);
 
                 _upstream
-                    .Setup(u => u.DownloadPackageAsync(_id, _version, _cancellationToken))
+                    .Setup(u => u.DownloadPackageOrNullAsync(_id, _version, _cancellationToken))
                     .ThrowsAsync(new InvalidOperationException("Hello world"));
 
                 await _target.MirrorAsync(_id, _version, _cancellationToken);
@@ -268,7 +267,7 @@ namespace BaGet.Core.Tests.Mirror
                 using (var downloadStream = new MemoryStream())
                 {
                     _upstream
-                        .Setup(u => u.DownloadPackageAsync(_id, _version, _cancellationToken))
+                        .Setup(u => u.DownloadPackageOrNullAsync(_id, _version, _cancellationToken))
                         .ReturnsAsync(downloadStream);
 
                     await _target.MirrorAsync(_id, _version, _cancellationToken);
@@ -283,7 +282,7 @@ namespace BaGet.Core.Tests.Mirror
         public class FactsBase
         {
             protected readonly Mock<IPackageDatabase> _packages;
-            protected readonly Mock<IMirrorClient> _upstream;
+            protected readonly Mock<IUpstreamClient> _upstream;
             protected readonly Mock<IPackageIndexingService> _indexer;
 
             protected readonly CancellationToken _cancellationToken = CancellationToken.None;
@@ -292,7 +291,7 @@ namespace BaGet.Core.Tests.Mirror
             public FactsBase()
             {
                 _packages = new Mock<IPackageDatabase>();
-                _upstream = new Mock<IMirrorClient>();
+                _upstream = new Mock<IUpstreamClient>();
                 _indexer = new Mock<IPackageIndexingService>();
 
                 _target = new MirrorService(
