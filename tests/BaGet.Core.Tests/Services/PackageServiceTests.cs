@@ -345,6 +345,22 @@ namespace BaGet.Core.Tests
             }
         }
 
+        public class AddDownloadAsync : FactsBase
+        {
+            [Fact]
+            public async Task AddsDownload()
+            {
+                var id = "Hello";
+                var version = new NuGetVersion("1.2.3");
+
+                await _target.AddDownloadAsync(id, version, _cancellationToken);
+
+                _db.Verify(
+                    db => db.AddDownloadAsync(id, version, _cancellationToken),
+                    Times.Once);
+            }
+        }
+
         public class FactsBase
         {
             protected readonly Mock<IPackageDatabase> _db;
