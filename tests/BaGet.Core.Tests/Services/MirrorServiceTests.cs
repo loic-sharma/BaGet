@@ -4,13 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Protocol.Models;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NuGet.Versioning;
 using Xunit;
 
-namespace BaGet.Core.Tests.Mirror
+namespace BaGet.Core.Tests
 {
     public class MirrorServiceTests
     {

@@ -21,7 +21,7 @@ namespace BaGet.Core
     /// <summary>
     /// The client to upstream a NuGet server that uses the V2 protocol.
     /// </summary>
-    internal sealed class V2UpstreamClient : IUpstreamClient, IDisposable
+    public class V2UpstreamClient : IUpstreamClient, IDisposable
     {
         private readonly SourceCacheContext _cache;
         private readonly SourceRepository _repository;

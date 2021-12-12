@@ -14,7 +14,7 @@ namespace BaGet.Core
     /// <summary>
     /// The mirroring client for a NuGet server that uses the V3 protocol.
     /// </summary>
-    internal sealed class V3UpstreamClient : IUpstreamClient
+    public class V3UpstreamClient : IUpstreamClient
     {
         private readonly NuGetClient _client;
         private readonly ILogger<V3UpstreamClient> _logger;
@@ -39,6 +39,15 @@ namespace BaGet.Core
             }
             catch (PackageNotFoundException)
             {
+                return null;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(
+                    e,
+                    "Failed to download {PackageId} {PackageVersion} from upstream",
+                    id,
+                    version);
                 return null;
             }
         }
@@ -74,18 +83,20 @@ namespace BaGet.Core
                 return new List<NuGetVersion>();
             }
         }
-
-        // TODO: Test this.
+        
         private Package ToPackage(PackageMetadata metadata)
         {
+            var version = metadata.ParseVersion();
+
             return new Package
             {
                 Id = metadata.PackageId,
-                Version = metadata.ParseVersion(),
+                Version = version,
                 Authors = ParseAuthors(metadata.Authors),
                 Description = metadata.Description,
                 Downloads = 0,
                 HasReadme = false,
+                IsPrerelease = version.IsPrerelease,
                 Language = metadata.Language,
                 Listed = metadata.IsListed(),
                 MinClientVersion = metadata.MinClientVersion,
@@ -99,6 +110,7 @@ namespace BaGet.Core
                 PackageTypes = new List<PackageType>(),
                 RepositoryUrl = null,
                 RepositoryType = null,
+                SemVerLevel = version.IsSemVer2 ? SemVerLevel.SemVer2 : SemVerLevel.Unknown,
                 Tags = metadata.Tags?.ToArray() ?? Array.Empty<string>(),
 
                 Dependencies = ToDependencies(metadata)
