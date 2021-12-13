@@ -124,6 +124,7 @@ namespace BaGet.Web
 
                     Version = r.ParseVersion(),
 
+                    // TODO: Need to load depedencies!
                     Dependencies = new List<PackageDependency>()
                 })
                 .ToList();

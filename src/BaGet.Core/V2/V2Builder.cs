@@ -34,6 +34,7 @@ namespace BaGet.Core
             var serviceIndex = _url.GetServiceIndexV2Url();
 
             // TODO: Add <?xml version="1.0" encoding="utf-8"?> to top
+            // TODO: nuget.org adds `m:null="true"` attribute to elements with no value. Is that necessary?
             return new XElement(
                 N.feed,
                 new XAttribute(N.baze, XNamespace.Get(serviceIndex)),
@@ -51,7 +52,7 @@ namespace BaGet.Core
                     return new XElement(
                         N.entry,
                         new XElement(N.id, packageV2Url),
-                        new XElement(N.title, package.Title),
+                        new XElement(N.title, package.Id),
                         new XElement(
                             N.content,
                             new XAttribute("type", "application/zip"),
@@ -108,6 +109,7 @@ namespace BaGet.Core
                     package.Downloads),
                 new XElement(N.d_IconUrl, package.IconUrl), // TODO, URL logic
                 new XElement(N.d_Id, package.Id),
+                new XElement(N.d_IsPrerelease, package.Version.IsPrerelease),
                 new XElement(N.d_Language, package.Language),
                 new XElement(N.d_LastEdited, package.Published),
                 new XElement(N.d_LicenseUrl, package.LicenseUrl), // TODO
@@ -200,6 +202,7 @@ namespace BaGet.Core
             public static readonly XName d_DownloadCount = NS.d + "DownloadCount";
             public static readonly XName d_IconUrl = NS.d + "IconUrl";
             public static readonly XName d_Id = NS.d + "Id";
+            public static readonly XName d_IsPrerelease = NS.d + "IsPrerelease";
             public static readonly XName d_Language = NS.d + "Language";
             public static readonly XName d_LastEdited = NS.d + "LastEdited";
             public static readonly XName d_LicenseUrl = NS.d + "LicenseUrl";
