@@ -110,9 +110,9 @@ namespace BaGet.Web
                     Authors = r.Authors.ToArray(),
                     Description = r.Description,
                     Downloads = r.TotalDownloads,
-                    Language = "English",
-                    MinClientVersion = "1.2.3",
-                    Published = DateTime.Now.AddDays(-1),
+                    Language = "English", // TODO
+                    MinClientVersion = "1.2.3", // TODO
+                    Published = DateTime.Now.AddDays(-1), // TODO
                     Summary = r.Summary,
 
                     IconUrl = new Uri(r.IconUrl),
