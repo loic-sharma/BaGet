@@ -55,7 +55,7 @@ namespace BaGet.Tests
     {
       ""id"": ""TestData"",
       ""version"": ""1.2.3"",
-      ""description"": ""Test description"",
+      ""description"": ""Hello world"",
       ""authors"": [
         ""Test author""
       ],
@@ -63,9 +63,9 @@ namespace BaGet.Tests
       ""licenseUrl"": """",
       ""projectUrl"": """",
       ""registration"": ""http://localhost/v3/registration/testdata/index.json"",
-      ""summary"": """",
+      ""summary"": ""Hello world"",
       ""tags"": [],
-      ""title"": """",
+      ""title"": ""TestData"",
       ""totalDownloads"": 0,
       ""versions"": [
         {
@@ -277,7 +277,7 @@ namespace BaGet.Tests
                 ""dependencies"": []
               }
             ],
-            ""description"": ""Test description"",
+            ""description"": ""Hello world"",
             ""iconUrl"": """",
             ""language"": """",
             ""licenseUrl"": """",
@@ -287,9 +287,9 @@ namespace BaGet.Tests
             ""projectUrl"": """",
             ""published"": ""2020-01-01T00:00:00Z"",
             ""requireLicenseAcceptance"": false,
-            ""summary"": """",
+            ""summary"": ""Hello world"",
             ""tags"": [],
-            ""title"": """"
+            ""title"": ""TestData""
           }
         }
       ]

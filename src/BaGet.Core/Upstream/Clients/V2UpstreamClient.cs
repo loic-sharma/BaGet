@@ -23,30 +23,26 @@ namespace BaGet.Core
     /// </summary>
     public class V2UpstreamClient : IUpstreamClient, IDisposable
     {
-        private readonly SourceCacheContext _cache;
         private readonly SourceRepository _repository;
-        private readonly INuGetLogger _ngLogger;
         private readonly ILogger _logger;
+
+        private readonly SourceCacheContext _cache = new SourceCacheContext();
+        private readonly INuGetLogger _ngLogger = NullLogger.Instance;
 
         public V2UpstreamClient(
             IOptionsSnapshot<MirrorOptions> options,
             ILogger logger)
         {
-            if (options is null)
-            {
-                throw new ArgumentNullException(nameof(options));
-            }
+            var source = new PackageSource(options.Value.PackageSource.AbsoluteUri);
 
-            if (options.Value?.PackageSource?.AbsolutePath == null)
-            {
-                throw new ArgumentException("No mirror package source has been set.");
-            }
-
+            _repository = Repository.Factory.GetCoreV2(source);
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
 
-            _ngLogger = NullLogger.Instance;
-            _cache = new SourceCacheContext();
-            _repository = Repository.Factory.GetCoreV2(new PackageSource(options.Value.PackageSource.AbsoluteUri));
+        public V2UpstreamClient(SourceRepository repository, ILogger logger)
+        {
+            _repository = repository;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<IReadOnlyList<NuGetVersion>> ListPackageVersionsAsync(string id, CancellationToken cancellationToken)
@@ -138,9 +134,9 @@ namespace BaGet.Core
                 Description = package.Description,
                 Downloads = 0,
                 HasReadme = false,
-                Language = null,
+                Language = string.Empty,
                 Listed = package.IsListed,
-                MinClientVersion = null,
+                MinClientVersion = string.Empty,
                 Published = package.Published?.UtcDateTime ?? DateTime.MinValue,
                 RequireLicenseAcceptance = package.RequireLicenseAcceptance,
                 Summary = package.Summary,

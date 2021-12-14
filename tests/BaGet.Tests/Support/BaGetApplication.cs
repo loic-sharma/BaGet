@@ -18,15 +18,28 @@ using Xunit.Abstractions;
 
 namespace BaGet.Tests
 {
+    public class BaGetApplicationOptions
+    {
+        /// <summary>
+        /// Null if upstreaming should be disabled.
+        /// </summary>
+        public HttpClient UpstreamClient { get; set; }
+
+        /// <summary>
+        /// True if the upstream uses NuGet's V2 protocol.
+        /// </summary>
+        public bool EnableLegacyUpstream { get; set; }
+    }
+
     public class BaGetApplication : WebApplicationFactory<Startup>
     {
         private readonly ITestOutputHelper _output;
-        private readonly HttpClient _upstreamClient;
+        private readonly BaGetApplicationOptions _options;
 
-        public BaGetApplication(ITestOutputHelper output, HttpClient upstreamClient = null)
+        public BaGetApplication(ITestOutputHelper output, BaGetApplicationOptions options = null)
         {
             _output = output ?? throw new ArgumentNullException(nameof(output));
-            _upstreamClient = upstreamClient;
+            _options = options ?? new BaGetApplicationOptions();
         }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -40,6 +53,10 @@ namespace BaGet.Tests
             var storagePath = Path.Combine(tempPath, "Packages");
 
             Directory.CreateDirectory(tempPath);
+
+            var upstreamUrl = _options.EnableLegacyUpstream
+                ? "http://localhost/api/v2"
+                : "http://localhost/v3/index.json";
 
             builder
                 .UseStartup<Startup>()
@@ -64,8 +81,9 @@ namespace BaGet.Tests
                         { "Storage:Type", "FileSystem" },
                         { "Storage:Path", storagePath },
                         { "Search:Type", "Database" },
-                        { "Mirror:Enabled", _upstreamClient != null ? "true": "false" },
-                        { "Mirror:PackageSource", "http://localhost/v3/index.json" },
+                        { "Mirror:Enabled", _options.UpstreamClient != null ? "true": "false" },
+                        { "Mirror:Legacy", _options.EnableLegacyUpstream ? "true": "false" },
+                        { "Mirror:PackageSource",  upstreamUrl },
                     });
                 })
                 .ConfigureServices((context, services) =>
@@ -77,9 +95,13 @@ namespace BaGet.Tests
                         .Returns(DateTime.Parse("2020-01-01T00:00:00.000Z"));
 
                     services.AddSingleton(time.Object);
-                    if (_upstreamClient != null)
+                    if (_options.UpstreamClient != null)
                     {
-                        services.AddSingleton(_upstreamClient);
+                        services.AddSingleton(_options.UpstreamClient);
+                        services.AddSingleton(provider =>
+                            new V2UpstreamClient(
+                                TestableSourceRepository.Build(new Uri(upstreamUrl), _options.UpstreamClient),
+                                provider.GetRequiredService<ILogger<V2UpstreamClient>>()));
                     }
 
                     // Setup the integration test database.

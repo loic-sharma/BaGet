@@ -134,6 +134,7 @@ namespace BaGet.Web
 
         public async Task<ActionResult<XElement>> Package(string id, CancellationToken cancellationToken)
         {
+            // TODO: Accept semVerLevel=2.0.0 query parameter
             id = id?.Trim('\'');
 
             var packages = await _packages.FindPackagesAsync(id, cancellationToken);

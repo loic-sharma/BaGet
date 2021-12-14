@@ -8,17 +8,39 @@ using Xunit.Abstractions;
 
 namespace BaGet.Tests
 {
-    public class MirrorIntegrationTests : IDisposable
+    public class V2UpstreamMirrorIntegrationTests : MirrorIntegrationTests
+    {
+        public V2UpstreamMirrorIntegrationTests(ITestOutputHelper output)
+            : base(output, v2Upstream: true)
+        {
+        }
+    }
+
+    public class V3UpstreamMirrorIntegrationTests : MirrorIntegrationTests
+    {
+        public V3UpstreamMirrorIntegrationTests(ITestOutputHelper output)
+            : base(output, v2Upstream: false)
+        {
+        }
+    }
+
+    public abstract class MirrorIntegrationTests : IDisposable
     {
         private readonly BaGetApplication _upstream;
         private readonly BaGetApplication _downstream;
         private readonly HttpClient _downstreamClient;
         private readonly Stream _packageStream;
 
-        public MirrorIntegrationTests(ITestOutputHelper output)
+        protected MirrorIntegrationTests(ITestOutputHelper output, bool v2Upstream)
         {
             _upstream = new BaGetApplication(output);
-            _downstream = new BaGetApplication(output, _upstream.CreateClient());
+            _downstream = new BaGetApplication(
+                output,
+                new BaGetApplicationOptions
+                {
+                    UpstreamClient = _upstream.CreateClient(),
+                    EnableLegacyUpstream = v2Upstream,
+                });
 
             _downstreamClient = _downstream.CreateClient();
             _packageStream = TestResources.GetResourceStream(TestResources.Package);
@@ -120,7 +142,7 @@ namespace BaGet.Tests
                 ""dependencies"": []
               }
             ],
-            ""description"": ""Test description"",
+            ""description"": ""Hello world"",
             ""iconUrl"": """",
             ""language"": """",
             ""licenseUrl"": """",
@@ -130,9 +152,9 @@ namespace BaGet.Tests
             ""projectUrl"": """",
             ""published"": ""2020-01-01T00:00:00Z"",
             ""requireLicenseAcceptance"": false,
-            ""summary"": """",
+            ""summary"": ""Hello world"",
             ""tags"": [],
-            ""title"": """"
+            ""title"": ""TestData""
           }
         }
       ]

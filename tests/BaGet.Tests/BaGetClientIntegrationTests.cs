@@ -65,7 +65,7 @@ namespace BaGet.Tests
 
             Assert.Equal("TestData", result.PackageId);
             Assert.Equal("1.2.3", result.Version);
-            Assert.Equal("Test description", result.Description);
+            Assert.Equal("Hello world", result.Description);
             Assert.Equal("Test author", author);
             Assert.Equal(0, result.TotalDownloads);
 
@@ -210,7 +210,7 @@ namespace BaGet.Tests
 
             Assert.Equal("TestData", package.PackageId);
             Assert.Equal("1.2.3", package.Version);
-            Assert.Equal("Test description", package.Description);
+            Assert.Equal("Hello world", package.Description);
             Assert.Equal("Test author", package.Authors);
             Assert.True(package.Listed);
         }
