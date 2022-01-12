@@ -11,24 +11,28 @@ namespace BaGet.Core
     public class PackageDatabase : IPackageDatabase
     {
         private readonly IContext _context;
+        private readonly Func<IContext> _newContext;
 
-        public PackageDatabase(IContext context)
+        public PackageDatabase(IContext context, Func<IContext> newContext)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _newContext = newContext ?? throw new ArgumentNullException(nameof(newContext));
         }
 
         public async Task<PackageAddResult> AddAsync(Package package, CancellationToken cancellationToken)
         {
+            using var context = _newContext();
+
             try
             {
-                _context.Packages.Add(package);
+                context.Packages.Add(package);
 
-                await _context.SaveChangesAsync(cancellationToken);
+                await context.SaveChangesAsync(cancellationToken);
 
                 return PackageAddResult.Success;
             }
             catch (DbUpdateException e)
-                when (_context.IsUniqueConstraintViolationException(e))
+                when (context.IsUniqueConstraintViolationException(e))
             {
                 return PackageAddResult.PackageAlreadyExists;
             }
@@ -99,12 +103,14 @@ namespace BaGet.Core
 
         public async Task AddDownloadAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
-            await TryUpdatePackageAsync(id, version, p => p.Downloads += 1, cancellationToken);
+            await TryUpdatePackageWithConcurrencyRetryAsync(id, version, p => p.Downloads += 1, cancellationToken);
         }
 
         public async Task<bool> HardDeletePackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
-            var package = await _context.Packages
+            using var context = _newContext();
+
+            var package = await context.Packages
                 .Where(p => p.Id == id)
                 .Where(p => p.NormalizedVersionString == version.ToNormalizedString())
                 .Include(p => p.Dependencies)
@@ -116,8 +122,8 @@ namespace BaGet.Core
                 return false;
             }
 
-            _context.Packages.Remove(package);
-            await _context.SaveChangesAsync(cancellationToken);
+            context.Packages.Remove(package);
+            await context.SaveChangesAsync(cancellationToken);
 
             return true;
         }
@@ -128,7 +134,9 @@ namespace BaGet.Core
             Action<Package> action,
             CancellationToken cancellationToken)
         {
-            var package = await _context.Packages
+            using var context = _newContext();
+
+            var package = await context.Packages
                 .Where(p => p.Id == id)
                 .Where(p => p.NormalizedVersionString == version.ToNormalizedString())
                 .FirstOrDefaultAsync();
@@ -136,12 +144,38 @@ namespace BaGet.Core
             if (package != null)
             {
                 action(package);
-                await _context.SaveChangesAsync(cancellationToken);
+                await context.SaveChangesAsync(cancellationToken);
 
                 return true;
             }
 
             return false;
+        }
+
+        private async Task<bool> TryUpdatePackageWithConcurrencyRetryAsync(
+            string id,
+            NuGetVersion version,
+            Action<Package> action,
+            CancellationToken cancellationToken)
+        {
+            var attempts = 0;
+
+            while (true)
+            {
+                try
+                {
+                    return await TryUpdatePackageAsync(id, version, action, cancellationToken);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    attempts++;
+
+                    if (attempts >= 5)
+                    {
+                        throw;
+                    }
+                }
+            }
         }
     }
 }

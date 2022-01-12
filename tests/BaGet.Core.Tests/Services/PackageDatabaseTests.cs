@@ -197,7 +197,7 @@ namespace BaGet.Core.Tests.Services
             public FactsBase()
             {
                 _context = new Mock<IContext>();
-                _target = new PackageDatabase(_context.Object);
+                _target = new PackageDatabase(_context.Object, () => new Mock<IContext>().Object);
             }
         }
     }
