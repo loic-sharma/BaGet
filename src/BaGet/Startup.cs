@@ -43,7 +43,8 @@ namespace BaGet
             // You can swap between implementations of subsystems like storage and search using BaGet's configuration.
             // Each subsystem's implementation has a provider that reads the configuration to determine if it should be
             // activated. BaGet will run through all its providers until it finds one that is active.
-            services.AddScoped(DependencyInjectionExtensions.GetServiceFromProviders<IContext>);
+            services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<IContext>);
+            services.AddSingleton<Func<IContext>>(s => () => s.GetService<IContext>());
             services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<IStorageService>);
             services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<IPackageDatabase>);
             services.AddTransient(DependencyInjectionExtensions.GetServiceFromProviders<ISearchService>);

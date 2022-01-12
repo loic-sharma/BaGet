@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -5,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace BaGet.Core
 {
-    public interface IContext
+    public interface IContext : IDisposable
     {
         DatabaseFacade Database { get; }
 

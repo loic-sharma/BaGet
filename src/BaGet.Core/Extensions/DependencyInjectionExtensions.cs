@@ -144,7 +144,7 @@ namespace BaGet.Core
 
         private static void AddFallbackServices(this IServiceCollection services)
         {
-            services.TryAddScoped<IContext, NullContext>();
+            services.TryAddTransient<IContext, NullContext>();
 
             // BaGet's services have multiple implementations that live side-by-side.
             // The application will choose the implementation using one of two ways:

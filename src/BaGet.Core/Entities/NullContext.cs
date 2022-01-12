@@ -28,5 +28,10 @@ namespace BaGet.Core
         {
             throw new NotImplementedException();
         }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+        }
     }
 }
