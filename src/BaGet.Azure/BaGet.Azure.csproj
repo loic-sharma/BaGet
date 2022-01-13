@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Azure.Cosmos.Table" Version="1.0.8" />
-    <PackageReference Include="Microsoft.Azure.Search" Version="10.1.0" />
-    <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="11.2.3" />
+    <PackageReference Include="Microsoft.Azure.Cosmos.Table" Version="1.0.0" />
+    <PackageReference Include="Microsoft.Azure.Search" Version="5.0.1" />
+    <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="9.4.1" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
   </ItemGroup>
 
