@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Humanizer" Version="2.11.10" />
+    <PackageReference Include="Humanizer" Version="2.13.14" />
     <PackageReference Include="Markdig" Version="0.26.0" />
   </ItemGroup>
 
