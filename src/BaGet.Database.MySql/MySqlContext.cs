@@ -1,6 +1,6 @@
 using BaGet.Core;
 using Microsoft.EntityFrameworkCore;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 
 namespace BaGet.Database.MySql
 {
@@ -17,8 +17,7 @@ namespace BaGet.Database.MySql
 
         public override bool IsUniqueConstraintViolationException(DbUpdateException exception)
         {
-            return exception.InnerException is MySqlException mysqlException &&
-                   mysqlException.Number == UniqueConstraintViolationErrorCode;
+            return exception.InnerException is MySqlException {Number: UniqueConstraintViolationErrorCode};
         }
 
         /// <summary>
