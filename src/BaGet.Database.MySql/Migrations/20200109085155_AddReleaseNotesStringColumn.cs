@@ -7,17 +7,10 @@ namespace BaGet.Database.MySql.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "RowVersion",
-                table: "Packages",
-                rowVersion: true,
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldNullable: true);
-
             migrationBuilder.AddColumn<string>(
                 name: "ReleaseNotes",
                 table: "Packages",
+                type: "longtext",
                 maxLength: 4000,
                 nullable: true);
         }
@@ -27,14 +20,6 @@ namespace BaGet.Database.MySql.Migrations
             migrationBuilder.DropColumn(
                 name: "ReleaseNotes",
                 table: "Packages");
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "RowVersion",
-                table: "Packages",
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldRowVersion: true,
-                oldNullable: true);
         }
     }
 }
