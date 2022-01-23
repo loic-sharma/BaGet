@@ -35,7 +35,7 @@ namespace BaGet.Database.MySql
 
         /// <summary>
         /// MySQL has a limit of row size - 65535 bytes
-        /// So we map strings, strings array & uris, which are longer than 256 symbols to longtext MySQL type
+        /// So we map string, string[] and URI, which are longer than 256 symbols to longtext MySQL type
         /// See: https://github.com/PomeloFoundation/Pomelo.EntityFrameworkCore.MySql/issues/1606
         /// </summary>
         /// <param name="builder">EF Core model builder</param>
