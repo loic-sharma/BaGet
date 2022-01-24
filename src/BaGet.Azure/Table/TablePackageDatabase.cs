@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BaGet.Core;
 using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NuGet.Versioning;
 
 namespace BaGet.Azure
@@ -15,9 +16,9 @@ namespace BaGet.Azure
     /// </summary>
     public class TablePackageDatabase : IPackageDatabase
     {
-        private const string TableName = "Packages";
         private const int MaxPreconditionFailures = 5;
 
+        private readonly string _tableName;
         private readonly TableOperationBuilder _operationBuilder;
         private readonly CloudTable _table;
         private readonly ILogger<TablePackageDatabase> _logger;
@@ -25,10 +26,12 @@ namespace BaGet.Azure
         public TablePackageDatabase(
             TableOperationBuilder operationBuilder,
             CloudTableClient client,
-            ILogger<TablePackageDatabase> logger)
+            ILogger<TablePackageDatabase> logger,
+            IOptions<AzureTableOptions> options)
         {
             _operationBuilder = operationBuilder ?? throw new ArgumentNullException(nameof(operationBuilder));
-            _table = client?.GetTableReference(TableName) ?? throw new ArgumentNullException(nameof(client));
+            _tableName = options.Value.TableName;
+            _table = client?.GetTableReference(_tableName) ?? throw new ArgumentNullException(nameof(client));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
