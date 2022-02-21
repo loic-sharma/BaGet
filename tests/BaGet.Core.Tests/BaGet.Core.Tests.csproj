@@ -8,11 +8,4 @@
     <ProjectReference Include="..\..\src\BaGet.Core\BaGet.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Update="coverlet.collector" Version="3.1.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
 </Project>

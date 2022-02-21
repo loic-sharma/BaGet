@@ -10,7 +10,6 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsPackageVersion)" />
     <PackageReference Include="NuGet.Frameworks" Version="$(NuGetPackageVersion)" />
     <PackageReference Include="NuGet.Versioning" Version="$(NuGetPackageVersion)" />
-    <PackageReference Include="System.Text.Json" Version="6.0.1" />
   </ItemGroup>
 
 </Project>
