@@ -46,4 +46,4 @@ Stay tuned, more features are planned!
 3. Run `docker run --rm --privileged multiarch/qemu-user-static --reset -p yes`
 4. Run `docker buildx create --name multiarch --driver docker-container --use`
 5. Run `docker buildx inspect --bootstrap`
-6. Run `docker buildx build --progress plain --platform linux/amd64,linux/arm64 -t registry/repo:tag --push .
+6. Run `docker buildx build --progress plain --platform linux/amd64,linux/arm64 -t registry/repo:tag --push . `
