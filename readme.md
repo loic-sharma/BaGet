@@ -42,7 +42,7 @@ Stay tuned, more features are planned!
 ## Mutli Architecture Docker Image Build
 
 1. Run `git clone https://github.com/loic-sharma/BaGet.git`
-2. Navigate to 'Baget'
+2. Navigate to project folder
 3. Run `docker run --rm --privileged multiarch/qemu-user-static --reset -p yes`
 4. Run `docker buildx create --name multiarch --driver docker-container --use`
 5. Run `docker buildx inspect --bootstrap`
