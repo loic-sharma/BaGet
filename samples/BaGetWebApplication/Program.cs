@@ -1,25 +1,28 @@
-using System.Threading.Tasks;
-using BaGet.Web;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
+var builder = WebApplication.CreateBuilder(args);
 
-namespace BaGetWebApplication
+builder.Services.AddBaGetWebApplication(app =>
 {
-    public class Program
-    {
-        public static async Task Main(string[] args)
-        {
-            var host = CreateHostBuilder(args).Build();
+    // Use SQLite as BaGet's database and store packages on the local file system.
+    app.AddSqliteDatabase();
+    app.AddFileStorage();
+});
 
-            await host.RunMigrationsAsync();
-            await host.RunAsync();
-        }
+var app = builder.Build();
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
-    }
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
 }
+
+app.UseStaticFiles();
+app.UseRouting();
+
+app.UseEndpoints(endpoints =>
+{
+    // Add BaGet's endpoints.
+    new BaGetEndpointBuilder().MapEndpoints(endpoints);
+});
+
+await app.RunMigrationsAsync();
+
+await app.RunAsync();

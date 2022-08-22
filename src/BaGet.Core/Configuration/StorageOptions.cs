@@ -1,7 +1,6 @@
-namespace BaGet.Core
+namespace BaGet.Core;
+
+public class StorageOptions
 {
-    public class StorageOptions
-    {
-        public string Type { get; set; }
-    }
+    public string Type { get; set; }
 }

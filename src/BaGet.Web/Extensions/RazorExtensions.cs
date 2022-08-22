@@ -1,12 +1,11 @@
 ﻿using Humanizer;
 
-namespace BaGet.Web
+namespace BaGet.Web;
+
+public static class RazorExtensions
 {
-    public static class RazorExtensions
+    public static string ToMetric(this long value)
     {
-        public static string ToMetric(this long value)
-        {
-            return ((double) value).ToMetric();
-        }
+        return ((double) value).ToMetric();
     }
 }
