@@ -1,6 +1,3 @@
-using Microsoft.Extensions.Logging;
-using NuGet.Versioning;
-
 namespace BaGet.Core;
 
 public class PackageStorageService : IPackageStorageService
@@ -16,9 +13,7 @@ public class PackageStorageService : IPackageStorageService
     private readonly IStorageService _storage;
     private readonly ILogger<PackageStorageService> _logger;
 
-    public PackageStorageService(
-        IStorageService storage,
-        ILogger<PackageStorageService> logger)
+    public PackageStorageService(IStorageService storage, ILogger<PackageStorageService> logger)
     {
         _storage = storage ?? throw new ArgumentNullException(nameof(storage));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));

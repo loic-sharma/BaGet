@@ -1,6 +1,3 @@
-using BaGet.Protocol.Catalog;
-using Microsoft.Extensions.Logging;
-
 namespace BaGet.Protocol;
 
 public static class NuGetClientFactoryExtensions

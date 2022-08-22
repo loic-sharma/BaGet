@@ -1,6 +1,3 @@
-using BaGet.Protocol.Models;
-using NuGet.Versioning;
-
 namespace BaGet.Core;
 
 /// <summary>
@@ -11,17 +8,13 @@ public class DefaultPackageContentService : IPackageContentService
     private readonly IPackageService _packages;
     private readonly IPackageStorageService _storage;
 
-    public DefaultPackageContentService(
-        IPackageService packages,
-        IPackageStorageService storage)
+    public DefaultPackageContentService(IPackageService packages, IPackageStorageService storage)
     {
         _packages = packages ?? throw new ArgumentNullException(nameof(packages));
         _storage = storage ?? throw new ArgumentNullException(nameof(storage));
     }
 
-    public async Task<PackageVersionsResponse> GetPackageVersionsOrNullAsync(
-        string id,
-        CancellationToken cancellationToken = default)
+    public async Task<PackageVersionsResponse> GetPackageVersionsOrNullAsync(string id, CancellationToken cancellationToken = default)
     {
         var versions = await _packages.FindPackageVersionsAsync(id, cancellationToken);
         if (!versions.Any())
@@ -38,10 +31,7 @@ public class DefaultPackageContentService : IPackageContentService
         };
     }
 
-    public async Task<Stream> GetPackageContentStreamOrNullAsync(
-        string id,
-        NuGetVersion version,
-        CancellationToken cancellationToken = default)
+    public async Task<Stream> GetPackageContentStreamOrNullAsync(string id, NuGetVersion version, CancellationToken cancellationToken = default)
     {
         if (!await _packages.ExistsAsync(id, version, cancellationToken))
         {

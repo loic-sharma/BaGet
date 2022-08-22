@@ -1,7 +1,4 @@
-using System.Text;
-using BaGet.Protocol.Models;
-
-namespace BaGet.Protocol.Internal;
+namespace BaGet.Protocol;
 
 /// <summary>
 /// The client used to search for packages.

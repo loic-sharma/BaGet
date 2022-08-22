@@ -1,18 +1,8 @@
-using System.Net;
-using System.Reflection;
-using BaGet.Protocol;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
-
 namespace BaGet.Core;
 
 public static partial class DependencyInjectionExtensions
 {
-    public static IServiceCollection AddBaGetApplication(
-        this IServiceCollection services,
-        Action<BaGetApplication> configureAction)
+    public static IServiceCollection AddBaGetApplication(this IServiceCollection services, Action<BaGetApplication> configureAction)
     {
         var app = new BaGetApplication(services);
 
@@ -37,10 +27,7 @@ public static partial class DependencyInjectionExtensions
     /// If null, the root configuration will be used to configure the options.
     /// </param>
     /// <returns>The dependency injection container.</returns>
-    public static IServiceCollection AddBaGetOptions<TOptions>(
-        this IServiceCollection services,
-        string key = null)
-        where TOptions : class
+    public static IServiceCollection AddBaGetOptions<TOptions>(this IServiceCollection services, string key = null) where TOptions : class
     {
         services.AddSingleton<IValidateOptions<TOptions>>(new ValidateBaGetOptions<TOptions>(key));
         services.AddSingleton<IConfigureOptions<TOptions>>(provider =>

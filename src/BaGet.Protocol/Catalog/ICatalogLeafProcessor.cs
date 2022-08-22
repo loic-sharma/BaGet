@@ -1,6 +1,4 @@
-using BaGet.Protocol.Models;
-
-namespace BaGet.Protocol.Catalog;
+namespace BaGet.Protocol;
 
 /// <summary>
 /// An interface which allows custom processing of catalog leaves. This interface should be implemented when the

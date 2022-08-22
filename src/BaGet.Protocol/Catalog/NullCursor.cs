@@ -1,4 +1,4 @@
-namespace BaGet.Protocol.Catalog;
+namespace BaGet.Protocol;
 
 /// <summary>
 /// A cursor that does not persist any state. Use this with a <see cref="CatalogProcessor"/>

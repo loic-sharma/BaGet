@@ -1,6 +1,4 @@
-using System.Text.Json.Serialization;
-
-namespace BaGet.Protocol.Models;
+namespace BaGet.Protocol;
 
 /// <summary>
 /// The entry point for a NuGet package source used by the client to discover NuGet APIs.

@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace BaGet.Aliyun;
 
 public class AliyunStorageOptions

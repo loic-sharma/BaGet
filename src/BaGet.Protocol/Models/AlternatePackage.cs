@@ -1,6 +1,4 @@
-using System.Text.Json.Serialization;
-
-namespace BaGet.Protocol.Models;
+namespace BaGet.Protocol;
 
 /// <summary>
 /// The alternate package that should be used instead of a deprecated package.

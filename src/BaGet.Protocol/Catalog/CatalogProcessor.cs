@@ -1,7 +1,4 @@
-using BaGet.Protocol.Models;
-using Microsoft.Extensions.Logging;
-
-namespace BaGet.Protocol.Catalog;
+namespace BaGet.Protocol;
 
 /// <summary>
 /// Processes catalog leafs in chronological order.

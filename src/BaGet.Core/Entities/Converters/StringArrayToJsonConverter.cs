@@ -1,6 +1,3 @@
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Newtonsoft.Json;
-
 namespace BaGet.Core;
 
 public class StringArrayToJsonConverter : ValueConverter<string[], string>

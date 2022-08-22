@@ -1,8 +1,3 @@
-using BaGet.Protocol;
-using BaGet.Protocol.Models;
-using NuGet.Versioning;
-using Microsoft.Extensions.Logging;
-
 namespace BaGet.Core;
 
 /// <summary>

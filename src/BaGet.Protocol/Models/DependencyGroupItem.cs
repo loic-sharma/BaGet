@@ -1,6 +1,4 @@
-using System.Text.Json.Serialization;
-
-namespace BaGet.Protocol.Models;
+namespace BaGet.Protocol;
 
 /// <summary>
 /// The dependencies of the package for a specific target framework.

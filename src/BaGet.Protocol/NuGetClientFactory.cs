@@ -1,6 +1,3 @@
-using BaGet.Protocol.Internal;
-using BaGet.Protocol.Models;
-
 namespace BaGet.Protocol;
 
 /// <summary>

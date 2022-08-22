@@ -9,4 +9,8 @@
     <ProjectReference Include="..\..\src\BaGet.Web\BaGet.Web.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
+  </ItemGroup>
+
 </Project>

@@ -1,6 +1,4 @@
-using System.Text.Json.Serialization;
-
-namespace BaGet.Protocol.Models;
+namespace BaGet.Protocol;
 
 public class AutocompleteContext
 {

@@ -1,6 +1,4 @@
-﻿using NuGet.Versioning;
-
-namespace BaGet.Core;
+﻿namespace BaGet.Core;
 
 /// <summary>
 /// A client to interact with an upstream package source.

@@ -1,6 +1,4 @@
-﻿using Humanizer;
-
-namespace BaGet.Web;
+﻿namespace BaGet.Web;
 
 public static class RazorExtensions
 {

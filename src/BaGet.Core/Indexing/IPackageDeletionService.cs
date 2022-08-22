@@ -1,5 +1,3 @@
-using NuGet.Versioning;
-
 namespace BaGet.Core;
 
 public interface IPackageDeletionService

@@ -1,4 +1,4 @@
-namespace BaGet.Protocol.Catalog;
+namespace BaGet.Protocol;
 
 /// <summary>
 /// The options to configure <see cref="CatalogProcessor"/>.

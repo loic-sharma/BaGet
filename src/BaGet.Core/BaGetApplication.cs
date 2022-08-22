@@ -1,5 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-
 namespace BaGet.Core;
 
 public class BaGetApplication

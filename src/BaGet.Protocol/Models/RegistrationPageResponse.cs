@@ -1,4 +1,4 @@
-namespace BaGet.Protocol.Models;
+namespace BaGet.Protocol;
 
 /// <summary>
 /// A page of package metadata entries.

@@ -1,6 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-
 namespace BaGet.Core;
 
 /// <summary>

@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-
 namespace BaGet.Core;
 
 public class StringArrayComparer : ValueComparer<string[]>

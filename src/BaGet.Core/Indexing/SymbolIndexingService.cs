@@ -1,7 +1,3 @@
-using System.Reflection.Metadata;
-using Microsoft.Extensions.Logging;
-using NuGet.Packaging;
-
 namespace BaGet.Core;
 
 // Based off: https://github.com/NuGet/NuGetGallery/blob/master/src/NuGetGallery/Services/SymbolPackageUploadService.cs
@@ -22,10 +18,7 @@ public class SymbolIndexingService : ISymbolIndexingService
     private readonly ISymbolStorageService _storage;
     private readonly ILogger<SymbolIndexingService> _logger;
 
-    public SymbolIndexingService(
-        IPackageDatabase packages,
-        ISymbolStorageService storage,
-        ILogger<SymbolIndexingService> logger)
+    public SymbolIndexingService(IPackageDatabase packages, ISymbolStorageService storage, ILogger<SymbolIndexingService> logger)
     {
         _packages = packages ?? throw new ArgumentNullException(nameof(packages));
         _storage = storage ?? throw new ArgumentNullException(nameof(storage));
@@ -86,9 +79,7 @@ public class SymbolIndexingService : ISymbolIndexingService
         }
     }
 
-    private async Task<IReadOnlyList<string>> GetSymbolPackagePdbPathsOrNullAsync(
-        PackageArchiveReader symbolPackage,
-        CancellationToken cancellationToken)
+    private async Task<IReadOnlyList<string>> GetSymbolPackagePdbPathsOrNullAsync(PackageArchiveReader symbolPackage, CancellationToken cancellationToken)
     {
         try
         {
@@ -127,10 +118,7 @@ public class SymbolIndexingService : ISymbolIndexingService
         return entries.Select(e => new FileInfo(e)).All(IsValidSymbolFileInfo);
     }
 
-    private async Task<PortablePdb> ExtractPortablePdbAsync(
-        PackageArchiveReader symbolPackage,
-        string pdbPath,
-        CancellationToken cancellationToken)
+    private async Task<PortablePdb> ExtractPortablePdbAsync(PackageArchiveReader symbolPackage, string pdbPath, CancellationToken cancellationToken)
     {
         // TODO: Validate that the PDB has a corresponding DLL
         // See: https://github.com/NuGet/NuGet.Jobs/blob/master/src/Validation.Symbols/SymbolsValidatorService.cs#L170

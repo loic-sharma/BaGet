@@ -1,5 +1,3 @@
-using BaGet.Protocol.Models;
-
 namespace BaGet.Core;
 
 public class RegistrationBuilder

@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Razor.TagHelpers;
-
 namespace BaGet.Web;
 
 [HtmlTargetElement(Attributes = "nav-link")]

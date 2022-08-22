@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Options;
-
-namespace BaGet;
+﻿namespace BaGet;
 
 public class ConfigureRazorRuntimeCompilation : IConfigureOptions<MvcRazorRuntimeCompilationOptions>
 {

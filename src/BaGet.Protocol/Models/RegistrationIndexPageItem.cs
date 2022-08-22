@@ -1,6 +1,4 @@
-using System.Text.Json.Serialization;
-
-namespace BaGet.Protocol.Models;
+namespace BaGet.Protocol;
 
 /// <summary>
 /// An item in the <see cref="CatalogIndex"/> that references a <see cref="CatalogLeaf"/>.

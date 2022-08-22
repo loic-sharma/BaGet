@@ -1,7 +1,6 @@
 // Global using directives
 
 global using BaGet.Core;
-global using BaGet.Protocol.Models;
 global using Microsoft.Azure.Cosmos.Table;
 global using Microsoft.Azure.Documents;
 global using Microsoft.Azure.Search;
@@ -17,7 +16,8 @@ global using NuGet.Versioning;
 global using System.ComponentModel.DataAnnotations;
 global using System.Net;
 global using System.Text;
-global using SearchResult = BaGet.Protocol.Models.SearchResult;
+global using BaGet.Protocol;
+global using SearchResult = BaGet.Protocol.SearchResult;
 global using TableStorageAccount = Microsoft.Azure.Cosmos.Table.CloudStorageAccount;
 global using StorageException = Microsoft.Azure.Cosmos.Table.StorageException;
 global using TableStorageException = Microsoft.Azure.Cosmos.Table.StorageException;

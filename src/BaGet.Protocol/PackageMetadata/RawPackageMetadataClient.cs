@@ -1,6 +1,4 @@
-using BaGet.Protocol.Models;
-
-namespace BaGet.Protocol.Internal;
+namespace BaGet.Protocol;
 
 /// <summary>
 /// The client to interact with an upstream source's Package Metadata resource.

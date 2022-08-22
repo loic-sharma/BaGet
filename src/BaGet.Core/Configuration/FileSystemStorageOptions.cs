@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace BaGet.Core;
 
 public class FileSystemStorageOptions : IValidatableObject

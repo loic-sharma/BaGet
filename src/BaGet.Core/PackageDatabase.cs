@@ -1,6 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using NuGet.Versioning;
-
 namespace BaGet.Core;
 
 public class PackageDatabase : IPackageDatabase

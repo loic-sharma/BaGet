@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-
-namespace BaGet.Database.MySql.Migrations
+﻿namespace BaGet.Database.MySql.Migrations
 {
     public partial class AddHasEmbeddedIconColumn : Migration
     {

@@ -1,21 +1,10 @@
-using BaGet.Core;
-using Microsoft.AspNetCore.Cors.Infrastructure;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.Extensions.Options;
-
 namespace BaGet;
 
 /// <summary>
 /// BaGet's options configuration, specific to the default BaGet application.
 /// Don't use this if you are embedding BaGet into your own custom ASP.NET Core application.
 /// </summary>
-public class ConfigureBaGetOptions
-    : IConfigureOptions<CorsOptions>
-        , IConfigureOptions<FormOptions>
-        , IConfigureOptions<ForwardedHeadersOptions>
-        , IConfigureOptions<IISServerOptions>
-        , IValidateOptions<BaGetOptions>
+public class ConfigureBaGetOptions : IConfigureOptions<CorsOptions>, IConfigureOptions<FormOptions>, IConfigureOptions<ForwardedHeadersOptions>, IConfigureOptions<IISServerOptions>, IValidateOptions<BaGetOptions>
 {
     public const string CorsPolicy = "AllowAll";
 

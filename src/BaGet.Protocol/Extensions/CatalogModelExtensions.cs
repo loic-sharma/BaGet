@@ -1,7 +1,3 @@
-using BaGet.Protocol.Models;
-using NuGet.Frameworks;
-using NuGet.Versioning;
-
 namespace BaGet.Protocol;
 
 /// <summary>

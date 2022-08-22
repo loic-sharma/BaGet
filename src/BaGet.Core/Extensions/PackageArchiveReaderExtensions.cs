@@ -1,6 +1,3 @@
-using NuGet.Common;
-using NuGet.Packaging;
-
 namespace BaGet.Core;
 
 using NuGetPackageType = NuGet.Packaging.Core.PackageType;
@@ -13,9 +10,7 @@ public static class PackageArchiveReaderExtensions
     public static bool HasEmbeddedIcon(this PackageArchiveReader package)
         => !string.IsNullOrEmpty(package.NuspecReader.GetIcon());
 
-    public async static Task<Stream> GetReadmeAsync(
-        this PackageArchiveReader package,
-        CancellationToken cancellationToken)
+    public async static Task<Stream> GetReadmeAsync(this PackageArchiveReader package, CancellationToken cancellationToken)
     {
         var readmePath = package.NuspecReader.GetReadme();
         if (readmePath == null)
@@ -26,9 +21,7 @@ public static class PackageArchiveReaderExtensions
         return await package.GetStreamAsync(readmePath, cancellationToken);
     }
 
-    public async static Task<Stream> GetIconAsync(
-        this PackageArchiveReader package,
-        CancellationToken cancellationToken)
+    public async static Task<Stream> GetIconAsync(this PackageArchiveReader package, CancellationToken cancellationToken)
     {
         return await package.GetStreamAsync(
             PathUtility.StripLeadingDirectorySeparators(package.NuspecReader.GetIcon()),

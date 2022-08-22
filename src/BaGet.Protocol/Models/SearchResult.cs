@@ -1,7 +1,4 @@
-using System.Text.Json.Serialization;
-using BaGet.Protocol.Internal;
-
-namespace BaGet.Protocol.Models;
+namespace BaGet.Protocol;
 
 /// <summary>
 /// A package that matched a search query.

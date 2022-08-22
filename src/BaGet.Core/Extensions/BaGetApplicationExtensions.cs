@@ -1,7 +1,3 @@
-using BaGet.Core;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-
 namespace BaGet;
 
 public static class BaGetApplicationExtensions
@@ -12,9 +8,7 @@ public static class BaGetApplicationExtensions
         return app;
     }
 
-    public static BaGetApplication AddFileStorage(
-        this BaGetApplication app,
-        Action<FileSystemStorageOptions> configure)
+    public static BaGetApplication AddFileStorage(this BaGetApplication app, Action<FileSystemStorageOptions> configure)
     {
         app.AddFileStorage();
         app.Services.Configure(configure);

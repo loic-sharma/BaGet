@@ -1,7 +1,3 @@
-using BaGet.Core;
-using Microsoft.EntityFrameworkCore;
-using Npgsql;
-
 namespace BaGet.Database.PostgreSql;
 
 public class PostgreSqlContext : AbstractContext<PostgreSqlContext>

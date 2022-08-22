@@ -1,8 +1,3 @@
-using Amazon.S3;
-using Amazon.S3.Model;
-using BaGet.Core;
-using Microsoft.Extensions.Options;
-
 namespace BaGet.Aws;
 
 public class S3StorageService : IStorageService

@@ -1,10 +1,3 @@
-using System.Net;
-using System.Security.Cryptography;
-using BaGet.Core;
-using Google;
-using Google.Cloud.Storage.V1;
-using Microsoft.Extensions.Options;
-
 namespace BaGet.Gcp;
 
 public class GoogleCloudStorageService : IStorageService

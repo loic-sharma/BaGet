@@ -1,11 +1,3 @@
-using BaGet.Azure;
-using BaGet.Core;
-using BaGet.Web;
-using Microsoft.AspNetCore.Cors.Infrastructure;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
-using Microsoft.Extensions.Options;
-
 namespace BaGet;
 
 public class Startup

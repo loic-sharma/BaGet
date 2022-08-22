@@ -1,5 +1,3 @@
-using System.Security.Cryptography;
-
 namespace BaGet.Core;
 
 public static class StreamExtensions
@@ -14,9 +12,7 @@ public static class StreamExtensions
     /// <param name="original">The stream to be copied, at its current position.</param>
     /// <param name="cancellationToken"></param>
     /// <returns>The copied stream, with its position reset to the beginning.</returns>
-    public static async Task<FileStream> AsTemporaryFileStreamAsync(
-        this Stream original,
-        CancellationToken cancellationToken = default)
+    public static async Task<FileStream> AsTemporaryFileStreamAsync(this Stream original, CancellationToken cancellationToken = default)
     {
         var result = new FileStream(
             Path.GetTempFileName(),

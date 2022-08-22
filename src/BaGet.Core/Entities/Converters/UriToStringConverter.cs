@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-
 namespace BaGet.Core;
 
 public class UriToStringConverter : ValueConverter<Uri, string>

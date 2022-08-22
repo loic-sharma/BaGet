@@ -1,7 +1,3 @@
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using NuGet.Packaging;
-
 namespace BaGet.Core;
 
 public class PackageIndexingService : IPackageIndexingService

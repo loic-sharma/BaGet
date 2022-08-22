@@ -1,8 +1,4 @@
-using System.Net;
-using BaGet.Protocol.Models;
-using NuGet.Versioning;
-
-namespace BaGet.Protocol.Internal;
+namespace BaGet.Protocol;
 
 /// <summary>
 /// The client to interact with an upstream source's Package Content resource.

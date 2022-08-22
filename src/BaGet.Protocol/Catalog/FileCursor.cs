@@ -1,8 +1,4 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Microsoft.Extensions.Logging;
-
-namespace BaGet.Protocol.Catalog;
+namespace BaGet.Protocol;
 
 /// <summary>
 /// A cursor implementation which stores the cursor in local file. The cursor value is written to the file as

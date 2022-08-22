@@ -1,7 +1,3 @@
-using BaGet.Core;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-
 namespace BaGet.Database.SqlServer;
 
 public class SqlServerContext : AbstractContext<SqlServerContext>

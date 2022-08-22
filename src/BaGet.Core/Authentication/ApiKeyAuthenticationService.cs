@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Options;
-
 namespace BaGet.Core;
 
 public class ApiKeyAuthenticationService : IAuthenticationService

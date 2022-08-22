@@ -1,6 +1,4 @@
-﻿using BaGet.Protocol.Models;
-
-namespace BaGet.Core;
+﻿namespace BaGet.Core;
 
 public class SearchResponseBuilder : ISearchResponseBuilder
 {

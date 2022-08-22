@@ -1,7 +1,3 @@
-using Aliyun.OSS;
-using BaGet.Core;
-using Microsoft.Extensions.Options;
-
 namespace BaGet.Aliyun;
 
 public class AliyunStorageService : IStorageService

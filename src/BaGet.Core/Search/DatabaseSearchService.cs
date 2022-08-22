@@ -1,6 +1,3 @@
-using BaGet.Protocol.Models;
-using Microsoft.EntityFrameworkCore;
-
 namespace BaGet.Core;
 
 public class DatabaseSearchService : ISearchService

@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-
-namespace BaGet.Database.PostgreSql.Migrations
+﻿namespace BaGet.Database.PostgreSql.Migrations
 {
     public partial class Initial : Migration
     {

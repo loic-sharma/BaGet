@@ -1,6 +1,4 @@
-using BaGet.Protocol.Models;
-
-namespace BaGet.Protocol.Internal;
+namespace BaGet.Protocol;
 
 public class NullAutocompleteClient : IAutocompleteClient
 {

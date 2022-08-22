@@ -1,6 +1,3 @@
-using BaGet.Protocol.Models;
-using NuGet.Versioning;
-
 namespace BaGet.Protocol;
 
 public partial class NuGetClientFactory

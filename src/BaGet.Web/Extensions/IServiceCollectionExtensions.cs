@@ -1,6 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-using System.Text.Json.Serialization;
-
 namespace BaGet.Web;
 
 public static class IServiceCollectionExtensions

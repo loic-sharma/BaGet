@@ -1,6 +1,3 @@
-using System.Net;
-using System.Text.Json;
-
 namespace BaGet.Protocol;
 
 internal static class HttpClientExtensions

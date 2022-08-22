@@ -1,12 +1,3 @@
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using NuGet.Common;
-using NuGet.Configuration;
-using NuGet.Packaging;
-using NuGet.Protocol;
-using NuGet.Protocol.Core.Types;
-using NuGet.Versioning;
-
 namespace BaGet.Core;
 
 using ILogger = Microsoft.Extensions.Logging.ILogger<V2UpstreamClient>;
@@ -22,9 +13,7 @@ public class V2UpstreamClient : IUpstreamClient, IDisposable
     private readonly INuGetLogger _ngLogger;
     private readonly ILogger _logger;
 
-    public V2UpstreamClient(
-        IOptionsSnapshot<MirrorOptions> options,
-        ILogger logger)
+    public V2UpstreamClient(IOptionsSnapshot<MirrorOptions> options, ILogger logger)
     {
         if (options is null)
         {

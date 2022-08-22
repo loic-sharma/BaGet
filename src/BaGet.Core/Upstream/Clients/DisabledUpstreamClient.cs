@@ -1,6 +1,4 @@
-﻿using NuGet.Versioning;
-
-namespace BaGet.Core;
+﻿namespace BaGet.Core;
 
 /// <summary>
 /// The client used when there are no upstream package sources.

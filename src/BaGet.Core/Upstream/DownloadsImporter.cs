@@ -1,6 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-
 namespace BaGet.Core;
 
 public class DownloadsImporter

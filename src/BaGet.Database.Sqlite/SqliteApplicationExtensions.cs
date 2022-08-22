@@ -1,9 +1,3 @@
-using BaGet.Core;
-using BaGet.Database.Sqlite;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
 namespace BaGet;
 
 public static class SqliteApplicationExtensions
@@ -20,9 +14,7 @@ public static class SqliteApplicationExtensions
         return app;
     }
 
-    public static BaGetApplication AddSqliteDatabase(
-        this BaGetApplication app,
-        Action<DatabaseOptions> configure)
+    public static BaGetApplication AddSqliteDatabase(this BaGetApplication app, Action<DatabaseOptions> configure)
     {
         app.AddSqliteDatabase();
         app.Services.Configure(configure);

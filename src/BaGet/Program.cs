@@ -1,7 +1,3 @@
-using BaGet.Core;
-using BaGet.Web;
-using McMaster.Extensions.CommandLineUtils;
-
 namespace BaGet;
 
 public class Program

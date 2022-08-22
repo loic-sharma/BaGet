@@ -1,10 +1,3 @@
-using Aliyun.OSS;
-using BaGet.Aliyun;
-using BaGet.Core;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
-
 namespace BaGet;
 
 public static class AliyunApplicationExtensions
@@ -33,9 +26,7 @@ public static class AliyunApplicationExtensions
         return app;
     }
 
-    public static BaGetApplication AddAliyunOssStorage(
-        this BaGetApplication app,
-        Action<AliyunStorageOptions> configure)
+    public static BaGetApplication AddAliyunOssStorage(this BaGetApplication app, Action<AliyunStorageOptions> configure)
     {
         app.AddAliyunOssStorage();
         app.Services.Configure(configure);

@@ -1,9 +1,3 @@
-using BaGet.Core;
-using BaGet.Database.PostgreSql;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
 namespace BaGet;
 
 public static class PostgreSqlApplicationExtensions

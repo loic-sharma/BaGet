@@ -1,8 +1,3 @@
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using NuGet.Versioning;
-
 namespace BaGet.Core;
 
 // See https://github.com/NuGet/NuGet.Services.Metadata/blob/master/src/NuGet.Indexing/Downloads.cs

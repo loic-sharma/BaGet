@@ -1,9 +1,4 @@
-using System.Collections.Concurrent;
-using NuGet.Frameworks;
-
 namespace BaGet.Core;
-
-using static NuGet.Frameworks.FrameworkConstants;
 
 public class FrameworkCompatibilityService : IFrameworkCompatibilityService
 {
@@ -15,10 +10,12 @@ public class FrameworkCompatibilityService : IFrameworkCompatibilityService
 
     static FrameworkCompatibilityService()
     {
-        var supportedFrameworks = new HashSet<string>();
-        supportedFrameworks.Add(FrameworkIdentifiers.NetStandard);
-        supportedFrameworks.Add(FrameworkIdentifiers.NetCoreApp);
-        supportedFrameworks.Add(FrameworkIdentifiers.Net);
+        var supportedFrameworks = new HashSet<string>
+        {
+            FrameworkIdentifiers.NetStandard,
+            FrameworkIdentifiers.NetCoreApp,
+            FrameworkIdentifiers.Net
+        };
 
         CompatibilityMapping = DefaultFrameworkMappings.Instance.CompatibilityMappings.ToList();
         CompatibleFrameworks = new ConcurrentDictionary<NuGetFramework, IReadOnlyList<string>>();

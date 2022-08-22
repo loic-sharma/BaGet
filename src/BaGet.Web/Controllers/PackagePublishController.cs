@@ -1,6 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-
 namespace BaGet.Web;
 
 public class PackagePublishController : Controller

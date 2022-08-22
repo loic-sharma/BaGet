@@ -1,6 +1,3 @@
-using Microsoft.Extensions.Logging;
-using NuGet.Versioning;
-
 namespace BaGet.Core;
 
 public class PackageService : IPackageService
