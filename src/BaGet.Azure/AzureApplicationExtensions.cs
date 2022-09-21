@@ -6,12 +6,12 @@ using Microsoft.Azure.Search;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
-using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.Azure.Storage.Blob;
 
 namespace BaGet
 {
-    using CloudStorageAccount = Microsoft.WindowsAzure.Storage.CloudStorageAccount;
-    using StorageCredentials = Microsoft.WindowsAzure.Storage.Auth.StorageCredentials;
+    using CloudStorageAccount = Microsoft.Azure.Storage.CloudStorageAccount;
+    using StorageCredentials = Microsoft.Azure.Storage.Auth.StorageCredentials;
 
     using TableStorageAccount = Microsoft.Azure.Cosmos.Table.CloudStorageAccount;
 
