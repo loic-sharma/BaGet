@@ -9,6 +9,9 @@
 
 	<ItemGroup>
 		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.2" />
+
+		<!--TODO: Remove the refrence after the version conflict solved-->
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
