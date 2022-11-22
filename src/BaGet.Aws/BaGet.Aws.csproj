@@ -1,20 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net6.0</TargetFrameworks>
+	<PropertyGroup>
+		<TargetFrameworks>net7.0</TargetFrameworks>
 
-    <PackageTags>NuGet;Amazon;Cloud</PackageTags>
-    <Description>The libraries to host BaGet on AWS.</Description>
-  </PropertyGroup>
+		<PackageTags>NuGet;Amazon;Cloud</PackageTags>
+		<Description>The libraries to host BaGet on AWS.</Description>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AWSSDK.S3" Version="3.7.9.41" />
-    <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.187" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="AWSSDK.S3" Version="3.7.9.41" />
+		<PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.187" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
+	</ItemGroup>
 
 </Project>

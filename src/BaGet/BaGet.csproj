@@ -1,31 +1,31 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="4.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.8" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="4.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.8" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.8" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\BaGet.Aliyun\BaGet.Aliyun.csproj" />
-    <ProjectReference Include="..\BaGet.Aws\BaGet.Aws.csproj" />
-    <ProjectReference Include="..\BaGet.Azure\BaGet.Azure.csproj" />
-    <ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
-    <ProjectReference Include="..\BaGet.Database.MySql\BaGet.Database.MySql.csproj" />
-    <ProjectReference Include="..\BaGet.Database.PostgreSql\BaGet.Database.PostgreSql.csproj" />
-    <ProjectReference Include="..\BaGet.Database.Sqlite\BaGet.Database.Sqlite.csproj" />
-    <ProjectReference Include="..\BaGet.Database.SqlServer\BaGet.Database.SqlServer.csproj" />
-    <ProjectReference Include="..\BaGet.Gcp\BaGet.Gcp.csproj" />
-    <ProjectReference Include="..\BaGet.Web\BaGet.Web.csproj" />
-    <ProjectReference Include="..\BaGet.Protocol\BaGet.Protocol.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\BaGet.Aliyun\BaGet.Aliyun.csproj" />
+		<ProjectReference Include="..\BaGet.Aws\BaGet.Aws.csproj" />
+		<ProjectReference Include="..\BaGet.Azure\BaGet.Azure.csproj" />
+		<ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
+		<ProjectReference Include="..\BaGet.Database.MySql\BaGet.Database.MySql.csproj" />
+		<ProjectReference Include="..\BaGet.Database.PostgreSql\BaGet.Database.PostgreSql.csproj" />
+		<ProjectReference Include="..\BaGet.Database.Sqlite\BaGet.Database.Sqlite.csproj" />
+		<ProjectReference Include="..\BaGet.Database.SqlServer\BaGet.Database.SqlServer.csproj" />
+		<ProjectReference Include="..\BaGet.Gcp\BaGet.Gcp.csproj" />
+		<ProjectReference Include="..\BaGet.Web\BaGet.Web.csproj" />
+		<ProjectReference Include="..\BaGet.Protocol\BaGet.Protocol.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.1.1" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.1.1" />
+	</ItemGroup>
 
 </Project>

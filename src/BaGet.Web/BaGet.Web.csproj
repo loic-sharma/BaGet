@@ -1,26 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
 
-    <PackageTags>NuGet</PackageTags>
-    <Description>BaGet's NuGet server implementation</Description>
-    <RootNamespace>BaGet.Web</RootNamespace>
+		<PackageTags>NuGet</PackageTags>
+		<Description>BaGet's NuGet server implementation</Description>
+		<RootNamespace>BaGet.Web</RootNamespace>
 
-    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-  </PropertyGroup>
+		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Humanizer" Version="2.14.1" />
-    <PackageReference Include="Markdig" Version="0.30.3" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Humanizer" Version="2.14.1" />
+		<PackageReference Include="Markdig" Version="0.30.3" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
+	</ItemGroup>
 
 </Project>
