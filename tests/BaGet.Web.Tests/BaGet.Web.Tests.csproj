@@ -13,8 +13,13 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
 		</PackageReference>
+<<<<<<< HEAD
 		<PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.4.1" />
 		<PackageReference Update="Moq" Version="4.18.3" />
+=======
+		<PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.4.0" />
+		<PackageReference Update="Moq" Version="4.18.2" />
+>>>>>>> d497a9fff137090729d2dc9e26ed77ca4af4eea1
 		<PackageReference Update="xunit" Version="2.4.2" />
 		<PackageReference Update="xunit.runner.visualstudio" Version="2.4.5">
 			<PrivateAssets>all</PrivateAssets>

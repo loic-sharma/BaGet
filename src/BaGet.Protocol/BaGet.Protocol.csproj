@@ -11,7 +11,11 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
 		<PackageReference Include="NuGet.Frameworks" Version="6.4.0" />
 		<PackageReference Include="NuGet.Versioning" Version="6.4.0" />
+<<<<<<< HEAD
 		<PackageReference Include="System.Text.Json" Version="7.0.1" />
+=======
+		<PackageReference Include="System.Text.Json" Version="7.0.0" />
+>>>>>>> d497a9fff137090729d2dc9e26ed77ca4af4eea1
 	</ItemGroup>
 
 </Project>
