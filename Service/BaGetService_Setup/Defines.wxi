@@ -1,0 +1,7 @@
+<?define ProductUpgradeCode = "fb00bb36-7dbf-cf57-7e67-434e2eda96e7"?>
+<?define ProductVersion = "1.0.0.0"?>
+<?define Manufacturer = "Loic Sharma"?>
+<?define HarvestDirectory = "..\BaGetService\bin\net6.0-windows\win-x64"?>
+<?define ProductName = "BaGet Service"?>
+<?define ProductNameNoSpaces = "BaGetService"?>
+<Include></Include>

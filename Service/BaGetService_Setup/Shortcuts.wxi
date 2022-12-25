@@ -1,0 +1,14 @@
+<Include>
+  <Directory Id="ProgramMenuFolder">
+    <Directory Id="ProgramMenuSubfolder" Name="BaGetService">
+      <Component Id="ApplicationShortcuts" Guid="fb00bb36-7dbf-cf57-7e67-434e2eda96e7">
+        <Shortcut Id="ID_BaGetServicePackage" Name="Upload Packages" Description="BaGet Upload Packages" Target="[INSTALLDIR]BaGetService.exe" WorkingDirectory="INSTALLDIR" Arguments="package" Icon="favicon.ico"/>
+        <Shortcut Id="ID_BaGetServiceRegister" Name="Register as a service" Description="Register BaGet as a service" Target="[INSTALLDIR]BaGetService.exe" WorkingDirectory="INSTALLDIR" Arguments="register" Icon="favicon.ico"/>
+        <Shortcut Id="ID_BaGetServiceDelete" Name="Delete previously registered service" Description="Delete previously registered BaGet service" Target="[INSTALLDIR]BaGetService.exe" WorkingDirectory="INSTALLDIR" Arguments="delete" Icon="favicon.ico"/>
+        <Shortcut Id="ID_BaGetService" Name="Run BaGet as application" Description="Run BaGet as application" Target="[INSTALLDIR]BaGetService.exe" WorkingDirectory="INSTALLDIR" Icon="favicon.ico" />
+        <RegistryValue Root="HKCU" Key="Software\BaGetService\BaGetService" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+        <RemoveFolder Id="ProgramMenuSubfolder" On="uninstall" />
+      </Component>
+    </Directory>
+  </Directory>
+</Include>
