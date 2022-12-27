@@ -44,8 +44,8 @@
     <Error Text="The WiX Toolset v3.11 (or newer) build tools must be installed to build this project. To download the WiX Toolset, see http://wixtoolset.org/releases/" />
   </Target>
   <PropertyGroup>
-    <DefineConstants>HarvestDirectory=..\BaGetService\bin\net6.0-windows\win-x64\</DefineConstants>
-    <HarvestDirectory>..\BaGetService\bin\net6.0-windows\win-x64\</HarvestDirectory>
+    <DefineConstants>HarvestDirectory=..\BaGetService\bin\net7.0-windows\win-x64\</DefineConstants>
+    <HarvestDirectory>..\BaGetService\bin\net7.0-windows\win-x64\</HarvestDirectory>
   </PropertyGroup>
   <Target Name="BeforeBuild">
     <HeatDirectory RunAsSeparateProcess="$(RunWixToolsOutOfProc)" PreprocessorVariable="var.HarvestDirectory" OutputFile="$(ProjectDir)\ProductInstallFiles.wxs" Directory="$(HarvestDirectory)" ComponentGroupName="ProductFilesComponentGroup" DirectoryRefId="INSTALLDIR" AutogenerateGuids="true" SuppressRegistry="true" SuppressRootDirectory="true" ToolPath="$(WixToolPath)" NoLogo="true" />
