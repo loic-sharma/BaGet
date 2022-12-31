@@ -1,6 +1,10 @@
 using BaGet.Core;
 using Microsoft.EntityFrameworkCore;
+#if NET6_0_OR_GREATER
 using MySqlConnector;
+#else
+using MySql.Data.MySqlClient;
+#endif
 
 namespace BaGet.Database.MySql
 {

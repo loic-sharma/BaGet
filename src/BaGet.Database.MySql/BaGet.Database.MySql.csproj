@@ -1,14 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net7.0;netstandard2.0</TargetFrameworks>
 
     <PackageTags>NuGet</PackageTags>
     <Description>The libraries to host BaGet on MySQL.</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.2" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.2" Condition="'$(TargetFramework)' != 'netstandard2.0'" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.2.7" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
   </ItemGroup>
 
   <ItemGroup>

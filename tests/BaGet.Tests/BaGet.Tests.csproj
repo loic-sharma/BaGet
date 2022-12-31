@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFrameworks>netcoreapp3.1;net7.0</TargetFrameworks>
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
@@ -12,7 +12,8 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="NuGet.Protocol" Version="6.4.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.0" Condition="'$(TargetFramework)' != 'netcoreapp3.1'" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.32" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
   </ItemGroup>
 
   <ItemGroup>

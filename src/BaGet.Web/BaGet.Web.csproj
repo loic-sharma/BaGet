@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFrameworks>netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
 
     <PackageTags>NuGet</PackageTags>
     <Description>BaGet's NuGet server implementation</Description>
