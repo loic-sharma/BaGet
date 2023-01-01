@@ -8,32 +8,50 @@ namespace BaGet.Database.MySql.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateTable(
                 name: "Packages",
                 columns: table => new
                 {
-                    Key = table.Column<int>(nullable: false)
+                    Key = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Id = table.Column<string>(maxLength: 128, nullable: false),
-                    Authors = table.Column<string>(maxLength: 4000, nullable: true),
-                    Description = table.Column<string>(maxLength: 4000, nullable: true),
-                    Downloads = table.Column<long>(nullable: false),
-                    HasReadme = table.Column<bool>(nullable: false),
-                    Language = table.Column<string>(maxLength: 20, nullable: true),
-                    Listed = table.Column<bool>(nullable: false),
-                    MinClientVersion = table.Column<string>(maxLength: 44, nullable: true),
-                    Published = table.Column<DateTime>(nullable: false),
-                    RequireLicenseAcceptance = table.Column<bool>(nullable: false),
-                    Summary = table.Column<string>(maxLength: 4000, nullable: true),
-                    Title = table.Column<string>(maxLength: 256, nullable: true),
-                    IconUrl = table.Column<string>(maxLength: 4000, nullable: true),
-                    LicenseUrl = table.Column<string>(maxLength: 4000, nullable: true),
-                    ProjectUrl = table.Column<string>(maxLength: 4000, nullable: true),
-                    RepositoryUrl = table.Column<string>(maxLength: 4000, nullable: true),
-                    RepositoryType = table.Column<string>(maxLength: 100, nullable: true),
-                    Tags = table.Column<string>(maxLength: 4000, nullable: true),
-                    RowVersion = table.Column<DateTime>(rowVersion: true, nullable: true),
-                    Version = table.Column<string>(maxLength: 64, nullable: false)
+                    Id = table.Column<string>(type: "varchar(128)", maxLength: 128, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Authors = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Description = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Downloads = table.Column<long>(type: "bigint", nullable: false),
+                    HasReadme = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    Language = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Listed = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    MinClientVersion = table.Column<string>(type: "varchar(44)", maxLength: 44, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Published = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    RequireLicenseAcceptance = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    Summary = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Title = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IconUrl = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LicenseUrl = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ProjectUrl = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    RepositoryUrl = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    RepositoryType = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Tags = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    RowVersion = table.Column<DateTime>(type: "timestamp(6)", rowVersion: true, nullable: true)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn),
+                    Version = table.Column<string>(type: "varchar(64)", maxLength: 64, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                 },
                 constraints: table =>
                 {
@@ -44,12 +62,15 @@ namespace BaGet.Database.MySql.Migrations
                 name: "PackageDependencies",
                 columns: table => new
                 {
-                    Key = table.Column<int>(nullable: false)
+                    Key = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Id = table.Column<string>(maxLength: 128, nullable: true),
-                    VersionRange = table.Column<string>(maxLength: 256, nullable: true),
-                    TargetFramework = table.Column<string>(maxLength: 256, nullable: true),
-                    PackageKey = table.Column<int>(nullable: false)
+                    Id = table.Column<string>(type: "varchar(128)", maxLength: 128, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    VersionRange = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    TargetFramework = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PackageKey = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {

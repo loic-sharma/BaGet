@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Moq;
@@ -20,7 +21,6 @@ namespace BaGet.Core.Tests.Metadata
         {
             // Arrange
             var packageId = "BaGet.Test";
-            var authors = new string[] { "test" };
 
             var packages = new List<Package>
             {
@@ -52,14 +52,15 @@ namespace BaGet.Core.Tests.Metadata
         /// Create a fake <see cref="Package"></see> with the minimum metadata needed by the <see cref="RegistrationBuilder"></see>.
         /// </summary>
         private Package GetTestPackage(string packageId, string version)
-        {            
+        {
             return new Package
             {
                 Id = packageId,
-                Authors = new string[] { "test" },
-                PackageTypes = new List<PackageType> { new PackageType { Name = "test" } },
-                Dependencies = new List<PackageDependency> { },
+                Authors = new[] { "test" },
+                PackageTypes = new List<PackageType> { new() { Name = "test" } },
+                Dependencies = new List<PackageDependency>(),
                 Version = new NuGetVersion(version),
+                Published = new DateTime(2022, 01, 01)
             };
         }
     }

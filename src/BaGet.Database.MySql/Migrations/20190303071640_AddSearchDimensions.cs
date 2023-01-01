@@ -12,23 +12,17 @@ namespace BaGet.Database.MySql.Migrations
                 name: "FK_PackageDependencies_Packages_PackageKey",
                 table: "PackageDependencies");
 
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "RowVersion",
-                table: "Packages",
-                rowVersion: true,
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldNullable: true);
-
             migrationBuilder.AddColumn<bool>(
                 name: "IsPrerelease",
                 table: "Packages",
+                type: "tinyint(1)",
                 nullable: false,
                 defaultValue: false);
 
             migrationBuilder.AddColumn<int>(
                 name: "SemVerLevel",
                 table: "Packages",
+                type: "int",
                 nullable: false,
                 defaultValue: 0);
 
@@ -42,11 +36,13 @@ namespace BaGet.Database.MySql.Migrations
                 name: "PackageTypes",
                 columns: table => new
                 {
-                    Key = table.Column<int>(nullable: false)
+                    Key = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(maxLength: 512, nullable: true),
-                    Version = table.Column<string>(maxLength: 64, nullable: true),
-                    PackageKey = table.Column<int>(nullable: false)
+                    Name = table.Column<string>(type: "varchar(255)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Version = table.Column<string>(type: "varchar(64)", maxLength: 64, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PackageKey = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -63,10 +59,11 @@ namespace BaGet.Database.MySql.Migrations
                 name: "TargetFrameworks",
                 columns: table => new
                 {
-                    Key = table.Column<int>(nullable: false)
+                    Key = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Moniker = table.Column<string>(maxLength: 256, nullable: true),
-                    PackageKey = table.Column<int>(nullable: false)
+                    Moniker = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PackageKey = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -136,14 +133,6 @@ namespace BaGet.Database.MySql.Migrations
             migrationBuilder.DropColumn(
                 name: "SemVerLevel",
                 table: "Packages");
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "RowVersion",
-                table: "Packages",
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldRowVersion: true,
-                oldNullable: true);
 
             migrationBuilder.AlterColumn<int>(
                 name: "PackageKey",
