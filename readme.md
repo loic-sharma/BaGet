@@ -39,8 +39,8 @@ Stay tuned, more features are planned!
 [BaGet's latest release]: https://github.com/loic-sharma/BaGet/releases
 
 [Documentation]: https://loic-sharma.github.io/BaGet/
-[Docker]: https://loic-sharma.github.io/BaGet/#running-baget-on-docker
-[Azure]: https://loic-sharma.github.io/BaGet/cloud/azure/
+[Docker]: https://loic-sharma.github.io/BaGet/installation/docker/
+[Azure]: https://loic-sharma.github.io/BaGet/installation/azure/
 [AWS]: https://loic-sharma.github.io/BaGet/installation/aws/
 [Google Cloud]: https://loic-sharma.github.io/BaGet/installation/gcp/
 [Alibaba Cloud]: https://loic-sharma.github.io/BaGet/installation/aliyun/
