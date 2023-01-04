@@ -5,6 +5,10 @@
 
 Use Amazon Web Services to scale BaGet. You can store metadata on [Amazon RDS](https://aws.amazon.com/rds/postgresql/) and upload packages to [Amazon S3](https://aws.amazon.com/s3/).
 
+## Run BaGet
+
+Configure the BaGet code to run using one of the other run methods such as on local computer, Microsoft IIS or Docker.
+
 ## Configure BaGet
 
 You can modify BaGet's configurations by editing the `appsettings.json` file. For the full list of configurations, please refer to [BaGet's configuration](../configuration.md) guide.
