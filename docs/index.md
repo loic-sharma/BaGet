@@ -16,6 +16,7 @@ You can run BaGet on your preferred platform:
 * [AWS](installation/aws.md)
 * [Google Cloud](installation/gcp.md)
 * [Alibaba Cloud (Aliyun)](installation/aliyun.md)
+* [Baidu Cloud (Bce)](installation/bce.md)
 
 ## BaGet SDK
 
