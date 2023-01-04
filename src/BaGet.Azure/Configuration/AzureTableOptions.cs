@@ -6,5 +6,7 @@ namespace BaGet.Azure
     {
         [Required]
         public string ConnectionString { get; set; }
+
+        [Required] public string TableName { get; set; } = "Packages";
     }
 }
