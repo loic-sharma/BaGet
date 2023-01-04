@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+using BaGet.Core.Configuration;
 
 namespace BaGet.Core
 {
@@ -50,5 +50,7 @@ namespace BaGet.Core
         public SearchOptions Search { get; set; }
 
         public MirrorOptions Mirror { get; set; }
+
+        public ProxyOptions Proxy { get; set; }
     }
 }
