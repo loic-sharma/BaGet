@@ -35,13 +35,8 @@ namespace BaGet.Tests
             _packageStream = TestResources.GetResourceStream(TestResources.Package);
 
             var sourceUri = new Uri(_app.Server.BaseAddress, "v3/index.json");
-            var packageSource = new PackageSource(sourceUri.AbsoluteUri);
-            var providers = new List<Lazy<INuGetResourceProvider>>();
 
-            providers.Add(new Lazy<INuGetResourceProvider>(() => new HttpSourceResourceProviderTestHost(_client)));
-            providers.AddRange(Repository.Provider.GetCoreV3());
-
-            _repository = new SourceRepository(packageSource, providers);
+            _repository = TestableSourceRepository.Build(sourceUri, _client);
             _cache = new SourceCacheContext { NoCache = true, MaxAge = new DateTimeOffset(), DirectDownload = true };
             _logger = NuGet.Common.NullLogger.Instance;
             _cancellationToken = CancellationToken.None;
@@ -82,7 +77,7 @@ namespace BaGet.Tests
 
             Assert.Equal("TestData", result.Identity.Id);
             Assert.Equal("1.2.3", result.Identity.Version.ToNormalizedString());
-            Assert.Equal("Test description", result.Description);
+            Assert.Equal("Hello world", result.Description);
             Assert.Equal("Test author", result.Authors);
             Assert.Equal(0, result.DownloadCount);
 
@@ -234,7 +229,7 @@ namespace BaGet.Tests
 
             Assert.Equal("TestData", package.Identity.Id);
             Assert.Equal("1.2.3", package.Identity.Version.ToNormalizedString());
-            Assert.Equal("Test description", package.Description);
+            Assert.Equal("Hello world", package.Description);
             Assert.Equal("Test author", package.Authors);
             Assert.True(package.IsListed);
         }

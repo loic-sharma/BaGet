@@ -75,6 +75,7 @@ namespace BaGet.Core
             services.TryAddSingleton<IPackageDownloadsSource, PackageDownloadsJsonSource>();
 
             services.TryAddSingleton<ISearchResponseBuilder, SearchResponseBuilder>();
+            services.TryAddSingleton<IV2Builder, V2Builder>();
             services.TryAddSingleton<NuGetClient>();
             services.TryAddSingleton<NullSearchIndexer>();
             services.TryAddSingleton<NullSearchService>();

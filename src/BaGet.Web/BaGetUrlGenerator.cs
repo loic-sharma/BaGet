@@ -22,7 +22,7 @@ namespace BaGet.Web
         {
             return _linkGenerator.GetUriByRouteValues(
                 _httpContextAccessor.HttpContext,
-                Routes.IndexRouteName,
+                Routes.V3IndexRouteName,
                 values: null);
         }
 
@@ -102,19 +102,30 @@ namespace BaGet.Web
                 values: new { Id = id.ToLowerInvariant() });
         }
 
+        public string GetPackageDownloadUrl(Package package)
+        {
+            return GetPackageDownloadUrl(
+                package.Id.ToLowerInvariant(),
+                package.NormalizedVersionString.ToLowerInvariant());
+        }
+
         public string GetPackageDownloadUrl(string id, NuGetVersion version)
         {
-            id = id.ToLowerInvariant();
-            var versionString = version.ToNormalizedString().ToLowerInvariant();
+            return GetPackageDownloadUrl(
+                id.ToLowerInvariant(),
+                version.ToNormalizedString().ToLowerInvariant());
+        }
 
+        private string GetPackageDownloadUrl(string lowerId, string lowerVersion)
+        {
             return _linkGenerator.GetUriByRouteValues(
                 _httpContextAccessor.HttpContext,
                 Routes.PackageDownloadRouteName,
                 values: new
                 {
-                    Id = id,
-                    Version = versionString,
-                    IdVersion = $"{id}.{versionString}"
+                    Id = lowerId,
+                    Version = lowerVersion,
+                    IdVersion = $"{lowerId}.{lowerVersion}"
                 });
         }
 
@@ -146,6 +157,26 @@ namespace BaGet.Web
                 {
                     Id = id,
                     Version = versionString
+                });
+        }
+
+        public string GetServiceIndexV2Url()
+        {
+            return _linkGenerator.GetUriByRouteValues(
+                _httpContextAccessor.HttpContext,
+                Routes.V2IndexRouteName,
+                values: null);
+        }
+
+        public string GetPackageMetadataV2Url(Package package)
+        {
+            return _linkGenerator.GetUriByRouteValues(
+                _httpContextAccessor.HttpContext,
+                Routes.V2PackageVersionRouteName,
+                values: new
+                {
+                    Id = package.Id,
+                    Version = package.NormalizedVersionString
                 });
         }
 
