@@ -10,12 +10,10 @@ namespace BaGet.Core
 {
     public class PackageDatabase : IPackageDatabase
     {
-        private readonly IContext _context;
         private readonly Func<IContext> _newContext;
 
-        public PackageDatabase(IContext context, Func<IContext> newContext)
+        public PackageDatabase(Func<IContext> newContext)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
             _newContext = newContext ?? throw new ArgumentNullException(nameof(newContext));
         }
 
@@ -26,9 +24,7 @@ namespace BaGet.Core
             try
             {
                 context.Packages.Add(package);
-
                 await context.SaveChangesAsync(cancellationToken);
-
                 return PackageAddResult.Success;
             }
             catch (DbUpdateException e)
@@ -40,7 +36,9 @@ namespace BaGet.Core
 
         public async Task<bool> ExistsAsync(string id, CancellationToken cancellationToken)
         {
-            return await _context
+            using var context = _newContext();
+
+            return await context
                 .Packages
                 .Where(p => p.Id == id)
                 .AnyAsync(cancellationToken);
@@ -48,7 +46,9 @@ namespace BaGet.Core
 
         public async Task<bool> ExistsAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
-            return await _context
+            using var context = _newContext();
+
+            return await context
                 .Packages
                 .Where(p => p.Id == id)
                 .Where(p => p.NormalizedVersionString == version.ToNormalizedString())
@@ -57,7 +57,9 @@ namespace BaGet.Core
 
         public async Task<IReadOnlyList<Package>> FindAsync(string id, bool includeUnlisted, CancellationToken cancellationToken)
         {
-            var query = _context.Packages
+            using var context = _newContext();
+
+            var query = context.Packages
                 .Include(p => p.Dependencies)
                 .Include(p => p.PackageTypes)
                 .Include(p => p.TargetFrameworks)
@@ -77,7 +79,9 @@ namespace BaGet.Core
             bool includeUnlisted,
             CancellationToken cancellationToken)
         {
-            var query = _context.Packages
+            using var context = _newContext();
+
+            var query = context.Packages
                 .Include(p => p.Dependencies)
                 .Include(p => p.TargetFrameworks)
                 .Where(p => p.Id == id)
@@ -117,14 +121,13 @@ namespace BaGet.Core
                 .Include(p => p.TargetFrameworks)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (package == null)
+            if (package is null)
             {
                 return false;
             }
 
             context.Packages.Remove(package);
             await context.SaveChangesAsync(cancellationToken);
-
             return true;
         }
 
@@ -141,15 +144,14 @@ namespace BaGet.Core
                 .Where(p => p.NormalizedVersionString == version.ToNormalizedString())
                 .FirstOrDefaultAsync();
 
-            if (package != null)
+            if (package is null)
             {
-                action(package);
-                await context.SaveChangesAsync(cancellationToken);
-
-                return true;
+                return false;
             }
 
-            return false;
+            action(package);
+            await context.SaveChangesAsync(cancellationToken);
+            return true;
         }
 
         private async Task<bool> TryUpdatePackageWithConcurrencyRetryAsync(
@@ -159,7 +161,6 @@ namespace BaGet.Core
             CancellationToken cancellationToken)
         {
             var attempts = 0;
-
             while (true)
             {
                 try
@@ -169,7 +170,6 @@ namespace BaGet.Core
                 catch (DbUpdateConcurrencyException)
                 {
                     attempts++;
-
                     if (attempts >= 5)
                     {
                         throw;
