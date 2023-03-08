@@ -82,7 +82,14 @@ namespace BaGet.Core
             // The package is well-formed. Ensure this is a new package.
             if (await _packages.ExistsAsync(package.Id, package.Version, cancellationToken))
             {
-                if (!_options.Value.AllowPackageOverwrites)
+                if (package.IsPrerelease)
+                {
+                    if (!_options.Value.AllowPreReleasePackageOverwrites)
+                    {
+                        return PackageIndexingResult.PackageAlreadyExists;
+                    }
+                }
+                else if (!_options.Value.AllowPackageOverwrites)
                 {
                     return PackageIndexingResult.PackageAlreadyExists;
                 }
