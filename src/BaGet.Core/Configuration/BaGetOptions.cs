@@ -33,6 +33,12 @@ namespace BaGet.Core
         public bool AllowPackageOverwrites { get; set; } = false;
 
         /// <summary>
+        /// If enabled, pushing a pre released package that already exists will replace the
+        /// existing package.
+        /// </summary>
+        public bool AllowPreReleasePackageOverwrites { get; set; } = false;
+
+        /// <summary>
         /// If true, disables package pushing, deleting, and re-listing.
         /// </summary>
         public bool IsReadOnlyMode { get; set; } = false;
