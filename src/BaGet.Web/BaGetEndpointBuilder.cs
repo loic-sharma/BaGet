@@ -46,6 +46,13 @@ namespace BaGet
                 pattern: "api/v2/package/{id}/{version}",
                 defaults: new { controller = "PackagePublish", action = "Relist" },
                 constraints: new { httpMethod = new HttpMethodRouteConstraint("POST") });
+
+            // This is an unofficial API to repackage a package as a new version
+            endpoints.MapControllerRoute(
+                name: Routes.RepackageRouteName,
+                pattern: "api/v2/package/{id}/{version}/repackage/{newVersion}",
+                defaults: new { controller = "PackagePublish", action = "Repackage" },
+                constraints: new { httpMethod = new HttpMethodRouteConstraint("POST") });
         }
 
         public void MapSymbolRoutes(IEndpointRouteBuilder endpoints)

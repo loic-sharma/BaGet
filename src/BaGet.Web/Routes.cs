@@ -8,6 +8,7 @@ namespace BaGet.Web
         public const string DeleteRouteName = "delete";
         public const string RelistRouteName = "relist";
         public const string SearchRouteName = "search";
+        public const string RepackageRouteName = "repackage";
         public const string AutocompleteRouteName = "autocomplete";
         public const string DependentsRouteName = "dependents";
         public const string RegistrationIndexRouteName = "registration-index";

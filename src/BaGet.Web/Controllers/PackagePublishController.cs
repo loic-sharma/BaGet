@@ -1,10 +1,17 @@
 using System;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Linq;
 using BaGet.Core;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NuGet.Packaging;
 using NuGet.Versioning;
 
 namespace BaGet.Web
@@ -15,6 +22,7 @@ namespace BaGet.Web
         private readonly IPackageIndexingService _indexer;
         private readonly IPackageDatabase _packages;
         private readonly IPackageDeletionService _deleteService;
+        private readonly IPackageStorageService _storageService;
         private readonly IOptionsSnapshot<BaGetOptions> _options;
         private readonly ILogger<PackagePublishController> _logger;
 
@@ -23,6 +31,7 @@ namespace BaGet.Web
             IPackageIndexingService indexer,
             IPackageDatabase packages,
             IPackageDeletionService deletionService,
+            IPackageStorageService storageService,
             IOptionsSnapshot<BaGetOptions> options,
             ILogger<PackagePublishController> logger)
         {
@@ -30,6 +39,7 @@ namespace BaGet.Web
             _indexer = indexer ?? throw new ArgumentNullException(nameof(indexer));
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));
             _deleteService = deletionService ?? throw new ArgumentNullException(nameof(deletionService));
+            _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -133,6 +143,85 @@ namespace BaGet.Web
             else
             {
                 return NotFound();
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Repackage(string id, string version, string newVersion, CancellationToken cancellationToken)
+        {
+            if (_options.Value.IsReadOnlyMode)
+            {
+                return Unauthorized();
+            }
+
+            if (!NuGetVersion.TryParse(version, out var nugetVersion))
+            {
+                return NotFound();
+            }
+
+            if (!NuGetVersion.TryParse(newVersion, out var newNugetVersion))
+            {
+                return BadRequest("Invalid version");
+            }
+
+            if (!await _authentication.AuthenticateAsync(Request.GetApiKey(), cancellationToken))
+            {
+                return Unauthorized();
+            }
+
+            var packageStream = await _storageService.GetPackageStreamAsync(id, nugetVersion, cancellationToken);
+
+            if (packageStream == null)
+            {
+                return NotFound();
+            }
+
+            if(await _packages.ExistsAsync(id, newNugetVersion, cancellationToken))
+            {
+                return BadRequest("Package version already exists");
+            }
+
+            using (var ms = new MemoryStream())
+            {
+                await packageStream.CopyToAsync(ms);
+                using (var archive = new ZipArchive(ms, ZipArchiveMode.Update))
+                {
+                    var nuspecEntry = archive.Entries.FirstOrDefault(x => x.Name.EndsWith(".nuspec", StringComparison.OrdinalIgnoreCase));
+
+                    if (nuspecEntry == null)
+                    {
+                        return BadRequest("Nuget file is missing nuspec");
+                    }
+
+                    string updatedNuspec;
+                    using (var nuspecStream = nuspecEntry.Open())
+                    {
+                        var doc = XDocument.Load(nuspecStream);
+                        var ns = XNamespace.Get("http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd");
+                        doc.Descendants(ns + "version").First().Value = newNugetVersion.ToNormalizedString();
+                        using(var docMs = new MemoryStream())
+                        {
+                            doc.Save(docMs);
+                            updatedNuspec = Encoding.UTF8.GetString(docMs.ToArray());
+                        }
+                    }
+
+                    nuspecEntry.Delete();
+                    nuspecEntry = archive.CreateEntry($"{id}.nuspec");
+
+                    using(var writer = new StreamWriter(nuspecEntry.Open()))
+                    {
+                        writer.Write(updatedNuspec);
+                    }
+                }
+
+
+                using(var repackgedStream = new MemoryStream(ms.ToArray()))
+                {
+                    await _indexer.IndexAsync(repackgedStream, cancellationToken);
+                }
+
+                return Ok();
             }
         }
     }

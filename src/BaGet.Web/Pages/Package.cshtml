@@ -239,6 +239,11 @@ else
                         <i class="ms-Icon ms-Icon--CloudDownload"></i>
                         <a href="@Model.PackageDownloadUrl">Download package</a>
                     </li>
+
+                    <li>
+                        <i class="ms-Icon ms-Icon--Package"></i>
+                        <a href="#" data-toggle="modal" data-target="#repackage">Repackage</a>
+                    </li>
                 </ul>
             </div>
 
@@ -268,6 +273,44 @@ else
             }
         </aside>
     </div>
+
+    <!-- Modal -->
+    <form id="repackage-form">
+        <div class="modal fade" id="repackage" tabindex="-1" role="dialog" aria-labelledby="repackageLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="repackageLabel">Repackage Nuget Package</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                    <div id="repackage-alert" class="alert alert-danger alert-dismissible fade hide" role="alert">
+                       <div id="repackage-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Package name</label>
+                        <input type="text" readonly class="form-control" value="@Model.Package.Id" />
+                    </div>
+                    <div class="form-group">
+                        <label>Package version</label>
+                        <input type="text" readonly class="form-control" value="@Model.Package.NormalizedVersionString" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="repackage-version">New Version</label>
+                        <input type="text" class="form-control" id="repackage-version" value="@Model.Package.NormalizedVersionString">
+                    </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="repackage-button" class="btn btn-primary">Repackage</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    </form>
 }
 
 @if (Model.Found)
@@ -321,6 +364,35 @@ else
             }
         ];
     </script>
+
+    @section Scripts {
+        <script>
+            const repackageButton = $("#repackage-button");
+
+            repackageButton.click(() => {
+                const repackageForm = $("#repackage-form");
+                const repackageVersion = $("#repackage-version");
+
+                const postUrl = "@Model.RepackageUrl".replace("0.0.0", repackageVersion.val());
+
+                $.ajax({
+                    type: "POST",
+                    url: postUrl,
+                    success: () => {
+                        location.href = "@Url.Page("package", new{ id= Model.Package.Id, version = "0.0.0"})".replace("0.0.0", repackageVersion.val());
+                    },
+                    error: response => {
+                        $("#repackage-error").text(response.responseText);
+                        $("#repackage-alert").removeClass("fade").addClass("show")
+                    },
+                    headers:  {
+                        "X-NuGet-ApiKey": "@Model.ApiKey"
+                    }
+                });
+            });
+
+        </script>
+    }
 }
 
 @functions {
