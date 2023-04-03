@@ -8,6 +8,7 @@ using BaGet.Core;
 using Markdig;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Options;
 using NuGet.Frameworks;
 using NuGet.Versioning;
 
@@ -20,6 +21,7 @@ namespace BaGet.Web
         private readonly IPackageService _packages;
         private readonly IPackageContentService _content;
         private readonly ISearchService _search;
+        private readonly IOptionsSnapshot<BaGetOptions> _options;
         private readonly IUrlGenerator _url;
 
         static PackageModel()
@@ -33,11 +35,13 @@ namespace BaGet.Web
             IPackageService packages,
             IPackageContentService content,
             ISearchService search,
+            IOptionsSnapshot<BaGetOptions> options,
             IUrlGenerator url)
         {
             _packages = packages ?? throw new ArgumentNullException(nameof(packages));
             _content = content ?? throw new ArgumentNullException(nameof(content));
             _search = search ?? throw new ArgumentNullException(nameof(search));
+            _options = options ?? throw new ArgumentNullException(nameof(options));
             _url = url ?? throw new ArgumentNullException(nameof(url));
         }
 
@@ -59,6 +63,8 @@ namespace BaGet.Web
         public string IconUrl { get; private set; }
         public string LicenseUrl { get; private set; }
         public string PackageDownloadUrl { get; private set; }
+        public string RepackageUrl { get; private set; }
+        public string ApiKey { get; private set; }
 
         public async Task OnGetAsync(string id, string version, CancellationToken cancellationToken)
         {
@@ -84,6 +90,8 @@ namespace BaGet.Web
                 return;
             }
 
+            ApiKey = _options.Value.ApiKey;
+
             var packageVersion = Package.Version;
 
             Found = true;
@@ -108,6 +116,7 @@ namespace BaGet.Web
                 : Package.IconUrlString;
             LicenseUrl = Package.LicenseUrlString;
             PackageDownloadUrl = _url.GetPackageDownloadUrl(Package.Id, packageVersion);
+            RepackageUrl = _url.GetPackageRepackageUrl(Package.Id, packageVersion, NuGetVersion.Parse("0.0.0"));
         }
 
         private IReadOnlyList<DependencyGroupModel> ToDependencyGroups(Package package)

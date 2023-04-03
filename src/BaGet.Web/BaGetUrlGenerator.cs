@@ -161,5 +161,22 @@ namespace BaGet.Web
                 "/",
                 relativePath);
         }
+
+        public string GetPackageRepackageUrl(string id, NuGetVersion version, NuGetVersion newVersion)
+        {
+            id = id.ToLowerInvariant();
+            var versionString = version.ToNormalizedString().ToLowerInvariant();
+            var newVersionString = newVersion.ToNormalizedString().ToLowerInvariant();
+
+            return _linkGenerator.GetUriByRouteValues(
+                _httpContextAccessor.HttpContext,
+                Routes.RepackageRouteName,
+                values: new
+                {
+                    Id = id,
+                    Version = versionString,
+                    NewVersion = newVersionString
+                });
+        }
     }
 }

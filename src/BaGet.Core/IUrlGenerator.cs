@@ -101,5 +101,13 @@ namespace BaGet.Core
         /// <param name="id">The package's ID</param>
         /// <param name="version">The package's version</param>
         string GetPackageIconDownloadUrl(string id, NuGetVersion version);
+
+        /// <summary>
+        /// Get the package repackage url with a replacement token for the new version {newVersion}
+        /// </summary>
+        /// <param name="id">The package ID</param>
+        /// <param name="version">The package version</param>
+        /// <param name="newVersion">The package new version</param>
+        string GetPackageRepackageUrl(string id, NuGetVersion version, NuGetVersion newVersion);
     }
 }

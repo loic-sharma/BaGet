@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core;
+using Microsoft.Extensions.Options;
 using Moq;
 using NuGet.Versioning;
 using Xunit;
@@ -17,6 +18,7 @@ namespace BaGet.Web.Tests
         private readonly Mock<IPackageService> _packages;
         private readonly Mock<ISearchService> _search;
         private readonly Mock<IUrlGenerator> _url;
+        private readonly Mock<IOptionsSnapshot<BaGetOptions>> _options;
         private readonly PackageModel _target;
 
         private readonly CancellationToken _cancellation = CancellationToken.None;
@@ -27,10 +29,12 @@ namespace BaGet.Web.Tests
             _packages = new Mock<IPackageService>();
             _search = new Mock<ISearchService>();
             _url = new Mock<IUrlGenerator>();
+            _options = new Mock<IOptionsSnapshot<BaGetOptions>>();
             _target = new PackageModel(
                 _packages.Object,
                 _content.Object,
                 _search.Object,
+                _options.Object,
                 _url.Object);
 
             _search
