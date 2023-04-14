@@ -1,0 +1,54 @@
+
+<Project ToolsVersion="4.0" DefaultTargets="Build" InitialTargets="EnsureWixToolsetInstalled" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform>x64</Platform>
+    <ProjectGuid>b16c7d39-7168-7afd-0dcb-d14601bbc0b5</ProjectGuid>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputName>BaGetService</OutputName>
+    <OutputType>Package</OutputType>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <RunWixToolsOutOfProc>true</RunWixToolsOutOfProc>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DefineConstants>Debug</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Product.wxs" />
+    <Compile Include="ProductInstallFiles.wxs" />
+  </ItemGroup>
+  <ItemGroup>
+    <WixExtension Include="WixUIExtension">
+      <HintPath>C:\Program Files (x86)\WiX Toolset v3.11\bin\WixUIExtension.dll</HintPath>
+      <Name>WixUIExtension</Name>
+    </WixExtension>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Defines.wxi" />
+    <Content Include="license.rtf" />
+    <Content Include="Shortcuts.wxi" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BaGetService\BaGetService.csproj">
+      <Name>BaGetService</Name>
+      <Project>{66a9b7b0-4af8-452e-bf50-b4100ebcbb6a}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLDIR</RefTargetDir>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(WixTargetsPath)" Condition=" '$(WixTargetsPath)' != '' " />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets" Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets') " />
+  <Target Name="EnsureWixToolsetInstalled" Condition=" '$(WixTargetsImported)' != 'true' ">
+    <Error Text="The WiX Toolset v3.11 (or newer) build tools must be installed to build this project. To download the WiX Toolset, see http://wixtoolset.org/releases/" />
+  </Target>
+  <PropertyGroup>
+    <DefineConstants>HarvestDirectory=..\BaGetService\bin\net7.0-windows\win-x64\</DefineConstants>
+    <HarvestDirectory>..\BaGetService\bin\net7.0-windows\win-x64\</HarvestDirectory>
+  </PropertyGroup>
+  <Target Name="BeforeBuild">
+    <HeatDirectory RunAsSeparateProcess="$(RunWixToolsOutOfProc)" PreprocessorVariable="var.HarvestDirectory" OutputFile="$(ProjectDir)\ProductInstallFiles.wxs" Directory="$(HarvestDirectory)" ComponentGroupName="ProductFilesComponentGroup" DirectoryRefId="INSTALLDIR" AutogenerateGuids="true" SuppressRegistry="true" SuppressRootDirectory="true" ToolPath="$(WixToolPath)" NoLogo="true" />
+  </Target>
+</Project>

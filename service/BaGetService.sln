@@ -1,0 +1,43 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33110.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGetService", "BaGetService\BaGetService.csproj", "{66A9B7B0-4AF8-452E-BF50-B4100EBCBB6A}"
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "BaGetService_Setup", "BaGetService_Setup\BaGetService_Setup.wixproj", "{B16C7D39-7168-7AFD-0DCB-D14601BBC0B5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{66A9B7B0-4AF8-452E-BF50-B4100EBCBB6A} = {66A9B7B0-4AF8-452E-BF50-B4100EBCBB6A}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{66A9B7B0-4AF8-452E-BF50-B4100EBCBB6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66A9B7B0-4AF8-452E-BF50-B4100EBCBB6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66A9B7B0-4AF8-452E-BF50-B4100EBCBB6A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{66A9B7B0-4AF8-452E-BF50-B4100EBCBB6A}.Debug|x64.Build.0 = Debug|Any CPU
+		{66A9B7B0-4AF8-452E-BF50-B4100EBCBB6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66A9B7B0-4AF8-452E-BF50-B4100EBCBB6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66A9B7B0-4AF8-452E-BF50-B4100EBCBB6A}.Release|x64.ActiveCfg = Release|Any CPU
+		{66A9B7B0-4AF8-452E-BF50-B4100EBCBB6A}.Release|x64.Build.0 = Release|Any CPU
+		{B16C7D39-7168-7AFD-0DCB-D14601BBC0B5}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{B16C7D39-7168-7AFD-0DCB-D14601BBC0B5}.Debug|Any CPU.Build.0 = Debug|x64
+		{B16C7D39-7168-7AFD-0DCB-D14601BBC0B5}.Debug|x64.ActiveCfg = Debug|x64
+		{B16C7D39-7168-7AFD-0DCB-D14601BBC0B5}.Debug|x64.Build.0 = Debug|x64
+		{B16C7D39-7168-7AFD-0DCB-D14601BBC0B5}.Release|Any CPU.ActiveCfg = Release|x64
+		{B16C7D39-7168-7AFD-0DCB-D14601BBC0B5}.Release|Any CPU.Build.0 = Release|x64
+		{B16C7D39-7168-7AFD-0DCB-D14601BBC0B5}.Release|x64.ActiveCfg = Release|x64
+		{B16C7D39-7168-7AFD-0DCB-D14601BBC0B5}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2493BF23-F33C-44FF-B5E7-C9419966F674}
+	EndGlobalSection
+EndGlobal

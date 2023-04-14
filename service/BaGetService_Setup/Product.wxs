@@ -1,0 +1,30 @@
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?include Defines.wxi ?>
+  <Product Id="*" Name="$(var.ProductName)" Language="1033" Version="$(var.ProductVersion)" Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.ProductUpgradeCode)">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" Platform='x64' />
+    <Media Id="1" Cabinet="$(var.ProductNameNoSpaces).cab" EmbedCab="yes" />
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <Feature Id="ProductFeature" Title="$(var.ProductName) Setup" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentGroupRef Id="ProductFilesComponentGroup" />
+    </Feature>
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
+    <UIRef Id="WixUI_InstallDir" />
+  </Product>
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFiles64Folder">
+        <Directory Id="INSTALLDIR" Name="BaGetService">
+        </Directory>
+        <?include ShortCuts.wxi ?>
+      </Directory>
+    </Directory>
+  </Fragment>
+  <Fragment>
+    <Icon Id="favicon.ico" SourceFile="../BaGetService/favicon.ico" />
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLDIR">
+      <ComponentRef Id="ApplicationShortcuts" />
+    </ComponentGroup>
+  </Fragment>
+</Wix>
