@@ -2,6 +2,8 @@
 
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
+
+		<ContainerImageName>brushtailnuget</ContainerImageName>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -10,7 +12,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Properties\PublishProfiles\" />
+		<PackageReference Include="Microsoft.NET.Build.Containers" Version="7.0.302" />
 	</ItemGroup>
 
 </Project>

@@ -8,7 +8,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Google.Cloud.Storage.V1" Version="4.1.0" />
+		<PackageReference Include="Google.Cloud.Storage.V1" Version="4.5.0" />
 	</ItemGroup>
 
 	<ItemGroup>

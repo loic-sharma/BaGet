@@ -8,18 +8,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.2" />
-<<<<<<< HEAD
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.1" />
+		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.5" />
 	</ItemGroup>
 
-=======
-
-		<!--TODO: Remove the refrence after the version conflict solved-->
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.0" />
-	</ItemGroup>
-
->>>>>>> d497a9fff137090729d2dc9e26ed77ca4af4eea1
 	<ItemGroup>
 		<ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
 	</ItemGroup>
