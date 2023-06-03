@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Moq;
@@ -60,6 +61,7 @@ namespace BaGet.Core.Tests.Metadata
                 PackageTypes = new List<PackageType> { new PackageType { Name = "test" } },
                 Dependencies = new List<PackageDependency> { },
                 Version = new NuGetVersion(version),
+                Published = new DateTime(2003, 1, 4, 15, 9, 26, 535),
             };
         }
     }
