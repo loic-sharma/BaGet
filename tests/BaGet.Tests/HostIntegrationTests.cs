@@ -69,7 +69,7 @@ namespace BaGet.Tests
                 })
                 .Build();
 
-            return host.Services;
+            return host.Services.CreateScope().ServiceProvider;
         }
     }
 }
