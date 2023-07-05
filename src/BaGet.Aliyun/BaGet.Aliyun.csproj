@@ -2,7 +2,7 @@
   <PropertyGroup>
     <PackageTags>NuGet;Alibaba;Cloud</PackageTags>
     <Description>The libraries to host BaGet on Alibaba Cloud (Aliyun).</Description>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>10.0</LangVersion>
