@@ -100,6 +100,7 @@ namespace BaGet.Core
 
             services.TryAddTransient<DatabaseSearchService>();
             services.TryAddTransient<FileStorageService>();
+            services.TryAddTransient<DatabaseStorageService>();
             services.TryAddTransient<PackageService>();
             services.TryAddTransient<V2UpstreamClient>();
             services.TryAddTransient<V3UpstreamClient>();
@@ -131,6 +132,11 @@ namespace BaGet.Core
                 if (configuration.HasStorageType("filesystem"))
                 {
                     return provider.GetRequiredService<FileStorageService>();
+                }
+
+                if (configuration.HasStorageType("mysql"))
+                {
+                    return provider.GetRequiredService<DatabaseStorageService>();
                 }
 
                 if (configuration.HasStorageType("null"))

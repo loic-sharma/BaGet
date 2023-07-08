@@ -18,6 +18,8 @@ namespace BaGet
                 options.UseMySql(databaseOptions.Value.ConnectionString);
             });
 
+            app.Services.AddTransient<IPackageContentsContext>(services => services.GetRequiredService<MySqlContext>());
+
             return app;
         }
 

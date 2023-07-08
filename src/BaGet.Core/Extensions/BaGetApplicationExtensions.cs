@@ -22,6 +22,12 @@ namespace BaGet
             return app;
         }
 
+        public static BaGetApplication AddMySqlStorage(this BaGetApplication app)
+        {
+            app.Services.TryAddTransient<IStorageService>(provider => provider.GetRequiredService<DatabaseStorageService>());
+            return app;
+        }
+
         public static BaGetApplication AddNullStorage(this BaGetApplication app)
         {
             app.Services.TryAddTransient<IStorageService>(provider => provider.GetRequiredService<NullStorageService>());
