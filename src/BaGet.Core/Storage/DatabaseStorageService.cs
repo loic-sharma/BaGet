@@ -31,6 +31,10 @@ namespace BaGet.Core
         public async Task<Stream> GetAsync(string path, CancellationToken cancellationToken = default)
         {
             var contents = await _context.PackageContents.SingleOrDefaultAsync(p => p.Path == path, cancellationToken);
+            if (contents == null)
+            {
+                throw new Exception($"PackageContents record not found for path: {path}");
+            }
             var ms = new MemoryStream(contents.Data);
             return ms;
         }
