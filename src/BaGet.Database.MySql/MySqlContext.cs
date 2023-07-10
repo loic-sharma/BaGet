@@ -43,7 +43,7 @@ namespace BaGet.Database.MySql
             packageContents.HasIndex(p => new { p.Path }).IsUnique();
 
             packageContents.Property(p => p.Path)
-                .HasMaxLength((MaxPackageIdLength + MaxPackageVersionLength) * 2 + 20);
+                .HasColumnType("varchar(255)");
         }
     }
 }

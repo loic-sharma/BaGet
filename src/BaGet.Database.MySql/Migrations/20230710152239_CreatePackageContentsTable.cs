@@ -24,7 +24,7 @@ namespace BaGet.Database.MySql.Migrations
                 {
                     Key = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Path = table.Column<string>(maxLength: 404, nullable: true),
+                    Path = table.Column<string>(type: "varchar(255)", nullable: true),
                     Data = table.Column<byte[]>(nullable: true)
                 },
                 constraints: table =>

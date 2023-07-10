@@ -140,8 +140,7 @@ namespace BaGet.Database.MySql.Migrations
                         .HasColumnType("longblob");
 
                     b.Property<string>("Path")
-                        .HasColumnType("varchar(404) CHARACTER SET utf8mb4")
-                        .HasMaxLength(404);
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Key");
 

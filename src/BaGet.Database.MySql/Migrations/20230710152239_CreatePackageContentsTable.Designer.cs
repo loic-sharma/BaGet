@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaGet.Database.MySql.Migrations
 {
     [DbContext(typeof(MySqlContext))]
-    [Migration("20230710145506_CreatePackageContentsTable")]
+    [Migration("20230710152239_CreatePackageContentsTable")]
     partial class CreatePackageContentsTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -142,8 +142,7 @@ namespace BaGet.Database.MySql.Migrations
                         .HasColumnType("longblob");
 
                     b.Property<string>("Path")
-                        .HasColumnType("varchar(404) CHARACTER SET utf8mb4")
-                        .HasMaxLength(404);
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Key");
 
