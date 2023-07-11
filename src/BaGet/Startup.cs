@@ -69,6 +69,7 @@ namespace BaGet
             app.AddAwsS3Storage();
             app.AddAzureBlobStorage();
             app.AddGoogleCloudStorage();
+            app.AddMySqlStorage();
 
             // Add search providers.
             app.AddAzureSearch();
