@@ -57,7 +57,7 @@ namespace BaGet.Core
             {
                 return existingContents.Data.SequenceEqual(newData)
                     ? StoragePutResult.AlreadyExists
-                    : StoragePutResult.Success;
+                    : StoragePutResult.Conflict;
             }
 
             _context.PackageContents.Add(new PackageContents
