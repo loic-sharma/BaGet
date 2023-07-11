@@ -41,6 +41,7 @@ namespace BaGet
                 "AzureBlobStorage",
                 "Filesystem",
                 "GoogleCloud",
+                "MySql",
                 "Null",
             };
 

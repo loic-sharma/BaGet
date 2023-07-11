@@ -1,15 +1,18 @@
 using BaGet.Core;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MySql.Data.MySqlClient;
 
 namespace BaGet.Database.MySql
 {
-    public class MySqlContext : AbstractContext<MySqlContext>
+    public class MySqlContext : AbstractContext<MySqlContext>, IPackageContentsContext
     {
         /// <summary>
         /// The MySQL Server error code for when a unique constraint is violated.
         /// </summary>
         private const int UniqueConstraintViolationErrorCode = 1062;
+
+        public DbSet<PackageContents> PackageContents { get; set; }
 
         public MySqlContext(DbContextOptions<MySqlContext> options) : base(options)
         {
@@ -26,5 +29,21 @@ namespace BaGet.Database.MySql
         /// See: https://dev.mysql.com/doc/refman/8.0/en/subquery-restrictions.html
         /// </summary>
         public override bool SupportsLimitInSubqueries => false;
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<PackageContents>(BuildPackageContentsEntity);
+        }
+
+        private void BuildPackageContentsEntity(EntityTypeBuilder<PackageContents> packageContents)
+        {
+            packageContents.HasKey(p => p.Key);
+            packageContents.HasIndex(p => new { p.Path }).IsUnique();
+
+            packageContents.Property(p => p.Path)
+                .HasColumnType("varchar(255)");
+        }
     }
 }
