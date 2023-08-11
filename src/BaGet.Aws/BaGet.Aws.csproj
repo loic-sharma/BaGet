@@ -7,14 +7,6 @@
     <Description>The libraries to host BaGet on AWS.</Description>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <LangVersion>10.0</LangVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <LangVersion>10.0</LangVersion>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="AWSSDK.S3" Version="3.7.9.55" />
     <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.201" />
