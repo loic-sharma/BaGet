@@ -1,18 +1,30 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFramework>net7.0</TargetFramework>
 
     <PackageTags>NuGet;Google;Cloud</PackageTags>
     <Description>The libraries to host BaGet on the Google Cloud Platform.</Description>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <LangVersion>10.0</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>10.0</LangVersion>
+  </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="Google.Cloud.Storage.V1" Version="2.2.1" />
+    <PackageReference Include="Google.Cloud.Storage.V1" Version="4.1.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.1.1" />
   </ItemGroup>
 
 </Project>
