@@ -55,12 +55,12 @@ namespace BaGet.Core
 
             if (expandedPath != tempPath)
             {
-                throw new ArgumentException(nameof(filename));
+                throw new ArgumentException($"Invalid file name: \"{filename}\" (can't escape the current directory)", nameof(filename));
             }
 
             if (!key.All(char.IsLetterOrDigit))
             {
-                throw new ArgumentException(nameof(key));
+                throw new ArgumentException($"Invalid key: \"{key}\" (must contain exclusively letters and digits)", nameof(key));
             }
 
             // The key's first 32 characters are the GUID, the remaining characters are the age.
