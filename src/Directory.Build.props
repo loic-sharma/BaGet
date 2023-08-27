@@ -21,6 +21,12 @@
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
+  <!-- .NET source code analysis https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/overview -->
+  <PropertyGroup>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest-Minimum</AnalysisLevel>
+  </PropertyGroup>
+
   <!-- Debugging properties -->
   <PropertyGroup>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
