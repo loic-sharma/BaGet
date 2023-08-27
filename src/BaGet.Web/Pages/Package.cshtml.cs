@@ -110,7 +110,7 @@ namespace BaGet.Web
             PackageDownloadUrl = _url.GetPackageDownloadUrl(Package.Id, packageVersion);
         }
 
-        private IReadOnlyList<DependencyGroupModel> ToDependencyGroups(Package package)
+        private static IReadOnlyList<DependencyGroupModel> ToDependencyGroups(Package package)
         {
             return package
                 .Dependencies
@@ -135,7 +135,7 @@ namespace BaGet.Web
                 .ToList();
         }
 
-        private string PrettifyTargetFramework(string targetFramework)
+        private static string PrettifyTargetFramework(string targetFramework)
         {
             if (targetFramework == null) return "All Frameworks";
 
@@ -179,7 +179,7 @@ namespace BaGet.Web
             return $"{frameworkName} {frameworkVersion}";
         }
 
-        private IReadOnlyList<VersionModel> ToVersions(IReadOnlyList<Package> packages, NuGetVersion selectedVersion)
+        private static IReadOnlyList<VersionModel> ToVersions(IReadOnlyList<Package> packages, NuGetVersion selectedVersion)
         {
             return packages
                 .Select(p => new VersionModel

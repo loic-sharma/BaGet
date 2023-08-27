@@ -117,7 +117,7 @@ namespace BaGet.Core
             };
         }
 
-        private Uri ParseUri(string uriString)
+        private static Uri ParseUri(string uriString)
         {
             if (uriString == null) return null;
 
@@ -129,7 +129,7 @@ namespace BaGet.Core
             return uri;
         }
 
-        private string[] ParseAuthors(string authors)
+        private static string[] ParseAuthors(string authors)
         {
             if (string.IsNullOrEmpty(authors)) return Array.Empty<string>();
 

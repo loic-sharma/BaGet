@@ -109,14 +109,14 @@ namespace BaGet.Core
 
         private static string[] ParseAuthors(string authors)
         {
-            if (string.IsNullOrEmpty(authors)) return new string[0];
+            if (string.IsNullOrEmpty(authors)) return Array.Empty<string>();
 
             return authors.Split(new[] { ',', ';', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
         }
 
         private static string[] ParseTags(string tags)
         {
-            if (string.IsNullOrEmpty(tags)) return new string[0];
+            if (string.IsNullOrEmpty(tags)) return Array.Empty<string>();
 
             return tags.Split(new[] { ',', ';', ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
         }

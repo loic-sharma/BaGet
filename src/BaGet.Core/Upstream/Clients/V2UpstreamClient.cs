@@ -126,7 +126,11 @@ namespace BaGet.Core
             }
         }
 
-        public void Dispose() => _cache.Dispose();
+        public void Dispose()
+        {
+            _cache.Dispose();
+            GC.SuppressFinalize(this);
+        }
 
         private Package ToPackage(IPackageSearchMetadata package)
         {
@@ -157,7 +161,7 @@ namespace BaGet.Core
             };
         }
 
-        private string[] ParseAuthors(string authors)
+        private static string[] ParseAuthors(string authors)
         {
             if (string.IsNullOrEmpty(authors)) return Array.Empty<string>();
 

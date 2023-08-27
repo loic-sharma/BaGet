@@ -21,7 +21,7 @@ namespace BaGet.Azure
             return AddOrUpdatePackage(registration, isUpdate: true);
         }
 
-        private IReadOnlyList<IndexAction<KeyedDocument>> AddOrUpdatePackage(
+        private static IReadOnlyList<IndexAction<KeyedDocument>> AddOrUpdatePackage(
             PackageRegistration registration,
             bool isUpdate)
         {
@@ -105,7 +105,7 @@ namespace BaGet.Azure
             return result;
         }
 
-        private string EncodePackageId(string key)
+        private static string EncodePackageId(string key)
         {
             // Keys can only contain letters, digits, underscore(_), dash(-), or equal sign(=).
             // TODO: Align with NuGet.org's algorithm.

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Azure.Search.Models;
 
 namespace BaGet.Azure
@@ -10,6 +11,7 @@ namespace BaGet.Azure
     {
         public const string Name = "baget-exact-match-analyzer";
 
+        [SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible", Justification = "Would be a breaking change")]
         public static CustomAnalyzer Instance = new CustomAnalyzer(
             Name,
             TokenizerName.Keyword,

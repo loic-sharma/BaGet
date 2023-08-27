@@ -133,7 +133,7 @@ namespace BaGet.Core
             return entries.Select(e => new FileInfo(e)).All(IsValidSymbolFileInfo);
         }
 
-        private async Task<PortablePdb> ExtractPortablePdbAsync(
+        private static async Task<PortablePdb> ExtractPortablePdbAsync(
             PackageArchiveReader symbolPackage,
             string pdbPath,
             CancellationToken cancellationToken)
@@ -147,7 +147,7 @@ namespace BaGet.Core
             {
                 using (var rawPdbStream = await symbolPackage.GetStreamAsync(pdbPath, cancellationToken))
                 {
-                    pdbStream = await rawPdbStream.AsTemporaryFileStreamAsync();
+                    pdbStream = await rawPdbStream.AsTemporaryFileStreamAsync(cancellationToken);
 
                     string signature;
                     using (var pdbReaderProvider = MetadataReaderProvider.FromPortablePdbStream(pdbStream, MetadataStreamOptions.LeaveOpen))
