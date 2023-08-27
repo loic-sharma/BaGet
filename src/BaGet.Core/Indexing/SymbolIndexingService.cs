@@ -133,7 +133,7 @@ namespace BaGet.Core
             return entries.Select(e => new FileInfo(e)).All(IsValidSymbolFileInfo);
         }
 
-        private async Task<PortablePdb> ExtractPortablePdbAsync(
+        private static async Task<PortablePdb> ExtractPortablePdbAsync(
             PackageArchiveReader symbolPackage,
             string pdbPath,
             CancellationToken cancellationToken)

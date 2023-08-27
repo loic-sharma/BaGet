@@ -145,7 +145,7 @@ namespace BaGet.Core
             return _searchBuilder.BuildDependents(dependents);
         }
 
-        private IQueryable<Package> ApplySearchQuery(IQueryable<Package> query, string search)
+        private static IQueryable<Package> ApplySearchQuery(IQueryable<Package> query, string search)
         {
             if (string.IsNullOrEmpty(search))
             {
@@ -157,7 +157,7 @@ namespace BaGet.Core
             return query.Where(p => p.Id.ToLower().Contains(search));
         }
 
-        private IQueryable<Package> ApplySearchFilters(
+        private static IQueryable<Package> ApplySearchFilters(
             IQueryable<Package> query,
             bool includePrerelease,
             bool includeSemVer2,

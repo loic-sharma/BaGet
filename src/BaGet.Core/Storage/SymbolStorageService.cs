@@ -47,12 +47,12 @@ namespace BaGet.Core
             }
         }
 
-        private string GetPathForKey(string filename, string key)
+        private static string GetPathForKey(string filename, string key)
         {
             // Ensure the filename doesn't try to escape out of the current directory.
             var tempPath = Path.GetDirectoryName(Path.GetTempPath());
             var expandedPath = Path.GetDirectoryName(Path.Combine(tempPath, filename));
-            
+
             if (expandedPath != tempPath)
             {
                 throw new ArgumentException(nameof(filename));

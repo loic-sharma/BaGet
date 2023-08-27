@@ -205,7 +205,7 @@ namespace BaGet.Azure
             return queryBuilder.ToString();
         }
 
-        private string BuildSearchFilter(bool includePrerelease, bool includeSemVer2)
+        private static string BuildSearchFilter(bool includePrerelease, bool includeSemVer2)
         {
             var searchFilters = SearchFilters.Default;
 

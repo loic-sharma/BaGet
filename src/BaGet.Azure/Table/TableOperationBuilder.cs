@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using BaGet.Core;
 using Microsoft.Azure.Cosmos.Table;
@@ -8,6 +9,7 @@ using NuGet.Versioning;
 
 namespace BaGet.Azure
 {
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Would be a breaking change since it's part of the public API")]
     public class TableOperationBuilder
     {
         public TableOperation AddPackage(Package package)
