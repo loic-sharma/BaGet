@@ -126,7 +126,11 @@ namespace BaGet.Core
             }
         }
 
-        public void Dispose() => _cache.Dispose();
+        public void Dispose()
+        {
+            _cache.Dispose();
+            GC.SuppressFinalize(this);
+        }
 
         private Package ToPackage(IPackageSearchMetadata package)
         {
