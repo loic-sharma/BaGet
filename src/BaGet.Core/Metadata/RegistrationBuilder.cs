@@ -32,7 +32,7 @@ namespace BaGet.Core
                     new BaGetRegistrationIndexPage
                     {
                         RegistrationPageUrl = _url.GetRegistrationIndexUrl(registration.PackageId),
-                        Count = registration.Packages.Count(),
+                        Count = registration.Packages.Count,
                         Lower = sortedPackages.First().Version.ToNormalizedString().ToLowerInvariant(),
                         Upper = sortedPackages.Last().Version.ToNormalizedString().ToLowerInvariant(),
                         ItemsOrNull = sortedPackages.Select(ToRegistrationIndexPageItem).ToList(),
