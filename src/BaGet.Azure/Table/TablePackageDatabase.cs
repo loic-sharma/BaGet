@@ -82,8 +82,8 @@ namespace BaGet.Azure
                     attempt++;
                     _logger.LogWarning(
                         e,
-                        $"Retrying due to precondition failure, attempt {{Attempt}} of {MaxPreconditionFailures}..",
-                        attempt);
+                        "Retrying due to precondition failure, attempt {Attempt} of {MaxPreconditionFailures}",
+                        attempt, MaxPreconditionFailures);
                 }
             }
         }
