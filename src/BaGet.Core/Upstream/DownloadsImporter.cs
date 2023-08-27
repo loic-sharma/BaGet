@@ -29,7 +29,7 @@ namespace BaGet.Core
         public async Task ImportAsync(CancellationToken cancellationToken)
         {
             var packageDownloads = await _downloadsSource.GetPackageDownloadsAsync();
-            var packages = await _context.Packages.CountAsync();
+            var packages = await _context.Packages.CountAsync(cancellationToken);
             var batches = (packages / BatchSize) + 1;
 
             for (var batch = 0; batch < batches; batch++)

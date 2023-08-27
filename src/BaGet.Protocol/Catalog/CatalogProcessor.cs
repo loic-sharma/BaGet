@@ -133,7 +133,7 @@ namespace BaGet.Protocol.Catalog
 
             if (newCursor.HasValue && success)
             {
-                await _cursor.SetAsync(newCursor.Value);
+                await _cursor.SetAsync(newCursor.Value, cancellationToken);
             }
 
             return success;
@@ -146,12 +146,12 @@ namespace BaGet.Protocol.Catalog
             {
                 if (leafItem.IsPackageDelete())
                 {
-                    var packageDelete = await _client.GetPackageDeleteLeafAsync(leafItem.CatalogLeafUrl);
+                    var packageDelete = await _client.GetPackageDeleteLeafAsync(leafItem.CatalogLeafUrl, cancellationToken);
                     success = await _leafProcessor.ProcessPackageDeleteAsync(packageDelete, cancellationToken);
                 }
                 else if (leafItem.IsPackageDetails())
                 {
-                    var packageDetails = await _client.GetPackageDetailsLeafAsync(leafItem.CatalogLeafUrl);
+                    var packageDetails = await _client.GetPackageDetailsLeafAsync(leafItem.CatalogLeafUrl, cancellationToken);
                     success = await _leafProcessor.ProcessPackageDetailsAsync(packageDetails, cancellationToken);
                 }
                 else

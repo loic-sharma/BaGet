@@ -147,7 +147,7 @@ namespace BaGet.Core
             {
                 using (var rawPdbStream = await symbolPackage.GetStreamAsync(pdbPath, cancellationToken))
                 {
-                    pdbStream = await rawPdbStream.AsTemporaryFileStreamAsync();
+                    pdbStream = await rawPdbStream.AsTemporaryFileStreamAsync(cancellationToken);
 
                     string signature;
                     using (var pdbReaderProvider = MetadataReaderProvider.FromPortablePdbStream(pdbStream, MetadataStreamOptions.LeaveOpen))
