@@ -29,6 +29,8 @@ namespace BaGet.Core
                 throw new InvalidOperationException("Package does not have a readme!");
             }
 
+            readmePath = PathUtility.StripLeadingDirectorySeparators(readmePath);
+
             return await package.GetStreamAsync(readmePath, cancellationToken);
         }
 
