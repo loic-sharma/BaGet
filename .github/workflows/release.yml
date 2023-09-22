@@ -86,5 +86,5 @@ jobs:
         context: .
         push: true
         tags: |
-          loicsharma/baget:latest
-          loicsharma/baget:${{ github.event.inputs.releaseVersion }}
+          bagetter/baget:latest
+          bagetter/baget:${{ github.event.inputs.releaseVersion }}
