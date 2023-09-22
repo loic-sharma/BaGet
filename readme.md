@@ -1,6 +1,6 @@
 # BaGet :baguette_bread:
 
-![Build status] [![Discord][Discord image]][Discord link] [![Twitter][Twitter image]][Twitter link]
+![Build status]
 
 A lightweight [NuGet] and [symbol] server.
 
@@ -26,17 +26,13 @@ For more information, please refer to the [documentation].
 Stay tuned, more features are planned!
 
 [Build status]: https://img.shields.io/github/actions/workflow/status/loic-sharma/BaGet/.github/workflows/main.yml
-[Discord image]: https://img.shields.io/discord/889377258068930591
-[Discord link]: https://discord.gg/MWbhpf66mk
-[Twitter image]: https://img.shields.io/twitter/follow/bagetapp?label=Follow
-[Twitter link]: https://twitter.com/bagetapp
 
 [NuGet]: https://learn.microsoft.com/nuget/what-is-nuget
 [symbol]: https://docs.microsoft.com/en-us/windows/desktop/debug/symbol-servers-and-symbol-stores
 [.NET SDK]: https://www.microsoft.com/net/download
 [Node.js]: https://nodejs.org/
 
-[BaGet's latest release]: https://github.com/loic-sharma/BaGet/releases
+[BaGet's latest release]: https://github.com/bagetter/BaGet/releases
 
 [Documentation]: https://loic-sharma.github.io/BaGet/
 [Docker]: https://loic-sharma.github.io/BaGet/installation/docker/
