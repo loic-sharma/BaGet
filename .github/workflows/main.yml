@@ -4,8 +4,16 @@ on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches: [ main ]
+    paths-ignore:
+      - '.github/**'
+      - 'docs/**'
+      - '*.md'
   pull_request:
     branches: [ main ]
+    paths-ignore:
+      - '.github/**'
+      - 'docs/**'
+      - '*.md'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -15,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4.0.0
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
