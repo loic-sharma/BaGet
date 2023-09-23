@@ -44,7 +44,7 @@ jobs:
     - name: Publish
       run: dotnet publish src/BaGetter --configuration Release --output artifacts
     - name: Upload
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3.1.3
       with:
         name: BaGetter
         path: artifacts
@@ -86,5 +86,5 @@ jobs:
         context: .
         push: true
         tags: |
-          bagetter/baget:latest
-          bagetter/baget:${{ github.event.inputs.releaseVersion }}
+          bagetter/bagetter:latest
+          bagetter/bagetter:${{ github.event.inputs.releaseVersion }}
