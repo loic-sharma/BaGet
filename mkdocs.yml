@@ -49,8 +49,8 @@ pages:
     - NuGet.org: import/nugetorg.md
   - Advanced:
     - Debugging: advanced/debugging.md
-    - BaGet SDK: advanced/sdk.md
-  - BaGet vs. other:
+    - BaGetter SDK: advanced/sdk.md
+  - BaGetter vs. other:
     - nuget.org: vs/nugetorg.md
     - NuGet.Server: vs/nugetserver.md
     - Local feeds: vs/local-feeds.md

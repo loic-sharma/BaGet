@@ -32,7 +32,7 @@ jobs:
 
   release_zip:
     needs: verify
-    name: Release BaGet.zip to GitHub
+    name: Release BaGetter.zip to GitHub
     runs-on: ubuntu-latest
 
     steps:

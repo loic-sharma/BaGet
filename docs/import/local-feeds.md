@@ -3,7 +3,7 @@
 [Local feeds](https://docs.microsoft.com/en-us/nuget/hosting-packages/local-feeds) let you use a folder as a NuGet package source.
 
 !!! info
-    Please refer to the [BaGet vs local feeds](../vs/local-feeds.md) page for reasons to upgrade to BaGet.
+    Please refer to the [BaGet vs local feeds](../vs/local-feeds.md) page for reasons to upgrade to BaGetter.
 
 ## Steps
 
@@ -14,7 +14,7 @@ $source = "C:\path\to\local\feed"
 $destination = "http://localhost:5000/v3/index.json"
 ```
 
-If you've [configured BaGet to require an API Key](https://loic-sharma.github.io/BaGet/configuration/#requiring-an-api-key), set it using [the `setapikey` command](https://docs.microsoft.com/en-us/nuget/reference/cli-reference/cli-ref-setapikey):
+If you've [configured BaGetter to require an API Key](https://loic-sharma.github.io/BaGet/configuration/#requiring-an-api-key), set it using [the `setapikey` command](https://docs.microsoft.com/en-us/nuget/reference/cli-reference/cli-ref-setapikey):
 
 ```ps1
 & nuget.exe setapikey "MY-API-KEY" -Source $destination

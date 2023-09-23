@@ -1,23 +1,23 @@
-# BaGet Source Code
+# BaGetter Source Code
 
 These folders contain the core components of BaGet:
 
 * `BaGet` - The app's entry point that glues everything together.
-* `BaGet.Core` - BaGet's core logic and services.
-* `BaGet.Web` - The [NuGet server APIs](https://docs.microsoft.com/en-us/nuget/api/overview) and web UI.
-* `BaGet.Protocol` - Libraries to interact with [NuGet servers' APIs](https://docs.microsoft.com/en-us/nuget/api/overview).
+* `BaGetter.Core` - BaGetter's core logic and services.
+* `BaGetter.Web` - The [NuGet server APIs](https://docs.microsoft.com/en-us/nuget/api/overview) and web UI.
+* `BaGetter.Protocol` - Libraries to interact with [NuGet servers' APIs](https://docs.microsoft.com/en-us/nuget/api/overview).
 
 These folders contain database-specific components of BaGet:
 
-* `BaGet.Database.MySql` - BaGet's MySQL database provider.
-* `BaGet.Database.PostgreSql` - BaGet's PostgreSql database provider.
-* `BaGet.Database.Sqlite` - BaGet's SQLite database provider.
-* `BaGet.Database.SqlServer` - BaGet's Microsoft SQL Server database provider.
+* `BaGetter.Database.MySql` - BaGetter's MySQL database provider.
+* `BaGetter.Database.PostgreSql` - BaGetter's PostgreSql database provider.
+* `BaGetter.Database.Sqlite` - BaGetter's SQLite database provider.
+* `BaGetter.Database.SqlServer` - BaGetter's Microsoft SQL Server database provider.
 
 These folders contain cloud-specific components of BaGet:
 
-* `BaGet.Aliyun` - BaGet's Alibaba Cloud(Aliyun) provider.
-* `BaGet.Aws` - BaGet's Amazon Web Services provider.
-* `BaGet.Azure` - BaGet's Azure provider.
-* `BaGet.Gcp` - BaGet's Google Cloud Platform provider.
+* `BaGetter.Aliyun` - BaGetter's Alibaba Cloud(Aliyun) provider.
+* `BaGetter.Aws` - BaGetter's Amazon Web Services provider.
+* `BaGetter.Azure` - BaGetter's Azure provider.
+* `BaGetter.Gcp` - BaGetter's Google Cloud Platform provider.
 

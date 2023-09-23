@@ -18,11 +18,11 @@ website and v2 APIs
 
 As you can tell, nuget.org is a complex beast. Hosting your own instance of the Gallery is not for the faint of heart.
 
-# BaGet vs nuget.org
+# BaGetter vs nuget.org
 
 TODO. See [this issue](https://github.com/loic-sharma/BaGet/issues/71) for a deep-dive.
 
-* BaGet only competes with [NuGet/NuGet.Services.Metadata](https://github.com/NuGet/NuGet.Services.Metadata/)
+* BaGetter only competes with [NuGet/NuGet.Services.Metadata](https://github.com/NuGet/NuGet.Services.Metadata/)
 * nuget.org's v3 implementation is static
     * Runs only on Windows
     * Highly tied to Azure
@@ -31,7 +31,7 @@ TODO. See [this issue](https://github.com/loic-sharma/BaGet/issues/71) for a dee
     * Static JSON files are hosted on Azure Blob Storage
     * Served by a Content Delivery Network
     * Files are updated by `feed2catalog`, `catalog2registration`, `catalog2dnx`, and `catalog2lucene` jobs
-* BaGet's v3 implementation is dynamic
+* BaGetter's v3 implementation is dynamic
     * Cross-platform implementation
     * Requests are served by a service that queries a database
     * Simpler architecture, which makes it easier to deploy and run small feeds

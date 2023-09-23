@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BaGetter.Aliyun\BaGetter.Aliyun.csproj" />
+    <ProjectReference Include="..\BaGetter.Aws\BaGetter.Aws.csproj" />
+    <ProjectReference Include="..\BaGetter.Azure\BaGetter.Azure.csproj" />
+    <ProjectReference Include="..\BaGetter.Core\BaGetter.Core.csproj" />
+    <ProjectReference Include="..\BaGetter.Database.MySql\BaGetter.Database.MySql.csproj" />
+    <ProjectReference Include="..\BaGetter.Database.PostgreSql\BaGetter.Database.PostgreSql.csproj" />
+    <ProjectReference Include="..\BaGetter.Database.Sqlite\BaGetter.Database.Sqlite.csproj" />
+    <ProjectReference Include="..\BaGetter.Database.SqlServer\BaGetter.Database.SqlServer.csproj" />
+    <ProjectReference Include="..\BaGetter.Gcp\BaGetter.Gcp.csproj" />
+    <ProjectReference Include="..\BaGetter.Web\BaGetter.Web.csproj" />
+    <ProjectReference Include="..\BaGetter.Protocol\BaGetter.Protocol.csproj" />
+  </ItemGroup>
+
+</Project>

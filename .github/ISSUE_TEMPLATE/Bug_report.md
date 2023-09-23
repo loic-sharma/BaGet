@@ -8,7 +8,7 @@ A clear and concise description of what the bug is.
 
 ### To Reproduce
 Steps to reproduce the behavior:
-1. Using this version of BaGet '...'
+1. Using this version of BaGetter '...'
 2. Run this code '....'
 3. With these arguments '....'
 4. See error

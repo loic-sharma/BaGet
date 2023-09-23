@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net6.0</TargetFrameworks>
+
+    <PackageTags>NuGet</PackageTags>
+    <Description>The libraries to host BaGetter on SQL Server.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BaGetter.Core\BaGetter.Core.csproj" />
+  </ItemGroup>
+
+</Project>

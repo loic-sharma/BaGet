@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net6.0</TargetFrameworks>
+
+    <PackageTags>NuGet;Azure;Cloud</PackageTags>
+    <Description>The libraries to host BaGetter on Azure.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Search.Documents" />
+    <PackageReference Include="Azure.Storage.Blobs" />
+    <PackageReference Include="Microsoft.Azure.Cosmos" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BaGetter.Core\BaGetter.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="**/*.cs" />
+  </ItemGroup>
+</Project>

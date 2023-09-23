@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\BaGetter.Database.Sqlite\BaGetter.Database.Sqlite.csproj" />
+    <ProjectReference Include="..\..\src\BaGetter.Web\BaGetter.Web.csproj" />
+  </ItemGroup>
+
+</Project>

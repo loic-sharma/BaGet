@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Authors>Loic Sharma</Authors>
     <Copyright>Copyright (c) Loic Sharma 2021</Copyright>
-    <Product>BaGet</Product>
+    <Product>BaGetter</Product>
 
     <PackageIcon>packageIcon.png</PackageIcon>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -35,16 +35,8 @@
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
-  <!-- NuGet dependencies shared across projects -->
-  <PropertyGroup>
-    <MicrosoftAspNetCorePackageVersion>3.1.18</MicrosoftAspNetCorePackageVersion>
-    <MicrosoftEntityFrameworkCorePackageVersion>3.1.18</MicrosoftEntityFrameworkCorePackageVersion>
-    <MicrosoftExtensionsPackageVersion>3.1.18</MicrosoftExtensionsPackageVersion>
-    <NuGetPackageVersion>5.10.0</NuGetPackageVersion>
-  </PropertyGroup>
-
   <ItemGroup Condition="'$(DOTNET_RUNNING_IN_CONTAINER)' == ''">
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All"/>
   </ItemGroup>
 
   <ItemGroup>

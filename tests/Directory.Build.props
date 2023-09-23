@@ -10,23 +10,15 @@
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
-  <!-- NuGet dependencies shared across projects -->
-  <PropertyGroup>
-    <MicrosoftAspNetCorePackageVersion>3.1.18</MicrosoftAspNetCorePackageVersion>
-    <NewtonsoftJsonPackageVersion>12.0.2</NewtonsoftJsonPackageVersion>
-    <NuGetPackageVersion>5.10.0</NuGetPackageVersion>
-    <XUnitPackageVersion>2.4.1</XUnitPackageVersion>
-  </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="1.2.0">
+    <PackageReference Include="coverlet.collector">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
-    <PackageReference Include="Moq" Version="4.13.1" />
-    <PackageReference Include="xunit" Version="$(XUnitPackageVersion)" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="$(XUnitPackageVersion)">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Moq" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>

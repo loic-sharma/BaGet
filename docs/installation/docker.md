@@ -1,8 +1,8 @@
-# Run BaGet on Docker
+# Run BaGetter on Docker
 
 ## Configure BaGet
 
-Create a file named `baget.env` to store BaGet's configurations:
+Create a file named `bagetter.env` to store BaGetter's configurations:
 
 ```
 # The following config is the API Key used to publish packages.
@@ -16,26 +16,26 @@ Database__ConnectionString=Data Source=/var/baget/baget.db
 Search__Type=Database
 ```
 
-For a full list of configurations, please refer to [BaGet's configuration](../configuration.md) guide.
+For a full list of configurations, please refer to [BaGetter's configuration](../configuration.md) guide.
 
 !!! info
-    The `baget.env` file stores [BaGet's configuration](configuration) as environment
+    The `bagetter.env` file stores [BaGetter's configuration](configuration) as environment
     variables. To learn how these configurations work, please refer to
     [ASP.NET Core's configuration documentation](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-2.1&tabs=basicconfiguration#configuration-by-environment).
 
 ## Run BaGet
 
-1. Create a folder named `baget-data` in the same directory as the `baget.env` file. This will be used by BaGet to persist its state.
-2. Pull BaGet's latest [docker image](https://hub.docker.com/r/loicsharma/baget):
+1. Create a folder named `bagetter-data` in the same directory as the `bagetter.env` file. This will be used by BaGetter to persist its state.
+2. Pull BaGetter's latest [docker image](https://hub.docker.com/r/loicsharma/baget):
 
 ```
-docker pull loicsharma/baget
+docker pull bagetter/bagetter
 ```
 
-You can now run BaGet:
+You can now run BaGetter:
 
 ```
-docker run --rm --name nuget-server -p 5555:80 --env-file baget.env -v "$(pwd)/baget-data:/var/baget" loicsharma/baget:latest
+docker run --rm --name nuget-server -p 5555:80 --env-file bagetter.env -v "$(pwd)/baget-data:/var/baget" loicsharma/baget:latest
 ```
 
 ## Publish packages

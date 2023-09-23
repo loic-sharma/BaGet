@@ -1,0 +1,44 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="Azure.Search.Documents" Version="11.4.0" />
+    <PackageVersion Include="Azure.Storage.Blobs" Version="12.18.0" />
+    <PackageVersion Include="McMaster.Extensions.CommandLineUtils" Version="4.1.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.22" />
+    <PackageVersion Include="Microsoft.Azure.Cosmos" Version="3.35.4" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.22" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.22" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.4" />
+    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
+    <PackageVersion Include="NuGet.Frameworks" Version="6.7.0" />
+    <PackageVersion Include="NuGet.Protocol" Version="6.7.0" />
+    <PackageVersion Include="NuGet.Versioning" Version="6.7.0" />
+    <PackageVersion Include="System.Reflection.Metadata" Version="6.0.1" />
+    <PackageVersion Include="System.Text.Json" Version="6.0.8" />
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
+    <PackageVersion Include="Moq" Version="4.20.69" />
+    <PackageVersion Include="xunit" Version="2.5.1" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.22" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.0" />
+    <PackageVersion Include="Humanizer" Version="2.14.1" />
+    <PackageVersion Include="Markdig" Version="0.33.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.22" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.22" />
+    <PackageVersion Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.2" />
+    <PackageVersion Include="Aliyun.OSS.SDK.NetCore" Version="2.13.0" />
+    <PackageVersion Include="AWSSDK.S3" Version="3.7.204.1" />
+    <PackageVersion Include="AWSSDK.SecurityToken" Version="3.7.201.40" />
+    <PackageVersion Include="Microsoft.Azure.Cosmos.Table" Version="1.0.8" />
+    <PackageVersion Include="Microsoft.Azure.Search" Version="10.1.0" />
+    <PackageVersion Include="Microsoft.Azure.Storage.Blob" Version="11.2.3" />
+    <PackageVersion Include="Google.Cloud.Storage.V1" Version="4.6.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.22" />
+  </ItemGroup>
+</Project>

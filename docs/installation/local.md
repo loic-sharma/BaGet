@@ -1,15 +1,15 @@
-# Run BaGet on your Computer
+# Run BaGetter on your Computer
 
 ## Run BaGet
 
 1. Install the [.NET Core SDK](https://www.microsoft.com/net/download)
-1. Download and extract [BaGet's latest release](https://github.com/loic-sharma/BaGet/releases)
-1. Start the service with `dotnet BaGet.dll`
+1. Download and extract [BaGetter's latest release](https://github.com/loic-sharma/BaGet/releases)
+1. Start the service with `dotnet BaGetter.dll`
 1. Browse `http://localhost:5000/` in your browser
 
 ## Configure BaGet
 
-You can modify BaGet's configurations by editing the `appsettings.json` file. For the full list of configurations, please refer to [BaGet's configuration](../configuration.md) guide.
+You can modify BaGetter's configurations by editing the `appsettings.json` file. For the full list of configurations, please refer to [BaGetter's configuration](../configuration.md) guide.
 
 ## Publish packages
 

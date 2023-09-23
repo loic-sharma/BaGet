@@ -5,8 +5,8 @@
 
 ## Mirroring
 
-You can configure BaGet to mirror nuget.org. For example, say you install BaGet, enable mirroring, and try to install the package
-[`Newtonsoft.Json`](https://www.nuget.org/packages/Newtonsoft.Json/). BaGet doesn't have this package yet, so it will
+You can configure BaGetter to mirror nuget.org. For example, say you install BaGet, enable mirroring, and try to install the package
+[`Newtonsoft.Json`](https://www.nuget.org/packages/Newtonsoft.Json/). BaGetter doesn't have this package yet, so it will
 automatically index this package from nuget.org. This is also known as "read-through caching".
 
 For more information, please see [Enable read-through caching](../configuration#enable-read-through-caching).

@@ -1,6 +1,6 @@
 # Configuration
 
-You can modify BaGet's configurations by editing the `appsettings.json` file.
+You can modify BaGetter's configurations by editing the `appsettings.json` file.
 
 ## Require an API key
 
@@ -28,7 +28,7 @@ caching to:
 1. Speed up your builds if restores from [nuget.org](https://nuget.org) are slow
 1. Enable package restores in offline scenarios
 
-The following `Mirror` setting configures BaGet to index packages from [nuget.org](https://nuget.org):
+The following `Mirror` setting configures BaGetter to index packages from [nuget.org](https://nuget.org):
 
 ```json
 {
@@ -49,7 +49,7 @@ The following `Mirror` setting configures BaGet to index packages from [nuget.or
 ## Enable package hard deletions
 
 To prevent the ["left pad" problem](https://blog.npmjs.org/post/141577284765/kik-left-pad-and-npm),
-BaGet's default configuration doesn't allow package deletions. Whenever BaGet receives a package deletion
+BaGetter's default configuration doesn't allow package deletions. Whenever BaGetter receives a package deletion
 request, it will instead "unlist" the package. An unlisted package is undiscoverable but can still be
 downloaded if you know the package's id and version. You can override this behavior by setting the
 `PackageDeletionBehavior`:
@@ -66,7 +66,7 @@ downloaded if you know the package's id and version. You can override this behav
 
 ## Enable package overwrites
 
-Normally, BaGet will reject a package upload if the id and version are already taken. You can configure BaGet
+Normally, BaGetter will reject a package upload if the id and version are already taken. You can configure BaGet
 to overwrite the already existing package by setting `AllowPackageOverwrites`:
 
 ```json
@@ -133,7 +133,7 @@ There are two settings related to the database configuration:
 ## IIS server options
 
 IIS Server options can be configured under the `IISServerOptions` key. The available options are detailed at [docs.microsoft.com](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.iisserveroptions)
-Note: If not specified, the MaxRequestBodySize in BaGet defaults to 250MB (262144000 bytes), rather than the ASP.NET Core default of 30MB
+Note: If not specified, the MaxRequestBodySize in BaGetter defaults to 250MB (262144000 bytes), rather than the ASP.NET Core default of 30MB
 
 ```json
 {

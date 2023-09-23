@@ -1,4 +1,4 @@
-# BaGet :baguette_bread:
+# BaGetter :baguette_bread:
 
 ![Build status]
 
@@ -11,8 +11,8 @@ A lightweight [NuGet] and [symbol] server.
 ## Getting Started
 
 1. Install the [.NET SDK]
-2. Download and extract [BaGet's latest release]
-3. Start the service with `dotnet BaGet.dll`
+2. Download and extract [BaGetter's latest release]
+3. Start the service with `dotnet BaGetter.dll`
 4. Browse `http://localhost:5000/` in your browser
 
 For more information, please refer to the [documentation].
@@ -32,7 +32,7 @@ Stay tuned, more features are planned!
 [.NET SDK]: https://www.microsoft.com/net/download
 [Node.js]: https://nodejs.org/
 
-[BaGet's latest release]: https://github.com/bagetter/BaGet/releases
+[BaGetter's latest release]: https://github.com/bagetter/BaGet/releases
 
 [Documentation]: https://loic-sharma.github.io/BaGet/
 [Docker]: https://loic-sharma.github.io/BaGet/installation/docker/

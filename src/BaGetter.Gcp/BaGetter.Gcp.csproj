@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net6.0</TargetFrameworks>
+
+    <PackageTags>NuGet;Google;Cloud</PackageTags>
+    <Description>The libraries to host BaGetter on the Google Cloud Platform.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Cloud.Storage.V1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BaGetter.Core\BaGetter.Core.csproj" />
+  </ItemGroup>
+
+</Project>
