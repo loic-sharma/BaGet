@@ -24,9 +24,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4.0.0
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 3.1.x
+        dotnet-version: 6.0.x
     - name: Test
       run: dotnet test --verbosity normal
 
@@ -38,9 +38,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4.0.0
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 3.1.x
+        dotnet-version: 6.0.x
     - name: Publish
       run: dotnet publish src/BaGet --configuration Release --output artifacts
     - name: Upload
@@ -57,9 +57,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4.0.0
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 3.1.x
+        dotnet-version: 6.0.x
     - name: Pack
       run: dotnet pack --configuration Release --output artifacts
     - name: Push
