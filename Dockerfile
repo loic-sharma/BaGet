@@ -5,6 +5,8 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY /src .
+COPY /Directory.Packages.props .
+
 RUN dotnet restore BaGetter
 RUN dotnet build BaGetter -c Release -o /app
 
