@@ -1,14 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net7.0</TargetFrameworks>
-
 		<PackageTags>NuGet</PackageTags>
 		<Description>The libraries to host BaGet on PostgreSQL.</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(PostgreSQL)" />
 	</ItemGroup>
 
 	<ItemGroup>

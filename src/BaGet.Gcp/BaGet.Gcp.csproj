@@ -1,14 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net7.0</TargetFrameworks>
-
 		<PackageTags>NuGet;Google;Cloud</PackageTags>
 		<Description>The libraries to host BaGet on the Google Cloud Platform.</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Google.Cloud.Storage.V1" Version="4.5.0" />
+		<PackageReference Include="Google.Cloud.Storage.V1" Version="4.6.0" />
 	</ItemGroup>
 
 	<ItemGroup>

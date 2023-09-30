@@ -1,15 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net7.0</TargetFrameworks>
-
 		<PackageTags>NuGet</PackageTags>
 		<Description>The libraries to host BaGet on MySQL.</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="$(NetEF)" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,8 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net7.0</TargetFrameworks>
-
 		<PackageTags>NuGet;Azure;Cloud</PackageTags>
 		<Description>The libraries to host BaGet on Azure.</Description>
 	</PropertyGroup>

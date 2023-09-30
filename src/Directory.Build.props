@@ -2,6 +2,7 @@
 
 	<!-- Package properties -->
 	<PropertyGroup>
+		<TargetFrameworks>net7.0;net8.0</TargetFrameworks>
 		<Authors>Loic Sharma</Authors>
 		<Copyright>Copyright (c) Loic Sharma 2021</Copyright>
 		<Product>BaGet</Product>
@@ -44,5 +45,17 @@
 		<None Include="../packageIcon.png" Pack="true" PackagePath="" Visible="false" />
 		<None Include="**\*.DotSettings" />
 	</ItemGroup>
+
+	<PropertyGroup Condition="$(TargetFramework.Contains('net7.0'))">
+		<NetEF>7.0.11</NetEF>
+		<NetVer>7.0.11</NetVer>
+		<PostgreSQL>7.0.11</PostgreSQL>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$(TargetFramework.Contains('net8.0'))">
+		<NetEF>8.0.0-rc.1.23419.6</NetEF>
+		<NetVer>8.0.0-rc.1.23421.29</NetVer>
+		<PostgreSQL>8.0.0-rc.1</PostgreSQL>
+	</PropertyGroup>
 
 </Project>

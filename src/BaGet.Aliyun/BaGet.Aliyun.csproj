@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
 		<PackageTags>NuGet;Alibaba;Cloud</PackageTags>
 		<Description>The libraries to host BaGet on Alibaba Cloud (Aliyun).</Description>
 	</PropertyGroup>
