@@ -1,11 +1,7 @@
-using System.ComponentModel.DataAnnotations;
-using BaGet.Core;
+namespace BaGet.Gcp;
 
-namespace BaGet.Gcp
+public class GoogleCloudStorageOptions : StorageOptions
 {
-    public class GoogleCloudStorageOptions : StorageOptions
-    {
-        [Required]
-        public string BucketName { get; set; }
-    }
+    [Required]
+    public string BucketName { get; set; }
 }

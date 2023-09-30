@@ -1,6 +1,4 @@
-using System.Net;
 using System.Net.Http;
-using BaGet.Protocol.Internal;
 
 namespace BaGet.Protocol.Tests
 {

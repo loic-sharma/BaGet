@@ -1,12 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\BaGet.Database.Sqlite\BaGet.Database.Sqlite.csproj" />
-    <ProjectReference Include="..\..\src\BaGet.Web\BaGet.Web.csproj" />
-  </ItemGroup>
+		<ContainerImageName>brushtailnuget</ContainerImageName>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\BaGet.Database.Sqlite\BaGet.Database.Sqlite.csproj" />
+		<ProjectReference Include="..\..\src\BaGet.Web\BaGet.Web.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NET.Build.Containers" Version="7.0.401" />
+	</ItemGroup>
 
 </Project>

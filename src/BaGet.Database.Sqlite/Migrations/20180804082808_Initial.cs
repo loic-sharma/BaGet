@@ -1,6 +1,3 @@
-using System;
-using Microsoft.EntityFrameworkCore.Migrations;
-
 namespace BaGet.Database.Sqlite.Migrations
 {
     public partial class Initial : Migration

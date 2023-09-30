@@ -1,7 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
-
-namespace BaGet.Database.MySql.Migrations
+﻿namespace BaGet.Database.MySql.Migrations
 {
     public partial class AddReleaseNotesStringColumn : Migration
     {

@@ -1,7 +1,6 @@
-namespace BaGet.Core
+namespace BaGet.Core;
+
+public class SearchOptions
 {
-    public class SearchOptions
-    {
-        public string Type { get; set; }
-    }
+    public string Type { get; set; }
 }

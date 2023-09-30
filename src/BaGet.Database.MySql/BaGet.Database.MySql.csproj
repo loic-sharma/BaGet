@@ -1,19 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+	<PropertyGroup>
+		<PackageTags>NuGet</PackageTags>
+		<Description>The libraries to host BaGet on MySQL.</Description>
+	</PropertyGroup>
 
-    <PackageTags>NuGet</PackageTags>
-    <Description>The libraries to host BaGet on MySQL.</Description>
-  </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="$(NetEF)" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
+	</ItemGroup>
 
 </Project>
-

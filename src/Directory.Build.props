@@ -1,54 +1,61 @@
 <Project>
 
-  <!-- Package properties -->
-  <PropertyGroup>
-    <Authors>Loic Sharma</Authors>
-    <Copyright>Copyright (c) Loic Sharma 2021</Copyright>
-    <Product>BaGet</Product>
+	<!-- Package properties -->
+	<PropertyGroup>
+		<TargetFrameworks>net7.0;net8.0</TargetFrameworks>
+		<Authors>Loic Sharma</Authors>
+		<Copyright>Copyright (c) Loic Sharma 2021</Copyright>
+		<Product>BaGet</Product>
 
-    <PackageIcon>packageIcon.png</PackageIcon>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageVersion Condition="'$(PackageVersion)' == ''">0.1.0-prerelease</PackageVersion>
-    <PackageProjectUrl>https://loic-sharma.github.io/BaGet/</PackageProjectUrl>
-  </PropertyGroup>
+		<PackageIcon>packageIcon.png</PackageIcon>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageVersion Condition="'$(PackageVersion)' == ''">0.1.0-prerelease</PackageVersion>
+		<PackageProjectUrl>https://loic-sharma.github.io/BaGet/</PackageProjectUrl>
+	</PropertyGroup>
 
-  <!-- Compiler properties -->
-  <PropertyGroup>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <LangVersion>7.2</LangVersion>
+	<!-- Compiler properties -->
+	<PropertyGroup>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<LangVersion>preview</LangVersion>
+		<ImplicitUsings>true</ImplicitUsings>
 
-    <!-- Don't warn if there are missing XMl comment for publicly visible type or member-->
-    <NoWarn>$(NoWarn);1591</NoWarn>
-  </PropertyGroup>
+		<!-- Don't warn if there are missing XMl comment for publicly visible type or member-->
+		<NoWarn>$(NoWarn);1591</NoWarn>
+	</PropertyGroup>
 
-  <!-- Debugging properties -->
-  <PropertyGroup>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <DebugType>portable</DebugType>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <IncludeSymbols>true</IncludeSymbols>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-  </PropertyGroup>
+	<!-- Debugging properties -->
+	<PropertyGroup>
+		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+		<DebugType>portable</DebugType>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<IncludeSymbols>true</IncludeSymbols>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(CI)' == 'true'">
-    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(CI)' == 'true'">
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+	</PropertyGroup>
 
-  <!-- NuGet dependencies shared across projects -->
-  <PropertyGroup>
-    <MicrosoftAspNetCorePackageVersion>3.1.18</MicrosoftAspNetCorePackageVersion>
-    <MicrosoftEntityFrameworkCorePackageVersion>3.1.18</MicrosoftEntityFrameworkCorePackageVersion>
-    <MicrosoftExtensionsPackageVersion>3.1.18</MicrosoftExtensionsPackageVersion>
-    <NuGetPackageVersion>5.10.0</NuGetPackageVersion>
-  </PropertyGroup>
+	<ItemGroup Condition="'$(DOTNET_RUNNING_IN_CONTAINER)' == ''">
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(DOTNET_RUNNING_IN_CONTAINER)' == ''">
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="../packageIcon.png" Pack="true" PackagePath="" Visible="false" />
+		<None Include="**\*.DotSettings" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="../packageIcon.png" Pack="true" PackagePath="" Visible="false" />
-  </ItemGroup>
+	<PropertyGroup Condition="$(TargetFramework.Contains('net7.0'))">
+		<NetEF>7.0.11</NetEF>
+		<NetVer>7.0.11</NetVer>
+		<PostgreSQL>7.0.11</PostgreSQL>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$(TargetFramework.Contains('net8.0'))">
+		<NetEF>8.0.0-rc.1.23419.6</NetEF>
+		<NetVer>8.0.0-rc.1.23421.29</NetVer>
+		<PostgreSQL>8.0.0-rc.1</PostgreSQL>
+	</PropertyGroup>
 
 </Project>
