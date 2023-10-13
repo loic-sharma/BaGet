@@ -2,7 +2,7 @@
 
 	<!-- Package properties -->
 	<PropertyGroup>
-		<TargetFrameworks>net7.0;net8.0</TargetFrameworks>
+		<TargetFrameworks>netcoreapp3.1;net7.0;net8.0</TargetFrameworks>
 		<Authors>Loic Sharma</Authors>
 		<Copyright>Copyright (c) Loic Sharma 2021</Copyright>
 		<Product>BaGet</Product>
@@ -46,16 +46,22 @@
 		<None Include="**\*.DotSettings" />
 	</ItemGroup>
 
+	<PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+		<NetEF>3.1.32</NetEF>
+		<NetVer>3.1.32</NetVer>
+		<PostgreSQL>3.1.18</PostgreSQL>
+	</PropertyGroup>
+
 	<PropertyGroup Condition="$(TargetFramework.Contains('net7.0'))">
-		<NetEF>7.0.11</NetEF>
-		<NetVer>7.0.11</NetVer>
+		<NetEF>7.0.12</NetEF>
+		<NetVer>7.0.12</NetVer>
 		<PostgreSQL>7.0.11</PostgreSQL>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(TargetFramework.Contains('net8.0'))">
-		<NetEF>8.0.0-rc.1.23419.6</NetEF>
-		<NetVer>8.0.0-rc.1.23421.29</NetVer>
-		<PostgreSQL>8.0.0-rc.1</PostgreSQL>
+		<NetEF>8.0.0-rc.2.23480.1</NetEF>
+		<NetVer>8.0.0-rc.2.23480.2</NetVer>
+		<PostgreSQL>8.0.0-rc.2</PostgreSQL>
 	</PropertyGroup>
 
 </Project>

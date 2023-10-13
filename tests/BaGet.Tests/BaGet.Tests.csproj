@@ -12,7 +12,7 @@
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="NuGet.Protocol" Version="6.7.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.11" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.12" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -48,8 +48,8 @@
 		</PackageReference>
 		<PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.7.2" />
 		<PackageReference Update="Moq" Version="4.20.69" />
-		<PackageReference Update="xunit" Version="2.5.1" />
-		<PackageReference Update="xunit.runner.visualstudio" Version="2.5.1">
+		<PackageReference Update="xunit" Version="2.5.2" />
+		<PackageReference Update="xunit.runner.visualstudio" Version="2.5.3">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
 		</PackageReference>

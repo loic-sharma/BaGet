@@ -6,8 +6,19 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="$(NetEF)" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.2.7" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(TargetFramework.Contains('net7'))">
+		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(TargetFramework.Contains('net7'))">
+		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.0-beta.1" />
 	</ItemGroup>
 
 	<ItemGroup>
