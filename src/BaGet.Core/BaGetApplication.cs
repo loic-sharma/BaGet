@@ -1,15 +1,11 @@
-using System;
-using Microsoft.Extensions.DependencyInjection;
+namespace BaGet.Core;
 
-namespace BaGet.Core
+public class BaGetApplication
 {
-    public class BaGetApplication
+    public BaGetApplication(IServiceCollection services)
     {
-        public BaGetApplication(IServiceCollection services)
-        {
-            Services = services ?? throw new ArgumentNullException(nameof(services));
-        }
-
-        public IServiceCollection Services { get; }
+        Services = services ?? throw new ArgumentNullException(nameof(services));
     }
+
+    public IServiceCollection Services { get; }
 }

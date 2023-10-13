@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-
-namespace BaGet.Database.PostgreSql.Migrations
+﻿namespace BaGet.Database.PostgreSql.Migrations
 {
     public partial class RemoveReleaseNotesMaxLength : Migration
     {

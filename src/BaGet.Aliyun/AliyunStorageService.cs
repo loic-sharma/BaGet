@@ -1,93 +1,84 @@
-using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Aliyun.OSS;
-using BaGet.Core;
-using Microsoft.Extensions.Options;
+namespace BaGet.Aliyun;
 
-namespace BaGet.Aliyun
+public class AliyunStorageService : IStorageService
 {
-    public class AliyunStorageService : IStorageService
+    private const string Separator = "/";
+    private readonly string _bucket;
+    private readonly string _prefix;
+    private readonly OssClient _client;
+
+    public AliyunStorageService(IOptionsSnapshot<AliyunStorageOptions> options, OssClient client)
     {
-        private const string Separator = "/";
-        private readonly string _bucket;
-        private readonly string _prefix;
-        private readonly OssClient _client;
+        if (options == null)
+            throw new ArgumentNullException(nameof(options));
 
-        public AliyunStorageService(IOptionsSnapshot<AliyunStorageOptions> options, OssClient client)
+        _bucket = options.Value.Bucket;
+        _prefix = options.Value.Prefix;
+        _client = client ?? throw new ArgumentNullException(nameof(client));
+
+        if (!string.IsNullOrEmpty(_prefix) && !_prefix.EndsWith(Separator))
+            _prefix += Separator;
+    }
+
+    private string PrepareKey(string path)
+    {
+        return _prefix + path.Replace("\\", Separator);
+    }
+
+    public async Task<Stream> GetAsync(string path, CancellationToken cancellationToken = default)
+    {
+        try
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            var ossObject = await Task.Factory.FromAsync(_client.BeginGetObject, _client.EndGetObject, _bucket, PrepareKey(path), null);
 
-            _bucket = options.Value.Bucket;
-            _prefix = options.Value.Prefix;
-            _client = client ?? throw new ArgumentNullException(nameof(client));
-
-            if (!string.IsNullOrEmpty(_prefix) && !_prefix.EndsWith(Separator))
-                _prefix += Separator;
+            return ossObject.ResponseStream;
         }
-
-        private string PrepareKey(string path)
+        catch (Exception)
         {
-            return _prefix + path.Replace("\\", Separator);
+            // TODO
+            throw;
         }
+    }
 
-        public async Task<Stream> GetAsync(string path, CancellationToken cancellationToken = default)
+    public Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
+    {
+        var uri = _client.GeneratePresignedUri(_bucket, PrepareKey(path));
+
+        return Task.FromResult(uri);
+    }
+
+    public async Task<StoragePutResult> PutAsync(string path, Stream content, string contentType, CancellationToken cancellationToken = default)
+    {
+        // TODO: Uploads should be idempotent. This should fail if and only if the blob
+        // already exists but has different content.
+
+        var metadata = new ObjectMetadata
         {
-            try
-            {
-                var ossObject = await Task.Factory.FromAsync(_client.BeginGetObject, _client.EndGetObject, _bucket, PrepareKey(path), null);
+            ContentType = contentType,
+        };
 
-                return ossObject.ResponseStream;
-            }
-            catch (Exception)
-            {
-                // TODO
-                throw;
-            }
-        }
+        var putResult = await Task<PutObjectResult>.Factory.FromAsync(_client.BeginPutObject, _client.EndPutObject, _bucket, PrepareKey(path), content, metadata);
 
-        public Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
+        switch (putResult.HttpStatusCode)
         {
-            var uri = _client.GeneratePresignedUri(_bucket, PrepareKey(path));
+            case System.Net.HttpStatusCode.OK:
+                return StoragePutResult.Success;
 
-            return Task.FromResult(uri);
+            // TODO: check sdk documents
+            //case System.Net.HttpStatusCode.Conflict:
+            //    return StoragePutResult.Conflict;
+
+            //case System.Net.HttpStatusCode.Found:
+            //    return StoragePutResult.AlreadyExists;
+
+            default:
+                return StoragePutResult.Success;
         }
+    }
 
-        public async Task<StoragePutResult> PutAsync(string path, Stream content, string contentType, CancellationToken cancellationToken = default)
-        {
-            // TODO: Uploads should be idempotent. This should fail if and only if the blob
-            // already exists but has different content.
-
-            var metadata = new ObjectMetadata
-            {
-                ContentType = contentType,
-            };
-
-            var putResult = await Task<PutObjectResult>.Factory.FromAsync(_client.BeginPutObject, _client.EndPutObject, _bucket, PrepareKey(path), content, metadata);
-
-            switch (putResult.HttpStatusCode)
-            {
-                case System.Net.HttpStatusCode.OK:
-                    return StoragePutResult.Success;
-
-                // TODO: check sdk documents
-                //case System.Net.HttpStatusCode.Conflict:
-                //    return StoragePutResult.Conflict;
-
-                //case System.Net.HttpStatusCode.Found:
-                //    return StoragePutResult.AlreadyExists;
-
-                default:
-                    return StoragePutResult.Success;
-            }
-        }
-
-        public Task DeleteAsync(string path, CancellationToken cancellationToken = default)
-        {
-            _client.DeleteObject(_bucket, PrepareKey(path));
-            return Task.CompletedTask;
-        }
+    public Task DeleteAsync(string path, CancellationToken cancellationToken = default)
+    {
+        _client.DeleteObject(_bucket, PrepareKey(path));
+        return Task.CompletedTask;
     }
 }

@@ -1,10 +1,7 @@
-using System.ComponentModel.DataAnnotations;
+namespace BaGet.Azure;
 
-namespace BaGet.Azure
+public class AzureTableOptions
 {
-    public class AzureTableOptions
-    {
-        [Required]
-        public string ConnectionString { get; set; }
-    }
+    [Required]
+    public string ConnectionString { get; set; }
 }

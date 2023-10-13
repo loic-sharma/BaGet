@@ -1,30 +1,24 @@
-using System.Net;
+namespace BaGet.Azure;
 
-namespace BaGet.Azure
+internal static class StorageExceptionExtensions
 {
-    using StorageException = Microsoft.WindowsAzure.Storage.StorageException;
-    using TableStorageException = Microsoft.Azure.Cosmos.Table.StorageException;
-
-    internal static class StorageExceptionExtensions
+    public static bool IsAlreadyExistsException(this StorageException_ e)
     {
-        public static bool IsAlreadyExistsException(this StorageException e)
-        {
-            return e?.RequestInformation?.HttpStatusCode == (int?)HttpStatusCode.Conflict;
-        }
+        return e?.RequestInformation?.HttpStatusCode == (int?)HttpStatusCode.Conflict;
+    }
 
-        public static bool IsNotFoundException(this TableStorageException e)
-        {
-            return e?.RequestInformation?.HttpStatusCode == (int?)HttpStatusCode.NotFound;
-        }
+    public static bool IsNotFoundException(this TableStorageException e)
+    {
+        return e?.RequestInformation?.HttpStatusCode == (int?)HttpStatusCode.NotFound;
+    }
 
-        public static bool IsAlreadyExistsException(this TableStorageException e)
-        {
-            return e?.RequestInformation?.HttpStatusCode == (int?)HttpStatusCode.Conflict;
-        }
+    public static bool IsAlreadyExistsException(this TableStorageException e)
+    {
+        return e?.RequestInformation?.HttpStatusCode == (int?)HttpStatusCode.Conflict;
+    }
 
-        public static bool IsPreconditionFailedException(this TableStorageException e)
-        {
-            return e?.RequestInformation?.HttpStatusCode == (int?)HttpStatusCode.PreconditionFailed;
-        }
+    public static bool IsPreconditionFailedException(this TableStorageException e)
+    {
+        return e?.RequestInformation?.HttpStatusCode == (int?)HttpStatusCode.PreconditionFailed;
     }
 }

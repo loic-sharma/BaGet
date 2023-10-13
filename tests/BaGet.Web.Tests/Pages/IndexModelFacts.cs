@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core;
-using BaGet.Protocol.Models;
+using BaGet.Protocol;
 using Moq;
 using Xunit;
 

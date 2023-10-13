@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29104.9
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.32804.182
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet", "src\BaGet\BaGet.csproj", "{284366CB-C68F-473E-908A-50A382616AE0}"
 EndProject
@@ -25,7 +25,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Aws", "src\BaGet.Aws\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0B44364D-952B-497A-82E0-C9AAE94E0369}"
 	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
 		src\Directory.Build.props = src\Directory.Build.props
 		nuget.config = nuget.config
 	EndProjectSection
@@ -50,7 +49,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Aliyun", "src\BaGet.A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGetWebApplication", "samples\BaGetWebApplication\BaGetWebApplication.csproj", "{E5AFE55D-0932-46A9-BFA3-C8A034037377}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaGet.Web.Tests", "tests\BaGet.Web.Tests\BaGet.Web.Tests.csproj", "{BEEAAA73-36CD-4178-9C9F-6D036586E7BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaGet.Web.Tests", "tests\BaGet.Web.Tests\BaGet.Web.Tests.csproj", "{BEEAAA73-36CD-4178-9C9F-6D036586E7BF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,7 +1,3 @@
-using System;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-
 namespace BaGet.Database.SqlServer.Migrations
 {
     public partial class Initial : Migration
