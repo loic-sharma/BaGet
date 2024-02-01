@@ -1,9 +1,9 @@
+using BaGet.Protocol.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json.Serialization;
-using BaGet.Protocol.Models;
 using Xunit;
 
 namespace BaGet.Core.Tests.Metadata
@@ -105,11 +105,11 @@ namespace BaGet.Core.Tests.Metadata
         public void ValidateExtendedModels(ExtendedModelData data)
         {
             IReadOnlyDictionary<string, PropertyInfo> originalProperties = data
-                .OriginalType
+                .OriginalType!
                 .GetProperties()
                 .ToDictionary(p => p.Name, p => p);
             IReadOnlyDictionary<string, PropertyInfo> derivedProperties = data
-                .DerivedType
+                .DerivedType!
                 .GetProperties()
                 .ToDictionary(p => p.Name, p => p);
 
@@ -200,7 +200,7 @@ namespace BaGet.Core.Tests.Metadata
             }
         }
 
-        private IList<CustomAttributeTypedArgument> GetAttributeArgs<TAttribute>(PropertyInfo property)
+        private IList<CustomAttributeTypedArgument>? GetAttributeArgs<TAttribute>(PropertyInfo property)
         {
             return property
                 .CustomAttributes
@@ -213,13 +213,13 @@ namespace BaGet.Core.Tests.Metadata
             /// <summary>
             /// The model's type in the "BaGet.Protocol" project that was extended.
             /// </summary>
-            public Type OriginalType { get; set; }
+            public Type? OriginalType { get; set; }
 
             /// <summary>
             /// The model's type in the "BaGet.Core" project that extends a
             /// type from the "BaGet.Protocol" project.
             /// </summary>
-            public Type DerivedType { get; set; }
+            public Type? DerivedType { get; set; }
 
             /// <summary>
             /// The properties added by the model type in the "BaGet.Core" project.

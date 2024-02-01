@@ -1,10 +1,10 @@
+using BaGet.Core;
+using Microsoft.Azure.Storage;
+using Microsoft.Azure.Storage.Blob;
 using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Core;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace BaGet.Azure
 {

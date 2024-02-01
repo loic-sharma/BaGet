@@ -1,6 +1,6 @@
-using System;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using MySql.EntityFrameworkCore.Metadata;
+using System;
 
 namespace BaGet.Database.MySql.Migrations
 {
@@ -43,7 +43,7 @@ namespace BaGet.Database.MySql.Migrations
                 columns: table => new
                 {
                     Key = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(maxLength: 512, nullable: true),
                     Version = table.Column<string>(maxLength: 64, nullable: true),
                     PackageKey = table.Column<int>(nullable: false)
@@ -64,7 +64,7 @@ namespace BaGet.Database.MySql.Migrations
                 columns: table => new
                 {
                     Key = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Moniker = table.Column<string>(maxLength: 256, nullable: true),
                     PackageKey = table.Column<int>(nullable: false)
                 },

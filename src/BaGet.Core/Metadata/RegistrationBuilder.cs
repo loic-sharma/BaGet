@@ -1,7 +1,7 @@
+using BaGet.Protocol.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BaGet.Protocol.Models;
 
 namespace BaGet.Core
 {
@@ -32,7 +32,7 @@ namespace BaGet.Core
                     new BaGetRegistrationIndexPage
                     {
                         RegistrationPageUrl = _url.GetRegistrationIndexUrl(registration.PackageId),
-                        Count = registration.Packages.Count(),
+                        Count = registration.Packages.Count,
                         Lower = sortedPackages.First().Version.ToNormalizedString().ToLowerInvariant(),
                         Upper = sortedPackages.Last().Version.ToNormalizedString().ToLowerInvariant(),
                         ItemsOrNull = sortedPackages.Select(ToRegistrationIndexPageItem).ToList(),
@@ -83,7 +83,7 @@ namespace BaGet.Core
                     ProjectUrl = package.ProjectUrlString,
                     RepositoryUrl = package.RepositoryUrlString,
                     RepositoryType = package.RepositoryType,
-                    Published = package.Published,
+                    Published = package.Published.ToUniversalTime(),
                     RequireLicenseAcceptance = package.RequireLicenseAcceptance,
                     Summary = package.Summary,
                     Tags = package.Tags,
