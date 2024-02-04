@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-BaGet.LinuxService-d749ca94-aab4-4d12-9a0a-b631d6144c5e</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\BaGet.Aliyun\BaGet.Aliyun.csproj" />
+    <ProjectReference Include="..\..\src\BaGet.Aws\BaGet.Aws.csproj" />
+    <ProjectReference Include="..\..\src\BaGet.Azure\BaGet.Azure.csproj" />
+    <ProjectReference Include="..\..\src\BaGet.Database.MySql\BaGet.Database.MySql.csproj" />
+    <ProjectReference Include="..\..\src\BaGet.Database.PostgreSql\BaGet.Database.PostgreSql.csproj" />
+    <ProjectReference Include="..\..\src\BaGet.Database.Sqlite\BaGet.Database.Sqlite.csproj" />
+    <ProjectReference Include="..\..\src\BaGet.Database.SqlServer\BaGet.Database.SqlServer.csproj" />
+    <ProjectReference Include="..\..\src\BaGet.Gcp\BaGet.Gcp.csproj" />
+    <ProjectReference Include="..\..\src\BaGet.Web\BaGet.Web.csproj" />
+  </ItemGroup>
+</Project>
