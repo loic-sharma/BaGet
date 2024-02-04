@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>dotnet-BaGet.WindowsService-677f9d1a-910f-405d-9064-cb101e6abcea</UserSecretsId>
+    <AssemblyName>BaGet</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

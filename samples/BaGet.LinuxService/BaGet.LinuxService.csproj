@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>dotnet-BaGet.LinuxService-d749ca94-aab4-4d12-9a0a-b631d6144c5e</UserSecretsId>
+    <AssemblyName>BaGet</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
