@@ -27,7 +27,10 @@ namespace BaGet.WindowsService
 
                 web.UseStartup<Startup>();
             });
-            builder.UseWindowsService();
+            builder.UseWindowsService(options =>
+            {
+                options.ServiceName = "BaGet";
+            });
 
             var host = builder.Build();
             if (!host.ValidateStartupOptions())

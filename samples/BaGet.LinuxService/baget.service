@@ -1,0 +1,17 @@
+[Unit]
+Description=BaGet A lightweight NuGet and symbol server.
+After=network.target
+StartLimitIntervalSec=10
+
+[Service]
+Environment="BAGET_CONFIG_ROOT=/usr/share/baget"
+WorkingDirectory=/usr/share/baget/
+Type=notify
+ExecStart=/usr/share/baget/BaGet
+Restart=always
+RestartSec=1
+User=baget
+Group=baget
+
+[Install]
+WantedBy=multi-user.target
