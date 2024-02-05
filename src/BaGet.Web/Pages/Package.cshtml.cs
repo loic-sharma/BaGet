@@ -1,15 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using BaGet.Core;
 using Markdig;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using NuGet.Frameworks;
 using NuGet.Versioning;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BaGet.Web
 {
@@ -106,7 +106,9 @@ namespace BaGet.Web
             IconUrl = Package.HasEmbeddedIcon
                 ? _url.GetPackageIconDownloadUrl(Package.Id, packageVersion)
                 : Package.IconUrlString;
-            LicenseUrl = Package.LicenseUrlString;
+            LicenseUrl = Package.HasEmbeddedLicense
+                ? _url.GetPackageLicenseDownloadUrl(Package.Id, packageVersion, Package.LicenseIsMarkDown)
+                : Package.LicenseUrlString;
             PackageDownloadUrl = _url.GetPackageDownloadUrl(Package.Id, packageVersion);
         }
 

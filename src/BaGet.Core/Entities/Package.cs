@@ -1,6 +1,6 @@
+using NuGet.Versioning;
 using System;
 using System.Collections.Generic;
-using NuGet.Versioning;
 
 namespace BaGet.Core
 {
@@ -35,9 +35,19 @@ namespace BaGet.Core
         public long Downloads { get; set; }
         public bool HasReadme { get; set; }
         public bool HasEmbeddedIcon { get; set; }
+        /// <summary>
+        /// Indicates if the license is embedded in the package
+        /// </summary>
+        public bool HasEmbeddedLicense { get; set; }
+
         public bool IsPrerelease { get; set; }
         public string ReleaseNotes { get; set; }
         public string Language { get; set; }
+
+        /// <summary>
+        /// Indicates if the license format is MarkDown (true) or Text (false)
+        /// </summary>
+        public bool LicenseIsMarkDown { get; set; }
         public bool Listed { get; set; }
         public string MinClientVersion { get; set; }
         public DateTime Published { get; set; }

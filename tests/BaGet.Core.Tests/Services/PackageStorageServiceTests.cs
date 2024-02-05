@@ -1,12 +1,12 @@
+using Microsoft.Extensions.Logging;
+using Moq;
+using NuGet.Versioning;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Moq;
-using NuGet.Versioning;
 using Xunit;
 
 namespace BaGet.Core.Tests.Services
@@ -24,7 +24,8 @@ namespace BaGet.Core.Tests.Services
                         packageStream: Stream.Null,
                         nuspecStream: Stream.Null,
                         readmeStream: Stream.Null,
-                        iconStream: Stream.Null));
+                        iconStream: Stream.Null,
+                        licenseStream: Stream.Null));
             }
 
             [Fact]
@@ -36,7 +37,8 @@ namespace BaGet.Core.Tests.Services
                         packageStream: null,
                         nuspecStream: Stream.Null,
                         readmeStream: Stream.Null,
-                        iconStream: Stream.Null));
+                        iconStream: Stream.Null,
+                        licenseStream: Stream.Null));
             }
 
             [Fact]
@@ -48,7 +50,8 @@ namespace BaGet.Core.Tests.Services
                         packageStream: Stream.Null,
                         nuspecStream: null,
                         readmeStream: Stream.Null,
-                        iconStream: Stream.Null));
+                        iconStream: Stream.Null,
+                        licenseStream: Stream.Null));
             }
 
             [Fact]
@@ -61,6 +64,7 @@ namespace BaGet.Core.Tests.Services
                 using (var nuspecStream = StringStream("My nuspec"))
                 using (var readmeStream = StringStream("My readme"))
                 using (var iconStream = StringStream("My icon"))
+                using (var licenseStream = StringStream("My license"))
                 {
                     // Act
                     await _target.SavePackageContentAsync(
@@ -68,7 +72,8 @@ namespace BaGet.Core.Tests.Services
                         packageStream: packageStream,
                         nuspecStream: nuspecStream,
                         readmeStream: readmeStream,
-                        iconStream: iconStream);
+                        iconStream: iconStream,
+                        licenseStream: licenseStream);
 
                     // Assert
                     Assert.True(_puts.ContainsKey(PackagePath));
@@ -104,7 +109,8 @@ namespace BaGet.Core.Tests.Services
                         packageStream: packageStream,
                         nuspecStream: nuspecStream,
                         readmeStream: null,
-                        iconStream: null);
+                        iconStream: null,
+                        licenseStream: null);
                 }
 
                 // Assert
@@ -122,6 +128,7 @@ namespace BaGet.Core.Tests.Services
                 using (var nuspecStream = StringStream("My nuspec"))
                 using (var readmeStream = StringStream("My readme"))
                 using (var iconStream = StringStream("My icon"))
+                using (var licenseStream = StringStream("My license"))
                 {
                     // Act
                     await _target.SavePackageContentAsync(
@@ -129,7 +136,8 @@ namespace BaGet.Core.Tests.Services
                         packageStream: packageStream,
                         nuspecStream: nuspecStream,
                         readmeStream: readmeStream,
-                        iconStream: iconStream);
+                        iconStream: iconStream,
+                        licenseStream: licenseStream);
                 }
 
                 // Assert
@@ -148,13 +156,15 @@ namespace BaGet.Core.Tests.Services
                 using (var nuspecStream = StringStream("My nuspec"))
                 using (var readmeStream = StringStream("My readme"))
                 using (var iconStream = StringStream("My icon"))
+                using (var licenseStream = StringStream("My license"))
                 {
                     await _target.SavePackageContentAsync(
                         _package,
                         packageStream: packageStream,
                         nuspecStream: nuspecStream,
                         readmeStream: readmeStream,
-                        iconStream: iconStream);
+                        iconStream: iconStream,
+                        licenseStream: licenseStream);
 
                     // Assert
                     Assert.True(_puts.ContainsKey(PackagePath));
@@ -185,6 +195,7 @@ namespace BaGet.Core.Tests.Services
                 using (var nuspecStream = StringStream("My nuspec"))
                 using (var readmeStream = StringStream("My readme"))
                 using (var iconStream = StringStream("My icon"))
+                using (var licenseStream = StringStream("My license"))
                 {
                     // Act
                     await Assert.ThrowsAsync<InvalidOperationException>(() =>
@@ -193,7 +204,8 @@ namespace BaGet.Core.Tests.Services
                             packageStream: packageStream,
                             nuspecStream: nuspecStream,
                             readmeStream: readmeStream,
-                            iconStream: iconStream));
+                            iconStream: iconStream,
+                            licenseStream: licenseStream));
                 }
             }
         }

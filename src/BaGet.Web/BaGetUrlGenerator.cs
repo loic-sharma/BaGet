@@ -1,8 +1,8 @@
-using System;
 using BaGet.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using NuGet.Versioning;
+using System;
 
 namespace BaGet.Web
 {
@@ -147,6 +147,35 @@ namespace BaGet.Web
                     Id = id,
                     Version = versionString
                 });
+        }
+
+        public string GetPackageLicenseDownloadUrl(string id, NuGetVersion version, bool licenseIsMarkDown)
+        {
+            id = id.ToLowerInvariant();
+            var versionString = version.ToNormalizedString().ToLowerInvariant();
+
+            if (licenseIsMarkDown)
+            {
+                return _linkGenerator.GetUriByRouteValues(
+                       _httpContextAccessor.HttpContext,
+                       Routes.PackageDownloadLicenseMarkDownRouteName,
+                       values: new
+                       {
+                           Id = id,
+                           Version = versionString
+                       });
+            }
+            else
+            {
+                return _linkGenerator.GetUriByRouteValues(
+                       _httpContextAccessor.HttpContext,
+                       Routes.PackageDownloadLicenseTextRouteName,
+                       values: new
+                       {
+                           Id = id,
+                           Version = versionString
+                       });
+            }
         }
 
         private string AbsoluteUrl(string relativePath)

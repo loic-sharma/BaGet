@@ -1,9 +1,9 @@
+using BaGet.Core;
+using Microsoft.Azure.Search.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using BaGet.Core;
-using Microsoft.Azure.Search.Models;
 
 namespace BaGet.Azure
 {
@@ -80,7 +80,9 @@ namespace BaGet.Azure
                 document.Description = latest.Description;
                 document.Authors = latest.Authors;
                 document.HasEmbeddedIcon = latest.HasEmbeddedIcon;
+                document.HasEmbeddedLicense = latest.HasEmbeddedLicense;
                 document.IconUrl = latest.IconUrlString;
+                document.LicenseIsMarkDown = latest.LicenseIsMarkDown;
                 document.LicenseUrl = latest.LicenseUrlString;
                 document.ProjectUrl = latest.ProjectUrlString;
                 document.Published = latest.Published;

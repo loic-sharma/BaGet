@@ -154,6 +154,7 @@ namespace BaGet.Core.Tests
                 Assert.Equal("Description", package.Description);
                 Assert.False(package.HasReadme);
                 Assert.False(package.HasEmbeddedIcon);
+                Assert.False(package.HasEmbeddedLicense);
                 Assert.True(package.IsPrerelease);
                 Assert.Null(package.ReleaseNotes);
                 Assert.Equal("Language", package.Language);

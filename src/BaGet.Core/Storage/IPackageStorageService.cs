@@ -1,7 +1,7 @@
+using NuGet.Versioning;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using NuGet.Versioning;
 
 namespace BaGet.Core
 {
@@ -20,6 +20,7 @@ namespace BaGet.Core
         /// <param name="nuspecStream">The package's nuspec stream.</param>
         /// <param name="readmeStream">The package's readme stream, or null if none.</param>
         /// <param name="iconStream">The package's icon stream, or null if none.</param>
+        /// <param name="licenseStream">The package's license stream, or null if none</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task SavePackageContentAsync(
@@ -28,6 +29,7 @@ namespace BaGet.Core
             Stream nuspecStream,
             Stream readmeStream,
             Stream iconStream,
+            Stream licenseStream,
             CancellationToken cancellationToken);
 
         /// <summary>
@@ -58,6 +60,16 @@ namespace BaGet.Core
         Task<Stream> GetReadmeStreamAsync(string id, NuGetVersion version, CancellationToken cancellationToken);
 
         Task<Stream> GetIconStreamAsync(string id, NuGetVersion version, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the packages license stream if the license is an embedded file.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="version"></param>
+        /// <param name="licenseIsMarkDown"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<Stream> GetLicenseStreamAsync(string id, NuGetVersion version, bool licenseIsMarkDown, CancellationToken cancellationToken);
 
         /// <summary>
         /// Remove a package's content from storage. This operation SHOULD succeed

@@ -1,7 +1,7 @@
-﻿using System;
+using BaGet.Protocol.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using BaGet.Protocol.Models;
 
 namespace BaGet.Core
 {
@@ -25,6 +25,9 @@ namespace BaGet.Core
                 var iconUrl = latest.HasEmbeddedIcon
                     ? _url.GetPackageIconDownloadUrl(latest.Id, latest.Version)
                     : latest.IconUrlString;
+                var licenseUrl = latest.HasEmbeddedLicense
+                    ? _url.GetPackageLicenseDownloadUrl(latest.Id, latest.Version, latest.LicenseIsMarkDown)
+                    : latest.LicenseUrlString;
 
                 result.Add(new SearchResult
                 {
@@ -33,7 +36,7 @@ namespace BaGet.Core
                     Description = latest.Description,
                     Authors = latest.Authors,
                     IconUrl = iconUrl,
-                    LicenseUrl = latest.LicenseUrlString,
+                    LicenseUrl = licenseUrl,
                     ProjectUrl = latest.ProjectUrlString,
                     RegistrationIndexUrl = _url.GetRegistrationIndexUrl(latest.Id),
                     Summary = latest.Summary,

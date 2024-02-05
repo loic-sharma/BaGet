@@ -101,5 +101,14 @@ namespace BaGet.Core
         /// <param name="id">The package's ID</param>
         /// <param name="version">The package's version</param>
         string GetPackageIconDownloadUrl(string id, NuGetVersion version);
+
+        /// <summary>
+        /// Get the URL to download the package's license.
+        /// </summary>
+        /// <param name="id">The package's ID</param>
+        /// <param name="version">The package's version</param>
+        /// <param name="licenseIsMarkDown">Indicates if the license format is MarkDown (true) or Text (false).</param>
+        /// <returns></returns>
+        string GetPackageLicenseDownloadUrl(string id, NuGetVersion version, bool licenseIsMarkDown);
     }
 }

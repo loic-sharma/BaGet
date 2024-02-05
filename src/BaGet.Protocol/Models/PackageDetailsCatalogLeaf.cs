@@ -71,7 +71,7 @@ namespace BaGet.Protocol.Models
         public string Language { get; set; }
 
         /// <summary>
-        /// THe URL to the package's license.
+        /// The URL to the package's license.
         /// </summary>
         [JsonPropertyName("licenseUrl")]
         public string LicenseUrl { get; set; }

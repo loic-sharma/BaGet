@@ -6,9 +6,11 @@ namespace BaGet.LinuxService
         {
             services.AddBaGetWebApplication(app =>
             {
+                //app.AddMySqlDatabase();
+                //app.AddPostgreSqlDatabase();
                 // Use SQLite as BaGet's database and store packages on the local file system.
                 app.AddSqliteDatabase();
-                //app.AddPostgreSqlDatabase();
+                //app.AddSqlServerDatabase();
                 app.AddFileStorage();
             });
         }

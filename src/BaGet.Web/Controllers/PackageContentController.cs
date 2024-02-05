@@ -1,10 +1,10 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using BaGet.Core;
 using BaGet.Protocol.Models;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Versioning;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BaGet.Web
 {
@@ -94,6 +94,22 @@ namespace BaGet.Web
             }
 
             return File(iconStream, "image/xyz");
+        }
+
+        public async Task<IActionResult> DownloadLicenseAsync(string id, string version, CancellationToken cancellationToken)
+        {
+            if (!NuGetVersion.TryParse(version, out var nugetVersion))
+            {
+                return NotFound();
+            }
+
+            var licenseStream = await _content.GetPackageLicenseStreamOrNullAsync(id, nugetVersion, cancellationToken);
+            if (licenseStream == null)
+            {
+                return NotFound();
+            }
+
+            return File(licenseStream, "image/plain");
         }
     }
 }

@@ -1,10 +1,10 @@
+using BaGet.Protocol.Models;
+using NuGet.Versioning;
 using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BaGet.Protocol.Models;
-using NuGet.Versioning;
 
 namespace BaGet.Core
 {
@@ -88,5 +88,17 @@ namespace BaGet.Core
 
             return await _storage.GetIconStreamAsync(id, version, cancellationToken);
         }
+
+        public async Task<Stream> GetPackageLicenseStreamOrNullAsync(string id, NuGetVersion version, CancellationToken cancellationToken = default)
+        {
+            var package = await _packages.FindPackageOrNullAsync(id, version, cancellationToken);
+            if (package == null || !package.HasEmbeddedLicense)
+            {
+                return null;
+            }
+
+            return await _storage.GetLicenseStreamAsync(id, version, package.LicenseIsMarkDown, cancellationToken);
+        }
+
     }
 }
