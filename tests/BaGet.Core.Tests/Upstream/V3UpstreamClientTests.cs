@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using BaGet.Protocol;
 using BaGet.Protocol.Models;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NuGet.Versioning;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace BaGet.Core.Tests
@@ -150,10 +150,11 @@ namespace BaGet.Core.Tests
                 var package = Assert.Single(result);
 
                 Assert.Equal("Foo", package.Id);
-                Assert.Equal(new[] { "Author1", "Author2"}, package.Authors);
+                Assert.Equal(new[] { "Author1", "Author2" }, package.Authors);
                 Assert.Equal("Description", package.Description);
                 Assert.False(package.HasReadme);
                 Assert.False(package.HasEmbeddedIcon);
+                Assert.False(package.HasEmbeddedLicense);
                 Assert.True(package.IsPrerelease);
                 Assert.Null(package.ReleaseNotes);
                 Assert.Equal("Language", package.Language);

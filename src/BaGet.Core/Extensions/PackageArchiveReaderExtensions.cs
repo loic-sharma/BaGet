@@ -1,11 +1,11 @@
+using NuGet.Common;
+using NuGet.Packaging;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NuGet.Common;
-using NuGet.Packaging;
 
 namespace BaGet.Core
 {
@@ -19,9 +19,45 @@ namespace BaGet.Core
         public static bool HasEmbeddedIcon(this PackageArchiveReader package)
             => !string.IsNullOrEmpty(package.NuspecReader.GetIcon());
 
+        /// <summary>
+        /// Indicates if the package has an embedded license file.
+        /// </summary>
+        /// <param name="package"></param>
+        /// <returns></returns>
+        public static bool HasEmbeddedLicense(this PackageArchiveReader package)
+        {
+            try
+            {
+                return package.NuspecReader.GetLicenseMetadata().Type == LicenseType.File;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Returns true if the package's license file format is MarkDown otherwise returns false
+        /// </summary>
+        /// <param name="package"></param>
+        /// <returns></returns>
+        public static bool GetLicenseIsMarkDown(this PackageArchiveReader package)
+        {
+            try
+            {
+                var licenseMetadata = package.NuspecReader.GetLicenseMetadata();
+                if (licenseMetadata.Type == LicenseType.File)
+                {
+                    return Path.GetFileName(licenseMetadata.License).EndsWith(".md", StringComparison.OrdinalIgnoreCase);
+                }
+            }
+            catch { }
+            return false;
+        }
+
         public async static Task<Stream> GetReadmeAsync(
-            this PackageArchiveReader package,
-            CancellationToken cancellationToken)
+                this PackageArchiveReader package,
+                CancellationToken cancellationToken)
         {
             var readmePath = package.NuspecReader.GetReadme();
             if (readmePath == null)
@@ -36,9 +72,18 @@ namespace BaGet.Core
             this PackageArchiveReader package,
             CancellationToken cancellationToken)
         {
-            return await package.GetStreamAsync(
-                PathUtility.StripLeadingDirectorySeparators(package.NuspecReader.GetIcon()),
-                cancellationToken);
+            return await package.GetStreamAsync(PathUtility.StripLeadingDirectorySeparators(package.NuspecReader.GetIcon()), cancellationToken);
+        }
+
+        public async static Task<Stream> GetLicenseAsync(this PackageArchiveReader package, CancellationToken cancellationToken)
+        {
+            var licenseMetadata = package.NuspecReader.GetLicenseMetadata();
+            if (licenseMetadata != null &&
+                licenseMetadata.Type == LicenseType.File)
+            {
+                return await package.GetStreamAsync(PathUtility.StripLeadingDirectorySeparators(licenseMetadata.License), cancellationToken);
+            }
+            return null;
         }
 
         public static Package GetPackageMetadata(this PackageArchiveReader packageReader)
@@ -55,8 +100,10 @@ namespace BaGet.Core
                 Description = nuspec.GetDescription(),
                 HasReadme = packageReader.HasReadme(),
                 HasEmbeddedIcon = packageReader.HasEmbeddedIcon(),
+                HasEmbeddedLicense = packageReader.HasEmbeddedLicense(),
                 IsPrerelease = nuspec.GetVersion().IsPrerelease,
                 Language = nuspec.GetLanguage() ?? string.Empty,
+                LicenseIsMarkDown = packageReader.GetLicenseIsMarkDown(),
                 ReleaseNotes = nuspec.GetReleaseNotes() ?? string.Empty,
                 Listed = true,
                 MinClientVersion = nuspec.GetMinClientVersion()?.ToNormalizedString() ?? string.Empty,

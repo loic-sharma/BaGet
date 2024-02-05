@@ -1,7 +1,7 @@
-using System;
-using System.ComponentModel.DataAnnotations;
 using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace BaGet.Azure
 {
@@ -24,7 +24,17 @@ namespace BaGet.Azure
         public string Description { get; set; }
         public string[] Authors { get; set; }
         public bool HasEmbeddedIcon { get; set; }
+        /// <summary>
+        /// Indicates if the package has and embedded license
+        /// </summary>
+        public bool HasEmbeddedLicense { get; set; }
         public string IconUrl { get; set; }
+
+        /// <summary>
+        /// Indicates if the license format is MarkDown (true) or Text (false)
+        /// </summary>
+        public bool LicenseIsMarkDown { get; set; }
+
         public string LicenseUrl { get; set; }
         public string ProjectUrl { get; set; }
         public DateTimeOffset Published { get; set; }
@@ -47,7 +57,7 @@ namespace BaGet.Azure
         /// <summary>
         /// The package's full versions after normalization, including any SemVer 2.0.0 build metadata.
         /// </summary>
-        public string[] Versions { get; set;  }
+        public string[] Versions { get; set; }
         public string[] VersionDownloads { get; set; }
 
         [IsSearchable]

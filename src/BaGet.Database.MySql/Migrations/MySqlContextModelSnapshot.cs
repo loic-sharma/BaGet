@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace BaGet.Database.MySql.Migrations
 {
     [DbContext(typeof(MySqlContext))]
@@ -14,7 +16,7 @@ namespace BaGet.Database.MySql.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.18")
+                .HasAnnotation("ProductVersion", "8.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("BaGet.Core.Package", b =>
@@ -24,12 +26,12 @@ namespace BaGet.Database.MySql.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Authors")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasMaxLength(4000);
+                        .HasMaxLength(4000)
+                        .HasColumnType("varchar(4000)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasMaxLength(4000);
+                        .HasMaxLength(4000)
+                        .HasColumnType("varchar(4000)");
 
                     b.Property<long>("Downloads")
                         .HasColumnType("bigint");
@@ -37,88 +39,94 @@ namespace BaGet.Database.MySql.Migrations
                     b.Property<bool>("HasEmbeddedIcon")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<bool>("HasEmbeddedLicense")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<bool>("HasReadme")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("IconUrl")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasMaxLength(4000);
+                        .HasMaxLength(4000)
+                        .HasColumnType("varchar(4000)");
 
                     b.Property<string>("Id")
                         .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
 
                     b.Property<bool>("IsPrerelease")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Language")
-                        .HasColumnType("varchar(20) CHARACTER SET utf8mb4")
-                        .HasMaxLength(20);
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<bool>("LicenseIsMarkDown")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("LicenseUrl")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasMaxLength(4000);
+                        .HasMaxLength(4000)
+                        .HasColumnType("varchar(4000)");
 
                     b.Property<bool>("Listed")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("MinClientVersion")
-                        .HasColumnType("varchar(44) CHARACTER SET utf8mb4")
-                        .HasMaxLength(44);
+                        .HasMaxLength(44)
+                        .HasColumnType("varchar(44)");
 
                     b.Property<string>("NormalizedVersionString")
                         .IsRequired()
-                        .HasColumnName("Version")
-                        .HasColumnType("varchar(64) CHARACTER SET utf8mb4")
-                        .HasMaxLength(64);
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)")
+                        .HasColumnName("Version");
 
                     b.Property<string>("OriginalVersionString")
-                        .HasColumnName("OriginalVersion")
-                        .HasColumnType("varchar(64) CHARACTER SET utf8mb4")
-                        .HasMaxLength(64);
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)")
+                        .HasColumnName("OriginalVersion");
 
                     b.Property<string>("ProjectUrl")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasMaxLength(4000);
+                        .HasMaxLength(4000)
+                        .HasColumnType("varchar(4000)");
 
                     b.Property<DateTime>("Published")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("ReleaseNotes")
-                        .HasColumnName("ReleaseNotes")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .HasColumnType("longtext")
+                        .HasColumnName("ReleaseNotes");
 
                     b.Property<string>("RepositoryType")
-                        .HasColumnType("varchar(100) CHARACTER SET utf8mb4")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("RepositoryUrl")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasMaxLength(4000);
+                        .HasMaxLength(4000)
+                        .HasColumnType("varchar(4000)");
 
                     b.Property<bool>("RequireLicenseAcceptance")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<DateTime?>("RowVersion")
+                    b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp(6)");
+                        .HasColumnType("longblob");
 
                     b.Property<int>("SemVerLevel")
                         .HasColumnType("int");
 
                     b.Property<string>("Summary")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasMaxLength(4000);
+                        .HasMaxLength(4000)
+                        .HasColumnType("varchar(4000)");
 
                     b.Property<string>("Tags")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasMaxLength(4000);
+                        .HasMaxLength(4000)
+                        .HasColumnType("varchar(4000)");
 
                     b.Property<string>("Title")
-                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
 
                     b.HasKey("Key");
 
@@ -137,19 +145,19 @@ namespace BaGet.Database.MySql.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
 
                     b.Property<int?>("PackageKey")
                         .HasColumnType("int");
 
                     b.Property<string>("TargetFramework")
-                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("VersionRange")
-                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
 
                     b.HasKey("Key");
 
@@ -167,15 +175,15 @@ namespace BaGet.Database.MySql.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .HasColumnType("varchar(512) CHARACTER SET utf8mb4")
-                        .HasMaxLength(512);
+                        .HasMaxLength(512)
+                        .HasColumnType("varchar(512)");
 
                     b.Property<int>("PackageKey")
                         .HasColumnType("int");
 
                     b.Property<string>("Version")
-                        .HasColumnType("varchar(64) CHARACTER SET utf8mb4")
-                        .HasMaxLength(64);
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
 
                     b.HasKey("Key");
 
@@ -193,8 +201,8 @@ namespace BaGet.Database.MySql.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Moniker")
-                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
 
                     b.Property<int>("PackageKey")
                         .HasColumnType("int");
@@ -213,6 +221,8 @@ namespace BaGet.Database.MySql.Migrations
                     b.HasOne("BaGet.Core.Package", "Package")
                         .WithMany("Dependencies")
                         .HasForeignKey("PackageKey");
+
+                    b.Navigation("Package");
                 });
 
             modelBuilder.Entity("BaGet.Core.PackageType", b =>
@@ -222,6 +232,8 @@ namespace BaGet.Database.MySql.Migrations
                         .HasForeignKey("PackageKey")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Package");
                 });
 
             modelBuilder.Entity("BaGet.Core.TargetFramework", b =>
@@ -231,6 +243,17 @@ namespace BaGet.Database.MySql.Migrations
                         .HasForeignKey("PackageKey")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Package");
+                });
+
+            modelBuilder.Entity("BaGet.Core.Package", b =>
+                {
+                    b.Navigation("Dependencies");
+
+                    b.Navigation("PackageTypes");
+
+                    b.Navigation("TargetFrameworks");
                 });
 #pragma warning restore 612, 618
         }

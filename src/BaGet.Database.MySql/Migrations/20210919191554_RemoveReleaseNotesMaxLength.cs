@@ -1,6 +1,6 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using MySql.EntityFrameworkCore.Metadata;
+using System;
 
 namespace BaGet.Database.MySql.Migrations
 {
@@ -16,7 +16,7 @@ namespace BaGet.Database.MySql.Migrations
                 oldClrType: typeof(DateTime),
                 oldType: "timestamp(6)",
                 oldNullable: true)
-                .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn);
+                .Annotation("MySql:ValueGenerationStrategy", MySQLValueGenerationStrategy.ComputedColumn);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -29,7 +29,7 @@ namespace BaGet.Database.MySql.Migrations
                 oldClrType: typeof(DateTime),
                 oldRowVersion: true,
                 oldNullable: true)
-                .OldAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn);
+                .OldAnnotation("MySql:ValueGenerationStrategy", MySQLValueGenerationStrategy.ComputedColumn);
         }
     }
 }

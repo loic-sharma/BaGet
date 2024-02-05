@@ -1,9 +1,9 @@
+using Microsoft.Extensions.Logging;
+using NuGet.Versioning;
 using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using NuGet.Versioning;
 
 namespace BaGet.Core
 {
@@ -14,6 +14,8 @@ namespace BaGet.Core
         // See: https://github.com/NuGet/NuGetGallery/blob/73a5c54629056b25b3a59960373e8fef88abff36/src/NuGetGallery.Core/CoreConstants.cs#L19
         private const string PackageContentType = "binary/octet-stream";
         private const string NuspecContentType = "text/plain";
+        private const string LicenseTextContentType = "text/text";
+        private const string LicenseMarkDownContentType = "text/markdown";
         private const string ReadmeContentType = "text/markdown";
         private const string IconContentType = "image/xyz";
 
@@ -34,6 +36,7 @@ namespace BaGet.Core
             Stream nuspecStream,
             Stream readmeStream,
             Stream iconStream,
+            Stream licenseStream,
             CancellationToken cancellationToken = default)
         {
             package = package ?? throw new ArgumentNullException(nameof(package));
@@ -47,6 +50,7 @@ namespace BaGet.Core
             var nuspecPath = NuspecPath(lowercasedId, lowercasedNormalizedVersion);
             var readmePath = ReadmePath(lowercasedId, lowercasedNormalizedVersion);
             var iconPath = IconPath(lowercasedId, lowercasedNormalizedVersion);
+            var licensePath = LicensePath(lowercasedId, lowercasedNormalizedVersion, package.LicenseIsMarkDown);
 
             _logger.LogInformation(
                 "Storing package {PackageId} {PackageVersion} at {Path}...",
@@ -134,6 +138,36 @@ namespace BaGet.Core
                 }
             }
 
+            // Store the package's license, if one exists.
+            if (licenseStream != null)
+            {
+                _logger.LogInformation(
+                    "Storing package {PackageId} {PackageVersion} license at {Path}...",
+                    lowercasedId,
+                    lowercasedNormalizedVersion,
+                    licensePath);
+
+                if (package.LicenseIsMarkDown)
+                {
+                    result = await _storage.PutAsync(licensePath, licenseStream, LicenseMarkDownContentType, cancellationToken);
+                }
+                else
+                {
+                    result = await _storage.PutAsync(licensePath, licenseStream, LicenseTextContentType, cancellationToken);
+                }
+                if (result == StoragePutResult.Conflict)
+                {
+                    // TODO: This should be returned gracefully with an enum.
+                    _logger.LogInformation(
+                        "Could not store package {PackageId} {PackageVersion} license at {Path} due to conflict",
+                        lowercasedId,
+                        lowercasedNormalizedVersion,
+                        licensePath);
+
+                    throw new InvalidOperationException($"Failed to store package {lowercasedId} {lowercasedNormalizedVersion} license");
+                }
+            }
+
             _logger.LogInformation(
                 "Finished storing package {PackageId} {PackageVersion}",
                 lowercasedId,
@@ -160,6 +194,14 @@ namespace BaGet.Core
             return await GetStreamAsync(id, version, IconPath, cancellationToken);
         }
 
+        public async Task<Stream> GetLicenseStreamAsync(string id, NuGetVersion version, bool licenseIsMarkDown, CancellationToken cancellationToken)
+        {
+            var lowercasedId = id.ToLowerInvariant();
+            var lowercasedNormalizedVersion = version.ToNormalizedString().ToLowerInvariant();
+            var licensePath = LicensePath(lowercasedId, lowercasedNormalizedVersion, licenseIsMarkDown);
+            return await GetStreamAsync(licensePath, cancellationToken);
+        }
+
         public async Task DeleteAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
             var lowercasedId = id.ToLowerInvariant();
@@ -169,23 +211,45 @@ namespace BaGet.Core
             var nuspecPath = NuspecPath(lowercasedId, lowercasedNormalizedVersion);
             var readmePath = ReadmePath(lowercasedId, lowercasedNormalizedVersion);
             var iconPath = IconPath(lowercasedId, lowercasedNormalizedVersion);
+            var licensePath = LicensePath(lowercasedId, lowercasedNormalizedVersion, false);
+            if (!File.Exists(licensePath))
+            {
+                licensePath = LicensePath(lowercasedId, lowercasedNormalizedVersion, true);
+            }
 
             await _storage.DeleteAsync(packagePath, cancellationToken);
             await _storage.DeleteAsync(nuspecPath, cancellationToken);
             await _storage.DeleteAsync(readmePath, cancellationToken);
             await _storage.DeleteAsync(iconPath, cancellationToken);
+            await _storage.DeleteAsync(licensePath, cancellationToken);
         }
 
-        private async Task<Stream> GetStreamAsync(
-            string id,
-            NuGetVersion version,
-            Func<string, string, string> pathFunc,
-            CancellationToken cancellationToken)
+        private async Task<Stream> GetStreamAsync(string id, NuGetVersion version, Func<string, string, string> pathFunc, CancellationToken cancellationToken)
         {
             var lowercasedId = id.ToLowerInvariant();
             var lowercasedNormalizedVersion = version.ToNormalizedString().ToLowerInvariant();
             var path = pathFunc(lowercasedId, lowercasedNormalizedVersion);
 
+            try
+            {
+                return await _storage.GetAsync(path, cancellationToken);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                // The "packages" prefix was lowercased, which was a breaking change
+                // on filesystems that are case sensitive. Handle this case to help
+                // users migrate to the latest version of BaGet.
+                // See https://github.com/loic-sharma/BaGet/issues/298
+                _logger.LogError(
+                    $"Unable to find the '{PackagesPathPrefix}' folder. " +
+                    "If you've recently upgraded BaGet, please make sure this folder starts with a lowercased letter. " +
+                    "For more information, please see https://github.com/loic-sharma/BaGet/issues/298");
+                throw;
+            }
+        }
+
+        private async Task<Stream> GetStreamAsync(string path, CancellationToken cancellationToken)
+        {
             try
             {
                 return await _storage.GetAsync(path, cancellationToken);
@@ -239,5 +303,13 @@ namespace BaGet.Core
                 lowercasedNormalizedVersion,
                 "icon");
         }
+
+        private string LicensePath(string lowercasedId, string lowercasedNormalizedVersion, bool licenseIsMarkDown)
+        {
+            var path = Path.Combine(PackagesPathPrefix, lowercasedId, lowercasedNormalizedVersion, "license");
+            path += licenseIsMarkDown ? ".md" : ".txt";
+            return path;
+        }
+
     }
 }

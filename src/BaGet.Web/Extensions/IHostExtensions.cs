@@ -1,10 +1,10 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using BaGet.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BaGet.Web
 {
@@ -38,6 +38,11 @@ namespace BaGet.Web
             }
         }
 
+        /// <summary>
+        /// Validates the startup options for the passed <see cref="IHost"/> instance
+        /// </summary>
+        /// <param name="host"></param>
+        /// <returns></returns>
         public static bool ValidateStartupOptions(this IHost host)
         {
             return host

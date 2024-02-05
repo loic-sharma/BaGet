@@ -1,10 +1,10 @@
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using NuGet.Packaging;
 using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using NuGet.Packaging;
 
 namespace BaGet.Core
 {
@@ -40,6 +40,7 @@ namespace BaGet.Core
             Stream nuspecStream;
             Stream readmeStream;
             Stream iconStream;
+            Stream licenseStream;
 
             try
             {
@@ -69,6 +70,16 @@ namespace BaGet.Core
                     else
                     {
                         iconStream = null;
+                    }
+
+                    if (package.HasEmbeddedLicense)
+                    {
+                        licenseStream = await packageReader.GetLicenseAsync(cancellationToken);
+                        licenseStream = await licenseStream.AsTemporaryFileStreamAsync(cancellationToken);
+                    }
+                    else
+                    {
+                        licenseStream = null;
                     }
                 }
             }
@@ -108,6 +119,7 @@ namespace BaGet.Core
                     nuspecStream,
                     readmeStream,
                     iconStream,
+                    licenseStream,
                     cancellationToken);
             }
             catch (Exception e)
