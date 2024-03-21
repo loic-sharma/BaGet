@@ -37,6 +37,8 @@ namespace BaGet.Core
         /// </summary>
         public bool IsReadOnlyMode { get; set; } = false;
 
+        public string LocalPackages { get; set; }
+
         /// <summary>
         /// The URLs the BaGet server will use.
         /// As per documentation <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/web-host?view=aspnetcore-3.1#server-urls">here (Server URLs)</a>.

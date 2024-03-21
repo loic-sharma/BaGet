@@ -1,4 +1,5 @@
 using System;
+using BaGet.BackgroundServices;
 using BaGet.Core;
 using BaGet.Web;
 using Microsoft.AspNetCore.Builder;
@@ -51,6 +52,7 @@ namespace BaGet
 
             services.AddSingleton<IConfigureOptions<MvcRazorRuntimeCompilationOptions>, ConfigureRazorRuntimeCompilation>();
 
+            services.AddHostedService<ImportLocalPackagesService>();
             services.AddCors();
         }
 
