@@ -252,7 +252,7 @@ namespace BaGet.Web.Tests
         [InlineData(null, "All Frameworks")]
         [InlineData("net5.0", ".NET 5.0")]
         [InlineData("netstandard2.1", ".NET Standard 2.1")]
-        [InlineData("netcoreapp3.1", ".NET Core 3.1")]
+        [InlineData("net8.0", ".NET Core 3.1")]
         [InlineData("net4.8", ".NET Framework 4.8")]
         public async Task PrettifiesTargetFramework(string targetFramework, string expectedResult)
         {

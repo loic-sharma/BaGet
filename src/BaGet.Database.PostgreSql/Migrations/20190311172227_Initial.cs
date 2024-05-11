@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -18,8 +18,8 @@ namespace BaGet.Database.PostgreSql.Migrations
                     Key = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Id = table.Column<string>(type: "citext", maxLength: 128, nullable: false),
-                    Authors = table.Column<string>(maxLength: 4000, nullable: true),
-                    Description = table.Column<string>(maxLength: 4000, nullable: true),
+                    Authors = table.Column<string>(maxLength: 200, nullable: true),
+                    Description = table.Column<string>(nullable: true),
                     Downloads = table.Column<long>(nullable: false),
                     HasReadme = table.Column<bool>(nullable: false),
                     IsPrerelease = table.Column<bool>(nullable: false),
@@ -29,14 +29,14 @@ namespace BaGet.Database.PostgreSql.Migrations
                     Published = table.Column<DateTime>(nullable: false),
                     RequireLicenseAcceptance = table.Column<bool>(nullable: false),
                     SemVerLevel = table.Column<int>(nullable: false),
-                    Summary = table.Column<string>(maxLength: 4000, nullable: true),
+                    Summary = table.Column<string>(type:"text", nullable: true),
                     Title = table.Column<string>(maxLength: 256, nullable: true),
-                    IconUrl = table.Column<string>(maxLength: 4000, nullable: true),
-                    LicenseUrl = table.Column<string>(maxLength: 4000, nullable: true),
-                    ProjectUrl = table.Column<string>(maxLength: 4000, nullable: true),
-                    RepositoryUrl = table.Column<string>(maxLength: 4000, nullable: true),
+                    IconUrl = table.Column<string>(maxLength: 300, nullable: true),
+                    LicenseUrl = table.Column<string>(maxLength: 300, nullable: true),
+                    ProjectUrl = table.Column<string>(maxLength: 300, nullable: true),
+                    RepositoryUrl = table.Column<string>(maxLength: 500, nullable: true),
                     RepositoryType = table.Column<string>(maxLength: 100, nullable: true),
-                    Tags = table.Column<string>(maxLength: 4000, nullable: true),
+                    Tags = table.Column<string>(maxLength: 200, nullable: true),
                     RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
                     Version = table.Column<string>(maxLength: 64, nullable: false)
                 },

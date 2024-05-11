@@ -1,0 +1,14 @@
+[Unit]
+Description=Nuget
+After=default.target
+[Install]
+WantedBy=multi-user.target
+[Service]
+Type=simple
+# Execute pre and post scripts as root
+PermissionsStartOnly=true
+WorkingDirectory=/mnt/nuget/
+# Start main service
+ExecStart=/mnt/net8/dotnet /mnt/nuget/BaGet.dll
+Restart=on-failure
+RestartPreventExitStatus=1

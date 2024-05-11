@@ -1,0 +1,7 @@
+https://www.cnblogs.com/dxqNet/p/16517572.html
+dotnet nuget push -s http://localhost:5000/v3/index.json -k NUGET-SERVER-API-KEY package.1.0.0.nupkg<br>dotnet
+nuget push -s http://112.126.59.41:10008/v3/index.json -k 13434334#  ORM.EntityFrameWork.Extension.1.0.2.nupkg
+dotnet nuget delete -s http://localhost:5000/v3/index.json NugetTool 1.0.0 -k "mima@@"
+
+
+dotnet nuget push -s http://47.92.232.240:9000/nuget/v3/index.json -k hexie-exam-zhyj-20240520 "E:\ZhyjProject\BaGet\TestPackage\bin\Release\TestPackage.1.0.0.nupkg"

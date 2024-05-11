@@ -1,0 +1,16 @@
+https://blog.csdn.net/bandaoyu/article/details/124358513
+
+
+复制文件nuget.service到发布目录
+服务器上执行命令，生成硬连接到系统目录
+ln s /mnt/nuget/nuget.service /usr/lib/systemd
+
+服务配置
+systemctl start nuget.service
+systemctl stop nuget.service
+systemctl status nuget -l
+
+
+systemctl is-enabled
+systemctl enable nuget.service
+systemctl disable nuget.service
