@@ -16,11 +16,15 @@
     <PackageReference Include="Microsoft.Azure.Cosmos.Table" Version="1.0.0" />
     <PackageReference Include="Microsoft.Azure.Search" Version="5.0.1" />
     <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="9.4.1" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(MicrosoftExtensionsPackageVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0" />
   </ItemGroup>
 
 </Project>

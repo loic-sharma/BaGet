@@ -13,4 +13,8 @@
     <PackageReference Include="NuGet.Versioning" Version="$(NuGetPackageVersion)" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0" />
+  </ItemGroup>
+
 </Project>
