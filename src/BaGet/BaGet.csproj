@@ -1,7 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
+    
+    <!-- Enable the old RID graph to resolve NETSDK1206 warning for Microsoft.Azure.DocumentDB.Core -->
+    <!-- This is necessary because BaGet.Azure references Microsoft.Azure.Cosmos.Table which has -->
+    <!-- a transitive dependency on Microsoft.Azure.DocumentDB.Core with deprecated win7-x64 RID -->
+    <UseRidGraph>true</UseRidGraph>
   </PropertyGroup>
 
   <ItemGroup>

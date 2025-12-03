@@ -4,6 +4,7 @@ using BaGet.Database.MySql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 namespace BaGet
 {
@@ -15,7 +16,9 @@ namespace BaGet
             {
                 var databaseOptions = provider.GetRequiredService<IOptionsSnapshot<DatabaseOptions>>();
 
-                options.UseMySql(databaseOptions.Value.ConnectionString);
+                options.UseMySql(
+                    databaseOptions.Value.ConnectionString,
+                    ServerVersion.AutoDetect(databaseOptions.Value.ConnectionString));
             });
 
             return app;

@@ -181,7 +181,7 @@ else
                                 var alwaysShow = Json.Serialize(i < DefaultVisibleVersions);
 
                                 <tr class="@(version.Selected ? "bg-info" : "")" x-show="showAll || @alwaysShow">
-                                    <td><a asp-page="Package" asp-route-version="@version.Version">@version.Version.ToNormalizedString()</a></td>
+                                    <td><a asp-page="Package" asp-route-id="@Model.Package.Id" asp-route-version="@version.Version">@version.Version.ToNormalizedString()</a></td>
                                     <td>@version.Downloads.ToString("N0")</td>
                                     <td>@version.LastUpdated.ToShortDateString()</td>
                                 </tr>

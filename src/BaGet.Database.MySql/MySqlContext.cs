@@ -1,6 +1,6 @@
 using BaGet.Core;
 using Microsoft.EntityFrameworkCore;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 
 namespace BaGet.Database.MySql
 {

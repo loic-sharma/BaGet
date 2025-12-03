@@ -236,7 +236,7 @@ namespace BaGet.Web.Tests
             Assert.Equal(".NET Framework 4.8", _target.DependencyGroups[1].Name);
 
             Assert.Equal(2, _target.DependencyGroups[0].Dependencies.Count);
-            Assert.Equal(1, _target.DependencyGroups[1].Dependencies.Count);
+            Assert.Single(_target.DependencyGroups[1].Dependencies);
 
             Assert.Equal("Dependency1", _target.DependencyGroups[0].Dependencies[0].PackageId);
             Assert.Equal("(>= 1.0.0)", _target.DependencyGroups[0].Dependencies[0].VersionSpec);

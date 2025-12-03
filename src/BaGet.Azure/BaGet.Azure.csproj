@@ -1,12 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFramework>net8.0</TargetFramework>
 
     <PackageTags>NuGet;Azure;Cloud</PackageTags>
     <Description>The libraries to host BaGet on Azure.</Description>
+    
+    <!-- Enable the old RID graph to resolve NETSDK1206 warning for Microsoft.Azure.DocumentDB.Core -->
+    <!-- This is necessary because Microsoft.Azure.Cosmos.Table has a transitive dependency -->
+    <!-- on Microsoft.Azure.DocumentDB.Core which includes deprecated win7-x64 RID -->
+    <UseRidGraph>true</UseRidGraph>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.Cosmos.Table" Version="1.0.0" />
     <PackageReference Include="Microsoft.Azure.Search" Version="5.0.1" />
