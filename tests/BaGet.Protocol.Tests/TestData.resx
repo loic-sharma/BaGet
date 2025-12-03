@@ -395,17 +395,17 @@
   "version": "1.0.0",
   "dependencyGroups": [
     {
-      "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0",
+      "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.net8.0",
       "@type": "PackageDependencyGroup",
       "dependencies": [
         {
-          "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0/test.dependency",
+          "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.net8.0/test.dependency",
           "@type": "PackageDependency",
           "id": "Test.Dependency",
           "range": "[2.0.0, )"
         }
       ],
-      "targetFramework": ".NETStandard2.0"
+      "targetFramework": ".net8.0"
     }
   ],
   "packageEntries": [
@@ -418,10 +418,10 @@
       "name": "Test.Package.nuspec"
     },
     {
-      "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#lib/netstandard2.0/Test.Package.dll",
+      "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#lib/net8.0/Test.Package.dll",
       "@type": "PackageEntry",
       "compressedLength": 100,
-      "fullName": "lib/netstandard2.0/Test.Package.dll",
+      "fullName": "lib/net8.0/Test.Package.dll",
       "length": 100,
       "name": "Test.Package.dll"
     }
@@ -504,20 +504,20 @@
             "authors": "Test Author",
             "dependencyGroups": [
               {
-                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0",
+                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.net8.0",
                 "@type": "PackageDependencyGroup",
                 "dependencies": [
                   {
-                    "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0/test.dependency",
+                    "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.net8.0/test.dependency",
                     "@type": "PackageDependency",
                     "id": "Test.Dependency",
                     "range": "[2.0.0, )"
                   }
                 ],
-                "targetFramework": ".NETStandard2.0"
+                "targetFramework": ".net8.0"
               },
               {
-                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0",
+                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.net8.0",
                 "@type": "PackageDependencyGroup",
                 "targetFramework": ".NETFramework4.8"
               }
@@ -568,20 +568,20 @@
             "authors": "Test Author",
             "dependencyGroups": [
               {
-                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.2.0.0.json#dependencygroup/.netstandard2.0",
+                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.2.0.0.json#dependencygroup/.net8.0",
                 "@type": "PackageDependencyGroup",
                 "dependencies": [
                   {
-                    "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.2.0.0.json#dependencygroup/.netstandard2.0/test.dependency",
+                    "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.2.0.0.json#dependencygroup/.net8.0/test.dependency",
                     "@type": "PackageDependency",
                     "id": "Test.Dependency",
                     "range": "[2.0.0, )"
                   }
                 ],
-                "targetFramework": ".NETStandard2.0"
+                "targetFramework": ".net8.0"
               },
               {
-                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.2.0.0.json#dependencygroup/.netstandard2.0",
+                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.2.0.0.json#dependencygroup/.net8.0",
                 "@type": "PackageDependencyGroup",
                 "targetFramework": ".NETFramework4.8"
               }
@@ -620,20 +620,20 @@
             "authors": "Test Author",
             "dependencyGroups": [
               {
-                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.3.0.0.json#dependencygroup/.netstandard2.0",
+                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.3.0.0.json#dependencygroup/.net8.0",
                 "@type": "PackageDependencyGroup",
                 "dependencies": [
                   {
-                    "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.3.0.0.json#dependencygroup/.netstandard2.0/test.dependency",
+                    "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.3.0.0.json#dependencygroup/.net8.0/test.dependency",
                     "@type": "PackageDependency",
                     "id": "Test.Dependency",
                     "range": "[2.0.0, )"
                   }
                 ],
-                "targetFramework": ".NETStandard2.0"
+                "targetFramework": ".net8.0"
               },
               {
-                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.3.0.0.json#dependencygroup/.netstandard2.0",
+                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.3.0.0.json#dependencygroup/.net8.0",
                 "@type": "PackageDependencyGroup",
                 "targetFramework": ".NETFramework4.8"
               }
@@ -898,20 +898,20 @@
         "authors": "Package Authors",
         "dependencyGroups": [
           {
-            "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0",
+            "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.net8.0",
             "@type": "PackageDependencyGroup",
             "dependencies": [
               {
-                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0/test.dependency",
+                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.net8.0/test.dependency",
                 "@type": "PackageDependency",
                 "id": "Test.Dependency",
                 "range": "[2.0.0, )"
               }
             ],
-            "targetFramework": ".NETStandard2.0"
+            "targetFramework": ".net8.0"
           },
           {
-            "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0",
+            "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.net8.0",
             "@type": "PackageDependencyGroup",
             "targetFramework": ".NETFramework4.8"
           }
@@ -950,20 +950,20 @@
         "authors": "Package Authors",
         "dependencyGroups": [
           {
-            "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0",
+            "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.net8.0",
             "@type": "PackageDependencyGroup",
             "dependencies": [
               {
-                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0/test.dependency",
+                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.net8.0/test.dependency",
                 "@type": "PackageDependency",
                 "id": "Test.Dependency",
                 "range": "[2.0.0, )"
               }
             ],
-            "targetFramework": ".NETStandard2.0"
+            "targetFramework": ".net8.0"
           },
           {
-            "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0",
+            "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.net8.0",
             "@type": "PackageDependencyGroup",
             "targetFramework": ".NETFramework4.8"
           }

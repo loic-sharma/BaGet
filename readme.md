@@ -25,6 +25,33 @@ For more information, please refer to the [documentation].
 
 Stay tuned, more features are planned!
 
+## Develop
+
+1. Install the [.NET 8 SDK](https://www.microsoft.com/net/download)
+
+2. Run `git clone https://github.com/loic-sharma/BaGet.git`
+
+3. Navigate to the BaGet directory
+
+4. Run the build script:
+   ```powershell
+   .\build.ps1
+   ```
+   
+   Or manually clean, restore, and build:
+   ```bash
+   dotnet clean BaGet.sln
+   dotnet restore BaGet.sln
+   dotnet build BaGet.sln
+   ```
+
+5. Navigate to `.\src\BaGet` and start the service:
+   ```bash
+   dotnet run
+   ```
+
+6. Open the URL `http://localhost:5000/v3/index.json` in your browser
+
 [Build status]: https://img.shields.io/github/actions/workflow/status/loic-sharma/BaGet/.github/workflows/main.yml
 [Discord image]: https://img.shields.io/discord/889377258068930591
 [Discord link]: https://discord.gg/MWbhpf66mk
