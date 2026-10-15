@@ -83,7 +83,7 @@ namespace BaGet.Core
                     ProjectUrl = package.ProjectUrlString,
                     RepositoryUrl = package.RepositoryUrlString,
                     RepositoryType = package.RepositoryType,
-                    Published = package.Published,
+                    Published = package.Published==DateTime.MinValue?DateTimeOffset.Now : package.Published,
                     RequireLicenseAcceptance = package.RequireLicenseAcceptance,
                     Summary = package.Summary,
                     Tags = package.Tags,

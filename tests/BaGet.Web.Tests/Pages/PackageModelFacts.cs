@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -236,7 +236,7 @@ namespace BaGet.Web.Tests
             Assert.Equal(".NET Framework 4.8", _target.DependencyGroups[1].Name);
 
             Assert.Equal(2, _target.DependencyGroups[0].Dependencies.Count);
-            Assert.Equal(1, _target.DependencyGroups[1].Dependencies.Count);
+            Assert.Single(_target.DependencyGroups[1].Dependencies);
 
             Assert.Equal("Dependency1", _target.DependencyGroups[0].Dependencies[0].PackageId);
             Assert.Equal("(>= 1.0.0)", _target.DependencyGroups[0].Dependencies[0].VersionSpec);
@@ -252,7 +252,7 @@ namespace BaGet.Web.Tests
         [InlineData(null, "All Frameworks")]
         [InlineData("net5.0", ".NET 5.0")]
         [InlineData("netstandard2.1", ".NET Standard 2.1")]
-        [InlineData("netcoreapp3.1", ".NET Core 3.1")]
+        [InlineData("net10.0", ".NET 10.0")]
         [InlineData("net4.8", ".NET Framework 4.8")]
         public async Task PrettifiesTargetFramework(string targetFramework, string expectedResult)
         {

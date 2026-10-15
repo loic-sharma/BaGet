@@ -4,6 +4,7 @@ using BaGet.Core;
 using BaGet.Database.Sqlite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Xunit;
 
 namespace BaGet.Tests
@@ -16,60 +17,62 @@ namespace BaGet.Tests
         [Fact]
         public void ThrowsIfDatabaseTypeInvalid()
         {
-            var provider = BuildServiceProvider(new Dictionary<string, string>
+            using var host = BuildHost(new Dictionary<string, string>
             {
                 { DatabaseTypeKey, "InvalidType" }
             });
+            using var scope = host.Services.CreateScope();
 
             Assert.Throws<InvalidOperationException>(
-                () => provider.GetRequiredService<IContext>());
+                () => scope.ServiceProvider.GetRequiredService<IContext>());
         }
 
         [Fact]
         public void ReturnsDatabaseContext()
         {
-            var provider = BuildServiceProvider(new Dictionary<string, string>
+            using var host = BuildHost(new Dictionary<string, string>
             {
                 { DatabaseTypeKey, "Sqlite" },
                 { ConnectionStringKey, "..." }
             });
+            using var scope = host.Services.CreateScope();
 
-            Assert.NotNull(provider.GetRequiredService<IContext>());
+            Assert.NotNull(scope.ServiceProvider.GetRequiredService<IContext>());
         }
 
         [Fact]
         public void ReturnsSqliteContext()
         {
-            var provider = BuildServiceProvider(new Dictionary<string, string>
+            using var host = BuildHost(new Dictionary<string, string>
             {
                 { DatabaseTypeKey, "Sqlite" },
                 { ConnectionStringKey, "..." }
             });
+            using var scope = host.Services.CreateScope();
 
-            Assert.NotNull(provider.GetRequiredService<SqliteContext>());
+            Assert.NotNull(scope.ServiceProvider.GetRequiredService<SqliteContext>());
         }
 
         [Fact]
         public void DefaultsToSqlite()
         {
-            var provider = BuildServiceProvider();
+            using var host = BuildHost();
+            using var scope = host.Services.CreateScope();
 
-            var context = provider.GetRequiredService<IContext>();
+            var context = scope.ServiceProvider.GetRequiredService<IContext>();
 
             Assert.IsType<SqliteContext>(context);
         }
 
-        private IServiceProvider BuildServiceProvider(Dictionary<string, string> configs = null)
+        private IHost BuildHost(Dictionary<string, string> configs = null)
         {
-            var host = Program
+            return Program
                 .CreateHostBuilder(new string[0])
                 .ConfigureAppConfiguration((ctx, config) =>
                 {
                     config.AddInMemoryCollection(configs ?? new Dictionary<string, string>());
                 })
                 .Build();
-
-            return host.Services;
         }
     }
 }

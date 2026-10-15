@@ -33,9 +33,22 @@ namespace BaGet.Web
 
             if (pageDescriptor == null) return false;
             if (pageDescriptor.AreaName != null) return false;
-            if (pageDescriptor.ViewEnginePath != Page) return false;
+            
+            // If asp-page is specified, check if the page path matches
+            if (!string.IsNullOrEmpty(Page))
+            {
+                if (pageDescriptor.ViewEnginePath == Page) return true;
+            }
+            
+            // Special case: /packages and / should both be active for the Packages link
+            // (both routes point to the Index page)
+            var path = _accessor.HttpContext?.Request.Path.Value;
+            if (pageDescriptor.ViewEnginePath == "/Index" && (path == "/packages" || path == "/"))
+            {
+                return true;
+            }
 
-            return true;
+            return false;
         }
     }
 }

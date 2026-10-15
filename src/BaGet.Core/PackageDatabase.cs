@@ -57,6 +57,7 @@ namespace BaGet.Core
                 .Include(p => p.Dependencies)
                 .Include(p => p.PackageTypes)
                 .Include(p => p.TargetFrameworks)
+                .AsSplitQuery()
                 .Where(p => p.Id == id);
 
             if (!includeUnlisted)
@@ -76,6 +77,7 @@ namespace BaGet.Core
             var query = _context.Packages
                 .Include(p => p.Dependencies)
                 .Include(p => p.TargetFrameworks)
+                .AsSplitQuery()
                 .Where(p => p.Id == id)
                 .Where(p => p.NormalizedVersionString == version.ToNormalizedString());
 
@@ -109,6 +111,7 @@ namespace BaGet.Core
                 .Where(p => p.NormalizedVersionString == version.ToNormalizedString())
                 .Include(p => p.Dependencies)
                 .Include(p => p.TargetFrameworks)
+                .AsSplitQuery()
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (package == null)

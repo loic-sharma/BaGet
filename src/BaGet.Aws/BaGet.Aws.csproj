@@ -1,20 +1,24 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFramework>net10.0</TargetFramework>
 
     <PackageTags>NuGet;Amazon;Cloud</PackageTags>
     <Description>The libraries to host BaGet on AWS.</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.S3" Version="3.3.110.20" />
-    <PackageReference Include="AWSSDK.SecurityToken" Version="3.3.104.27" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(MicrosoftExtensionsPackageVersion)" />
+    <PackageReference Include="AWSSDK.S3" Version="4.0.104.4" />
+    <PackageReference Include="AWSSDK.SecurityToken" Version="4.0.101.4" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.13" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0" />
   </ItemGroup>
 
 </Project>

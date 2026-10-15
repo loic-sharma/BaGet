@@ -15,7 +15,7 @@
   <!-- Compiler properties -->
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <LangVersion>7.2</LangVersion>
+    <LangVersion>12.0</LangVersion>
 
     <!-- Don't warn if there are missing XMl comment for publicly visible type or member-->
     <NoWarn>$(NoWarn);1591</NoWarn>
@@ -37,18 +37,38 @@
 
   <!-- NuGet dependencies shared across projects -->
   <PropertyGroup>
-    <MicrosoftAspNetCorePackageVersion>3.1.18</MicrosoftAspNetCorePackageVersion>
-    <MicrosoftEntityFrameworkCorePackageVersion>3.1.18</MicrosoftEntityFrameworkCorePackageVersion>
-    <MicrosoftExtensionsPackageVersion>3.1.18</MicrosoftExtensionsPackageVersion>
-    <NuGetPackageVersion>5.10.0</NuGetPackageVersion>
+    <MicrosoftAspNetCorePackageVersion>8.0.0</MicrosoftAspNetCorePackageVersion>
+    <MicrosoftEntityFrameworkCorePackageVersion>8.0.0</MicrosoftEntityFrameworkCorePackageVersion>
+    <MicrosoftExtensionsPackageVersion>8.0.0</MicrosoftExtensionsPackageVersion>
+    <NuGetPackageVersion>6.10.0</NuGetPackageVersion>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(DOTNET_RUNNING_IN_CONTAINER)' == ''">
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All"/>
   </ItemGroup>
 
   <ItemGroup>
     <None Include="../packageIcon.png" Pack="true" PackagePath="" Visible="false" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageId>$(MSBuildProjectName)</PackageId>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IncludeSymbols Condition="'$(Configuration)'=='Debug'">true</IncludeSymbols>
+    <SymbolPackageFormat Condition="'$(Configuration)'=='Debug'">snupkg</SymbolPackageFormat>
+    <IncludeSymbols Condition="'$(Configuration)'!='Debug'">false</IncludeSymbols>
+    <IsPublishable>False</IsPublishable>
+    <PackageOutputPath>$(SolutionDir)Packages\</PackageOutputPath>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <Target Name="DeleteOldPackage" AfterTargets="Pack" Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">
+    <Exec Command="if exist %userprofile%\.nuget\Packages\$(MSBuildProjectName) rmdir /s /q %userprofile%\.nuget\Packages\$(MSBuildProjectName)" />
+  </Target>
 
 </Project>

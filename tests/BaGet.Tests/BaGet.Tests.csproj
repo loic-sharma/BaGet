@@ -1,8 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <LangVersion>8.0</LangVersion>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    
+    <!-- Enable the old RID graph to resolve NETSDK1206 warning for Microsoft.Azure.DocumentDB.Core -->
+    <!-- This is necessary because BaGet.Azure references Microsoft.Azure.Cosmos.Table which has -->
+    <!-- a transitive dependency on Microsoft.Azure.DocumentDB.Core with deprecated win7-x64 RID -->
+    <UseRidGraph>true</UseRidGraph>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,9 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="$(NewtonsoftJsonPackageVersion)" />
-    <PackageReference Include="NuGet.Protocol" Version="$(NuGetPackageVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="$(MicrosoftAspNetCorePackageVersion)" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="NuGet.Protocol" Version="7.9.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.32" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,6 +45,19 @@
     <EmbeddedResource Include="TestData\TestData.1.2.3.snupkg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="coverlet.collector" Version="3.2.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Update="Moq" Version="4.18.3" />
+    <PackageReference Update="xunit" Version="2.4.2" />
+    <PackageReference Update="xunit.runner.visualstudio" Version="2.4.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>
