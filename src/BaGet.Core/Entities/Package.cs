@@ -40,7 +40,24 @@ namespace BaGet.Core
         public string Language { get; set; }
         public bool Listed { get; set; }
         public string MinClientVersion { get; set; }
-        public DateTime Published { get; set; }
+
+        /// <summary>
+        /// The time at which the package was published, in UTC.
+        /// </summary>
+        /// <remarks>
+        /// Always stored as UTC. The database returns a <see cref="DateTime"/> whose
+        /// <see cref="DateTime.Kind"/> is <see cref="DateTimeKind.Unspecified"/>, which would
+        /// otherwise be read as local time when converted to a <see cref="DateTimeOffset"/>,
+        /// shifting the published timestamp by the server's UTC offset.
+        /// </remarks>
+        public DateTime Published
+        {
+            get => DateTime.SpecifyKind(_published, DateTimeKind.Utc);
+            set => _published = value;
+        }
+
+        private DateTime _published;
+
         public bool RequireLicenseAcceptance { get; set; }
         public SemVerLevel SemVerLevel { get; set; }
         public string Summary { get; set; }
