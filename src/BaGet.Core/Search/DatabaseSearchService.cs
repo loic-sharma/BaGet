@@ -91,10 +91,14 @@ namespace BaGet.Core
                 request.PackageType,
                 frameworks: null);
 
+            // Group by package ID so that the column the results are ordered by is part of
+            // the query's projection. Ordering before a "Distinct" over a narrower projection
+            // is silently dropped, and SQL Server rejects the resulting query outright:
+            // "ORDER BY items must appear in the select list if SELECT DISTINCT is specified."
             var packageIds = await search
-                .OrderByDescending(p => p.Downloads)
-                .Select(p => p.Id)
-                .Distinct()
+                .GroupBy(p => p.Id)
+                .OrderByDescending(packages => packages.Sum(p => p.Downloads))
+                .Select(packages => packages.Key)
                 .Skip(request.Skip)
                 .Take(request.Take)
                 .ToListAsync(cancellationToken);
