@@ -22,11 +22,16 @@ namespace BaGet.Tests
     {
         private readonly ITestOutputHelper _output;
         private readonly HttpClient _upstreamClient;
+        private readonly Dictionary<string, string> _configOverrides;
 
-        public BaGetApplication(ITestOutputHelper output, HttpClient upstreamClient = null)
+        public BaGetApplication(
+            ITestOutputHelper output,
+            HttpClient upstreamClient = null,
+            Dictionary<string, string> configOverrides = null)
         {
             _output = output ?? throw new ArgumentNullException(nameof(output));
             _upstreamClient = upstreamClient;
+            _configOverrides = configOverrides;
         }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -57,7 +62,7 @@ namespace BaGet.Tests
                 .ConfigureAppConfiguration(config =>
                 {
                     // Setup the integration test configuration.
-                    config.AddInMemoryCollection(new Dictionary<string, string>
+                    var settings = new Dictionary<string, string>
                     {
                         { "Database:Type", "Sqlite" },
                         { "Database:ConnectionString", $"Data Source={sqlitePath}" },
@@ -66,7 +71,14 @@ namespace BaGet.Tests
                         { "Search:Type", "Database" },
                         { "Mirror:Enabled", _upstreamClient != null ? "true": "false" },
                         { "Mirror:PackageSource", "http://localhost/v3/index.json" },
-                    });
+                    };
+
+                    foreach (var pair in _configOverrides ?? new Dictionary<string, string>())
+                    {
+                        settings[pair.Key] = pair.Value;
+                    }
+
+                    config.AddInMemoryCollection(settings);
                 })
                 .ConfigureServices((context, services) =>
                 {
