@@ -1,84 +1,84 @@
-using System;
 using System.Threading.Tasks;
-using BaGet.Core;
-using BaGet.Web;
+using BaGet.Telemetry;
 using McMaster.Extensions.CommandLineUtils;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
+using BaGet.Web.V3.Extensions;
 
-namespace BaGet
+namespace BaGet;
+
+/// <summary>
+/// Declared partial and public so that WebApplicationFactory can name it as the entry
+/// point of the integration tests. The building blocks are extension methods in <c>Hosting/</c>.
+/// </summary>
+public partial class Program
 {
-    public class Program
+    /// <summary>
+    /// Builds the application and runs the command line. The exit code is the command's (0 = done, 1 = refused or failed) or 1
+    /// when the configuration is invalid, so a script or a supervisor (<c>restart: on-failure</c>, systemd) sees the failure.
+    /// </summary>
+    public static async Task<int> Main(string[] args)
     {
-        public static async Task Main(string[] args)
+        var app = BuildApplication(args);
+
+        return await RunAsync(app, args);
+    }
+
+    /// <summary>Validates the options of <paramref name="app"/>, then runs the command line (or the server) and returns the exit code.</summary>
+    internal static async Task<int> RunAsync(WebApplication app, string[] args)
+    {
+        if (!app.ValidateStartupOptions())
         {
-            var host = CreateHostBuilder(args).Build();
-            if (!host.ValidateStartupOptions())
-            {
-                return;
-            }
-
-            var app = new CommandLineApplication
-            {
-                Name = "baget",
-                Description = "A light-weight NuGet service",
-            };
-
-            app.HelpOption(inherited: true);
-
-            app.Command("import", import =>
-            {
-                import.Command("downloads", downloads =>
-                {
-                    downloads.OnExecuteAsync(async cancellationToken =>
-                    {
-                        using (var scope = host.Services.CreateScope())
-                        {
-                            var importer = scope.ServiceProvider.GetRequiredService<DownloadsImporter>();
-
-                            await importer.ImportAsync(cancellationToken);
-                        }
-                    });
-                });
-            });
-
-            app.Option("--urls", "The URLs that BaGet should bind to.", CommandOptionType.SingleValue);
-
-            app.OnExecuteAsync(async cancellationToken =>
-            {
-                await host.RunMigrationsAsync(cancellationToken);
-                await host.RunAsync(cancellationToken);
-            });
-
-            await app.ExecuteAsync(args);
+            return 1;
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args)
+        var commands = new CommandLineApplication
         {
-            return Host
-                .CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((ctx, config) =>
-                {
-                    var root = Environment.GetEnvironmentVariable("BAGET_CONFIG_ROOT");
+            Name = "baget",
+            Description = "BaGet Extension: a light-weight NuGet service",
 
-                    if (!string.IsNullOrEmpty(root))
-                    {
-                        config.SetBasePath(root);
-                    }
-                })
-                .ConfigureWebHostDefaults(web =>
-                {
-                    web.ConfigureKestrel(options =>
-                    {
-                        // Remove the upload limit from Kestrel. If needed, an upload limit can
-                        // be enforced by a reverse proxy server, like IIS.
-                        options.Limits.MaxRequestBodySize = null;
-                    });
+            // The host consumes arguments of its own - "--environment",
+            // "--contentRoot", "--applicationName" and the rest - and they reach this
+            // parser too. Rejecting them would make a legitimate invocation such as
+            // "baget --environment Staging" fail before the service starts.
+            UnrecognizedArgumentHandling = UnrecognizedArgumentHandling.CollectAndContinue,
+        };
 
-                    web.UseStartup<Startup>();
-                });
-        }
+        commands.HelpOption(inherited: true);
+        commands.AddBaGetCommands(app);
+        commands.Option("--urls", "The URLs that BaGet Extension should bind to.", CommandOptionType.SingleValue);
+
+        commands.OnExecuteAsync(async cancellationToken =>
+        {
+            await app.RunMigrationsAsync(cancellationToken);
+            await app.BootstrapAdministratorsAsync(cancellationToken);
+            await app.RunAsync(cancellationToken);
+
+            return 0;
+        });
+
+        return await commands.ExecuteAsync(args);
+    }
+
+    /// <summary>
+    /// Build the application: configuration, services and the request pipeline.
+    /// </summary>
+    /// <remarks>
+    /// The integration tests reach the host through this, by way of
+    /// WebApplicationFactory, which runs <see cref="Main"/> and takes the application as
+    /// it is built. The command line wiring in <see cref="Main"/> therefore runs only
+    /// when BaGet is started for real.
+    /// </remarks>
+    public static WebApplication BuildApplication(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+
+        var overridesPath = builder.Configuration.AddBaGetSettingsOverrides(builder.Environment);
+        builder.AddBaGetLogging();
+        builder.Services.AddBaGetTelemetry(builder.Configuration);
+        builder.WebHost.ConfigureBaGetWebHost();
+        builder.Services.AddBaGetHost(builder.Configuration, overridesPath);
+
+        return builder.Build().UseBaGetPipeline();
     }
 }

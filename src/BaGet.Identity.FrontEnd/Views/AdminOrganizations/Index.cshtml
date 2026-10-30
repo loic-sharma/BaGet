@@ -1,0 +1,39 @@
+@model BaGet.Identity.Application.Models.Organizations.AdminOrganizationsViewModel
+@{
+    ViewData["Title"] = "Organizations";
+}
+
+<div class="col-sm-12">
+    <h1>Organizations</h1>
+    <hr class="breadcrumb-divider" />
+
+    <p class="help-block">
+        Every organization on the server. Users create them from their own Organizations page; here an administrator
+        renames them, manages their members and deletes those that own no package.
+    </p>
+
+    @if (Model.Organizations.Count == 0)
+    {
+        <p id="organizations-empty">There are no organizations.</p>
+    }
+    else
+    {
+        <table class="table" id="organizations">
+            <thead>
+                <tr><th>Name</th><th>Members</th><th>Administrators</th><th>Package IDs</th><th>Created</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var organization in Model.Organizations)
+                {
+                    <tr>
+                        <td><a href="@Url.Content("~/admin/organizations/" + Uri.EscapeDataString(organization.Name ?? string.Empty))">@organization.Name</a></td>
+                        <td>@organization.Members</td>
+                        <td>@organization.Administrators</td>
+                        <td>@organization.PackageIds</td>
+                        <td>@organization.Created.ToString("yyyy-MM-dd")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

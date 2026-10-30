@@ -1,10 +1,10 @@
-site_name: BaGet
-site_description: A lightweight NuGet and symbol server
+site_name: BaGet Extension
+site_description: A NuGet, Maven, NVM, Docker and symbol server
 site_author: Loic Sharma
-site_url: https://loic-sharma.github.io/BaGet/
+site_url: https://pieroviano.github.io/BaGet/
 
-repo_name: loic-sharma/BaGet
-repo_url: https://github.com/loic-sharma/BaGet
+repo_name: pieroviano/BaGet
+repo_url: https://github.com/pieroviano/BaGet
 
 copyright: 'Copyright &copy; 2020 Loic Sharma'
 
@@ -20,10 +20,8 @@ theme:
 
 extra:
   social:
-    - type: github-alt
-      link: https://github.com/loic-sharma
-    - type: twitter
-      link: https://twitter.com/bagetapp
+    - icon: fontawesome/brands/github
+      link: https://github.com/pieroviano/BaGet
 
 markdown_extensions:
   - markdown.extensions.admonition
@@ -32,8 +30,15 @@ markdown_extensions:
   - markdown.extensions.toc:
       permalink: true
 
-pages:
+# Plan documents are working notes, never published (CLAUDE.md).
+exclude_docs: |
+  plans/
+
+nav:
   - Overview: index.md
+  - Installation manual: installation-manual.md
+  - DevOps manual: devops-manual.md
+  - How-to: howto.md
   - Installation:
     - On your computer: installation/local.md
     - Docker: installation/docker.md
@@ -42,15 +47,35 @@ pages:
     - Google cloud: installation/gcp.md
     - Alibaba cloud: installation/aliyun.md
     - Windows IIS proxy: installation/iis-proxy.md
+  - User manual: user-manual.md
   - Configuration: configuration.md
+  - Repositories: repositories.md
+  - Package formats: formats.md
+  - npm registry: npm-registry.md
+  - Maven repositories: maven-repositories.md
+  - Docker registry: docker-registry.md
+  - Retention and cleanup: retention.md
+  - Remote repositories: remote-repositories.md
+  - Replication: replication.md
+  - High availability: high-availability.md
+  - Virtual repositories: virtual-repositories.md
+  - Access control: access-control.md
+  - Vulnerability scanning: vulnerability-scanning.md
+  - Administration REST API: admin-api.md
+  - UI API (/api/ui): ui-api.md
+  - Custom frontend (React, Angular): custom-frontend.md
+  - Testing the APIs with Scalar: scalar.md
+  - UI coverage: ui-coverage.md
   - Import:
     - Local feeds: import/local-feeds.md
     - NuGet.Server: import/nugetserver.md
     - NuGet.org: import/nugetorg.md
   - Advanced:
+    - Architecture: advanced/architecture.md
     - Debugging: advanced/debugging.md
-    - BaGet SDK: advanced/sdk.md
-  - BaGet vs. other:
+    - BaGet Extension SDK: advanced/sdk.md
+    - Server API: advanced/api.md
+  - BaGet Extension vs. other:
     - nuget.org: vs/nugetorg.md
     - NuGet.Server: vs/nugetserver.md
     - Local feeds: vs/local-feeds.md

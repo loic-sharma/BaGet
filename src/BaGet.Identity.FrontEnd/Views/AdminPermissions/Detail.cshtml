@@ -1,0 +1,113 @@
+@using BaGet.Frontend.Mvc.Screens
+@model BaGet.Identity.Application.Models.Access.PermissionDetailViewModel
+@{
+    ViewData["Title"] = "Permission target " + Model.Name;
+    var target = Model.Target?.Target;
+}
+
+<div class="col-sm-12">
+    <h1>Permission target @target?.Name</h1>
+    <hr class="breadcrumb-divider" />
+
+    <p>
+        @if (Model.IsServerAdministrator)
+        {
+            <a asp-controller="AdminPermissions" asp-action="Index">Back to permission targets</a>
+        }
+        else if (target?.ProjectName != null)
+        {
+            <a href="@Url.Action("Detail", "AdminProjects", new { name = target.ProjectName })">Back to project @target.ProjectName</a>
+        }
+    </p>
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-success" role="alert" id="target-message">@Model.Message</div>
+    }
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert" id="target-error">@Model.Error</div>
+    }
+
+    @if (target?.ProjectName != null)
+    {
+        <p id="target-project">Project target of <a href="@Url.Action("Detail", "AdminProjects", new { name = target.ProjectName })">@target.ProjectName</a>: it applies only to that project's repositories.</p>
+    }
+    <p class="help-block">Saving patterns, changing grants and deleting the target ask for your password again. Package ownership still applies inside Deploy, Delete, Annotate and Manage.</p>
+
+    <section id="target-section-patterns">
+        <h2>Patterns</h2>
+        <form method="post" id="patterns-form">
+            <partial name="~/Views/Shared/_PatternFields.cshtml" model="@Model.Fields" />
+            <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("patternsPassword")" />
+            <button type="submit" class="btn btn-primary" asp-controller="AdminPermissions" asp-action="Detail" asp-route-name="@Model.Name" asp-route-handler="Save">Save patterns</button>
+        </form>
+    </section>
+
+    <section id="target-section-grants">
+        <h2>Grants</h2>
+        @if (Model.Target?.Grants.Count == 0)
+        {
+            <p id="target-no-grants">Nobody holds anything through this target yet.</p>
+        }
+        else
+        {
+            <form method="post" id="grants-form">
+                <table class="table" id="target-grants">
+                    <thead>
+                        <tr><th>Principal</th>@foreach (var action in AccessSupport.AllActions) { <th>@action</th> }<th></th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var grant in Model.Target!.Grants)
+                        {
+                            <tr data-principal="@grant.Principal">
+                                <td>@grant.Principal</td>
+                                @foreach (var action in AccessSupport.AllActions)
+                                {
+                                    <td>@((grant.Actions & action) == action ? "yes" : "")</td>
+                                }
+                                <td>
+                                    <a class="btn btn-default btn-xs" href="@Url.Action("Detail", "AdminPermissions", new { name = target!.Name, principalType = grant.PrincipalType, principalName = grant.Principal.Substring(grant.Principal.IndexOf(' ') + 1) })#grant-form">Edit</a>
+                                    <button type="submit" class="btn btn-danger btn-xs"
+                                            formaction="@Url.Action("Detail", "AdminPermissions", new { name = target!.Name, type = grant.PrincipalType, principalId = grant.PrincipalId, handler = "RemoveGrant" })">Remove</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("grantsPassword")" />
+            </form>
+        }
+
+        <h3>Set a grant</h3>
+        <p class="help-block">Replaces the actions the principal holds through this target; ticking none removes the grant.</p>
+        <form method="post" id="grant-form">
+            <div class="form-inline">
+                <select name="principalType" class="form-control" id="grant-type">
+                    @foreach (var type in new[] { BaGet.Core.PrincipalType.Group, BaGet.Core.PrincipalType.User, BaGet.Core.PrincipalType.Organization })
+                    {
+                        <option value="@type" selected="@(type == Model.PrincipalType)">@type</option>
+                    }
+                </select>
+                <input type="text" name="principalName" class="form-control" id="grant-name" value="@Model.PrincipalName" placeholder="Name" autocomplete="off" />
+            </div>
+            <div class="form-group">
+                @foreach (var action in AccessSupport.AllActions)
+                {
+                    <label class="checkbox-inline"><input type="checkbox" name="actions" value="@action" checked="@((Model.FormActions & action) == action)" /> @action</label>
+                }
+            </div>
+            <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("grantPassword")" />
+            <button type="submit" class="btn btn-primary" asp-controller="AdminPermissions" asp-action="Detail" asp-route-name="@Model.Name" asp-route-handler="SetGrant">Set grant</button>
+        </form>
+    </section>
+
+    <section id="target-section-delete">
+        <h2>Delete</h2>
+        <p class="help-block">Removes the target and its grants@(target?.IsBuiltIn == true ? ". It is a built-in default: Restore built-in groups and targets on the permission targets page brings it back." : ".")</p>
+        <form method="post" id="delete-form">
+            <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("deletePassword")" />
+            <button type="submit" class="btn btn-danger" asp-controller="AdminPermissions" asp-action="Detail" asp-route-name="@Model.Name" asp-route-handler="Delete">Delete target</button>
+        </form>
+    </section>
+</div>

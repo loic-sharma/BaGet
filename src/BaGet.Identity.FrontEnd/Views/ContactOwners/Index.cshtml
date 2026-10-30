@@ -1,0 +1,53 @@
+@using BaGet.Identity.Extensions
+@model BaGet.Identity.Application.Models.Packages.ContactOwnersViewModel
+@{
+    ViewData["Title"] = $"Contact the owners of {Model.PackageId}";
+}
+
+<div class="col-sm-8">
+    <h1>Contact the owners of @Model.PackageId</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Sent)
+    {
+        <div class="alert alert-success" role="alert" id="contact-sent">
+            Your message was sent to the owners of @Model.PackageId. They can reply to you by email.
+        </div>
+        <p><a href="@Url.RepositoryContent("packages/" + Model.PackageId)">Back to @Model.PackageId</a></p>
+    }
+    else
+    {
+        <p>
+            The owners will receive your message by email with your address as the reply address.
+            Their addresses are not shown to you.
+        </p>
+
+        @if (Model.Error != null)
+        {
+            <div class="alert alert-danger" role="alert" id="contact-error">@Model.Error</div>
+        }
+
+        @if (!Model.SenderHasEmail)
+        {
+            <div class="alert alert-warning" role="alert">
+                Your account has no email address, so the owners could not reply.
+                Add one in your <a href="~/account/settings">account settings</a> first.
+            </div>
+        }
+        else
+        {
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Message"></label>
+                    <textarea asp-for="Message" class="form-control" rows="8" maxlength="@ContactOwnersViewModel.MaxMessageLength"></textarea>
+                    <span asp-validation-for="Message" class="text-danger"></span>
+                </div>
+                <div class="checkbox">
+                    <label><input asp-for="CopyToSelf" /> @Html.DisplayNameFor(m => m.CopyToSelf)</label>
+                </div>
+                <button type="submit" class="btn btn-primary">Send message</button>
+            </form>
+        }
+    }
+</div>

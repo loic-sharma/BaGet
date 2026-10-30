@@ -1,0 +1,68 @@
+@using BaGet.Frontend.Controllers.Base
+@model BaGet.Identity.Application.Models.Policies.ReplicationViewModel
+@{
+    ViewData["Title"] = "Replication";
+}
+
+<div class="col-sm-12">
+    <h1>Replication</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-success" role="alert" id="replication-message">@Model.Message</div>
+    }
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert" id="replication-error">@Model.Error</div>
+    }
+
+    <p class="help-block">
+        A replication copies a local repository to (<strong>push</strong>) or from (<strong>pull</strong>) a repository of another BaGet
+        server, in the same format, through that format's own protocol. It runs when you start it, on a schedule, and (push) after a deploy.
+        What the target already holds is skipped, so an interrupted run is continued by running it again. The peer API key
+        (an administrator's key with the <code>admin:api</code> scope) is stored protected and never shown again.
+    </p>
+
+    <table class="table" id="replication-table">
+        <thead>
+            <tr><th>Replication</th><th>Repository</th><th>Peer</th><th>Mode</th><th>Last run</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var view in Model.Replications)
+            {
+                var config = view.Config;
+                <tr data-replication="@config.Name">
+                    <td>
+                        <a href="@Url.Action("Config", "AdminReplication", new { key = config.Key })">@config.Name</a>
+                        @if (!config.Enabled) { <span class="label label-default">disabled</span> }
+                    </td>
+                    <td>@(view.Repository ?? "(gone)")@(view.Format is { } format ? " (" + format + ")" : "")</td>
+                    <td>@config.PeerUrl <small class="text-muted">repository @config.PeerRepository</small></td>
+                    <td>@ReplicationControllerBase.Describe(config)</td>
+                    <td>
+                        @if (config.LastRun is DateTime last)
+                        {
+                            <span>@last.ToString("u")</span><br /><small class="text-muted">@config.LastResult</small>
+                        }
+                        else
+                        {
+                            <span class="text-muted">never</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (!Model.Replications.Any())
+    {
+        <p id="replication-empty">There is no replication yet.</p>
+    }
+
+    <h2>New replication</h2>
+    <form method="post" id="replication-create-form" autocomplete="off">
+        <partial name="~/Views/Shared/_ReplicationFields.cshtml" model="@(new ReplicationFieldsView(Model.Form, Model.Repositories, "new", false))" />
+        <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("replication-create-password")" />
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+</div>

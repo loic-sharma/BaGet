@@ -1,0 +1,30 @@
+@model BaGet.Identity.Application.Models.Account.TwoFactorLoginViewModel
+@{
+    ViewData["Title"] = "Two-factor authentication";
+}
+
+<div class="col-sm-6">
+    <h1>Two-factor authentication</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert">@Model.Error</div>
+    }
+
+    <p>Enter the code from your authenticator app.</p>
+    <form method="post">
+        <input type="hidden" asp-for="ReturnUrl" />
+        <input type="hidden" asp-for="RememberMe" />
+        <div class="form-group">
+            <label asp-for="Code"></label>
+            <input asp-for="Code" class="form-control" autocomplete="one-time-code" inputmode="numeric" />
+            <span asp-validation-for="Code" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Sign in</button>
+    </form>
+    <p>
+        Lost the device?
+        <a asp-controller="Account" asp-action="LoginWithRecoveryCode" asp-route-returnUrl="@Model.ReturnUrl">Use a recovery code</a>.
+    </p>
+</div>

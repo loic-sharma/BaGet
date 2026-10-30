@@ -1,12 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <PackageTags>NuGet;Alibaba;Cloud</PackageTags>
-    <Description>The libraries to host BaGet on Alibaba Cloud (Aliyun).</Description>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>The libraries to host BaGet Extension on Alibaba Cloud (Aliyun).</Description>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aliyun.OSS.SDK.NetCore" Version="2.9.1" />
+    <PackageReference Include="Aliyun.OSS.SDK.NetCore" Version="2.14.1" />
+    <PackageReference Include="Microsoft.Build.Tasks.Git" Version="10.0.402" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="BaGet.Storage.Tests" Key="$(BaGetPublicKey)" />
   </ItemGroup>
 
   <ItemGroup>

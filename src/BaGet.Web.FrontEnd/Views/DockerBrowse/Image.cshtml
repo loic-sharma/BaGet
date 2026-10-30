@@ -1,0 +1,262 @@
+@model BaGet.Web.Application.Models.Docker.DockerImageViewModel
+
+@{
+    ViewData["Title"] = Model.Image ?? "Docker image";
+    ViewData["HideSearchBar"] = true;
+}
+
+@if (Model.Info == null)
+{
+    <div class="col-sm-12" id="docker-image-missing">
+        <h1>Image not found</h1>
+        <hr class="breadcrumb-divider" />
+        <p>
+            There is no image <code>@Model.Image</code> in this repository@(Model.IsRemote ? " yet: an image of the upstream is cached the first time it is pulled" : "").
+            <a asp-controller="DockerBrowse" asp-action="Images">Browse the images</a>.
+        </p>
+    </div>
+
+    return;
+}
+
+@if (Model.Digest != null && Model.Selected == null)
+{
+    <div class="col-sm-12" id="docker-manifest-missing">
+        <h1>Manifest not found</h1>
+        <hr class="breadcrumb-divider" />
+        <p>The image <a asp-controller="DockerBrowse" asp-action="Image" asp-route-image="@Model.Info.Name">@Model.Info.Name</a> has no manifest <code>@Model.Digest</code>.</p>
+    </div>
+
+    return;
+}
+
+@{
+    var info = Model.Info;
+    var selected = Model.Selected;
+}
+
+<div class="col-sm-12" id="docker-image" data-package="@info.Name">
+    <h1>
+        <a asp-controller="DockerBrowse" asp-action="Image" asp-route-image="@info.Name">@info.Name</a>
+        @if (selected != null)
+        {
+            <small>manifest <code>@selected.Summary.Digest.Substring(0, 19)</code></small>
+        }
+    </h1>
+    <hr class="breadcrumb-divider" />
+
+    <p class="text-muted" id="docker-image-summary">
+        @info.Tags.Count tag@(info.Tags.Count == 1 ? "" : "s"),
+        @info.Manifests.Count manifest@(info.Manifests.Count == 1 ? "" : "s"),
+        @info.Size.ToString("N0") bytes stored,
+        updated <span title="@info.Modified.ToString("u")">@info.Modified.Humanize()</span>.
+        @if (Model.CanManage)
+        {
+            <a asp-controller="DockerManage" asp-action="Index" asp-route-image="@info.Name" id="docker-manage-link">Manage</a>
+        }
+    </p>
+
+    @if (selected != null && !selected.Summary.IsIndex)
+    {
+        <partial name="_ScanFindings" model="new ScanFindingsView(info.Name, selected.Summary.Digest)" />
+    }
+
+    @if (selected == null)
+    {
+        <h2>Tags</h2>
+        @if (info.Tags.Count == 0)
+        {
+            <p id="docker-no-tags">No tag. @(Model.IsRemote ? "Pull one through this repository to cache it." : "Push one with docker push.")</p>
+        }
+        else
+        {
+            <table class="table table-condensed" id="docker-tags">
+                <thead><tr><th>Tag</th><th>Manifest</th><th>Updated</th></tr></thead>
+                <tbody>
+                    @foreach (var tag in info.Tags)
+                    {
+                        <tr data-tag="@tag.Name">
+                            <td><code>@tag.Name</code></td>
+                            <td><a asp-controller="DockerBrowse" asp-action="Image" asp-route-image="@info.Name" asp-route-digest="@tag.Digest"><code>@tag.Digest.Substring(0, 19)...</code></a></td>
+                            <td title="@tag.Updated.ToString("u")">@tag.Updated.Humanize()</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        <h2>Manifests</h2>
+        <table class="table table-condensed" id="docker-manifests">
+            <thead><tr><th>Digest</th><th>Type</th><th>Platform</th><th>Tags</th><th>Layers</th><th>Size</th></tr></thead>
+            <tbody>
+                @foreach (var manifest in info.Manifests)
+                {
+                    <tr data-digest="@manifest.Digest">
+                        <td><a asp-controller="DockerBrowse" asp-action="Image" asp-route-image="@info.Name" asp-route-digest="@manifest.Digest"><code>@manifest.Digest.Substring(0, 19)...</code></a></td>
+                        <td>@(manifest.IsIndex ? "index (multi-platform)" : manifest.ArtifactType != null && !manifest.ArtifactType.Contains("image.config") ? manifest.ArtifactType : "image")</td>
+                        <td>@(manifest.Platform ?? "")</td>
+                        <td>@string.Join(", ", manifest.Tags)</td>
+                        <td>@(manifest.IsIndex ? "" : manifest.LayerCount.ToString())</td>
+                        <td>@(manifest.IsIndex ? "" : manifest.ContentSize.ToString("N0") + " bytes")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (info.UnreferencedBlobs > 0)
+        {
+            <p class="text-muted" id="docker-unreferenced">@info.UnreferencedBlobs layer@(info.UnreferencedBlobs == 1 ? "" : "s") of this image are used by no manifest.</p>
+        }
+    }
+    else
+    {
+        <h2>Manifest</h2>
+        <table class="table table-condensed" id="docker-manifest">
+            <tbody>
+                <tr><th>Digest</th><td><code>@selected.Summary.Digest</code></td></tr>
+                <tr><th>Media type</th><td><code>@selected.Summary.MediaType</code></td></tr>
+                <tr><th>Size</th><td>@selected.Summary.Size.ToString("N0") bytes</td></tr>
+                @if (selected.Summary.Platform != null)
+                {
+                    <tr><th>Platform</th><td id="docker-platform">@selected.Summary.Platform</td></tr>
+                }
+                @if (selected.Summary.ArtifactType != null)
+                {
+                    <tr><th>Artifact type</th><td><code>@selected.Summary.ArtifactType</code></td></tr>
+                }
+                @if (selected.Summary.SubjectDigest != null)
+                {
+                    <tr><th>Subject</th><td><a asp-controller="DockerBrowse" asp-action="Image" asp-route-image="@info.Name" asp-route-digest="@selected.Summary.SubjectDigest"><code>@selected.Summary.SubjectDigest</code></a></td></tr>
+                }
+                <tr><th>Tags</th><td>@(selected.Summary.Tags.Count == 0 ? "none" : string.Join(", ", selected.Summary.Tags))</td></tr>
+                <tr><th>Pushed</th><td title="@selected.Summary.Created.ToString("u")">@selected.Summary.Created.Humanize()</td></tr>
+            </tbody>
+        </table>
+
+        @if (Model.Referrers.Count > 0 || !string.IsNullOrWhiteSpace(Model.ArtifactType))
+        {
+            <h2>Referrers</h2>
+            <form method="get" class="form-inline" id="docker-referrers-filter">
+                <input type="hidden" name="digest" value="@selected.Summary.Digest" />
+                <input type="text" name="artifactType" value="@Model.ArtifactType" class="form-control" placeholder="Artifact type" autocomplete="off" />
+                <button type="submit" class="btn btn-default">Filter</button>
+                @if (!string.IsNullOrWhiteSpace(Model.ArtifactType))
+                {
+                    <a asp-controller="DockerBrowse" asp-action="Image" asp-route-image="@info.Name" asp-route-digest="@selected.Summary.Digest">Clear</a>
+                }
+            </form>
+        }
+        @if (Model.Referrers.Count > 0)
+        {
+            <table class="table table-condensed" id="docker-referrers">
+                <thead><tr><th>Manifest</th><th>Artifact type</th><th>Size</th></tr></thead>
+                <tbody>
+                    @foreach (var referrer in Model.Referrers)
+                    {
+                        <tr data-referrer="@referrer.Digest">
+                            <td><a asp-controller="DockerBrowse" asp-action="Image" asp-route-image="@info.Name" asp-route-digest="@referrer.Digest"><code>@referrer.Digest.Substring(0, 19)...</code></a></td>
+                            <td>@(referrer.ArtifactType ?? referrer.MediaType)</td>
+                            <td>@referrer.Size.ToString("N0") bytes</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        @if (selected.Platforms.Count > 0)
+        {
+            <h2>Platforms</h2>
+            <table class="table table-condensed" id="docker-platforms">
+                <thead><tr><th>Platform</th><th>Manifest</th><th>Size</th></tr></thead>
+                <tbody>
+                    @foreach (var platform in selected.Platforms)
+                    {
+                        <tr data-platform="@platform.Platform">
+                            <td>@platform.Platform</td>
+                            <td>
+                                @if (platform.Present)
+                                {
+                                    <a asp-controller="DockerBrowse" asp-action="Image" asp-route-image="@info.Name" asp-route-digest="@platform.Digest"><code>@platform.Digest.Substring(0, 19)...</code></a>
+                                }
+                                else
+                                {
+                                    <code>@platform.Digest.Substring(0, 19)...</code> <span class="text-muted">(not in this image)</span>
+                                }
+                            </td>
+                            <td>@platform.Size.ToString("N0") bytes</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        @if (selected.Config != null)
+        {
+            <h2>Config and layers</h2>
+            <table class="table table-condensed" id="docker-layers">
+                <thead><tr><th>#</th><th>Digest</th><th>Type</th><th>Size</th></tr></thead>
+                <tbody>
+                    <tr data-config="@selected.Config.Digest">
+                        <td>config</td>
+                        <td><code>@selected.Config.Digest</code></td>
+                        <td>@selected.Config.MediaType</td>
+                        <td>@selected.Config.Size.ToString("N0") bytes</td>
+                    </tr>
+                    @for (var i = 0; i < selected.Layers.Count; i++)
+                    {
+                        var layer = selected.Layers[i];
+                        <tr data-layer="@layer.Digest">
+                            <td>@(i + 1)</td>
+                            <td><code>@layer.Digest</code></td>
+                            <td>@layer.MediaType</td>
+                            <td>@layer.Size.ToString("N0") bytes</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr><th colspan="3">Total (config and layers)</th><th>@selected.Summary.ContentSize.ToString("N0") bytes</th></tr>
+                </tfoot>
+            </table>
+        }
+
+        @if (selected.Annotations.Count > 0)
+        {
+            <h2>Annotations</h2>
+            <table class="table table-condensed" id="docker-annotations">
+                <tbody>
+                    @foreach (var annotation in selected.Annotations)
+                    {
+                        <tr><th>@annotation.Key</th><td>@annotation.Value</td></tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        <h2>Document</h2>
+        <pre class="snippet" id="docker-manifest-json">@selected.Json</pre>
+    }
+
+    <h2>@(Model.IsRemote ? "Pull" : "Pull and push")</h2>
+    <div class="tabbed-info" x-data="{ active: 0 }">
+        <ul class="nav">
+            @for (var i = 0; i < Model.PullTabs.Count; i++)
+            {
+                <li x-bind:class="{ active: active === @i }">
+                    <a href="#docker-pull-@i" @@click.prevent="active = @i">@Model.PullTabs[i].Name</a>
+                </li>
+            }
+        </ul>
+
+        @for (var i = 0; i < Model.PullTabs.Count; i++)
+        {
+            var snippet = Model.PullTabs[i];
+
+            <div class="content install-pane" id="docker-pull-@i" x-show="active === @i">
+                <div class="script">
+                    <pre class="snippet" data-snippet="@snippet.Name">@string.Join("\n", snippet.Lines ?? [])</pre>
+                </div>
+            </div>
+        }
+    </div>
+    <p class="text-muted">Registry API: <code>@Model.RegistryUrl</code></p>
+</div>

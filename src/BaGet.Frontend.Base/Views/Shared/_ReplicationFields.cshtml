@@ -1,0 +1,72 @@
+@model BaGet.Identity.Application.Models.Policies.ReplicationFieldsView
+@{
+    var f = Model.Form;
+    var p = Model.IdPrefix;
+}
+
+<div class="form-group">
+    <label for="@p-name">Name</label>
+    <input id="@p-name" name="Form.Name" type="text" class="form-control" value="@f.Name" maxlength="@BaGet.Core.AccessNames.MaxLength" autocomplete="off" />
+</div>
+<div class="form-group">
+    <label for="@p-repository">Local repository</label>
+    <input id="@p-repository" name="Form.Repository" type="text" class="form-control" value="@f.Repository" list="@p-repository-list" autocomplete="off" />
+    <datalist id="@p-repository-list">
+        @foreach (var repository in Model.Repositories)
+        {
+            <option value="@repository.Name">@repository.Format</option>
+        }
+    </datalist>
+    <span class="help-block">A local repository (a remote one caches an upstream and a virtual one stores nothing).</span>
+</div>
+<div class="form-group">
+    <label for="@p-direction">Direction</label>
+    <select id="@p-direction" name="Form.Direction" class="form-control">
+        <option value="Push" selected="@(f.Direction == BaGet.Core.ReplicationDirection.Push)">push: this repository to the peer</option>
+        <option value="Pull" selected="@(f.Direction == BaGet.Core.ReplicationDirection.Pull)">pull: the peer repository to this one</option>
+    </select>
+</div>
+<div class="form-group">
+    <label for="@p-peer">Peer server address</label>
+    <input id="@p-peer" name="Form.PeerUrl" type="url" class="form-control" value="@f.PeerUrl" placeholder="https://packages.example.com/" autocomplete="off" />
+</div>
+<div class="form-group">
+    <label for="@p-peer-repository">Peer repository</label>
+    <input id="@p-peer-repository" name="Form.PeerRepository" type="text" class="form-control" value="@f.PeerRepository" autocomplete="off" />
+    <span class="help-block"><code>default</code> or the repository name; it must be of the same format.</span>
+</div>
+<div class="form-group">
+    <label for="@p-key">Peer API key</label>
+    <input id="@p-key" name="Form.ApiKey" type="password" class="form-control" autocomplete="new-password" placeholder="@(Model.HasApiKey ? "a key is stored; type one to replace it" : "")" />
+    <span class="help-block">An administrator's key with the <code>admin:api</code> scope on the peer. Sent to the peer address only; stored protected; never shown again.</span>
+    @if (Model.HasApiKey)
+    {
+        <div class="checkbox"><label><input id="@p-clear-key" name="Form.ClearApiKey" type="checkbox" value="true" /> Forget the stored key</label></div>
+    }
+</div>
+
+<h4>When</h4>
+<div class="checkbox">
+    <label><input id="@p-enabled" name="Form.Enabled" type="checkbox" value="true" checked="@f.Enabled" /> Enabled (a disabled replication never runs)</label>
+</div>
+<div class="checkbox">
+    <label><input id="@p-on-deploy" name="Form.OnDeploy" type="checkbox" value="true" checked="@f.OnDeploy" /> Push after a deploy to the local repository (a few seconds after the last one)</label>
+</div>
+<div class="form-group">
+    <label for="@p-schedule">Repeat every (minutes)</label>
+    <input id="@p-schedule" name="Form.ScheduleMinutes" type="number" min="1" class="form-control" value="@f.ScheduleMinutes" />
+    <span class="help-block">Empty: only when started here.</span>
+</div>
+
+<h4>Rules</h4>
+<div class="checkbox">
+    <label><input id="@p-deletes" name="Form.PropagateDeletes" type="checkbox" value="true" checked="@f.PropagateDeletes" /> Delete at the target what this replication copied and the source has since deleted (nothing else is ever deleted)</label>
+</div>
+<div class="form-group">
+    <label for="@p-conflict">When both sides hold an item with different content</label>
+    <select id="@p-conflict" name="Form.Conflict" class="form-control">
+        <option value="TargetWins" selected="@(f.Conflict == BaGet.Core.ReplicationConflict.TargetWins)">the target keeps its item (logged as a conflict)</option>
+        <option value="SourceWins" selected="@(f.Conflict == BaGet.Core.ReplicationConflict.SourceWins)">the source item replaces the target one</option>
+    </select>
+    <span class="help-block">NuGet keeps no content digest, so two servers holding the same id and version are taken to hold the same package.</span>
+</div>

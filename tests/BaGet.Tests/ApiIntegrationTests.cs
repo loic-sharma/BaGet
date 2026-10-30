@@ -4,48 +4,69 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
-using Xunit.Abstractions;
 
-namespace BaGet.Tests
+namespace BaGet.Tests;
+
+/// <summary>
+/// The V3 protocol contract. Abstract: it runs once against the default repository at <c>/</c>
+/// (<see cref="ApiIntegrationTests"/>) and once against a second repository at <c>/r/second/</c>
+/// (<see cref="ApiIntegrationSecondRepositoryTests"/>); every expectation is identical except the advertised base URL.
+/// </summary>
+public abstract class ApiIntegrationTestsBase : IDisposable
 {
-    public class ApiIntegrationTests : IDisposable
+    private readonly BaGetApplication _app;
+    private readonly HttpClient _client;
+
+    private readonly Stream? _packageStream;
+    private readonly Stream? _symbolPackageStream;
+
+    private readonly string? _repository;
+    private readonly string _origin;
+
+    protected ApiIntegrationTestsBase(ITestOutputHelper output, string? repository)
     {
-        private readonly BaGetApplication _app;
-        private readonly HttpClient _client;
-
-        private readonly Stream _packageStream;
-        private readonly Stream _symbolPackageStream;
-
-        public ApiIntegrationTests(ITestOutputHelper output)
+        _repository = repository;
+        _origin = repository == null ? "http://localhost/" : $"http://localhost/r/{repository}/";
+        _app = new BaGetApplication(output);
+        _client = _app.CreateClient();
+        if (repository != null)
         {
-            _app = new BaGetApplication(output);
-            _client = _app.CreateClient();
-
-            _packageStream = TestResources.GetResourceStream(TestResources.Package);
-            _symbolPackageStream = TestResources.GetResourceStream(TestResources.SymbolPackage);
+            _app.CreateRepositoryAsync(repository).GetAwaiter().GetResult();
         }
 
-        [Fact]
-        public async Task IndexReturnsOk()
-        {
-            using var response = await _client.GetAsync("v3/index.json");
-            var content = await response.Content.ReadAsStringAsync();
+        // Relative request URIs resolve against the repository's root.
+        _client.BaseAddress = new Uri(_origin);
 
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Equal(TestData.ServiceIndex, content);
-        }
+        _packageStream = TestResources.GetResourceStream(TestResources.Package);
+        _symbolPackageStream = TestResources.GetResourceStream(TestResources.SymbolPackage);
+    }
 
-        [Fact]
-        public async Task SearchReturnsOk()
-        {
-            await _app.AddPackageAsync(_packageStream);
+    /// <summary>Rewrites the expected absolute URLs (written for <c>/</c>) to this repository's root.</summary>
+    private string Expect(string expected) => expected.Replace("http://localhost/", _origin).ReplaceLineEndings();
 
-            using var response = await _client.GetAsync("v3/search");
-            var content = await response.Content.ReadAsStreamAsync();
-            var json = content.ToPrettifiedJson();
+    [Fact]
+    public async Task IndexReturnsOk()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        using var response = await _client.GetAsync("v3/index.json", cancellationToken);
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
 
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Equal(@"{
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(Expect(TestData.ServiceIndex), content);
+    }
+
+    [Fact]
+    public async Task SearchReturnsOk()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        await _app.AddPackageAsync(_packageStream, cancellationToken, _repository);
+
+        using var response = await _client.GetAsync("v3/search", cancellationToken);
+        var content = await response.Content.ReadAsStreamAsync(cancellationToken);
+        var json = content.ToPrettifiedJson();
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(Expect(@"{
   ""@context"": {
     ""@vocab"": ""http://schema.nuget.org/schema#"",
     ""@base"": ""http://localhost/v3/registration""
@@ -76,38 +97,40 @@ namespace BaGet.Tests
       ]
     }
   ]
-}", json);
-        }
+}"), json);
+    }
 
-        [Fact]
-        public async Task SearchReturnsEmpty()
-        {
-            using var response = await _client.GetAsync("v3/search?q=PackageDoesNotExist");
-            var content = await response.Content.ReadAsStreamAsync();
-            var json = content.ToPrettifiedJson();
+    [Fact]
+    public async Task SearchReturnsEmpty()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        using var response = await _client.GetAsync("v3/search?q=PackageDoesNotExist", cancellationToken);
+        var content = await response.Content.ReadAsStreamAsync(cancellationToken);
+        var json = content.ToPrettifiedJson();
 
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Equal(@"{
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(Expect(@"{
   ""@context"": {
     ""@vocab"": ""http://schema.nuget.org/schema#"",
     ""@base"": ""http://localhost/v3/registration""
   },
   ""totalHits"": 0,
   ""data"": []
-}", json);
-        }
+}"), json);
+    }
 
-        [Fact]
-        public async Task AutocompleteReturnsOk()
-        {
-            await _app.AddPackageAsync(_packageStream);
+    [Fact]
+    public async Task AutocompleteReturnsOk()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        await _app.AddPackageAsync(_packageStream, cancellationToken, _repository);
 
-            using var response = await _client.GetAsync("v3/autocomplete");
-            var content = await response.Content.ReadAsStreamAsync();
-            var json = content.ToPrettifiedJson();
+        using var response = await _client.GetAsync("v3/autocomplete", cancellationToken);
+        var content = await response.Content.ReadAsStreamAsync(cancellationToken);
+        var json = content.ToPrettifiedJson();
 
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Equal(@"{
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(Expect(@"{
   ""@context"": {
     ""@vocab"": ""http://schema.nuget.org/schema#""
   },
@@ -115,37 +138,39 @@ namespace BaGet.Tests
   ""data"": [
     ""TestData""
   ]
-}", json);
-        }
+}"), json);
+    }
 
-        [Fact]
-        public async Task AutocompleteReturnsEmpty()
-        {
-            using var response = await _client.GetAsync("v3/autocomplete?q=PackageDoesNotExist");
-            var content = await response.Content.ReadAsStreamAsync();
-            var json = content.ToPrettifiedJson();
+    [Fact]
+    public async Task AutocompleteReturnsEmpty()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        using var response = await _client.GetAsync("v3/autocomplete?q=PackageDoesNotExist", cancellationToken);
+        var content = await response.Content.ReadAsStreamAsync(cancellationToken);
+        var json = content.ToPrettifiedJson();
 
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Equal(@"{
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(Expect(@"{
   ""@context"": {
     ""@vocab"": ""http://schema.nuget.org/schema#""
   },
   ""totalHits"": 0,
   ""data"": []
-}", json);
-        }
+}"), json);
+    }
 
-        [Fact]
-        public async Task AutocompleteVersionsReturnsOk()
-        {
-            await _app.AddPackageAsync(_packageStream);
+    [Fact]
+    public async Task AutocompleteVersionsReturnsOk()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        await _app.AddPackageAsync(_packageStream, cancellationToken, _repository);
 
-            using var response = await _client.GetAsync("v3/autocomplete?id=TestData");
-            var content = await response.Content.ReadAsStreamAsync();
-            var json = content.ToPrettifiedJson();
+        using var response = await _client.GetAsync("v3/autocomplete?id=TestData", cancellationToken);
+        var content = await response.Content.ReadAsStreamAsync(cancellationToken);
+        var json = content.ToPrettifiedJson();
 
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Equal(@"{
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(Expect(@"{
   ""@context"": {
     ""@vocab"": ""http://schema.nuget.org/schema#""
   },
@@ -153,96 +178,104 @@ namespace BaGet.Tests
   ""data"": [
     ""1.2.3""
   ]
-}", json);
-        }
+}"), json);
+    }
 
-        [Fact]
-        public async Task AutocompleteVersionsReturnsEmpty()
-        {
-            using var response = await _client.GetAsync("v3/autocomplete?id=PackageDoesNotExist");
-            var content = await response.Content.ReadAsStreamAsync();
-            var json = content.ToPrettifiedJson();
+    [Fact]
+    public async Task AutocompleteVersionsReturnsEmpty()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        using var response = await _client.GetAsync("v3/autocomplete?id=PackageDoesNotExist", cancellationToken);
+        var content = await response.Content.ReadAsStreamAsync(cancellationToken);
+        var json = content.ToPrettifiedJson();
 
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Equal(@"{
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(Expect(@"{
   ""@context"": {
     ""@vocab"": ""http://schema.nuget.org/schema#""
   },
   ""totalHits"": 0,
   ""data"": []
-}", json);
-        }
+}"), json);
+    }
 
-        [Fact]
-        public async Task VersionListReturnsOk()
-        {
-            await _app.AddPackageAsync(_packageStream);
+    [Fact]
+    public async Task VersionListReturnsOk()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        await _app.AddPackageAsync(_packageStream, cancellationToken, _repository);
 
-            var response = await _client.GetAsync("v3/package/TestData/index.json");
-            var content = await response.Content.ReadAsStringAsync();
+        var response = await _client.GetAsync("v3/package/TestData/index.json", cancellationToken);
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
 
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Equal(@"{""versions"":[""1.2.3""]}", content);
-        }
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(@"{""versions"":[""1.2.3""]}", content);
+    }
 
-        [Fact]
-        public async Task VersionListReturnsNotFound()
-        {
-            using var response = await _client.GetAsync("v3/package/PackageDoesNotExist/index.json");
+    [Fact]
+    public async Task VersionListReturnsNotFound()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        using var response = await _client.GetAsync("v3/package/PackageDoesNotExist/index.json", cancellationToken);
 
-            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        }
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
 
-        [Fact]
-        public async Task PackageDownloadReturnsOk()
-        {
-            await _app.AddPackageAsync(_packageStream);
+    [Fact]
+    public async Task PackageDownloadReturnsOk()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        await _app.AddPackageAsync(_packageStream, cancellationToken, _repository);
 
-            using var response = await _client.GetAsync("v3/package/TestData/1.2.3/TestData.1.2.3.nupkg");
+        using var response = await _client.GetAsync("v3/package/TestData/1.2.3/TestData.1.2.3.nupkg", cancellationToken);
 
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        }
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
 
-        [Fact]
-        public async Task PackageDownloadReturnsNotFound()
-        {
-            using var response = await _client.GetAsync(
-                "v3/package/PackageDoesNotExist/1.0.0/PackageDoesNotExist.1.0.0.nupkg");
+    [Fact]
+    public async Task PackageDownloadReturnsNotFound()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        using var response = await _client.GetAsync(
+            "v3/package/PackageDoesNotExist/1.0.0/PackageDoesNotExist.1.0.0.nupkg", cancellationToken);
 
-            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        }
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
 
-        [Fact]
-        public async Task NuspecDownloadReturnsOk()
-        {
-            await _app.AddPackageAsync(_packageStream);
+    [Fact]
+    public async Task NuspecDownloadReturnsOk()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        await _app.AddPackageAsync(_packageStream, cancellationToken, _repository);
 
-            using var response = await _client.GetAsync(
-                "v3/package/TestData/1.2.3/TestData.1.2.3.nuspec");
+        using var response = await _client.GetAsync(
+            "v3/package/TestData/1.2.3/TestData.1.2.3.nuspec", cancellationToken);
 
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        }
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
 
-        [Fact]
-        public async Task NuspecDownloadReturnsNotFound()
-        {
-            using var response = await _client.GetAsync(
-                "v3/package/PackageDoesNotExist/1.0.0/PackageDoesNotExist.1.0.0.nuspec");
+    [Fact]
+    public async Task NuspecDownloadReturnsNotFound()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        using var response = await _client.GetAsync(
+            "v3/package/PackageDoesNotExist/1.0.0/PackageDoesNotExist.1.0.0.nuspec", cancellationToken);
 
-            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        }
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
 
-        [Fact]
-        public async Task PackageMetadataReturnsOk()
-        {
-            await _app.AddPackageAsync(_packageStream);
+    [Fact]
+    public async Task PackageMetadataReturnsOk()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        await _app.AddPackageAsync(_packageStream, cancellationToken, _repository);
 
-            using var response = await _client.GetAsync("v3/registration/TestData/index.json");
-            var content = await response.Content.ReadAsStreamAsync();
-            var json = content.ToPrettifiedJson();
+        using var response = await _client.GetAsync("v3/registration/TestData/index.json", cancellationToken);
+        var content = await response.Content.ReadAsStreamAsync(cancellationToken);
+        var json = content.ToPrettifiedJson();
 
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Equal(@"{
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(Expect(@"{
   ""@id"": ""http://localhost/v3/registration/testdata/index.json"",
   ""@type"": [
     ""catalog:CatalogRoot"",
@@ -296,28 +329,30 @@ namespace BaGet.Tests
     }
   ],
   ""totalDownloads"": 0
-}", json);
-        }
+}"), json);
+    }
 
-        [Fact]
-        public async Task PackageMetadataReturnsNotFound()
-        {
-            using var response = await _client.GetAsync("v3/registration/PackageDoesNotExist/index.json");
+    [Fact]
+    public async Task PackageMetadataReturnsNotFound()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        using var response = await _client.GetAsync("v3/registration/PackageDoesNotExist/index.json", cancellationToken);
 
-            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        }
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
 
-        [Fact]
-        public async Task PackageMetadataLeafReturnsOk()
-        {
-            await _app.AddPackageAsync(_packageStream);
+    [Fact]
+    public async Task PackageMetadataLeafReturnsOk()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        await _app.AddPackageAsync(_packageStream, cancellationToken, _repository);
 
-            using var response = await _client.GetAsync("v3/registration/TestData/1.2.3.json");
-            var content = await response.Content.ReadAsStreamAsync();
-            var json = content.ToPrettifiedJson();
+        using var response = await _client.GetAsync("v3/registration/TestData/1.2.3.json", cancellationToken);
+        var content = await response.Content.ReadAsStreamAsync(cancellationToken);
+        var json = content.ToPrettifiedJson();
 
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Equal(@"{
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(Expect(@"{
   ""@id"": ""http://localhost/v3/registration/testdata/1.2.3.json"",
   ""@type"": [
     ""Package"",
@@ -327,79 +362,88 @@ namespace BaGet.Tests
   ""packageContent"": ""http://localhost/v3/package/testdata/1.2.3/testdata.1.2.3.nupkg"",
   ""published"": ""2020-01-01T00:00:00Z"",
   ""registration"": ""http://localhost/v3/registration/testdata/index.json""
-}", json);
-        }
+}"), json);
+    }
 
-        [Fact]
-        public async Task PackageMetadataLeafReturnsNotFound()
-        {
-            using var response = await _client.GetAsync("v3/registration/PackageDoesNotExist/1.0.0.json");
+    [Fact]
+    public async Task PackageMetadataLeafReturnsNotFound()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        using var response = await _client.GetAsync("v3/registration/PackageDoesNotExist/1.0.0.json", cancellationToken);
 
-            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        }
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
 
-        [Fact]
-        public async Task PackageDependentsReturnsOk()
-        {
-            using var response = await _client.GetAsync("v3/dependents?packageId=TestData");
+    [Fact]
+    public async Task PackageDependentsReturnsOk()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        using var response = await _client.GetAsync("v3/dependents?packageId=TestData", cancellationToken);
 
-            var content = await response.Content.ReadAsStreamAsync();
-            var json = content.ToPrettifiedJson();
+        var content = await response.Content.ReadAsStreamAsync(cancellationToken);
+        var json = content.ToPrettifiedJson();
 
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Equal(@"{
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(Expect(@"{
   ""totalHits"": 0,
   ""data"": []
-}", json);
-        }
+}"), json);
+    }
 
-        [Fact]
-        public async Task PackageDependentsReturnsBadRequest()
-        {
-            using var response = await _client.GetAsync("v3/dependents");
+    [Fact]
+    public async Task PackageDependentsReturnsBadRequest()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        using var response = await _client.GetAsync("v3/dependents", cancellationToken);
 
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-        }
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
 
-        [Fact]
-        public async Task SymbolDownloadReturnsOk()
-        {
-            await _app.AddPackageAsync(_packageStream);
-            await _app.AddSymbolPackageAsync(_symbolPackageStream);
+    [Fact]
+    public async Task SymbolDownloadReturnsOk()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        await _app.AddPackageAsync(_packageStream, cancellationToken, _repository);
+        await _app.AddSymbolPackageAsync(_symbolPackageStream, cancellationToken, _repository);
 
-            using var response = await _client.GetAsync(
-                "api/download/symbols/testdata.pdb/16F71ED8DD574AA2AD4A22D29E9C981Bffffffff/testdata.pdb");
+        using var response = await _client.GetAsync(
+            "api/download/symbols/testdata.pdb/16F71ED8DD574AA2AD4A22D29E9C981Bffffffff/testdata.pdb", cancellationToken);
 
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        }
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
 
-        [Theory]
-        [InlineData("api/download/symbols/testdata.pdb/16F71ED8DD574AA2AD4A22D29E9C981B1/testdata.pdb")]
-        [InlineData("api/download/symbols/testdata.pdb/16F71ED8DD574AA2AD4A22D29E9C981B/testdata.pdb")]
-        [InlineData("api/download/symbols/testprefix/testdata.pdb/16F71ED8DD574AA2AD4A22D29E9C981Bffffffff/testdata.pdb")]
-        public async Task MalformedSymbolDownloadReturnsOk(string uri)
-        {
-            await _app.AddPackageAsync(_packageStream);
-            await _app.AddSymbolPackageAsync(_symbolPackageStream);
+    [Theory]
+    [InlineData("api/download/symbols/testdata.pdb/16F71ED8DD574AA2AD4A22D29E9C981B1/testdata.pdb")]
+    [InlineData("api/download/symbols/testdata.pdb/16F71ED8DD574AA2AD4A22D29E9C981B/testdata.pdb")]
+    [InlineData("api/download/symbols/testprefix/testdata.pdb/16F71ED8DD574AA2AD4A22D29E9C981Bffffffff/testdata.pdb")]
+    public async Task MalformedSymbolDownloadReturnsOk(string uri)
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        await _app.AddPackageAsync(_packageStream, cancellationToken, _repository);
+        await _app.AddSymbolPackageAsync(_symbolPackageStream, cancellationToken, _repository);
 
-            using var response = await _client.GetAsync(uri);
+        using var response = await _client.GetAsync(uri, cancellationToken);
 
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        }
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
 
-        [Fact]
-        public async Task SymbolDownloadReturnsNotFound()
-        {
-            using var response = await _client.GetAsync(
-                "api/download/symbols/doesnotexist.pdb/16F71ED8DD574AA2AD4A22D29E9C981Bffffffff/doesnotexist.pdb");
+    [Fact]
+    public async Task SymbolDownloadReturnsNotFound()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        using var response = await _client.GetAsync(
+            "api/download/symbols/doesnotexist.pdb/16F71ED8DD574AA2AD4A22D29E9C981Bffffffff/doesnotexist.pdb", cancellationToken);
 
-            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        }
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
 
-        public void Dispose()
-        {
-            _app.Dispose();
-            _client.Dispose();
-        }
+    public void Dispose()
+    {
+        _app.Dispose();
+        _client.Dispose();
     }
 }
+
+public class ApiIntegrationTests(ITestOutputHelper output) : ApiIntegrationTestsBase(output, null);
+
+public class ApiIntegrationSecondRepositoryTests(ITestOutputHelper output) : ApiIntegrationTestsBase(output, "second");

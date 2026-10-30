@@ -1,0 +1,92 @@
+@model BaGet.Identity.Application.Models.Account.ApiKeysViewModel
+@{
+    ViewData["Title"] = "API keys";
+}
+
+<div class="col-sm-12">
+    <h1>API keys</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.CreatedKey != null)
+    {
+        <div class="alert alert-success" role="alert">
+            <p>Your new key is shown once. Copy it now:</p>
+            <pre id="created-key">@Model.CreatedKey</pre>
+        </div>
+    }
+
+    <h2>Your keys</h2>
+    @if (Model.Keys.Count == 0)
+    {
+        <p>You have no API keys.</p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr><th>Description</th><th>Can</th><th>Repositories</th><th>Created</th><th>Expires</th><th></th></tr>
+            </thead>
+            <tbody>
+                @foreach (var key in Model.Keys)
+                {
+                    <tr>
+                        <td>@key.Description</td>
+                        <td>@ApiKeysViewModel.Describe(key)</td>
+                        <td>@Model.DescribeRepositories(key)</td>
+                        <td>@key.Created.ToString("yyyy-MM-dd")</td>
+                        <td>@(key.Expires?.ToString("yyyy-MM-dd") ?? "never")</td>
+                        <td>
+                            <form method="post" asp-controller="AccountSettings" asp-action="ApiKeysIndex" asp-route-key="@key.Key" asp-route-handler="Revoke">
+                                <button type="submit" class="btn btn-danger btn-xs">Revoke</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <h2>Create a key</h2>
+    <form method="post" asp-controller="AccountSettings" asp-action="ApiKeysIndex" asp-route-handler="Create">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Description"></label>
+            <input asp-for="Description" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label>Scopes</label>
+            @foreach (var scope in Model.AllScopes)
+            {
+                <div class="checkbox">
+                    <label><input type="checkbox" name="Scopes" value="@scope" checked="@Model.Scopes.Contains(scope)" /> @scope</label>
+                </div>
+            }
+            @if (Model.AllScopes.Contains(BaGet.Core.ApiKeyScopes.Admin))
+            {
+                <span class="help-block"><code>admin:api</code> lets the key call the administration REST API (<code>/api/v1</code>, see <a href="/admin/api">REST API</a>). Keep it short-lived and out of build logs.</span>
+            }
+        </div>
+        <div class="form-group">
+            <label asp-for="PackageGlobPattern"></label>
+            <input asp-for="PackageGlobPattern" class="form-control" />
+        </div>
+        @if (Model.Repositories.Count > 0)
+        {
+            <div class="form-group" id="key-repositories">
+                <label>Repositories</label>
+                <span class="help-block">Tick the repositories the key may be used in. None ticked: every repository.</span>
+                @foreach (var repository in Model.Repositories)
+                {
+                    <div class="checkbox">
+                        <label><input type="checkbox" name="RepositoryKeys" value="@repository.Key" checked="@Model.RepositoryKeys.Contains(repository.Key)" /> @repository.Name</label>
+                    </div>
+                }
+            </div>
+        }
+        <div class="form-group">
+            <label asp-for="ExpiresInDays"></label>
+            <input asp-for="ExpiresInDays" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+</div>

@@ -1,0 +1,43 @@
+@model BaGet.Identity.Application.Models.Policies.ScanPolicyFormView
+@{
+    var severities = new (string Value, string Text)[] { ("", "Off"), ("0", "Low and above"), ("1", "Moderate and above"), ("2", "High and above"), ("3", "Critical only") };
+}
+
+<div class="form-group">
+    <label for="@(Model.Idprefix)-warn">Warn</label>
+    <select id="@(Model.Idprefix)-warn" name="Warn" class="form-control">
+        @foreach (var severity in severities)
+        {
+            <option value="@severity.Value" selected="@(Model.Fields.Warn == severity.Value || (string.IsNullOrEmpty(Model.Fields.Warn) && severity.Value == ""))">@severity.Text</option>
+        }
+    </select>
+    <p class="help-block">The package page shows a warning for a version with a finding at this severity or above.</p>
+</div>
+<div class="form-group">
+    <label for="@(Model.Idprefix)-block-download">Block download</label>
+    <select id="@(Model.Idprefix)-block-download" name="BlockDownload" class="form-control">
+        @foreach (var severity in severities)
+        {
+            <option value="@severity.Value" selected="@(Model.Fields.BlockDownload == severity.Value || (string.IsNullOrEmpty(Model.Fields.BlockDownload) && severity.Value == ""))">@severity.Text</option>
+        }
+    </select>
+    <p class="help-block">Downloading a version with a finding at this severity or above is refused with <code>403</code> and the reason, on every route and page of every format. Docker: refused when the image manifest is pulled.</p>
+</div>
+<div class="form-group">
+    <label for="@(Model.Idprefix)-block-deploy">Block deploy</label>
+    <select id="@(Model.Idprefix)-block-deploy" name="BlockDeploy" class="form-control">
+        @foreach (var severity in severities)
+        {
+            <option value="@severity.Value" selected="@(Model.Fields.BlockDeploy == severity.Value || (string.IsNullOrEmpty(Model.Fields.BlockDeploy) && severity.Value == ""))">@severity.Text</option>
+        }
+    </select>
+    <p class="help-block">A deploy whose artifact or declared dependencies have such a finding is refused with <code>403</code> and the reason, before anything is stored. A container image is scanned after it is pushed and removed again when it reaches the threshold. A vulnerability source that is down lets the deploy through.</p>
+</div>
+<div class="checkbox">
+    <label>
+        <input type="checkbox" id="@(Model.Idprefix)-block-unscanned" name="BlockUnscanned" value="true" checked="@Model.Fields.BlockUnscanned" />
+        Block downloads of versions that have not been scanned (yet)
+    </label>
+    <input type="hidden" name="BlockUnscanned" value="false" />
+</div>
+<partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="Model.Confirmation" />

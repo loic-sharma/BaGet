@@ -1,0 +1,60 @@
+@model BaGet.Identity.Application.Models.Account.LoginViewModel
+@{
+    ViewData["Title"] = "Sign in";
+}
+
+<div class="col-sm-6">
+    <h1>Sign in</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert">@Model.Error</div>
+    }
+
+    @if (Model.Notice != null)
+    {
+        <div class="alert alert-info" role="status">@Model.Notice</div>
+    }
+
+    <form method="post">
+        <input type="hidden" asp-for="ReturnUrl" />
+        <div class="form-group">
+            <label asp-for="UserName"></label>
+            <input asp-for="UserName" class="form-control" autocomplete="username" />
+            <span asp-validation-for="UserName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" class="form-control" autocomplete="current-password" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+        <div class="checkbox">
+            <label><input asp-for="RememberMe" /> Remember me</label>
+        </div>
+        <button type="submit" class="btn btn-primary">Sign in</button>
+    </form>
+
+    @if (Model.EmailIsConfigured)
+    {
+        <p><a asp-controller="Account" asp-action="ForgotPassword">Forgot password?</a></p>
+    }
+
+    @if (Model.HasExternalProvider)
+    {
+        <hr />
+        <form method="post" asp-controller="Account" asp-action="Login" asp-route-handler="External">
+            <input type="hidden" asp-for="ReturnUrl" />
+            @foreach (var provider in Model.ExternalProviders)
+            {
+                <button type="submit" name="provider" value="@provider.Id" class="btn btn-default" data-provider="@provider.Id">Sign in with @provider.DisplayName</button>
+            }
+        </form>
+    }
+
+    @if (Model.AllowRegistration)
+    {
+        <hr />
+        <p>No account? <a asp-controller="Account" asp-action="Register" asp-route-returnUrl="@Model.ReturnUrl">Create one</a>.</p>
+    }
+</div>

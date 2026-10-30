@@ -1,0 +1,17 @@
+@{
+    ViewData["Title"] = "Access control unavailable";
+}
+
+<div class="col-sm-12">
+    <h1>Access control is not available</h1>
+    <hr class="breadcrumb-divider" />
+
+    <div class="alert alert-warning" role="alert" id="access-unavailable">
+        The configured database has no tables for groups, permission targets and projects. Use SQLite, SQL Server,
+        PostgreSQL or MySQL to manage access here.
+    </div>
+    <p>
+        Until then the server behaves as it did before the access model: everyone may read, any caller with a valid
+        API key or session may write, and package ownership decides which existing package IDs they may change.
+    </p>
+</div>

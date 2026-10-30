@@ -1,0 +1,42 @@
+@using BaGet.Frontend.Mvc.Screens
+@model BaGet.Core.AccessExplanation
+
+@* The actions someone holds in a repository and the grants behind them (shared by the account, user and repository pages). *@
+<p>
+    <strong>Actions:</strong>
+    <span class="access-actions">@AccessSupport.Words(Model.Actions)</span>
+</p>
+@if (Model.Override != null)
+{
+    <p class="access-override">@Model.Override</p>
+}
+else if (Model.Reasons.Count == 0)
+{
+    <p class="access-none">No permission target or project role grants anything.</p>
+}
+else
+{
+    <table class="table table-condensed access-reasons">
+        <thead>
+            <tr><th>Source</th><th>Through</th><th>Grants</th><th>Applies</th><th>Packages</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var reason in Model.Reasons)
+            {
+                <tr>
+                    <td>@reason.Source</td>
+                    <td>@reason.Principal</td>
+                    <td>@AccessSupport.Words(reason.Granted)</td>
+                    <td>
+                        @AccessSupport.Words(reason.Effective)
+                        @if (reason.Note != null)
+                        {
+                            <br /><small class="text-muted">@reason.Note</small>
+                        }
+                    </td>
+                    <td>@(reason.Packages ?? "all")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

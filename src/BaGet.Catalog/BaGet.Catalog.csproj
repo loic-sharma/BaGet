@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <PackageTags>NuGet</PackageTags>
+    <Description>BaGet Extension's NuGet V3 catalog: an append-only log of package changes, for mirrors.</Description>
+    <RootNamespace>BaGet.Catalog</RootNamespace>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Build.Tasks.Git" Version="10.0.402" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="BaGet.Tests" Key="$(BaGetPublicKey)" />
+  </ItemGroup>
+
+</Project>

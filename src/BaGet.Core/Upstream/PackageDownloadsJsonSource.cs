@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,97 +9,105 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NuGet.Versioning;
 
-namespace BaGet.Core
+namespace BaGet.Core;
+
+// See https://github.com/NuGet/NuGet.Services.Metadata/blob/master/src/NuGet.Indexing/Downloads.cs
+public class PackageDownloadsJsonSource : IPackageDownloadsSource
 {
-    // See https://github.com/NuGet/NuGet.Services.Metadata/blob/master/src/NuGet.Indexing/Downloads.cs
-    public class PackageDownloadsJsonSource : IPackageDownloadsSource
+    public const string PackageDownloadsV1Url = "https://nugetprod0.blob.core.windows.net/ng-search-data/downloads.v1.json";
+
+    private readonly HttpClient _httpClient;
+    private readonly ILogger<PackageDownloadsJsonSource> _logger;
+
+    public PackageDownloadsJsonSource(HttpClient httpClient, ILogger<PackageDownloadsJsonSource> logger)
     {
-        public const string PackageDownloadsV1Url = "https://nugetprod0.blob.core.windows.net/ng-search-data/downloads.v1.json";
+        _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
 
-        private readonly HttpClient _httpClient;
-        private readonly ILogger<PackageDownloadsJsonSource> _logger;
+    public async Task<Dictionary<string, Dictionary<string, long>>> GetPackageDownloadsAsync()
+    {
+        _logger.LogInformation("Fetching package downloads...");
 
-        public PackageDownloadsJsonSource(HttpClient httpClient, ILogger<PackageDownloadsJsonSource> logger)
+        var results = new Dictionary<string, Dictionary<string, long>>();
+
+        using (var downloadsStream = await GetDownloadsStreamAsync())
+        using (var downloadStreamReader = new StreamReader(downloadsStream))
+        using (var jsonReader = new JsonTextReader(downloadStreamReader))
         {
-            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
+            _logger.LogInformation("Parsing package downloads...");
 
-        public async Task<Dictionary<string, Dictionary<string, long>>> GetPackageDownloadsAsync()
-        {
-            _logger.LogInformation("Fetching package downloads...");
+            jsonReader.Read();
 
-            var results = new Dictionary<string, Dictionary<string, long>>();
-
-            using (var downloadsStream = await GetDownloadsStreamAsync())
-            using (var downloadStreamReader = new StreamReader(downloadsStream))
-            using (var jsonReader = new JsonTextReader(downloadStreamReader))
+            while (jsonReader.Read())
             {
-                _logger.LogInformation("Parsing package downloads...");
-
-                jsonReader.Read();
-
-                while (jsonReader.Read())
+                try
                 {
-                    try
+                    if (jsonReader.TokenType == JsonToken.StartArray)
                     {
-                        if (jsonReader.TokenType == JsonToken.StartArray)
+                        // Reads this one record, not the document: the outer array's
+                        // start token was consumed above, so the reader sits inside it.
+                        // What dominates memory is the dictionary returned below, which
+                        // holds every package and version by design.
+                        var record = JToken.ReadFrom(jsonReader);
+                        #pragma warning disable CS8604
+                        var id = string.Intern(record[0]?.ToString().ToLowerInvariant());
+                        #pragma warning restore CS8604
+
+                        // The second entry in each record should be an array of versions, if not move on to next entry.
+                        // This is a check to safe guard against invalid entries.
+                        if (record.Count() == 2 && record[1]?.Type != JTokenType.Array)
                         {
-                            // TODO: This line reads the entire document into memory...
-                            var record = JToken.ReadFrom(jsonReader);
-                            var id = string.Intern(record[0].ToString().ToLowerInvariant());
+                            continue;
+                        }
 
-                            // The second entry in each record should be an array of versions, if not move on to next entry.
-                            // This is a check to safe guard against invalid entries.
-                            if (record.Count() == 2 && record[1].Type != JTokenType.Array)
+                        if (!results.ContainsKey(id))
+                        {
+                            results.Add(id, new Dictionary<string, long>());
+                        }
+
+                        foreach (var token in record)
+                        {
+                            if (token != null && token.Count() == 2)
                             {
-                                continue;
-                            }
+                                #pragma warning disable CS8604
+                                var version = string.Intern(NuGetVersion.Parse(token[0]?.ToString()).ToNormalizedString().ToLowerInvariant());
+                                #pragma warning restore CS8604
+                                #pragma warning disable CS8602
+                                var downloads = token[1].ToObject<long>();
+                                #pragma warning restore CS8602
 
-                            if (!results.ContainsKey(id))
-                            {
-                                results.Add(id, new Dictionary<string, long>());
-                            }
-
-                            foreach (var token in record)
-                            {
-                                if (token != null && token.Count() == 2)
-                                {
-                                    var version = string.Intern(NuGetVersion.Parse(token[0].ToString()).ToNormalizedString().ToLowerInvariant());
-                                    var downloads = token[1].ToObject<int>();
-
-                                    results[id][version] = downloads;
-                                }
+                                results[id][version] = downloads;
                             }
                         }
                     }
-                    catch (JsonReaderException e)
-                    {
-                        _logger.LogError(e, "Invalid entry in downloads.v1.json");
-                    }
                 }
-
-                _logger.LogInformation("Parsed package downloads");
+                catch (JsonReaderException e)
+                {
+                    _logger.LogError(e, "Invalid entry in downloads.v1.json");
+                }
             }
 
-            return results;
+            _logger.LogInformation("Parsed package downloads");
         }
 
-        private async Task<Stream> GetDownloadsStreamAsync()
+        return results;
+    }
+
+    internal async Task<Stream> GetDownloadsStreamAsync()
+    {
+        _logger.LogInformation("Downloading downloads.v1.json...");
+
+        var response = await _httpClient.GetAsync(PackageDownloadsV1Url, HttpCompletionOption.ResponseHeadersRead);
+
+        response.EnsureSuccessStatusCode();
+
+        using (var networkStream = await response.Content.ReadAsStreamAsync())
         {
-            _logger.LogInformation("Downloading downloads.v1.json...");
-
-            var fileStream = File.Open(Path.GetTempFileName(), FileMode.Create);
-            var response = await _httpClient.GetAsync(PackageDownloadsV1Url, HttpCompletionOption.ResponseHeadersRead);
-
-            response.EnsureSuccessStatusCode();
-
-            using (var networkStream = await response.Content.ReadAsStreamAsync())
-            {
-                await networkStream.CopyToAsync(fileStream);
-            }
-
-            fileStream.Seek(0, SeekOrigin.Begin);
+            // Spooled to a temporary file rather than held in memory. This one deletes
+            // itself when the stream is disposed; the hand-rolled file this replaced was
+            // left behind in the temporary directory on every import.
+            var fileStream = await networkStream.AsTemporaryFileStreamAsync();
 
             _logger.LogInformation("Downloaded downloads.v1.json");
 

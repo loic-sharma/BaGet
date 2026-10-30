@@ -1,0 +1,186 @@
+@model BaGet.Identity.Application.Models.Users.UsersViewModel
+@{
+    ViewData["Title"] = "Users";
+}
+
+<div class="col-sm-12">
+    <h1>Users</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-success" role="alert" id="users-message">@Model.Message</div>
+    }
+    @if (Model.GeneratedPassword != null)
+    {
+        <div class="alert alert-info" role="alert" id="generated-password-alert">
+            <p>
+                @(Model.GeneratedForNewUser ? "First password for" : "New password for") <strong>@Model.GeneratedFor</strong>. It is shown once and is not stored: copy it now and pass it on securely.
+                @if (!Model.GeneratedForNewUser)
+                {
+                    <text>Their sessions have ended and two-factor sign-in is off.</text>
+                }
+            </p>
+            <p>
+                <code id="generated-password">@Model.GeneratedPassword</code>
+                <button type="button" class="btn btn-default btn-xs" id="copy-generated-password"
+                        onclick="navigator.clipboard && navigator.clipboard.writeText(document.getElementById('generated-password').textContent)">
+                    Copy
+                </button>
+            </p>
+        </div>
+    }
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert" id="users-error">@Model.Error</div>
+    }
+
+    @if (Model.PendingCount > 0)
+    {
+        <div class="alert alert-warning" role="alert" id="pending-approval-alert">
+            @Model.PendingCount account(s) wait for approval and cannot sign in until you approve them (Approve) or remove them (Delete).
+        </div>
+    }
+
+    <form method="get" class="form-inline">
+        <input type="text" name="q" value="@Model.Q" class="form-control" placeholder="Search user names" />
+        <button type="submit" class="btn btn-default">Search</button>
+    </form>
+
+    <form method="post" id="users-form">
+        <input type="hidden" name="q" value="@Model.Q" />
+        <input type="hidden" name="p" value="@Model.PageNumber" />
+
+        <table class="table">
+            <thead>
+                <tr><th></th><th>User</th><th>Email</th><th>Created</th><th>Role</th><th></th></tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.Users)
+                {
+                    <tr>
+                        <td><partial name="_Avatar" model="new BaGet.Core.AvatarModel(user.UserName ?? string.Empty, user.AvatarUrl ?? string.Empty, 24)" /></td>
+                        <td><a href="@Url.Content("~/admin/users/" + Uri.EscapeDataString(user.UserName ?? string.Empty))">@user.UserName</a></td>
+                        <td>@user.Email</td>
+                        <td>@user.Created.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            @if (user.IsAdministrator)
+                            {
+                                <span class="label label-info">Administrator</span>
+                            }
+                            @if (user.PendingApproval)
+                            {
+                                <span class="label label-warning">Awaiting approval</span>
+                            }
+                        </td>
+                        <td>
+                            @if (user.PendingApproval)
+                            {
+                                <button type="submit" class="btn btn-primary btn-xs" asp-controller="AdminUsers" asp-action="Index" asp-route-handler="Approve" name="userName" value="@user.UserName">Approve</button>
+                            }
+                            @if (user.IsAdministrator)
+                            {
+                                <button type="submit" class="btn btn-default btn-xs" asp-controller="AdminUsers" asp-action="Index" asp-route-handler="Demote" name="userName" value="@user.UserName">Demote</button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-default btn-xs" asp-controller="AdminUsers" asp-action="Index" asp-route-handler="Promote" name="userName" value="@user.UserName">Promote</button>
+                            }
+                            @if (Model.CanAct(user))
+                            {
+                                <a class="btn btn-default btn-xs" href="@Url.Content("~/admin/users/" + Uri.EscapeDataString(user.UserName ?? string.Empty) + "/packages")">Packages</a>
+                                <span class="btn-group">
+                                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Reset password <span class="caret"></span></button>
+                                    <ul class="dropdown-menu">
+                                        <li><button type="submit" class="btn btn-link" asp-controller="AdminUsers" asp-action="Index" asp-route-handler="ResetPassword" name="userName" value="@user.UserName">Generate a password</button></li>
+                                        @if (Model.CanEmailResetLink && !string.IsNullOrEmpty(user.Email))
+                                        {
+                                            <li><button type="submit" class="btn btn-link" asp-controller="AdminUsers" asp-action="Index" asp-route-handler="SendResetLink" name="userName" value="@user.UserName">Email a reset link</button></li>
+                                        }
+                                    </ul>
+                                </span>
+                                <a class="btn btn-danger btn-xs" href="@Url.Content("~/admin/users/" + Uri.EscapeDataString(user.UserName??string.Empty) + "/delete")">Delete</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (Model.Users.Count == 0)
+        {
+            <p>No users match.</p>
+        }
+
+        <h2>Confirm</h2>
+        <div class="form-group">
+            <label for="resetEmail">Email address for "Generate a password" (optional)</label>
+            <input id="resetEmail" name="resetEmail" type="email" class="form-control" autocomplete="off" />
+            <span class="help-block">Sets and confirms this address for the user, as <code>account reset-password --email</code> does: a user with no address cannot sign in while SMTP is configured.</span>
+        </div>
+        <p>Every action here, creating a user included, asks for your password again.</p>
+        @if (Model.HasPassword)
+        {
+            <div class="form-group">
+                <label for="adminPassword">Your password</label>
+                <input id="adminPassword" name="password" type="password" class="form-control" autocomplete="current-password" />
+            </div>
+        }
+        else
+        {
+            <partial name="~/Views/Shared/_Reauthenticate.cshtml" model="@(new ReauthenticateView(Model.Reauthenticated, Model.CanReauthenticate, "/Admin/Users"))" />
+        }
+    </form>
+
+    <form method="post" id="create-user-form">
+        <h2>Create a user</h2>
+        <div id="create-user">
+            <div class="form-group">
+                <label for="newUserName">User name</label>
+                <input id="newUserName" name="newUserName" type="text" class="form-control" autocomplete="off" />
+            </div>
+            <div class="form-group">
+                <label for="newEmail">Email address (optional)</label>
+                <input id="newEmail" name="newEmail" type="email" class="form-control" autocomplete="off" />
+            </div>
+            <div class="form-group">
+                <label for="newPassword">Password</label>
+                <input id="newPassword" name="newPassword" type="password" class="form-control" autocomplete="new-password" />
+                <span class="help-block">Leave blank to generate one, shown once.</span>
+            </div>
+            @if (Model.CanInvite)
+            {
+                <div class="checkbox">
+                    <label><input type="checkbox" name="invite" value="true" /> Send an invitation instead: the user is mailed a link to choose a password (needs an email address)</label>
+                </div>
+            }
+        </div>
+        @if (Model.HasPassword)
+        {
+            <div class="form-group">
+                <label for="createAdminPassword">Your password</label>
+                <input id="createAdminPassword" name="password" type="password" class="form-control" autocomplete="current-password" />
+            </div>
+        }
+        else
+        {
+            <partial name="~/Views/Shared/_Reauthenticate.cshtml" model="@(new ReauthenticateView(Model.Reauthenticated, Model.CanReauthenticate, "/Admin/Users"))" />
+        }
+        <button type="submit" class="btn btn-primary" asp-controller="AdminUsers" asp-action="Index" asp-route-handler="Create" id="create-user-button">Create user</button>
+    </form>
+
+    @if (Model.PageCount > 1)
+    {
+        <ul class="pager">
+            @if (Model.PageNumber > 1)
+            {
+                <li class="previous"><a asp-controller="AdminUsers" asp-action="Index" asp-route-q="@Model.Q" asp-route-p="@(Model.PageNumber - 1)">Previous</a></li>
+            }
+            <li>Page @Model.PageNumber of @Model.PageCount</li>
+            @if (Model.PageNumber < Model.PageCount)
+            {
+                <li class="next"><a asp-controller="AdminUsers" asp-action="Index" asp-route-q="@Model.Q" asp-route-p="@(Model.PageNumber + 1)">Next</a></li>
+            }
+        </ul>
+    }
+</div>

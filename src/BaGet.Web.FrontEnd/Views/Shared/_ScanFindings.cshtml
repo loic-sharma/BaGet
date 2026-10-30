@@ -1,0 +1,65 @@
+@model BaGet.Web.V3.ViewModels.ScanFindingsView
+@inject BaGet.Core.IScanGate ScanGate
+@inject Microsoft.Extensions.Options.IOptionsSnapshot<BaGet.Core.ScanningOptions> ScanningOptions
+@{
+    // Scanning off: the section stays out of the way (the administrators' dashboard says so).
+    if (!ScanningOptions.Value.Enabled) return;
+
+    var assessment = await ScanGate.AssessAsync(Model.Name, Model.Version, Context.RequestAborted);
+    var canScan = assessment.State != BaGet.Core.ScanState.Unavailable
+        && await ScanAccess.CanScanAsync(Context.RequestServices, User, Model.Name, Context.RequestAborted);
+    var result = assessment.Result;
+    string LabelOf(int severity) => severity switch { 3 => "label-danger", 2 => "label-warning", 1 => "label-info", _ => "label-default" };
+}
+
+<section class="scan-findings" id="scan-findings" data-scan-state="@assessment.State.ToString().ToLowerInvariant()">
+    <h2>Vulnerabilities</h2>
+
+    @if (assessment.BlockReason != null)
+    {
+        <div class="alert alert-danger" role="alert" id="scan-blocked">Downloads of this version are refused. @assessment.BlockReason</div>
+    }
+    else if (assessment.Warn)
+    {
+        <div class="alert alert-warning" role="alert" id="scan-warning">The scanning policy warns about this version: its worst finding is @BaGet.Core.ScanSeverities.Name(result!.Highest).</div>
+    }
+
+    @switch (assessment.State)
+    {
+        case BaGet.Core.ScanState.Unavailable:
+            <p class="text-muted" id="scan-unavailable">Not scanned: @assessment.Note</p>
+            break;
+        case BaGet.Core.ScanState.NotScanned:
+            <p class="text-muted" id="scan-not-scanned">Not scanned yet.@(assessment.Note != null ? " " + assessment.Note : "")</p>
+            break;
+        case BaGet.Core.ScanState.Clean:
+            <p id="scan-clean"><span class="label label-success">No known vulnerabilities</span> <span class="text-muted">scanned <span title="@result!.ScannedAt?.ToString("u")">@result.ScannedAt?.Humanize()</span> by @result.Scanner@(assessment.Note != null ? ". " + assessment.Note : "")</span></p>
+            break;
+        default:
+            <p id="scan-found">
+                <span class="label @LabelOf(result!.Highest)">@result.FindingCount finding@(result.FindingCount == 1 ? "" : "s"), worst: @BaGet.Core.ScanSeverities.Name(result.Highest)</span>
+                <span class="text-muted">scanned <span title="@result.ScannedAt?.ToString("u")">@result.ScannedAt?.Humanize()</span> by @result.Scanner@(assessment.Note != null ? ". " + assessment.Note : "")</span>
+            </p>
+            <partial name="~/Views/Shared/_ScanFindingsTable.cshtml" model="result" />
+            break;
+    }
+
+    @if (canScan)
+    {
+        <form method="post" asp-controller="ScanArtifact" asp-action="Index" class="form-inline" id="scan-now-form">
+            <input type="hidden" name="Name" value="@Model.Name" />
+            <input type="hidden" name="Version" value="@Model.Version" />
+            <input type="hidden" name="ReturnUrl" value="@(Context.Request.Path + Context.Request.QueryString)" />
+            <button type="submit" class="btn btn-default btn-xs">Scan now</button>
+        </form>
+    }
+
+    @if (result?.Scanner == "osv")
+    {
+        <p class="help-block">Advisories from <a href="https://osv.dev" rel="noopener noreferrer" target="_blank">OSV.dev</a>; each one carries the licence of its source (the GitHub Advisory Database is CC-BY 4.0), which its link leads to.</p>
+    }
+    else if (result?.Scanner == "trivy")
+    {
+        <p class="help-block">Findings by <a href="https://trivy.dev" rel="noopener noreferrer" target="_blank">Trivy</a> from the vulnerability databases it uses.</p>
+    }
+</section>

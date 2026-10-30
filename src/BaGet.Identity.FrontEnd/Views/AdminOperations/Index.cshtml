@@ -1,0 +1,78 @@
+@model BaGet.Identity.Application.Models.Operations.OperationsViewModel
+@{
+    ViewData["Title"] = "Operations";
+}
+
+<div class="col-sm-12">
+    <h1>Operations</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-success" role="alert" id="operations-message">@Model.Message</div>
+    }
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert" id="operations-error">@Model.Error</div>
+    }
+
+    <p class="help-block">Maintenance jobs run in the background, one at a time per operation and repository. Their status is kept in memory until the server restarts. They are refused while the server is read-only for maintenance. An operation that deletes data (the Docker garbage collection) asks for your password again; its dry run reports what it would remove and asks for nothing.</p>
+
+    @if (!Model.Rows.Any())
+    {
+        <div class="alert alert-warning" role="alert" id="operations-unsupported">No operation is available with the configured database.</div>
+    }
+    else
+    {
+        <table class="table" id="operations-table">
+            <thead>
+                <tr><th>Operation</th><th>Repository</th><th>Status</th><th></th></tr>
+            </thead>
+            <tbody>
+                @foreach (var row in Model.Rows)
+                {
+                    var running = row.Status?.State == BaGet.Core.AdminJobState.Running;
+                    <tr data-operation="@row.Operation.Name" data-repository="@row.Repository.Name">
+                        <td>@row.Operation.Title<br /><small class="text-muted">@row.Operation.Description</small></td>
+                        <td>@row.Repository.Name</td>
+                        <td class="operation-status">
+                            @if (row.Status == null)
+                            {
+                                <span class="text-muted">Never run since the last start</span>
+                            }
+                            else
+                            {
+                                <span class="label @(row.Status.State == BaGet.Core.AdminJobState.Failed ? "label-danger" : row.Status.State == BaGet.Core.AdminJobState.Running ? "label-info" : "label-success")">@row.Status.State</span>
+                                <span>started @row.Status.Started.ToString("u")@(row.Status.Actor != null ? " by " + row.Status.Actor : "")</span>
+                                @if (row.Status.Finished != null)
+                                {
+                                    <span>, finished @row.Status.Finished.Value.ToString("u")</span>
+                                }
+                                @if (!string.IsNullOrEmpty(row.Status.Message))
+                                {
+                                    <br /><span class="operation-message">@row.Status.Message</span>
+                                }
+                            }
+                        </td>
+                        <td>
+                            <form method="post">
+                                <input type="hidden" name="operation" value="@row.Operation.Name" />
+                                <input type="hidden" name="repository" value="@row.Repository.Name" />
+                                @if (row.Operation.RequiresConfirmation)
+                                {
+                                    <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation($"password-{row.Operation.Name}-{row.Repository.Name}")" />
+                                }
+                                <button type="submit" class="btn btn-default btn-xs" @(running ? "disabled" : "")>Run</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@if (Model.AnyRunning)
+{
+    <script>setTimeout(function () { location.reload(); }, 3000);</script>
+}

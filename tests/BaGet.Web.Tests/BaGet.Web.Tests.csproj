@@ -1,11 +1,18 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\BaGet.Web\BaGet.Web.csproj" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\BaGet.Web.V3\BaGet.Web.V3.csproj" />
+    <ProjectReference Include="..\..\src\BaGet.Web.FrontEnd\BaGet.Web.FrontEnd.csproj" />
   </ItemGroup>
 
 </Project>

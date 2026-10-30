@@ -1,0 +1,36 @@
+@model BaGet.Core.ScanResult
+@{
+    string LabelOf(int severity) => severity switch { 3 => "label-danger", 2 => "label-warning", 1 => "label-info", _ => "label-default" };
+}
+
+@if (Model.Findings != null && Model.Findings.Count > 0)
+{
+    <table class="table table-condensed scan-findings-table">
+        <thead><tr><th>Severity</th><th>Advisory</th><th>Component</th><th>Fixed in</th><th>Summary</th></tr></thead>
+        <tbody>
+            @foreach (var finding in Model.Findings)
+            {
+                <tr data-advisory="@finding.VulnerabilityId" data-severity="@finding.Severity">
+                    <td><span class="label @LabelOf(finding.Severity)">@BaGet.Core.ScanSeverities.Name(finding.Severity)</span></td>
+                    <td>
+                        @if (Uri.TryCreate(finding.AdvisoryUrl, UriKind.Absolute, out var uri) && (uri.Scheme == Uri.UriSchemeHttps || uri.Scheme == Uri.UriSchemeHttp))
+                        {
+                            <a href="@finding.AdvisoryUrl" rel="noopener noreferrer" target="_blank">@finding.VulnerabilityId</a>
+                        }
+                        else
+                        {
+                            @finding.VulnerabilityId
+                        }
+                    </td>
+                    <td><code>@finding.Component</code> @finding.ComponentVersion</td>
+                    <td>@(finding.FixedVersion ?? "-")</td>
+                    <td>@finding.Summary</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (Model.FindingCount >= BaGet.Core.ScanService.MaxFindingsPerResult)
+    {
+        <p class="help-block">Only the first @BaGet.Core.ScanService.MaxFindingsPerResult findings, worst first, are kept.</p>
+    }
+}

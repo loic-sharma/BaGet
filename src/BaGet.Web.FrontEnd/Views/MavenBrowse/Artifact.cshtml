@@ -1,0 +1,228 @@
+@model BaGet.Web.Application.Models.Maven.MavenArtifactViewModel
+
+@{
+    ViewData["Title"] = Model.Info == null ? Model.Group + ":" + Model.Artifact : Model.Info.Name + " " + Model.Selected?.Summary.Version;
+}
+
+@if (Model.Info == null || Model.Selected == null)
+{
+    <div class="col-sm-12" id="maven-artifact-missing">
+        <h2>Oops, artifact not found...</h2>
+        <p>This repository has no @(Model.Info == null ? "artifact '" + Model.Group + ":" + Model.Artifact + "'" : "version '" + Model.Version + "' of " + Model.Info.Name). <a asp-controller="MavenBrowse" asp-action="Artifacts">Browse the artifacts</a>.</p>
+    </div>
+    return;
+}
+
+@{
+    var info = Model.Info;
+    var selected = Model.Selected;
+    var summary = selected.Summary;
+    var pom = selected.Pom;
+}
+
+<div class="row display-package" id="maven-artifact" data-package="@info.Name" data-version="@summary.Version">
+    <article class="col-sm-9 package-details-main">
+        <div class="package-title">
+            <h1>
+                @info.GroupId:@info.ArtifactId
+                <small class="text-nowrap" id="maven-selected-version">@summary.Version</small>
+                @if (summary.IsSnapshot)
+                {
+                    <span class="label label-info" id="maven-snapshot-label">snapshot</span>
+                }
+            </h1>
+            @if (summary.Name != null)
+            {
+                <p class="lead">@summary.Name</p>
+            }
+        </div>
+
+        <partial name="_ScanFindings" model="new ScanFindingsView(info.Name, summary.Version)" />
+
+        <div class="tabbed-info" x-data="{ active: 0 }">
+            <ul class="nav">
+                @for (var i = 0; i < Model.InstallTabs.Count; i++)
+                {
+                    <li x-bind:class="{ active: active === @i }">
+                        <a href="#install-@i" @@click.prevent="active = @i">@Model.InstallTabs[i].Name</a>
+                    </li>
+                }
+            </ul>
+
+            @for (var i = 0; i < Model.InstallTabs.Count; i++)
+            {
+                var snippet = Model.InstallTabs[i];
+
+                <div class="content install-pane" id="install-@i" x-show="active === @i">
+                    <div class="script">
+                        @if (!string.IsNullOrEmpty(snippet.Prefix))
+                        {
+                            <span class="script-prefix" aria-hidden="true">@snippet.Prefix</span>
+                        }
+                        <pre class="snippet" data-snippet="@snippet.Name">@string.Join("\n", snippet.Lines ?? [])</pre>
+                    </div>
+
+                    <div class="copy-button">
+                        <button class="btn btn-default btn-warning"
+                                type="button"
+                                title="Copy to clipboard"
+                                data-tottle="popover"
+                                data-placement="bottom"
+                                data-content="Copied"
+                            @@click="window.baget.copyTextToClipboard($event.currentTarget.closest('.install-pane').querySelector('pre.snippet').textContent, $event.currentTarget)">
+                            <i class="ms-Icon ms-Icon--Copy"></i>
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @{
+            var tabs = new List<(string Key, string Title)> { ("files", "Files"), ("pom", "POM"), ("dependencies", "Dependencies"), ("versions", "Versions") };
+        }
+
+        <div class="package-tabs"
+             x-data="{ tab: 'files', keys: [@Html.Raw(string.Join(", ", tabs.Select(t => "'" + t.Key + "'")))], selectFromHash() { var key = location.hash.replace('#tab-', ''); if (this.keys.indexOf(key) >= 0) this.tab = key; } }"
+             x-init="selectFromHash()">
+
+            <ul class="nav package-tab-list">
+                @foreach (var tab in tabs)
+                {
+                    <li x-bind:class="{ active: tab === '@tab.Key' }">
+                        <a href="#tab-@tab.Key" @@click.prevent="tab = '@tab.Key'; history.replaceState(null, '', '#tab-@tab.Key')">@tab.Title</a>
+                    </li>
+                }
+            </ul>
+
+            <section id="tab-files" class="tab-panel" x-show="tab === 'files'">
+                <table class="table table-condensed" id="maven-files">
+                    <thead><tr><th>File</th><th>Size</th><th>Stored</th><th>Checksums</th></tr></thead>
+                    <tbody>
+                        @foreach (var file in selected.Files)
+                        {
+                            <tr data-file="@file.FileName">
+                                <td><a href="@Model.FileUrl(file.FileName)">@file.FileName</a></td>
+                                <td>@file.Size.Bytes().Humanize()</td>
+                                <td title="@file.Created.ToString("u")">@file.Created.Humanize()</td>
+                                <td>
+                                    <details>
+                                        <summary><code title="@file.Sha1">sha1 @file.Sha1.Substring(0, 12)…</code></summary>
+                                        <dl class="maven-checksums">
+                                            <dt>SHA-1</dt><dd><code class="maven-sha1">@file.Sha1</code></dd>
+                                            <dt>SHA-256</dt><dd><code class="maven-sha256">@file.Sha256</code></dd>
+                                            <dt>SHA-512</dt><dd><code class="maven-sha512">@file.Sha512</code></dd>
+                                            <dt>MD5</dt><dd><code class="maven-md5">@file.Md5</code></dd>
+                                        </dl>
+                                    </details>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="tab-pom" class="tab-panel" x-show="tab === 'pom'">
+                @if (selected.PomText == null)
+                {
+                    <p id="maven-no-pom">This version has no POM.</p>
+                }
+                else
+                {
+                    <p>
+                        @if (pom != null)
+                        {
+                            <text>Packaging <code>@pom.Packaging</code>@(pom.Url != null ? " · " : "")</text>
+                            @if (pom.Url != null && Uri.TryCreate(pom.Url, UriKind.Absolute, out var site) && (site.Scheme == Uri.UriSchemeHttp || site.Scheme == Uri.UriSchemeHttps))
+                            {
+                                <a href="@site" rel="noopener noreferrer">@site</a>
+                            }
+                            @if (pom.Parent != null)
+                            {
+                                <text> · parent <code>@pom.Parent</code></text>
+                            }
+                        }
+                    </p>
+                    <pre class="snippet" id="maven-pom">@selected.PomText</pre>
+                }
+            </section>
+
+            <section id="tab-dependencies" class="tab-panel" x-show="tab === 'dependencies'">
+                @if (pom == null || pom.Dependencies.Count == 0)
+                {
+                    <p>This version declares no dependencies.</p>
+                }
+                else
+                {
+                    <ul class="list-unstyled maven-dependencies">
+                        @foreach (var dependency in pom.Dependencies)
+                        {
+                            <li data-dependency="@dependency.GroupId:@dependency.ArtifactId"><code>@dependency.GroupId:@dependency.ArtifactId</code> @dependency.Version @(dependency.Scope == null ? "" : "(" + dependency.Scope + ")") @(dependency.Optional ? "optional" : "")</li>
+                        }
+                    </ul>
+                }
+            </section>
+
+            <section id="tab-versions" class="tab-panel" x-show="tab === 'versions'">
+                <table class="table table-condensed" id="maven-versions">
+                    <thead><tr><th>Version</th><th>Stored</th><th>Files</th><th>Size</th><th></th></tr></thead>
+                    <tbody>
+                        @foreach (var version in info.Versions)
+                        {
+                            <tr data-version="@version.Version" class="@(version.Version == summary.Version ? "active" : "")">
+                                <td><a asp-controller="MavenBrowse" asp-action="Artifact" asp-route-group="@info.GroupId" asp-route-artifact="@info.ArtifactId" asp-route-version="@version.Version">@version.Version</a></td>
+                                <td title="@version.Modified.ToString("u")">@version.Modified.Humanize()</td>
+                                <td>@version.FileCount</td>
+                                <td>@version.Size.Bytes().Humanize()</td>
+                                <td>
+                                    @if (version.IsSnapshot)
+                                    {
+                                        <span class="label label-info">snapshot, @version.Builds build@(version.Builds == 1 ? "" : "s")</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </article>
+
+    <aside class="col-sm-3 package-details-info">
+        <div>
+            <h2>Info</h2>
+            <ul class="list-unstyled ms-Icon-ul">
+                <li><i class="ms-Icon ms-Icon--Calendar ms-Icon-li"></i> Last updated <span title="@summary.Modified.ToString("u")">@summary.Modified.Humanize()</span></li>
+                <li><i class="ms-Icon ms-Icon--Download ms-Icon-li"></i> @selected.Files.Count file@(selected.Files.Count == 1 ? "" : "s"), @summary.Size.Bytes().Humanize()</li>
+                @if (summary.Packaging != null)
+                {
+                    <li><i class="ms-Icon ms-Icon--Package ms-Icon-li"></i> Packaging: @summary.Packaging</li>
+                }
+                @if (summary.Description != null)
+                {
+                    <li>@summary.Description</li>
+                }
+            </ul>
+        </div>
+
+        @if (Model.Owners.Count > 0)
+        {
+            <div>
+                <h2>Owners</h2>
+                <ul class="list-unstyled" id="maven-owners">
+                    @foreach (var owner in Model.Owners)
+                    {
+                        <li><a href="@Url.Action("Profile", "Profile", new { name = owner, repo = (string?)null })">@owner</a></li>
+                    }
+                </ul>
+            </div>
+        }
+
+        @if (Model.CanManage)
+        {
+            <div>
+                <h2>Manage</h2>
+                <p><a asp-controller="MavenManage" asp-action="Index" asp-route-group="@info.GroupId" asp-route-artifact="@info.ArtifactId" asp-route-version="@summary.Version" id="maven-manage-link">Manage this artifact</a></p>
+            </div>
+        }
+    </aside>
+</div>

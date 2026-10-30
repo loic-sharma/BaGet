@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <PackageTags>NuGet</PackageTags>
+    <Description>BaGet Extension's account and administration screens: the view controllers and views of the user accounts, package management and administration pages.</Description>
+    <RootNamespace>BaGet.Identity</RootNamespace>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <Nullable>enable</Nullable>
+    <PackageId>Extension.$(MSBuildProjectName)</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Build.Tasks.Git" Version="10.0.402" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BaGet.Frontend.Base\BaGet.Frontend.Base.csproj" />
+    <ProjectReference Include="..\BaGet.Identity.Api\BaGet.Identity.Api.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="BaGet.Tests" Key="$(BaGetPublicKey)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The views are compiled into this assembly; their .cshtml are not deployment files. Publishing them would
+         collide with the other Razor libraries' Views/_ViewImports.cshtml (NETSDK1152). -->
+    <Content Update="Views\**\*.cshtml" CopyToPublishDirectory="Never" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,84 @@
+@model BaGet.Identity.Application.Models.Account.TwoFactorViewModel
+@{
+    ViewData["Title"] = "Two-factor authentication";
+}
+
+<div class="col-sm-8">
+    <h1>Two-factor authentication</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-success" role="alert">@Model.Message</div>
+    }
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert">@Model.Error</div>
+    }
+
+    @if (Model.RecoveryCodes.Count > 0)
+    {
+        <h2>Recovery codes</h2>
+        <ul class="list-unstyled">
+            @foreach (var recoveryCode in Model.RecoveryCodes)
+            {
+                <li><code class="recovery-code">@recoveryCode</code></li>
+            }
+        </ul>
+    }
+
+    @if (Model.TwoFactorEnabled)
+    {
+        <p>Two-factor authentication is <strong>on</strong>. You have @Model.RecoveryCodesLeft recovery codes left.</p>
+
+        <h2>Turn off</h2>
+        <form method="post" asp-controller="AccountSettings" asp-action="TwoFactor" asp-route-handler="Disable">
+            @if (Model.HasPassword)
+            {
+                <div class="form-group">
+                    <label for="disablePassword">Your password</label>
+                    <input id="disablePassword" name="password" type="password" class="form-control" autocomplete="off" />
+                </div>
+            }
+            else
+            {
+                <partial name="~/Views/Shared/_Reauthenticate.cshtml" model="@(new ReauthenticateView(Model.Reauthenticated, Model.CanReauthenticate, "/Account/TwoFactor"))" />
+            }
+            <button type="submit" class="btn btn-default">Turn off two-factor authentication</button>
+        </form>
+
+        <h2>Reset the authenticator</h2>
+        <p>Use this if you lost the device. It turns two-factor authentication off and gives you a new key to set up again.</p>
+        <form method="post" asp-controller="AccountSettings" asp-action="TwoFactor" asp-route-handler="Reset">
+            @if (Model.HasPassword)
+            {
+                <div class="form-group">
+                    <label for="resetPassword">Your password</label>
+                    <input id="resetPassword" name="password" type="password" class="form-control" autocomplete="off" />
+                </div>
+            }
+            else
+            {
+                <partial name="~/Views/Shared/_Reauthenticate.cshtml" model="@(new ReauthenticateView(Model.Reauthenticated, Model.CanReauthenticate, "/Account/TwoFactor"))" />
+            }
+            <button type="submit" class="btn btn-danger">Reset authenticator</button>
+        </form>
+    }
+    else
+    {
+        <p>Protect your account with a code from an authenticator app.</p>
+        <ol>
+            <li>Scan this code with an authenticator app, or type the key into it.</li>
+            <li>Enter the 6-digit code the app shows.</li>
+        </ol>
+        <div id="qrcode" style="max-width: 240px;">@Html.Raw(Model.QrCodeSvg)</div>
+        <p>Key: <kbd>@Model.SharedKey</kbd></p>
+        <form method="post" asp-controller="AccountSettings" asp-action="TwoFactor" asp-route-handler="Enable">
+            <div class="form-group">
+                <label for="code">Verification code</label>
+                <input id="code" name="code" class="form-control" autocomplete="one-time-code" inputmode="numeric" />
+            </div>
+            <button type="submit" class="btn btn-primary">Turn on two-factor authentication</button>
+        </form>
+    }
+</div>

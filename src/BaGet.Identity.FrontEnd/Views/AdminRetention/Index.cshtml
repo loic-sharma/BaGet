@@ -1,0 +1,72 @@
+@using BaGet.Frontend.Controllers.Base
+@model BaGet.Identity.Application.Models.Policies.RetentionViewModel
+@{
+    ViewData["Title"] = "Retention";
+}
+
+<div class="col-sm-12">
+    <h1>Retention</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-success" role="alert" id="retention-message">@Model.Message</div>
+    }
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert" id="retention-error">@Model.Error</div>
+    }
+
+    <p class="help-block">
+        A policy deletes old versions from a repository, or from every repository of a project: keep the newest N, delete by age,
+        by lack of downloads, trim a remote cache, remove untagged Docker manifests. Open a policy for a <strong>dry run</strong>
+        (the exact list a run would delete), to run it now, or to set a schedule. Versions under a
+        <a href="@Url.Action("Holds", "AdminRetention")">legal hold</a> are never deleted.
+    </p>
+
+    <table class="table" id="retention-table">
+        <thead>
+            <tr><th>Policy</th><th>Applies to</th><th>Rules</th><th>Schedule</th><th>Last run</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var view in Model.Policies)
+            {
+                var policy = view.Policy;
+                <tr data-policy="@policy.Name">
+                    <td>
+                        <a href="@Url.Action("Policy", "AdminRetention", new { key = policy.Key })">@policy.Name</a>
+                        @if (!policy.Enabled) { <span class="label label-default">disabled</span> }
+                    </td>
+                    <td>
+                        @if (view.Repository != null) { <span>repository @view.Repository</span> }
+                        else if (view.Project != null) { <span>project @view.Project (@view.Targets repositories)</span> }
+                        else { <span class="text-muted">nothing (its repository or project is gone)</span> }
+                    </td>
+                    <td>@RetentionControllerBase.Describe(policy)</td>
+                    <td>@(policy.ScheduleHours is int hours ? "every " + hours + " h" : "manual")</td>
+                    <td>
+                        @if (policy.LastRun is DateTime last)
+                        {
+                            <span>@last.ToString("u")</span><br /><small class="text-muted">@policy.LastResult</small>
+                        }
+                        else
+                        {
+                            <span class="text-muted">never</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (!Model.Policies.Any())
+    {
+        <p id="retention-empty">There is no policy yet.</p>
+    }
+
+    <h2>New policy</h2>
+    <form method="post" id="retention-create-form">
+        <partial name="~/Views/Shared/_RetentionPolicyFields.cshtml" model="@(new RetentionFieldsView(Model.Form, Model.Repositories, Model.ProjectNames, "new"))" />
+        <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("retention-create-password")" />
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+</div>

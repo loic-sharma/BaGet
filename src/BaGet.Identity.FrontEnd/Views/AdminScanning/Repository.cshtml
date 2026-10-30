@@ -1,0 +1,135 @@
+@model BaGet.Identity.Application.Models.Policies.ScanRepositoryViewModel
+@{
+    ViewData["Title"] = "Vulnerabilities of " + Model.Name;
+    var summary = Model.Summary!;
+    string LabelOf(int severity) => severity switch { 3 => "label-danger", 2 => "label-warning", 1 => "label-info", _ => "label-default" };
+}
+
+<div class="col-sm-12" id="scan-repository" data-repository="@Model.Name">
+    <h1>Vulnerabilities <small>@Model.Name</small></h1>
+    <hr class="breadcrumb-divider" />
+
+    <p><a asp-controller="AdminScanning" asp-action="Index">Back to scanning</a></p>
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-success" role="alert" id="scan-repository-message">@Model.Message</div>
+    }
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert" id="scan-repository-error">@Model.Error</div>
+    }
+
+    @if (!summary.Engine.Available)
+    {
+        <div class="alert alert-warning" role="alert" id="scan-engine-unavailable">@summary.Engine.Reason</div>
+    }
+    else
+    {
+        <p class="text-muted" id="scan-engine">Scanner: @summary.Engine.Engine.</p>
+    }
+
+    <section id="scan-section-summary">
+        <h2>Summary</h2>
+        <table class="table table-condensed" id="scan-summary">
+            <thead><tr><th>Artifacts</th><th>Critical</th><th>High</th><th>Moderate</th><th>Low</th><th>Clean</th><th>Not scanned</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td id="scan-count-artifacts">@summary.Artifacts</td>
+                    <td id="scan-count-critical">@summary.BySeverity[3]</td>
+                    <td id="scan-count-high">@summary.BySeverity[2]</td>
+                    <td id="scan-count-moderate">@summary.BySeverity[1]</td>
+                    <td id="scan-count-low">@summary.BySeverity[0]</td>
+                    <td id="scan-count-clean">@summary.Clean</td>
+                    <td id="scan-count-unscanned">@summary.Unscanned@(summary.Failed > 0 ? " (" + summary.Failed + " failed)" : "")</td>
+                </tr>
+            </tbody>
+        </table>
+
+        @if (summary.Engine.Available)
+        {
+            <form method="post" asp-controller="AdminScanning" asp-action="Repository" asp-route-name="@Model.Name" asp-route-handler="Scan" id="scan-repository-form">
+                <button type="submit" class="btn btn-default" id="scan-repository-button">Scan the whole repository now</button>
+            </form>
+        }
+        @if (Model.Job != null)
+        {
+            <p id="scan-job">
+                <span class="label @(Model.Job.State == BaGet.Core.AdminJobState.Failed ? "label-danger" : Model.Job.State == BaGet.Core.AdminJobState.Running ? "label-info" : "label-success")">@Model.Job.State</span>
+                started @Model.Job.Started.ToString("u")@(Model.Job.Actor != null ? " by " + Model.Job.Actor : "")@(Model.Job.Finished != null ? ", finished " + Model.Job.Finished.Value.ToString("u") : "").
+                @Model.Job.Message
+            </p>
+        }
+    </section>
+
+    <section id="scan-section-findings">
+        <h2>Versions with findings</h2>
+        <form method="get" class="form-inline" id="scan-filter">
+            <label for="scan-min">Show</label>
+            <select name="min" id="scan-min" class="form-control input-sm">
+                @foreach (var option in new[] { (0, "all severities"), (1, "moderate and above"), (2, "high and above"), (3, "critical only") })
+                {
+                    <option value="@option.Item1" selected="@(Model.MinSeverity == option.Item1)">@option.Item2</option>
+                }
+            </select>
+            <button type="submit" class="btn btn-default btn-xs">Filter</button>
+        </form>
+
+        @if (Model.Findings.Count == 0)
+        {
+            <p id="scan-no-findings">No scanned version has a finding@(Model.MinSeverity > 0 ? " at this severity" : "").</p>
+        }
+        else
+        {
+            <table class="table table-condensed" id="scan-results">
+                <thead><tr><th>Artifact</th><th>Version</th><th>Worst</th><th>Findings</th><th>Scanned</th><th></th></tr></thead>
+                <tbody>
+                    @foreach (var result in Model.Findings)
+                    {
+                        var url = Model.PackageUrl(result);
+                        <tr data-artifact="@result.Name" data-version="@result.Version">
+                            <td>@result.Name</td>
+                            <td>@(result.Version!.Length > 24 ? result.Version.Substring(0, 24) + "…" : result.Version)</td>
+                            <td><span class="label @LabelOf(result.Highest)">@BaGet.Core.ScanSeverities.Name(result.Highest)</span></td>
+                            <td>@result.FindingCount</td>
+                            <td title="@result.ScannedAt?.ToString("u")">@result.ScannedAt?.ToString("u") (@result.Scanner)</td>
+                            <td>@if (url != null) { <a href="@url">Open</a> }</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <p>
+                @if (Model.PageNumber > 1)
+                {
+                    <a asp-controller="AdminScanning" asp-action="Repository" asp-route-name="@Model.Name" asp-route-min="@Model.MinSeverity" asp-route-p="@(Model.PageNumber - 1)">Previous</a>
+                }
+                @if (Model.HasMore)
+                {
+                    <a asp-controller="AdminScanning" asp-action="Repository" asp-route-name="@Model.Name" asp-route-min="@Model.MinSeverity" asp-route-p="@(Model.PageNumber + 1)">Next</a>
+                }
+            </p>
+        }
+    </section>
+
+    <section id="scan-section-policy">
+        <h2>Policy</h2>
+        @if (Model.Effective.From == null)
+        {
+            <p id="scan-policy-effective">No policy applies: findings are shown, nothing is blocked.</p>
+        }
+        else if (Model.Effective.From == BaGet.Core.ScanPolicyScope.Project)
+        {
+            <p id="scan-policy-effective">The policy of the project <a asp-controller="AdminScanning" asp-action="Project" asp-route-name="@Model.Effective.Name">@Model.Effective.Name</a> applies. A policy saved here replaces it for this repository.</p>
+        }
+        else
+        {
+            <p id="scan-policy-effective">This repository has its own policy@(Model.Own?.ModifiedBy != null ? " (saved by " + Model.Own.ModifiedBy + ")" : "").</p>
+        }
+
+        <form method="post" asp-controller="AdminScanning" asp-action="Repository" asp-route-name="@Model.Name" asp-route-handler="Policy" id="scan-policy-form">
+            <partial name="~/Views/Shared/_ScanPolicyForm.cshtml" model="Model.PolicyForm" />
+            <button type="submit" class="btn btn-primary">Save the policy</button>
+        </form>
+        <p class="help-block">Saving asks for your password again. A policy with everything off removes it. The thresholds are Low, Moderate, High and Critical as the advisory source rates them (an unrated finding counts as Moderate).</p>
+    </section>
+</div>

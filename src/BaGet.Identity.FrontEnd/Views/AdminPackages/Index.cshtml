@@ -1,0 +1,55 @@
+@model BaGet.Identity.Application.Models.Packages.AdminPackagesViewModel
+@{
+    ViewData["Title"] = "Packages without owners";
+}
+
+<div class="col-sm-12">
+    <h1>Packages without owners</h1>
+    <hr class="breadcrumb-divider" />
+
+    <p class="help-block">
+        These IDs (per repository) predate accounts, or lost their only owner when an account was deleted. Only
+        administrators and the global API key can change them.
+    </p>
+
+    @if (Model.Packages.Count == 0)
+    {
+        <p id="ownerless-empty">Every package has an owner.</p>
+    }
+    else
+    {
+        <table class="table" id="ownerless-packages">
+            <thead>
+                <tr><th>Package</th>@if (Model.ShowRepository) {<th>Repository</th>}<th>Latest version</th><th>Versions</th><th>Downloads</th><th></th></tr>
+            </thead>
+            <tbody>
+                @foreach (var row in Model.Packages)
+                {
+                    <tr>
+                        <td><a href="@Url.Content(RepositoryPageLinks.Package(row.RepositoryName, row.Package.Id))">@row.Package.Id</a></td>
+                        @if (Model.ShowRepository) {<td>@row.RepositoryName</td>}
+                        <td>@(row.Package.LatestVersion ?? "None")</td>
+                        <td>@row.Package.VersionCount</td>
+                        <td>@row.Package.Downloads.ToString("N0")</td>
+                        <td><a href="@Url.Content(RepositoryPageLinks.Manage(row.RepositoryName, row.Package.Id))">Manage</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    @if (Model.PageCount > 1)
+    {
+        <ul class="pager">
+            @if (Model.PageNumber > 1)
+            {
+                <li class="previous"><a asp-controller="AdminPackages" asp-action="Index" asp-route-p="@(Model.PageNumber - 1)">Previous</a></li>
+            }
+            <li>Page @Model.PageNumber of @Model.PageCount</li>
+            @if (Model.PageNumber < Model.PageCount)
+            {
+                <li class="next"><a asp-controller="AdminPackages" asp-action="Index" asp-route-p="@(Model.PageNumber + 1)">Next</a></li>
+            }
+        </ul>
+    }
+</div>

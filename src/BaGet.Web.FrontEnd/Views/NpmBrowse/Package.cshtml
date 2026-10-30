@@ -1,0 +1,208 @@
+@model BaGet.Web.Application.Models.Npm.NpmPackageViewModel
+
+@{
+    ViewData["Title"] = Model.Package == null ? Model.Id : Model.Package.Name + " " + Model.Selected?.Version;
+}
+
+@if (Model.Package == null || Model.Selected == null)
+{
+    <div class="col-sm-12" id="npm-package-missing">
+        <h2>Oops, package not found...</h2>
+        <p>This registry has no package '@Model.Id'. <a asp-controller="NpmBrowse" asp-action="Packages">Browse the packages</a>.</p>
+    </div>
+    return;
+}
+
+@{
+    var package = Model.Package;
+    var selected = Model.Selected;
+    var dependencies = selected.Map("dependencies");
+    var peers = selected.Map("peerDependencies");
+    var optionals = selected.Map("optionalDependencies");
+}
+
+<div class="row display-package" id="npm-package" data-package="@package.Name">
+    <article class="col-sm-9 package-details-main">
+        <div class="package-title">
+            <h1>
+                @package.Name
+                <small class="text-nowrap" id="npm-selected-version">@selected.Version</small>
+                @foreach (var tag in Model.SelectedTags)
+                {
+                    <span class="label label-info npm-tag">@tag</span>
+                }
+            </h1>
+        </div>
+
+        <partial name="_ScanFindings" model="new ScanFindingsView(package.Name, selected.Version)" />
+
+        @if (selected.Deprecated != null)
+        {
+            <div class="alert alert-warning" id="npm-deprecated" role="alert">
+                <strong>Deprecated:</strong> @selected.Deprecated
+            </div>
+        }
+
+        <div class="tabbed-info" x-data="{ active: 0 }">
+            <ul class="nav">
+                @for (var i = 0; i < Model.InstallTabs.Count; i++)
+                {
+                    <li x-bind:class="{ active: active === @i }">
+                        <a href="#install-@i" @@click.prevent="active = @i">@Model.InstallTabs[i].Name</a>
+                    </li>
+                }
+            </ul>
+
+            @for (var i = 0; i < Model.InstallTabs.Count; i++)
+            {
+                var snippet = Model.InstallTabs[i];
+
+                <div class="content install-pane" id="install-@i" x-show="active === @i">
+                    <div class="script">
+                        @if (!string.IsNullOrEmpty(snippet.Prefix))
+                        {
+                            <span class="script-prefix" aria-hidden="true">@snippet.Prefix</span>
+                        }
+                        <pre class="snippet" data-snippet="@snippet.Name">@string.Join("\n", snippet.Lines ?? [])</pre>
+                    </div>
+
+                    <div class="copy-button">
+                        <button class="btn btn-default btn-warning"
+                                type="button"
+                                title="Copy to clipboard"
+                                data-tottle="popover"
+                                data-placement="bottom"
+                                data-content="Copied"
+                            @@click="window.baget.copyTextToClipboard($event.currentTarget.closest('.install-pane').querySelector('pre.snippet').textContent, $event.currentTarget)">
+                            <i class="ms-Icon ms-Icon--Copy"></i>
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @{
+            var tabs = new List<(string Key, string Title)> { ("readme", "README"), ("dependencies", "Dependencies"), ("versions", "Versions"), ("tags", "Dist-tags") };
+        }
+
+        <div class="package-tabs"
+             x-data="{ tab: 'readme', keys: [@Html.Raw(string.Join(", ", tabs.Select(t => "'" + t.Key + "'")))], selectFromHash() { var key = location.hash.replace('#tab-', ''); if (this.keys.indexOf(key) >= 0) this.tab = key; } }"
+             x-init="selectFromHash()">
+
+            <ul class="nav package-tab-list">
+                @foreach (var tab in tabs)
+                {
+                    <li x-bind:class="{ active: tab === '@tab.Key' }">
+                        <a href="#tab-@tab.Key" @@click.prevent="tab = '@tab.Key'; history.replaceState(null, '', '#tab-@tab.Key')">@tab.Title</a>
+                    </li>
+                }
+            </ul>
+
+            <section id="tab-readme" class="tab-panel" x-show="tab === 'readme'">
+                @if (Model.Readme == null)
+                {
+                    <div class="package-description">@selected.Description</div>
+                }
+                else
+                {
+                    <div class="package-readme">@Model.Readme</div>
+                }
+            </section>
+
+            <section id="tab-dependencies" class="tab-panel" x-show="tab === 'dependencies'">
+                @if (dependencies.Count + peers.Count + optionals.Count == 0)
+                {
+                    <p>This version has no dependencies.</p>
+                }
+
+                @foreach (var group in new[] { ("Dependencies", dependencies), ("Peer dependencies", peers), ("Optional dependencies", optionals) })
+                {
+                    @if (group.Item2.Count > 0)
+                    {
+                        <h4>@group.Item1</h4>
+                        <ul class="list-unstyled npm-dependencies">
+                            @foreach (var dependency in group.Item2)
+                            {
+                                <li data-dependency="@dependency.Key"><code>@dependency.Key</code> @dependency.Value</li>
+                            }
+                        </ul>
+                    }
+                }
+            </section>
+
+            <section id="tab-versions" class="tab-panel" x-show="tab === 'versions'">
+                <table class="table table-condensed" id="npm-versions">
+                    <thead><tr><th>Version</th><th>Published</th><th>Size</th><th>Tags</th><th></th></tr></thead>
+                    <tbody>
+                        @foreach (var version in package.Versions.Reverse())
+                        {
+                            <tr data-version="@version.Version" class="@(version.Version == selected.Version ? "active" : "")">
+                                <td><a asp-controller="NpmBrowse" asp-action="Package" asp-route-id="@package.Name" asp-route-version="@version.Version">@version.Version</a></td>
+                                <td title="@version.Published.ToString("u")">@version.Published.Humanize()</td>
+                                <td>@version.TarballSize.Bytes().Humanize()</td>
+                                <td>@string.Join(", ", package.DistTags.Where(t => t.Value == version.Version).Select(t => t.Key))</td>
+                                <td>
+                                    @if (version.Deprecated != null)
+                                    {
+                                        <span class="label label-warning badge-deprecated" title="@version.Deprecated">Deprecated</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="tab-tags" class="tab-panel" x-show="tab === 'tags'">
+                <table class="table table-condensed" id="npm-dist-tags">
+                    <thead><tr><th>Tag</th><th>Version</th></tr></thead>
+                    <tbody>
+                        @foreach (var tag in package.DistTags.OrderBy(t => t.Key, StringComparer.Ordinal))
+                        {
+                            <tr data-tag="@tag.Key">
+                                <td><code>@tag.Key</code></td>
+                                <td><a asp-controller="NpmBrowse" asp-action="Package" asp-route-id="@package.Name" asp-route-version="@tag.Value">@tag.Value</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </article>
+
+    <aside class="col-sm-3 package-details-info">
+        <div>
+            <h2>Info</h2>
+            <ul class="list-unstyled ms-Icon-ul">
+                <li><i class="ms-Icon ms-Icon--Calendar ms-Icon-li"></i> Last updated <span title="@package.Modified.ToString("u")">@package.Modified.Humanize()</span></li>
+                <li><i class="ms-Icon ms-Icon--Download ms-Icon-li"></i> <a href="@Model.TarballUrl" id="npm-tarball">Download the tarball</a> (@selected.TarballSize.Bytes().Humanize())</li>
+                @if (selected.License != null)
+                {
+                    <li><i class="ms-Icon ms-Icon--Certificate ms-Icon-li"></i> License: @selected.License</li>
+                }
+                <li><i class="ms-Icon ms-Icon--Link ms-Icon-li"></i> Integrity: <code title="@selected.Integrity">@selected.Integrity.Substring(0, Math.Min(18, selected.Integrity.Length))…</code></li>
+            </ul>
+        </div>
+
+        @if (Model.Owners.Count > 0)
+        {
+            <div>
+                <h2>Owners</h2>
+                <ul class="list-unstyled" id="npm-owners">
+                    @foreach (var owner in Model.Owners)
+                    {
+                        <li><a href="@Url.Action("Profile", "Profile", new { name = owner, repo = (string?)null })">@owner</a></li>
+                    }
+                </ul>
+            </div>
+        }
+
+        @if (Model.CanManage)
+        {
+            <div>
+                <h2>Manage</h2>
+                <p><a asp-controller="NpmManage" asp-action="Index" asp-route-id="@package.Name" id="npm-manage-link">Manage this package</a></p>
+            </div>
+        }
+    </aside>
+</div>

@@ -1,0 +1,124 @@
+@model BaGet.Web.Application.Models.Docker.DockerImagesViewModel
+
+@{
+    ViewData["Title"] = "Docker images";
+    ViewData["HideSearchBar"] = true;
+}
+
+<div class="col-sm-12" id="docker-images">
+    <h1>Docker images</h1>
+    <hr class="breadcrumb-divider" />
+
+    <form action="@Url.Action("Images", "DockerBrowse")" method="get" class="home-search" id="docker-search-form">
+        <div class="input-group">
+            <input type="text" name="q" value="@Model.Query" class="form-control" autocomplete="off" placeholder="Search by image name..." />
+            <span class="input-group-btn">
+                <button type="submit" class="btn btn-default" title="Search for images">
+                    <span class="ms-Icon ms-Icon--Search" aria-hidden="true"></span>
+                </button>
+            </span>
+        </div>
+    </form>
+
+    <p id="docker-registry">
+        Registry: <code>@Model.Host/@Model.RepositoryName</code>
+        &middot; @(Model.IsRemote ? "pull through it with the Docker CLI (see below); what is pulled is cached here." : "push and pull with the Docker CLI (see below).")
+    </p>
+
+    @if (Model.Result.Images.Count == 0)
+    {
+        <div id="docker-no-results">
+            <h2>Oops, nothing here...</h2>
+            <p>
+                @(string.IsNullOrWhiteSpace(Model.Query) ? (Model.IsRemote ? "This repository has cached no image yet." : "This repository holds no image yet.") : "No image matches that text.")
+                @if (Model.IsRemote)
+                {
+                    <text>Pull one through it with <code>docker pull</code> (see below); the upstream's images are cached the first time they are pulled.</text>
+                }
+                else
+                {
+                    <text>Push one with <code>docker push</code> (see below).</text>
+                }
+            </p>
+        </div>
+    }
+    else
+    {
+        <p class="text-muted" id="docker-total">@Model.Result.Total image@(Model.Result.Total == 1 ? "" : "s")</p>
+
+        <div class="search-results">
+            @foreach (var image in Model.Result.Images)
+            {
+                <div class="search-result package-card" data-package="@image.Name">
+                    <div class="card-body">
+                        <div class="card-heading">
+                            <a asp-controller="DockerBrowse" asp-action="Image" asp-route-image="@image.Name" class="package-title">@image.Name</a>
+                        </div>
+                        <ul class="info">
+                            <li><span><i class="ms-Icon ms-Icon--Tag"></i> @image.Tags tag@(image.Tags == 1 ? "" : "s")</span></li>
+                            <li><span><i class="ms-Icon ms-Icon--Package"></i> @image.Manifests manifest@(image.Manifests == 1 ? "" : "s")</span></li>
+                            <li><span><i class="ms-Icon ms-Icon--Database"></i> @image.Size.ToString("N0") bytes</span></li>
+                            <li>
+                                <span class="last-updated" title="@image.Modified.ToString("u")">
+                                    <i class="ms-Icon ms-Icon--Calendar"></i> Last updated @image.Modified.Humanize()
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @if (Model.PageIndex > 1 || Model.HasNext)
+        {
+            <nav aria-label="Search page navigation">
+                <ul class="pager">
+                    @if (Model.PageIndex > 1)
+                    {
+                        <li><a href="@Url.Action("Images", "DockerBrowse", new { q = Model.Query, p = Model.PageIndex - 1 })">Previous</a></li>
+                    }
+
+                    @if (Model.HasNext)
+                    {
+                        <li><a href="@Url.Action("Images", "DockerBrowse", new { q = Model.Query, p = Model.PageIndex + 1 })">Next</a></li>
+                    }
+                </ul>
+            </nav>
+        }
+    }
+
+    <h2>With the Docker CLI</h2>
+    @if (Model.IsRemote)
+    {
+        <p id="docker-remote-note">This repository caches an upstream registry: it takes no pushes. Manifests and layers are fetched from the upstream when first pulled and served from here afterwards.</p>
+    }
+    else if (Model.IsVirtual)
+    {
+        <p id="docker-virtual-note">This repository merges other repositories: a pull is answered by the first member, in order, that has the image; a push goes to its deploy repository.</p>
+    }
+
+    <p>
+        Sign in with your user name and an API key as the password (<a href="@Url.Action("ApiKeysIndex", "AccountSettings")">create one</a>); Docker then asks the registry for a short-lived token for each image. The image name starts with the repository (<code>@Model.RepositoryName</code>).
+    </p>
+    <div class="tabbed-info" x-data="{ active: 0 }">
+        <ul class="nav">
+            @for (var i = 0; i < Model.CommandTabs.Count; i++)
+            {
+                <li x-bind:class="{ active: active === @i }">
+                    <a href="#docker-commands-@i" @@click.prevent="active = @i">@Model.CommandTabs[i].Name</a>
+                </li>
+            }
+        </ul>
+
+        @for (var i = 0; i < Model.CommandTabs.Count; i++)
+        {
+            var snippet = Model.CommandTabs[i];
+
+            <div class="content install-pane" id="docker-commands-@i" x-show="active === @i">
+                <div class="script">
+                    <pre class="snippet" data-snippet="@snippet.Name">@string.Join("\n", snippet.Lines ?? [])</pre>
+                </div>
+            </div>
+        }
+    </div>
+</div>

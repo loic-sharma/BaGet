@@ -1,0 +1,24 @@
+# The image is built from Directory.Build.props, SignKey.snk and src/ only (see Dockerfile).
+**/bin/
+**/obj/
+**/*.user
+.git/
+.vs/
+.config/
+.devcontainer/
+.github/
+Packages/
+TestResults/
+tests/
+samples/
+docs/
+
+# Local data and settings of a developer's run of src/BaGet: never in the image.
+src/BaGet/appsettings.Overrides.json
+src/BaGet/baget.db*
+src/BaGet/catalog/
+src/BaGet/packages/
+src/BaGet/symbols/
+src/BaGet/staging/
+src/BaGet/logs/
+src/BaGet/Properties/launchSettings.json

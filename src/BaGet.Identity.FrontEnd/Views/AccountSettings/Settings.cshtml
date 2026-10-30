@@ -1,0 +1,164 @@
+@model BaGet.Identity.Application.Models.Settings.SettingsViewModel
+@{
+    ViewData["Title"] = "Account settings";
+}
+
+<div class="col-sm-8">
+    <h1>Account settings</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-success" role="alert">@Model.Message</div>
+    }
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert">@Model.Error</div>
+    }
+    @if (Model.Blockers != null)
+    {
+        @if (Model.Blockers.LastOwnerPackageIds.Count > 0)
+        {
+            <div class="alert alert-warning" role="alert">
+                <p>You are the only owner of these packages. Add another owner first:</p>
+                <ul id="last-owner-packages">
+                    @foreach (var package in Model.Blockers.LastOwnerPackages)
+                    {
+                        <li>
+                            <a href="@Url.Content(RepositoryPageLinks.Manage(package.RepositoryName, package.PackageId, package.Format))">@package.PackageId</a>
+                            @if (package.RepositoryKey != BaGet.Core.Repository.DefaultKey)
+                            {
+                                <span class="text-muted">in repository @package.RepositoryName</span>
+                            }
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+        @if (Model.Blockers.LastAdministrator)
+        {
+            <div class="alert alert-warning" role="alert">You are the last administrator. Promote another user first.</div>
+        }
+        @if (Model.Blockers.Organizations.Count > 0)
+        {
+            <div class="alert alert-warning" role="alert">
+                <p>These organizations would be left without an administrator or without anyone to run their packages. Make someone else an administrator first:</p>
+                <ul>
+                    @foreach (var name in Model.Blockers.Organizations)
+                    {
+                        <li>@name</li>
+                    }
+                </ul>
+            </div>
+        }
+    }
+
+    <h2>Email</h2>
+    <p>
+        @(string.IsNullOrEmpty(Model.Email) ? "No email address." : Model.Email)
+        @if (!string.IsNullOrEmpty(Model.Email) && Model.CanSendEmail)
+        {
+            <span class="label @(Model.EmailConfirmed ? "label-success" : "label-warning")">@(Model.EmailConfirmed ? "confirmed" : "unconfirmed")</span>
+        }
+    </p>
+    <form method="post" asp-controller="AccountSettings" asp-action="Settings" asp-route-handler="ChangeEmail">
+        <div class="form-group">
+            <label for="newEmail">New email address</label>
+            <input id="newEmail" name="newEmail" type="email" class="form-control" autocomplete="email" />
+            @if (Model.CanSendEmail)
+            {
+                <p class="help-block">We send a link to the new address; it changes when you follow it.</p>
+            }
+        </div>
+        @if (Model.HasPassword)
+        {
+            <div class="form-group">
+                <label for="emailPassword">Your password</label>
+                <input id="emailPassword" name="password" type="password" class="form-control" autocomplete="off" />
+            </div>
+        }
+        else
+        {
+            <partial name="~/Views/Shared/_Reauthenticate.cshtml" model="@(new ReauthenticateView(Model.Reauthenticated, Model.CanReauthenticate, "/Account/Settings"))" />
+        }
+        <button type="submit" class="btn btn-primary">Change email</button>
+    </form>
+
+    <h2>Password</h2>
+    <form method="post" asp-controller="AccountSettings" asp-action="Settings" asp-route-handler="ChangePassword">
+        @if (Model.HasPassword)
+        {
+            <div class="form-group">
+                <label for="currentPassword">Current password</label>
+                <input id="currentPassword" name="currentPassword" type="password" class="form-control" autocomplete="current-password" />
+            </div>
+        }
+        <div class="form-group">
+            <label for="newPassword">New password</label>
+            <input id="newPassword" name="newPassword" type="password" class="form-control" autocomplete="new-password" />
+        </div>
+        <div class="form-group">
+            <label for="confirmPassword">Confirm new password</label>
+            <input id="confirmPassword" name="confirmPassword" type="password" class="form-control" autocomplete="new-password" />
+        </div>
+        @if (!Model.HasPassword)
+        {
+            <partial name="~/Views/Shared/_Reauthenticate.cshtml" model="@(new ReauthenticateView(Model.Reauthenticated, Model.CanReauthenticate, "/Account/Settings"))" />
+        }
+        <button type="submit" class="btn btn-primary">@(Model.HasPassword ? "Change password" : "Set password")</button>
+    </form>
+
+    @if (Model.ExternalLogins.Count > 0)
+    {
+        <h2 id="external-logins">Sign-in providers</h2>
+        <p>Link more than one provider to sign in with either. Linking and unlinking ask for your password.</p>
+        <table class="table table-condensed">
+            <tbody>
+                @foreach (var login in Model.ExternalLogins)
+                {
+                    <tr data-provider="@login.Id">
+                        <td>@login.DisplayName</td>
+                        <td>@(login.Linked ? "Linked" : "Not linked")</td>
+                        <td>
+                            <form method="post" asp-controller="AccountSettings" asp-action="Settings" asp-route-handler="@(login.Linked ? "UnlinkExternal" : "LinkExternal")" class="form-inline">
+                                <input type="hidden" name="provider" value="@login.Id" />
+                                @if (Model.HasPassword)
+                                {
+                                    <input name="password" type="password" class="form-control input-sm" placeholder="Your password" autocomplete="off" />
+                                }
+                                else
+                                {
+                                    <partial name="~/Views/Shared/_Reauthenticate.cshtml" model="@(new ReauthenticateView(Model.Reauthenticated, Model.CanReauthenticate, "/Account/Settings"))" />
+                                }
+                                <button type="submit" class="btn btn-default btn-xs">@(login.Linked ? "Unlink" : "Link")</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <h2>Two-factor authentication</h2>
+    <p><a asp-controller="AccountSettings" asp-action="TwoFactor">Manage two-factor authentication</a></p>
+
+    <h2>Delete account</h2>
+    <p>
+        This removes your account, your API keys and your organization memberships, and cannot be undone.
+        You cannot delete it while you are the only owner of a package.
+    </p>
+    <form method="post" asp-controller="AccountSettings" asp-action="Settings" asp-route-handler="Delete">
+        @if (Model.HasPassword)
+        {
+            <div class="form-group">
+                <label for="deletePassword">Your password</label>
+                <input id="deletePassword" name="password" type="password" class="form-control" autocomplete="off" />
+            </div>
+        }
+        else
+        {
+            <partial name="~/Views/Shared/_Reauthenticate.cshtml" model="@(new ReauthenticateView(Model.Reauthenticated, Model.CanReauthenticate, "/Account/Settings"))" />
+        }
+        <button type="submit" class="btn btn-danger">Delete my account</button>
+    </form>
+</div>

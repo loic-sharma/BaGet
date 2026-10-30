@@ -1,0 +1,50 @@
+@model BaGet.Identity.Application.Models.Policies.ScanViewModel
+@{
+    ViewData["Title"] = "Scan " + Model.Name;
+}
+
+<div class="col-sm-12" id="scan-page">
+    <h1>Vulnerability scan <small>@Model.Name @Model.Version</small></h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Message != null)
+    {
+        <div class="alert @(Model.Failed ? "alert-danger" : "alert-success")" role="alert" id="scan-message">@Model.Message</div>
+    }
+
+    @if (Model.Engine is { Available: false })
+    {
+        <div class="alert alert-warning" role="alert" id="scan-unavailable">@Model.Engine.Reason</div>
+    }
+
+    @if (Model.Result != null)
+    {
+        <p id="scan-summary">
+            @if (Model.Result.ScannedAt != null)
+            {
+                <span>Last scanned @Model.Result.ScannedAt.Value.ToString("u") by @Model.Result.Scanner: @Model.Result.FindingCount finding(s).</span>
+            }
+            else
+            {
+                <span>Never scanned successfully.</span>
+            }
+            @if (Model.Result.Error != null)
+            {
+                <span class="text-danger"> The last attempt failed: @Model.Result.Error</span>
+            }
+        </p>
+        <partial name="~/Views/Shared/_ScanFindingsTable.cshtml" model="Model.Result" />
+    }
+
+    @if (Model.Engine is not { Available: false })
+    {
+        <form method="post" id="scan-form">
+            <input type="hidden" name="Name" value="@Model.Name" />
+            <input type="hidden" name="Version" value="@Model.Version" />
+            <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
+            <button type="submit" class="btn btn-primary">Scan now</button>
+        </form>
+    }
+
+    <p><a href="@Model.BackUrl" id="scan-back">Back</a></p>
+</div>

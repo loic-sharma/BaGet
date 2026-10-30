@@ -1,0 +1,216 @@
+@model BaGet.Identity.Application.Models.Repositories.RepositoriesViewModel
+@{
+    ViewData["Title"] = "Repositories";
+}
+
+<div class="col-sm-12">
+    <h1>Repositories</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-success" role="alert" id="repositories-message">@Model.Message</div>
+    }
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert" id="repositories-error">@Model.Error</div>
+    }
+
+    <p class="help-block"><a id="formats-link" href="@Url.Action("Formats", "AdminOperations")">Package formats</a> this server can host.</p>
+
+    <form method="get" class="form-inline" id="repositories-filter" style="margin-bottom: 10px;">
+        <input type="text" name="q" value="@Model.FilterName" class="form-control" placeholder="Name contains" autocomplete="off" />
+        <select name="format" class="form-control">
+            <option value="">Any format</option>
+            @foreach (var module in Model.AllFormats)
+            {
+                <option value="@module.Format" selected="@string.Equals(Model.FilterFormat, module.Format.ToString(), StringComparison.OrdinalIgnoreCase)">@module.Format</option>
+            }
+        </select>
+        <select name="kind" class="form-control">
+            <option value="">Any kind</option>
+            @foreach (var kind in new[] { "Local", "Remote", "Virtual" })
+            {
+                <option value="@kind" selected="@string.Equals(Model.FilterKind, kind, StringComparison.OrdinalIgnoreCase)">@kind</option>
+            }
+        </select>
+        <button type="submit" class="btn btn-default">Filter</button>
+        @if (Model.FilterName != null || Model.FilterFormat != null || Model.FilterKind != null)
+        {
+            <a href="@Url.Action("Index", "AdminRepositories")">Clear</a>
+        }
+    </form>
+
+    <table class="table" id="repositories-table">
+        <thead>
+            <tr><th>Name</th><th>Type</th><th>Packages</th><th>Feed</th><th></th></tr>
+        </thead>
+        <tbody>
+            @foreach (var repository in Model.Repositories)
+            {
+                var feed = Model.FeedUrl(repository);
+                <tr data-repository="@repository.Name">
+                    <td>
+                        @repository.Name
+                        @if (repository.IsDefault)
+                        {
+                            <span class="label label-info">Default</span>
+                        }
+                    </td>
+                    <td>@repository.Format / @repository.Kind</td>
+                    <td>@(repository.Kind == BaGet.Core.RepositoryKind.Virtual ? "-" : repository.PackageCount.ToString())</td>
+                    <td>
+                        <code class="repository-feed">@feed</code>
+                        <button type="button" class="btn btn-default btn-xs" data-copy="@feed"
+                                onclick="navigator.clipboard && navigator.clipboard.writeText(this.getAttribute('data-copy'))">
+                            Copy
+                        </button>
+                    </td>
+                    <td>
+                        @foreach (var link in Model.LinksOf(repository))
+                        {
+                            <a class="repository-@link.Id" href="@(link.Controller != null && link.Action != null ? Url.Action(link.Action, link.Controller, new { repo = repository.IsDefault ? null : repository.Name }) ?? string.Empty : Model.BaseUrl(repository) + link.Path)">@link.Label</a>
+                            <span> | </span>
+                        }
+                        <a href="@Url.Action("Edit", "AdminRepositories", new { name = repository.Name })">Edit</a>
+                        @if (!repository.IsDefault)
+                        {
+                            <span> | </span>
+                            <a href="@Url.Action("DeleteRepository", "AdminRepositories", new { name = repository.Name })">Delete</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h2>New repository</h2>
+    @if (!Model.CanCreate)
+    {
+        <div class="alert alert-warning" role="alert" id="repositories-unsupported">
+            The configured database supports only the <code>default</code> repository. Use SQLite, SQL Server, PostgreSQL or MySQL to create more.
+        </div>
+    }
+    else
+    {
+        <form method="post" class="form-inline" id="repository-create-form">
+            <div class="form-group">
+                <label for="repository-name">Name</label>
+                <input id="repository-name" name="name" type="text" class="form-control" value="@Model.Name" maxlength="@BaGet.Core.RepositoryNames.MaxLength" autocomplete="off" />
+            </div>
+            <button type="submit" class="btn btn-primary">Create</button>
+            <p class="help-block">Local NuGet repository. Lowercase letters, digits, <code>-</code>, <code>.</code> and <code>_</code>; it cannot be renamed later.</p>
+        </form>
+
+        @foreach (var module in Model.OtherFormats)
+        {
+            <h2>New @module.DisplayName repository</h2>
+            <form method="post" asp-controller="AdminRepositories" asp-action="Index" asp-route-handler="Format" id="format-create-form-@module.Format.ToString().ToLowerInvariant()">
+                <input type="hidden" name="format" value="@module.Format" />
+                <div class="form-group">
+                    <label for="format-name-@module.Format">Name</label>
+                    <input id="format-name-@module.Format" name="name" type="text" class="form-control" value="@(Model.Format == module.Format.ToString() ? Model.Name : null)" maxlength="@BaGet.Core.RepositoryNames.MaxLength" autocomplete="off" />
+                </div>
+                @foreach (var field in module.CreateFields)
+                {
+                    <div class="form-group">
+                        <label for="format-@module.Format-@field.Name">@field.Label</label>
+                        @if (field.Options != null)
+                        {
+                            <select id="format-@module.Format-@field.Name" name="field:@field.Name" class="form-control">
+                                @foreach (var option in field.Options)
+                                {
+                                    <option value="@option">@option</option>
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            <input id="format-@module.Format-@field.Name" name="field:@field.Name" type="text" class="form-control" required="@field.Required" autocomplete="off" />
+                        }
+                        @if (field.Help != null)
+                        {
+                            <span class="help-block">@field.Help</span>
+                        }
+                    </div>
+                }
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="anonymousRead" value="true" checked="checked" />
+                        Anonymous read: requests without credentials may read it
+                    </label>
+                    <input type="hidden" name="anonymousRead" value="false" />
+                </div>
+                <button type="submit" class="btn btn-primary">Create @module.DisplayName repository</button>
+            </form>
+        }
+
+        <h2>New virtual repository</h2>
+        <p class="help-block">
+            Presents several repositories of one format (local, remote or other virtual ones) as one feed: the first member that has a
+            package answers, version lists and search merge them (an npm package's dist-tags and a Maven artifact's <code>latest</code> and <code>release</code> follow the member order), and uploads go
+            to the member you pick as the deploy repository. Created empty; you add the members on its page.
+        </p>
+        <form method="post" asp-controller="AdminRepositories" asp-action="Index" asp-route-handler="Virtual" class="form-inline" id="virtual-create-form">
+            <div class="form-group">
+                <label for="virtual-format">Format</label>
+                <select id="virtual-format" name="format" class="form-control">
+                    @foreach (var module in Model.VirtualFormats)
+                    {
+                        <option value="@module.Format">@module.DisplayName</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="virtual-name">Name</label>
+                <input id="virtual-name" name="name" type="text" class="form-control" value="@Model.Name" maxlength="@BaGet.Core.RepositoryNames.MaxLength" autocomplete="off" />
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="anonymousRead" value="true" checked="checked" id="virtual-anonymous-read" />
+                    Anonymous read: requests without credentials may read it (a member is still only read when the caller may read that member)
+                </label>
+                <input type="hidden" name="anonymousRead" value="false" />
+            </div>
+            <button type="submit" class="btn btn-primary">Create virtual repository</button>
+        </form>
+
+        <h2>New remote repository</h2>
+        <p class="help-block">
+            Caches another feed or registry (NuGet: nuget.org, another BaGet, Artifactory, Azure Artifacts...; npm: registry.npmjs.org,
+            Verdaccio, Artifactory...; Maven: Maven Central, Artifactory, Nexus...): a package not stored here is fetched from the upstream
+            the first time it is requested. Clients cannot push to it.
+        </p>
+        <form method="post" asp-controller="AdminRepositories" asp-action="Index" asp-route-handler="Remote" id="remote-create-form">
+            <div class="form-group">
+                <label for="remote-format">Format</label>
+                <select id="remote-format" name="format" class="form-control">
+                    @foreach (var module in Model.RemoteFormats)
+                    {
+                        <option value="@module.Format" selected="@(Model.Format == module.Format.ToString())">@module.DisplayName</option>
+                    }
+                </select>
+                <span class="help-block">NuGet: a V3 <code>index.json</code> or V2 feed URL. npm: the registry's base URL, such as <code>https://registry.npmjs.org/</code>. Maven: the root of the repository, such as <code>https://repo.maven.apache.org/maven2/</code> (Maven Central). Docker: the registry's address, such as <code>https://registry-1.docker.io</code> (Docker Hub).</span>
+            </div>
+            <div class="form-group">
+                <label for="remote-name">Name</label>
+                <input id="remote-name" name="name" type="text" class="form-control" value="@Model.Name" maxlength="@BaGet.Core.RepositoryNames.MaxLength" autocomplete="off" />
+            </div>
+            <partial name="~/Views/Shared/_RemoteFields.cshtml" for="Remote" />
+            <div class="form-group">
+                <label for="remote-anonymous-read">Who may read it</label>
+                <select id="remote-anonymous-read" name="anonymousRead" class="form-control">
+                    <option value="" selected="selected">Default: anyone, unless a user name or password is set (then signed-in users only)</option>
+                    <option value="true">Anyone, including requests without credentials</option>
+                    <option value="false">Only callers the access model allows</option>
+                </select>
+                <span class="help-block">
+                    Whatever the upstream credentials can fetch is served to the readers: do not make a credentialed upstream
+                    anonymously readable unless that is intended.
+                </span>
+            </div>
+            <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("createRemotePassword")" />
+            <button type="submit" class="btn btn-primary">Create remote repository</button>
+        </form>
+    }
+</div>

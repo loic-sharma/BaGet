@@ -1,0 +1,102 @@
+@model BaGet.Identity.Application.Models.Settings.ClusterViewModel
+@{
+    ViewData["Title"] = "Cluster";
+}
+
+<div class="col-sm-12">
+    <h1>Cluster</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (!Model.Status.Enabled)
+    {
+        <div class="alert alert-info" role="alert" id="cluster-off">
+            This server runs alone (<code>Ha:Enabled</code> is off). To run several nodes behind a load balancer see
+            <a href="https://pieroviano.github.io/BaGet/high-availability/">High availability</a>; the settings are in the <em>Ha</em> section of
+            <a href="@Url.Action("Index", "AdminSettings")">Server settings</a> and need a restart.
+        </div>
+    }
+    else
+    {
+        <p class="help-block">
+            This node is <strong id="cluster-this-node">@Model.Status.ThisNode</strong>; the nodes share <span id="cluster-backend">@Model.Status.Backend</span>
+            (<span id="cluster-backend-state" class="label @(Model.Status.BackendReachable ? "label-success" : "label-danger")">@(Model.Status.BackendReachable ? "reachable" : "not reachable")</span>).
+            A node is listed while its heartbeat is recent; a job lease belongs to the node named and expires if that node stops.
+        </p>
+    }
+
+    @if (Model.Status.GateReason != null)
+    {
+        <div class="alert alert-warning" role="alert" id="cluster-gate">Read-only: @Model.Status.GateReason</div>
+    }
+
+    <h2>Nodes</h2>
+    <table class="table" id="cluster-nodes">
+        <thead>
+            <tr><th>Node</th><th>Version</th><th>Started (UTC)</th><th>Last heartbeat (UTC)</th><th>Health</th><th>Read-only</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var node in Model.Status.Nodes)
+            {
+                <tr data-node="@node.Id">
+                    <td>@node.Id@(node.Id == Model.Status.ThisNode ? " (this node)" : "")</td>
+                    <td>@node.Version</td>
+                    <td>@node.Started.ToString("u")</td>
+                    <td>@node.Seen.ToString("u")</td>
+                    <td>
+                        @if (node.Ready)
+                        {
+                            <span class="label label-success">ready</span>
+                        }
+                        else
+                        {
+                            <span class="label label-danger">not ready</span> <small>@node.Problem</small>
+                        }
+                    </td>
+                    <td>@(node.GateClosed ? "yes" : "no")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h2>Job leases</h2>
+    @if (Model.Status.Leases.Count == 0)
+    {
+        <p class="text-muted" id="cluster-no-leases">No job is running.</p>
+    }
+    else
+    {
+        <table class="table" id="cluster-leases">
+            <thead>
+                <tr><th>Job</th><th>Held by</th><th>Since (UTC)</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var lease in Model.Status.Leases)
+                {
+                    <tr data-job="@lease.Job">
+                        <td><code>@lease.Job</code></td>
+                        <td>@lease.Node</td>
+                        <td>@lease.Since.ToString("u")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <h2>This node's health checks</h2>
+    <p class="help-block">The same checks as <code>/health/ready</code>, checked @Model.Status.Readiness.CheckedAt.ToString("u"). <a href="@Url.Action("Cluster", "AdminOperations", new { refresh = true })" id="cluster-refresh">Check again</a></p>
+    <table class="table" id="cluster-health">
+        <thead>
+            <tr><th>Check</th><th>Result</th><th>Detail</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var probe in Model.Status.Readiness.Probes)
+            {
+                <tr data-check="@probe.Name">
+                    <td>@probe.Name</td>
+                    <td><span class="label @(probe.Healthy ? "label-success" : (probe.Informational ? "label-warning" : "label-danger"))">@(probe.Healthy ? "healthy" : "unhealthy")</span></td>
+                    <td>@probe.Detail@(probe.Informational ? " (reported only: does not affect readiness)" : "")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,10 +1,12 @@
 using System.ComponentModel.DataAnnotations;
+using BaGet.Core;
 
-namespace BaGet.Azure
+namespace BaGet.Azure;
+
+[RestartRequired]
+public class AzureTableOptions
 {
-    public class AzureTableOptions
-    {
-        [Required]
-        public string ConnectionString { get; set; }
-    }
+    [Required]
+    [SensitiveSetting]
+    public string? ConnectionString { get; set; }
 }

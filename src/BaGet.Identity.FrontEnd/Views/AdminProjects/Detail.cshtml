@@ -1,0 +1,178 @@
+@using BaGet.Frontend.Mvc.Screens
+@model BaGet.Identity.Application.Models.Access.ProjectDetailViewModel
+@{
+    ViewData["Title"] = "Project " + Model.Name;
+    var project = Model.Project?.Project;
+}
+
+<div class="col-sm-12">
+    <h1>Project @project?.Name</h1>
+    <hr class="breadcrumb-divider" />
+
+    <p><a asp-controller="AdminProjects" asp-action="Index">Back to projects</a></p>
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-success" role="alert" id="project-message">@Model.Message</div>
+    }
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert" id="project-error">@Model.Error</div>
+    }
+
+    <p>@project?.DisplayName</p>
+    <p class="help-block">Changing members, repositories and deleting the project ask for your password again.</p>
+
+    <section id="project-section-repositories">
+        <h2>Repositories</h2>
+        @if (Model.Project?.Repositories.Count == 0)
+        {
+            <p id="project-no-repositories">The project has no repositories.</p>
+        }
+        else
+        {
+            <form method="post" id="repositories-form">
+                <table class="table" id="project-repositories">
+                    <tbody>
+                        @foreach (var repository in Model.Project!.Repositories)
+                        {
+                            <tr data-repository="@repository">
+                                <td><a href="@Url.Action("Edit", "AdminRepositories", new { name = repository })">@repository</a></td>
+                                <td>
+                                    @if (Model.IsServerAdministrator)
+                                    {
+                                        <button type="submit" class="btn btn-danger btn-xs" asp-controller="AdminProjects" asp-action="Detail" asp-route-name="@Model.Name" asp-route-handler="UnassignRepository" name="repository" value="@repository">Remove from project</button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                @if (Model.IsServerAdministrator)
+                {
+                    <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("repositoriesPassword")" />
+                }
+            </form>
+        }
+
+        @if (Model.IsServerAdministrator && Model.Assignable.Count > 0)
+        {
+            <form method="post" class="form-inline" id="assign-repository-form">
+                <select name="repository" class="form-control" id="assign-repository">
+                    @foreach (var repository in Model.Assignable)
+                    {
+                        <option value="@repository">@repository</option>
+                    }
+                </select>
+                <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("assignPassword")" />
+                <button type="submit" class="btn btn-primary" asp-controller="AdminProjects" asp-action="Detail" asp-route-name="@Model.Name" asp-route-handler="AssignRepository">Add to project</button>
+                <span class="help-block">A repository is in at most one project: adding it here takes it out of another.</span>
+            </form>
+        }
+    </section>
+
+    @if (Model.IsServerAdministrator)
+    {
+        <section id="project-section-scanning">
+            <h2>Scanning policy</h2>
+            <p>The vulnerability scanning policy of the project (warn, block download, block deploy) applies to its repositories that have none of their own. <a asp-controller="AdminScanning" asp-action="Project" asp-route-name="@project?.Name" id="project-scanning-link">Edit the scanning policy</a>.</p>
+        </section>
+    }
+
+    <section id="project-section-members">
+        <h2>Members</h2>
+        <p class="help-block">Viewer: Read. Developer: Read, Annotate, Deploy. Admin: every action, and manages this project's members and permission targets.</p>
+        @if (Model.Project?.Members.Count == 0)
+        {
+            <p id="project-no-members">The project has no members.</p>
+        }
+        else
+        {
+            <form method="post" id="members-form">
+                <table class="table" id="project-members">
+                    <thead><tr><th>Member</th><th>Role</th><th></th></tr></thead>
+                    <tbody>
+                        @foreach (var member in Model.Project!.Members)
+                        {
+                            <tr data-member="@member.Principal">
+                                <td>@member.Principal</td>
+                                <td>@member.Role</td>
+                                <td>
+                                    <button type="submit" class="btn btn-danger btn-xs"
+                                            formaction="@Url.Action("Detail", "AdminProjects", new { name = project!.Name, type = member.PrincipalType, principalId = member.PrincipalId, handler = "RemoveMember" })">Remove</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("membersPassword")" />
+            </form>
+        }
+
+        <h3>Set a member's role</h3>
+        <form method="post" id="member-form">
+            <div class="form-inline">
+                <select name="type" class="form-control" id="member-type">
+                    <option value="User">User</option>
+                    <option value="Group">Group</option>
+                </select>
+                <input type="text" name="principalName" class="form-control" id="member-name" placeholder="Name" autocomplete="off" />
+                <select name="role" class="form-control" id="member-role">
+                    @foreach (var role in Enum.GetValues<BaGet.Core.ProjectRole>())
+                    {
+                        <option value="@role">@role</option>
+                    }
+                </select>
+            </div>
+            <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("memberPassword")" />
+            <button type="submit" class="btn btn-primary" asp-controller="AdminProjects" asp-action="Detail" asp-route-name="@Model.Name" asp-route-handler="SetMember">Set role</button>
+        </form>
+    </section>
+
+    <section id="project-section-targets">
+        <h2>Permission targets</h2>
+        @if (Model.Project?.Targets.Count == 0)
+        {
+            <p id="project-no-targets">The project has no permission targets of its own.</p>
+        }
+        else
+        {
+            <table class="table" id="project-targets">
+                <thead><tr><th>Name</th><th>Repositories</th><th>Grants</th></tr></thead>
+                <tbody>
+                    @foreach (var target in Model.Project!.Targets)
+                    {
+                        <tr>
+                            <td><a href="@Url.Action("Detail", "AdminPermissions", new { name = target.Name })">@target.Name</a></td>
+                            <td><code>@AccessSupport.Join(target.RepositoryPatterns)</code></td>
+                            <td>@target.GrantCount</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        <h3>New target</h3>
+        <p class="help-block">A project target applies only to this project's repositories, whatever its repository patterns say.</p>
+        <form method="post" id="project-target-form">
+            <div class="form-group">
+                <label for="target-name">Name</label>
+                <input id="target-name" name="targetName" type="text" class="form-control" value="@Model.TargetName" maxlength="@BaGet.Core.AccessNames.MaxLength" autocomplete="off" />
+            </div>
+            <partial name="~/Views/Shared/_PatternFields.cshtml" model="@Model.Fields" />
+            <button type="submit" class="btn btn-primary" asp-controller="AdminProjects" asp-action="Detail" asp-route-name="@Model.Name" asp-route-handler="CreateTarget">Create target</button>
+        </form>
+    </section>
+
+    @if (Model.IsServerAdministrator)
+    {
+        <section id="project-section-delete">
+            <h2>Delete</h2>
+            <p class="help-block">Removes the project, its members and its permission targets with their grants. The repositories stay.</p>
+            <form method="post" id="delete-form">
+                <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("deletePassword")" />
+                <button type="submit" class="btn btn-danger" asp-controller="AdminProjects" asp-action="Detail" asp-route-name="@Model.Name" asp-route-handler="Delete">Delete project</button>
+            </form>
+        </section>
+    }
+</div>

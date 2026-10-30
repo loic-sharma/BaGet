@@ -1,0 +1,37 @@
+@using BaGet.Identity.Extensions
+@model BaGet.Identity.Application.Models.Packages.UserPackagesViewModel
+@{
+    ViewData["Title"] = $"Packages of {Model.Name}";
+}
+
+<div class="col-sm-12">
+    <h1>Packages of @Model.Name</h1>
+    <hr class="breadcrumb-divider" />
+
+    <p><a asp-controller="AdminUsers" asp-action="Index">Back to users</a></p>
+
+    @if (Model.Packages.Count == 0)
+    {
+        <p id="user-packages-empty">@Model.Name does not own any package.</p>
+    }
+    else
+    {
+        <table class="table" id="user-packages">
+            <thead>
+                <tr><th>Package</th><th>Latest version</th><th>Downloads</th><th>Owners</th><th></th></tr>
+            </thead>
+            <tbody>
+                @foreach (var row in Model.Packages)
+                {
+                    <tr>
+                        <td><a href="@Url.RepositoryContent("packages/" + row.Package.Id)">@row.Package.Id</a></td>
+                        <td>@(row.Package.LatestVersion ?? "None")</td>
+                        <td>@row.Package.Downloads.ToString("N0")</td>
+                        <td>@string.Join(", ", row.Owners)</td>
+                        <td><a href="@Url.RepositoryContent("packages/" + row.Package.Id + "/manage")">Manage</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

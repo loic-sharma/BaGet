@@ -1,0 +1,422 @@
+@using BaGet.Frontend.Mvc.Screens
+@model BaGet.Identity.Application.Models.Repositories.RepositoryEditViewModel
+@{
+    ViewData["Title"] = "Repository " + Model.Name;
+}
+
+<div class="col-sm-12">
+    <h1>Repository @Model.Name</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-success" role="alert" id="repository-message">@Model.Message</div>
+    }
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert" id="repository-error">@Model.Error</div>
+    }
+
+    <dl>
+        <dt>Type</dt>
+        <dd>@Model.Repository?.Format / @Model.Repository?.Kind</dd>
+        <dt>Feed</dt>
+        <dd>
+            <code id="repository-feed">@Model.FeedUrl</code>
+            <button type="button" class="btn btn-default btn-xs" id="copy-repository-feed"
+                    onclick="navigator.clipboard && navigator.clipboard.writeText(document.getElementById('repository-feed').textContent)">
+                Copy
+            </button>
+        </dd>
+        @if (Model.Repository?.Kind == BaGet.Core.RepositoryKind.Virtual)
+        {
+            <dt>Members</dt>
+            <dd id="repository-member-count">@(Model.VirtualDetail?.Members.Count ?? 0) (stores no packages of its own)</dd>
+        }
+        else
+        {
+            <dt>@(Model.Repository?.Kind == BaGet.Core.RepositoryKind.Remote ? "Cached packages" : "Packages")</dt>
+            <dd>@Model.Repository?.PackageCount</dd>
+        }
+    </dl>
+
+    @if (Model.MirrorActive)
+    {
+        <p class="alert alert-info" id="repository-mirror-note">
+            <code>Mirror:Enabled</code> is on: this repository fetches packages it does not hold from the upstream of the remote repository
+            <a href="@Url.Action("Edit", "AdminRepositories", new { name = BaGet.Core.Repository.MirrorName })">@BaGet.Core.Repository.MirrorName</a>
+            (credentials, cache periods and offline mode are set there) and stores them here. In effect <code>default</code> is a
+            virtual repository of two members that keeps its URL: its own packages first, then that remote repository, whose
+            answers are stored in <code>default</code> itself. To put the mirror in a virtual repository of your own instead,
+            add <a href="@Url.Action("Edit", "AdminRepositories", new { name = BaGet.Core.Repository.MirrorName })">@BaGet.Core.Repository.MirrorName</a>
+            as a member there (that cache is the mirror repository's own).
+        </p>
+    }
+
+    @if (Model.ReferencedBy.Count > 0)
+    {
+        <p class="alert alert-info" id="repository-referenced-by">
+            Member of the virtual repositor@(Model.ReferencedBy.Count == 1 ? "y" : "ies"):
+            @foreach (var referenced in Model.ReferencedBy)
+            {
+                <a href="@Url.Action("Edit", "AdminRepositories", new { name = referenced })">@referenced</a>@(referenced == Model.ReferencedBy[^1] ? "" : ", ")
+            }
+            It cannot be deleted until it is removed from @(Model.ReferencedBy.Count == 1 ? "it" : "them").
+        </p>
+    }
+
+    @if (Model.RemoteDetail != null && Model.RemoteDetail.HasPassword && Model.Repository!.AnonymousRead)
+    {
+        <p class="alert alert-warning" role="alert" id="remote-anonymous-credentials">
+            This repository is readable without credentials and uses upstream credentials: anyone can download what they fetch.
+            Untick <em>Anonymous read</em> below unless that is intended.
+        </p>
+    }
+
+    <form method="post">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="anonymousRead" value="true" checked="@Model.AnonymousRead" />
+                Anonymous read: requests without credentials may read this repository
+            </label>
+            <input type="hidden" name="anonymousRead" value="false" />
+        </div>
+
+        @if (Model.RemoteDetail != null)
+        {
+            <section id="repository-section-remote">
+                <h2>Upstream</h2>
+                @if (Model.Remote.Url != null && Model.Remote.Username != null && Model.Remote.Url.StartsWith("http://", StringComparison.OrdinalIgnoreCase))
+                {
+                    <div class="alert alert-warning" role="alert" id="remote-insecure">The upstream URL is not https: the credentials travel unencrypted.</div>
+                }
+                <partial name="~/Views/Shared/_RemoteFields.cshtml" for="Remote" />
+
+                @if (Model.TestResult != null)
+                {
+                    <div class="alert @(Model.TestResult.Success ? "alert-success" : "alert-danger")" role="status" id="remote-test-result">
+                        @Model.TestResult.Message
+                        <small>(@Model.TestResult.ElapsedMilliseconds ms)</small>
+                    </div>
+                }
+                <button type="submit" class="btn btn-default" id="remote-test" asp-controller="AdminRepositories" asp-action="Edit" asp-route-name="@Model.Name" asp-route-handler="Test">Test connection</button>
+                <span class="help-block">Asks the upstream with the values above, saved or not, and saves nothing. Needs your password below, like saving does.</span>
+            </section>
+        }
+
+        @if (Model.RemoteDetail != null)
+        {
+            <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("savePassword")" />
+        }
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a class="btn btn-default" href="@Url.Action("Index", "AdminRepositories")">Cancel</a>
+    </form>
+
+    @if (Model.MavenSettings != null)
+    {
+        <h2>Maven settings</h2>
+        <form method="post" asp-controller="AdminRepositories" asp-action="Edit" asp-route-name="@Model.Name" asp-route-handler="MavenSettings" id="maven-settings-form">
+            <div class="form-group">
+                <label for="maven-policy">Versions accepted</label>
+                <select id="maven-policy" name="policy" class="form-control">
+                    @foreach (var option in new[] { BaGet.Core.MavenPolicy.Releases, BaGet.Core.MavenPolicy.Snapshots, BaGet.Core.MavenPolicy.Both })
+                    {
+                        <option value="@option" selected="@(Model.MavenSettings.Policy == option)">@option</option>
+                    }
+                </select>
+                <span class="help-block">A deploy the policy refuses is answered 409. A stricter policy deletes nothing already stored.</span>
+            </div>
+            <div class="form-group">
+                <label for="maven-redeploy">Redeploy releases</label>
+                <select id="maven-redeploy" name="redeploy" class="form-control">
+                    <option value="No" selected="@(!Model.MavenSettings.AllowRedeploy)">No</option>
+                    <option value="Yes" selected="@Model.MavenSettings.AllowRedeploy">Yes</option>
+                </select>
+                <span class="help-block">When yes, a release file that exists may be replaced by a caller who also holds the Delete permission.</span>
+            </div>
+            <div class="form-group">
+                <label for="maven-snapshot-builds">Snapshot builds kept</label>
+                <input id="maven-snapshot-builds" name="snapshotBuilds" type="number" min="0" max="@BaGet.Core.MavenRepositorySettings.MaxSnapshotBuildsLimit" class="form-control" value="@Model.MavenSettings.MaxSnapshotBuilds" />
+                <span class="help-block">0 keeps every build. Otherwise older builds of a snapshot version are deleted when a newer one arrives; an artifact's manage page cleans up on demand.</span>
+            </div>
+            <button type="submit" class="btn btn-default" id="maven-settings-save">Save Maven settings</button>
+        </form>
+    }
+
+    @if (Model.VirtualDetail != null)
+    {
+        var virtualDetail = Model.VirtualDetail;
+        <section id="repository-section-virtual">
+            <h2>Members</h2>
+            <p class="help-block">
+                A request is answered by the first member, in this order, that has the package version; the version lists, the
+                registration index (npm: the packument, whose dist-tags follow the member order; Maven: <code>maven-metadata.xml</code>,
+                whose <code>latest</code> and <code>release</code> follow the member order; Docker: a tag or digest is the first member's, the tag list is the
+                members' merged), search and autocomplete merge the members (a package in several members is one result).
+                Only the members the caller may read are asked. Uploads go to the deploy repository and need Deploy there.
+                The catalog is not served by a virtual repository.
+            </p>
+
+            @if (virtualDetail.Members.Count == 0)
+            {
+                <p id="virtual-no-members">No members yet: the repository is empty. Add one below.</p>
+            }
+            else
+            {
+                <table class="table" id="virtual-members">
+                    <thead><tr><th>#</th><th>Member</th><th>Type</th><th>Deploy</th><th></th></tr></thead>
+                    <tbody>
+                        @for (var i = 0; i < virtualDetail.Members.Count; i++)
+                        {
+                            var member = virtualDetail.Members[i];
+                            <tr data-member="@member.Name">
+                                <td>@(i + 1)</td>
+                                <td>
+                                    @if (member.Exists)
+                                    {
+                                        <a href="@Url.Action("Edit", "AdminRepositories", new { name = member.Name })">@member.Name</a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger">@member.Name</span>
+                                        <small>(no longer exists; it is skipped)</small>
+                                    }
+                                </td>
+                                <td>@(member.Repository?.Kind.ToString() ?? "-")</td>
+                                <td>@(virtualDetail.DeployRepository == member.Name ? "deploy repository" : "")</td>
+                                <td>
+                                    <form method="post" asp-controller="AdminRepositories" asp-action="Edit" asp-route-name="@Model.Name" asp-route-handler="MoveMember" class="form-inline" style="display:inline">
+                                        <input type="hidden" name="member" value="@member.Name" />
+                                        <button type="submit" name="direction" value="up" class="btn btn-default btn-xs member-up" disabled="@(i == 0)">Up</button>
+                                        <button type="submit" name="direction" value="down" class="btn btn-default btn-xs member-down" disabled="@(i == virtualDetail.Members.Count - 1)">Down</button>
+                                    </form>
+                                    <form method="post" asp-controller="AdminRepositories" asp-action="Edit" asp-route-name="@Model.Name" asp-route-handler="RemoveMember" class="form-inline" style="display:inline">
+                                        <input type="hidden" name="member" value="@member.Name" />
+                                        <button type="submit" class="btn btn-default btn-xs member-remove">Remove</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+
+            @if (Model.MemberCandidates.Count > 0)
+            {
+                <form method="post" asp-controller="AdminRepositories" asp-action="Edit" asp-route-name="@Model.Name" asp-route-handler="AddMember" class="form-inline" id="virtual-add-form">
+                    <div class="form-group">
+                        <label for="virtual-add-member">Add a member</label>
+                        <select id="virtual-add-member" name="member" class="form-control">
+                            @foreach (var candidate in Model.MemberCandidates)
+                            {
+                                <option value="@candidate.Name">@candidate.Name (@candidate.Kind)</option>
+                            }
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-default">Add at the end</button>
+                </form>
+            }
+            else
+            {
+                <p class="help-block" id="virtual-no-candidates">Every other @Model.Repository?.Format repository is already a member (or would make this one contain itself).</p>
+            }
+
+            <h3>Deploy repository</h3>
+            <form method="post" asp-controller="AdminRepositories" asp-action="Edit" asp-route-name="@Model.Name" asp-route-handler="Deploy" class="form-inline" id="virtual-deploy-form">
+                <div class="form-group">
+                    <label for="virtual-deploy">Uploads go to</label>
+                    <select id="virtual-deploy" name="deploy" class="form-control">
+                        <option value="" selected="@(virtualDetail.DeployRepository == null)">(none: no uploads)</option>
+                        @foreach (var member in virtualDetail.Members.Where(m => m.Repository != null && m.Repository.Kind != BaGet.Core.RepositoryKind.Remote))
+                        {
+                            <option value="@member.Name" selected="@(virtualDetail.DeployRepository == member.Name)">@member.Name</option>
+                        }
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-default">Save</button>
+            </form>
+            <p class="help-block" id="virtual-deploy-target">
+                @if (virtualDetail.DeployTarget != null)
+                {
+                    <text>A push to this repository is stored in <strong>@virtualDetail.DeployTarget.Name</strong>; the pusher needs Deploy there.</text>
+                }
+                else
+                {
+                    <text>No uploads: the repository has no local deploy repository. A remote repository cannot be one.</text>
+                }
+            </p>
+
+            <h3>Where would a package come from?</h3>
+            <form method="post" asp-controller="AdminRepositories" asp-action="Edit" asp-route-name="@Model.Name" asp-route-handler="Preview" class="form-inline" id="virtual-preview-form">
+                <div class="form-group">
+                    <label for="preview-package-id">@Model.PackageLabel</label>
+                    <input id="preview-package-id" name="previewPackageId" type="text" class="form-control" value="@Model.PreviewPackageId" autocomplete="off" />
+                </div>
+                <div class="form-group">
+                    <label for="preview-package-version">@Model.VersionWord</label>
+                    <input id="preview-package-version" name="previewVersion" type="text" class="form-control" value="@Model.PreviewVersion" autocomplete="off" />
+                </div>
+                <button type="submit" class="btn btn-default">Resolve</button>
+            </form>
+            <p class="help-block">Asks each member in order, without fetching or storing anything. A remote member that does not hold it yet is asked whether its upstream has it, unless an earlier member answers.</p>
+            @if (Model.Preview != null)
+            {
+                <table class="table" id="virtual-preview">
+                    <thead><tr><th>#</th><th>Member</th><th>Result</th></tr></thead>
+                    <tbody>
+                        @for (var i = 0; i < Model.Preview.Steps.Count; i++)
+                        {
+                            var step = Model.Preview.Steps[i];
+                            <tr data-member="@step.Member.Name" data-outcome="@step.Outcome" class="@(Model.Preview.Answers?.Key == step.Member.Key ? "success" : "")">
+                                <td>@(i + 1)</td>
+                                <td>@step.Member.Name (@step.Member.Kind)</td>
+                                <td>
+                                    @(step.Outcome switch
+                                    {
+                                        BaGet.Core.ResolutionOutcome.Stored => "stored here",
+                                        BaGet.Core.ResolutionOutcome.WouldFetch => "not stored yet; its upstream has it and it would be fetched on first request",
+                                        BaGet.Core.ResolutionOutcome.Unavailable => "its upstream could not be asked",
+                                        BaGet.Core.ResolutionOutcome.NotAsked => "not asked: an earlier member answers",
+                                        BaGet.Core.ResolutionOutcome.Offline => "not stored; its upstream is in offline mode, so it is not asked",
+                                        _ => "not found",
+                                    })
+                                    @if (Model.Preview.Answers?.Key == step.Member.Key)
+                                    {
+                                        <strong> - answers</strong>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <p id="virtual-preview-summary">
+                    @if (Model.Preview.Answers != null)
+                    {
+                        <text>@Model.Preview.PackageId @Model.Preview.Version comes from <strong>@Model.Preview.Answers.Name</strong>.</text>
+                    }
+                    else
+                    {
+                        <text>No member has @Model.Preview.PackageId @Model.Preview.Version.</text>
+                    }
+                </p>
+            }
+        </section>
+    }
+
+    @if (Model.RemoteDetail != null && Model.Cache != null)
+    {
+        var status = Model.Cache.Status;
+        <section id="repository-section-cache">
+            <h2>Cache</h2>
+            <table class="table" id="remote-cache">
+                <tbody>
+                    @if (Model.Repository?.Format == BaGet.Core.RepositoryFormat.Docker)
+                    {
+                        <tr><th>Stored images</th><td id="cache-packages">@Model.Cache.PackageCount manifest(s) of @Model.Cache.PackageIdCount image(s), @Model.Cache.StoredBytes.ToString("N0") bytes of layers</td></tr>
+                    }
+                    else
+                    {
+                        <tr><th>@(Model.Repository?.Format == BaGet.Core.RepositoryFormat.Maven ? "Stored artifacts" : "Stored packages")</th><td id="cache-packages">@Model.Cache.PackageCount version(s) of @Model.Cache.PackageIdCount @(Model.Repository?.Format == BaGet.Core.RepositoryFormat.Maven ? "artifact(s)" : "package(s)")</td></tr>
+                    }
+                    <tr><th>Remembered answers</th><td id="cache-entries">@status.MetadataEntries metadata, @status.NegativeEntries not found (this node, since it started)</td></tr>
+                    <tr><th>Cache hits / upstream requests</th><td id="cache-counters">@status.Hits / @status.Misses (not found from cache: @status.NegativeHits, expired served while the upstream was down: @status.StaleServed)</td></tr>
+                    <tr>
+                        <th>Upstream</th>
+                        <td id="cache-health">
+                            @if (Model.RemoteDetail.Settings.Offline)
+                            {
+                                <text>Offline mode: never contacted.</text>
+                            }
+                            else if (status.FailingSinceUtc != null)
+                            {
+                                <span class="text-danger">Failing since @status.FailingSinceUtc.Value.ToString("u"): @status.LastError</span>
+                            }
+                            else if (status.LastSuccessUtc != null)
+                            {
+                                <text>Answered at @status.LastSuccessUtc.Value.ToString("u").</text>
+                            }
+                            else
+                            {
+                                <text>Not contacted yet.</text>
+                            }
+                            @if (status.Failures > 0)
+                            {
+                                <text> @status.Failures failed attempt(s) so far.</text>
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>
+                <a id="remote-browse" href="@Url.Action(Model.BrowseScreen.Action, Model.BrowseScreen.Controller, new { repo = Model.Repository?.Name })">Browse the cached packages</a>
+            </p>
+
+            <form method="post" asp-controller="AdminRepositories" asp-action="Edit" asp-route-name="@Model.Name" asp-route-handler="Purge" id="remote-purge-form">
+                <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("purgePassword")" />
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Delete every cached package of this repository? They are fetched again when requested.');">Purge cache</button>
+                <span class="help-block">Deletes the stored packages and forgets the remembered answers.</span>
+            </form>
+
+            <form method="post" asp-controller="AdminRepositories" asp-action="Edit" asp-route-name="@Model.Name" asp-route-handler="PurgePackage" class="form-inline" id="remote-purge-package-form">
+                <div class="form-group">
+                    <label for="purge-package-id">@Model.PackageLabel</label>
+                    <input id="purge-package-id" name="packageId" type="text" class="form-control" value="@Model.PackageId" autocomplete="off" />
+                </div>
+                <div class="form-group">
+                    <label for="purge-package-version">@Model.VersionWord</label>
+                    <input id="purge-package-version" name="packageVersion" type="text" class="form-control" value="@Model.PackageVersion" placeholder="all versions" autocomplete="off" />
+                </div>
+                <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("purgePackagePassword")" />
+                <button type="submit" class="btn btn-default">Purge package</button>
+            </form>
+        </section>
+    }
+
+    @if (Model.Access != null)
+    {
+        <section id="repository-section-access">
+            <h2>Effective access</h2>
+            @if (!Model.Access.ModelAvailable)
+            {
+                <p id="repository-access-unavailable">
+                    The configured database has no access model: everyone reads and any caller with valid credentials writes, subject
+                    to package ownership.
+                </p>
+            }
+            else
+            {
+                <p class="help-block">
+                    Who holds each action here, from the <a asp-controller="AdminPermissions" asp-action="Index">permission targets</a> that match this
+                    repository and its project's roles. Server administrators hold every action. Package ownership still applies inside
+                    Deploy, Delete, Annotate and Manage. Anonymous read is <strong>@(Model.Access.AnonymousRead ? "on" : "off")</strong>@(Model.Access.AnonymousRead ? "" : ": Everyone's Read does not apply here").
+                    @if (Model.Access.Project != null)
+                    {
+                        <text>Project: <a href="@Url.Action("Detail", "AdminProjects", new { name = Model.Access.Project })">@Model.Access.Project</a>.</text>
+                    }
+                </p>
+                <table class="table" id="repository-access">
+                    <tbody>
+                        @foreach (var action in AccessSupport.AllActions)
+                        {
+                            var who = Model.Access.Who(action);
+                            var remoteDeploy = action == BaGet.Core.AccessAction.Deploy && Model.Repository?.Kind == BaGet.Core.RepositoryKind.Remote;
+                            var virtualDeploy = action == BaGet.Core.AccessAction.Deploy && Model.Repository?.Kind == BaGet.Core.RepositoryKind.Virtual;
+                            <tr data-action="@action">
+                                <th>@action</th>
+                                <td>@(remoteDeploy ? "nobody: a remote repository takes no deployments, the server caches what it fetches" : virtualDeploy ? "decided by the deploy repository (" + (Model.VirtualDetail?.DeployTarget?.Name ?? "none") + "), not here" : who.Count == 0 ? "nobody but administrators" : string.Join(", ", who))</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </section>
+    }
+
+    @if (Model.Repository != null && Model.Repository.Kind != BaGet.Core.RepositoryKind.Virtual)
+    {
+        <section id="repository-section-scanning">
+            <h2>Vulnerabilities</h2>
+            <p>Findings, the scanning policy of this repository and <em>Scan now</em>: <a asp-controller="AdminScanning" asp-action="Repository" asp-route-name="@Model.Repository.Name" id="repository-scanning-link">vulnerability dashboard</a>.</p>
+        </section>
+    }
+</div>

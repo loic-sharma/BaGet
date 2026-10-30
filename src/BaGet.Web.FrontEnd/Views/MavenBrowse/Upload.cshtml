@@ -1,0 +1,102 @@
+@model BaGet.Web.Application.Models.Maven.MavenUploadViewModel
+
+@{
+    ViewData["Title"] = "Upload Maven artifact";
+    ViewData["HideSearchBar"] = true;
+    var posted = Model.Posted;
+}
+
+<div class="col-sm-12" id="maven-upload">
+    <h1>Upload</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Message != null)
+    {
+        <div class="alert @(Model.Failed ? "alert-danger" : "alert-success")" role="alert" id="upload-message">
+            @Model.Message
+
+            @if (Model.DeployedName != null && Model.DeployedName.Contains(':') && Model.DeployedVersion != null)
+            {
+                var parts = Model.DeployedName.Split(':', 2);
+                <a asp-controller="MavenBrowse" asp-action="Artifact" asp-route-group="@parts[0]" asp-route-artifact="@parts[1]" asp-route-version="@Model.DeployedVersion">View it</a><text>.</text>
+            }
+        </div>
+    }
+
+    @if (Model.IsReadOnlyMode)
+    {
+        <p id="upload-read-only">
+            This server is in read-only mode. Nothing can be uploaded, through the browser or with <code>mvn deploy</code>, until that is turned off.
+        </p>
+    }
+    else if (Model.NothingCanAuthenticate)
+    {
+        <p id="upload-no-api-key">
+            This server has no API key configured and no accounts, so there is nothing to tell one visitor from another and nothing
+            to authenticate an upload with. Set "ApiKey", or enable "Accounts:Enabled", to upload through the browser.
+        </p>
+    }
+    else if (Model.AccountsEnabled && !Model.SignedIn)
+    {
+        <p id="upload-sign-in">
+            <a href="~/account/login?returnUrl=@Uri.EscapeDataString(Url.Action("Upload", "MavenBrowse") ?? string.Empty)">Sign in</a>
+            to upload an artifact through the browser. You can deploy with <code>mvn deploy</code> at any time, with an API key.
+        </p>
+    }
+    else
+    {
+        <form method="post" enctype="multipart/form-data" id="maven-upload-form">
+            <p>
+                Deploys to <strong>@Model.RepositoryName</strong>, which accepts
+                <strong>@(Model.Settings.Policy switch { BaGet.Core.MavenPolicy.Releases => "releases", BaGet.Core.MavenPolicy.Snapshots => "snapshots", _ => "releases and snapshots" })</strong>@(Model.Settings.AllowRedeploy ? "; a release may be deployed again" : "; a release that exists cannot be deployed again").
+                A <code>-SNAPSHOT</code> version is stored as a timestamped build, as <code>mvn deploy</code> does.
+            </p>
+            <div class="form-group">
+                <label for="groupId">Group id</label>
+                <input type="text" id="groupId" name="groupId" class="form-control" value="@posted?.GroupId" placeholder="org.acme" />
+            </div>
+            <div class="form-group">
+                <label for="artifactId">Artifact id</label>
+                <input type="text" id="artifactId" name="artifactId" class="form-control" value="@posted?.ArtifactId" placeholder="lib" />
+            </div>
+            <div class="form-group">
+                <label for="version">Version</label>
+                <input type="text" id="version" name="version" class="form-control" value="@posted?.Version" placeholder="1.0.0 or 1.0.0-SNAPSHOT" />
+            </div>
+            <div class="form-group">
+                <label for="packaging">Packaging (the extension of the file)</label>
+                <input type="text" id="packaging" name="packaging" class="form-control" value="@(posted?.Packaging ?? "jar")" />
+            </div>
+            <div class="form-group">
+                <label for="classifier">Classifier (optional: sources, javadoc...)</label>
+                <input type="text" id="classifier" name="classifier" class="form-control" value="@posted?.Classifier" />
+            </div>
+            <div class="form-group">
+                <label for="file">File</label>
+                <input type="file" id="file" name="file" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="pom">POM (optional)</label>
+                <input type="file" id="pom" name="pom" class="form-control" accept=".pom,.xml,application/xml,text/xml" />
+                <span class="help-block">Without one, a minimal POM is made from the coordinates (not for a file with a classifier).</span>
+            </div>
+            @if (Model.NeedsApiKey)
+            {
+                <div class="form-group">
+                    <label for="apiKey">API key</label>
+                    <input type="password" id="apiKey" name="apiKey" class="form-control" autocomplete="off" />
+                </div>
+            }
+            <button type="submit" class="btn btn-primary">Deploy</button>
+        </form>
+    }
+
+    <h2>With Maven</h2>
+    <p>Put the lines below in <code>~/.m2/settings.xml</code> and the POM, then run <code>@MavenSnippets.DeployCommand</code>. The repository is <code id="maven-upload-url">@Model.RepositoryUrl</code>.</p>
+    <div class="script">
+        <pre class="snippet" id="maven-settings-xml">@string.Join("\n", MavenSnippets.SettingsXml(Model.RepositoryName))</pre>
+    </div>
+    <div class="script">
+        <pre class="snippet" id="maven-distribution-management">@string.Join("\n", MavenSnippets.DistributionManagement(Model.RepositoryName, Model.RepositoryUrl))</pre>
+    </div>
+</div>

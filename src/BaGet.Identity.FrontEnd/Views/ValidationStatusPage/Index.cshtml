@@ -1,0 +1,35 @@
+@using BaGet.Identity.Extensions
+@model BaGet.Identity.Application.Models.Operations.ValidationStatusViewModel
+@{
+    ViewData["Title"] = $"Validation of {Model.Id}";
+}
+
+<div class="col-sm-12">
+    <h1>Validation of @Model.Id</h1>
+    <hr class="breadcrumb-divider" />
+
+    <p>
+        The newest submission of each version: it is <strong>Available</strong> once every step succeeded, <strong>Quarantined</strong>
+        when one failed (an administrator then retries, releases or rejects it), and <strong>Validating</strong> until then.
+        <a href="@Url.RepositoryContent(RepositoryPageLinks.Manage(null, Model.Id))">Back to managing @Model.Id</a>
+    </p>
+
+    @foreach (var submission in Model.Submissions)
+    {
+        <h2>@submission.Version <small class="validation-status">@submission.Status</small></h2>
+        <table class="table validation-steps">
+            <thead><tr><th>Step</th><th>State</th><th>Message</th><th>Completed</th></tr></thead>
+            <tbody>
+                @foreach (var step in submission.Steps)
+                {
+                    <tr>
+                        <td>@step.Type</td>
+                        <td>@step.State</td>
+                        <td>@step.Message</td>
+                        <td>@(step.Completed?.ToString("u"))</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

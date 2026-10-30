@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <PackageTags>NuGet</PackageTags>
+    <Description>BaGet Extension's shared MVC infrastructure for the screens: view controller bases, layout and shared partials, tag helpers.</Description>
+    <RootNamespace>BaGet.Frontend</RootNamespace>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <Nullable>enable</Nullable>
+    <PackageId>Extension.$(MSBuildProjectName)</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="$(MicrosoftAspNetCorePackageVersion)" />
+    <PackageReference Include="MailKit" Version="$(MailKitPackageVersion)" />
+    <PackageReference Include="Microsoft.Build.Tasks.Git" Version="10.0.402" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
+    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BaGet.Identity.Application\BaGet.Identity.Application.csproj" />
+    <ProjectReference Include="..\BaGet.Api.Base\BaGet.Api.Base.csproj" />
+    <ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
+    <ProjectReference Include="..\BaGet.Web.Application\BaGet.Web.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="BaGet.Tests" Key="$(BaGetPublicKey)" />
+    <InternalsVisibleTo Include="BaGet.Web.Tests" Key="$(BaGetPublicKey)" />
+    <InternalsVisibleTo Include="BaGet.Identity.FrontEnd" Key="$(BaGetPublicKey)" />
+    <InternalsVisibleTo Include="BaGet.Web.FrontEnd" Key="$(BaGetPublicKey)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The views are compiled into this assembly; their .cshtml are not deployment files. Publishing them would
+         collide with the other Razor library's Views/_ViewImports.cshtml and _ViewStart.cshtml (NETSDK1152). -->
+    <Content Update="Views\**\*.cshtml" CopyToPublishDirectory="Never" />
+  </ItemGroup>
+
+</Project>

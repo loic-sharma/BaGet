@@ -1,0 +1,145 @@
+@model BaGet.Identity.Application.Models.Packages.MavenManageViewModel
+@{
+    ViewData["Title"] = "Manage " + Model.Name;
+    ViewData["HideSearchBar"] = true;
+}
+
+@if (Model.Info == null)
+{
+    @* A refused write (read-only mode) shows its message even where there is nothing to list. *@
+    @if (Model.Message != null)
+    {
+        <div class="col-sm-12"><div class="alert alert-danger" role="alert" id="manage-message">@Model.Message</div></div>
+    }
+
+    return;
+}
+
+@{
+    var info = Model.Info;
+    var selected = Model.Selected;
+}
+
+<div class="col-sm-12" id="maven-manage" data-package="@info.Name">
+    <h1>Manage <a asp-controller="MavenBrowse" asp-action="Artifact" asp-route-group="@info.GroupId" asp-route-artifact="@info.ArtifactId">@info.GroupId:@info.ArtifactId</a></h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Message != null)
+    {
+        <div class="alert @(Model.Failed ? "alert-danger" : "alert-success")" role="alert" id="manage-message">@Model.Message</div>
+    }
+
+    @if (Model.ActingAsAdministrator)
+    {
+        <p class="alert alert-info" id="manage-as-admin">You are not an owner of this artifact; you manage it as an administrator. Your changes are logged.</p>
+    }
+
+    <h2>Owners</h2>
+    <table class="table table-condensed" id="maven-owners">
+        <tbody>
+            @foreach (var owner in Model.Owners)
+            {
+                <tr data-owner="@owner.OwnerName">
+                    <td>@owner.OwnerName</td>
+                    <td>
+                        <form method="post" asp-controller="MavenManage" asp-action="Index" asp-route-group="@info.GroupId" asp-route-artifact="@info.ArtifactId" asp-route-handler="RemoveOwner" class="form-inline">
+                            <input type="hidden" name="ownerName" value="@owner.OwnerName" />
+                            <button type="submit" class="btn btn-default btn-xs">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            @if (Model.Owners.Count == 0)
+            {
+                <tr><td colspan="2">No owner: only an administrator may change this artifact.</td></tr>
+            }
+        </tbody>
+    </table>
+    <form method="post" asp-controller="MavenManage" asp-action="Index" asp-route-group="@info.GroupId" asp-route-artifact="@info.ArtifactId" asp-route-handler="AddOwner" class="form-inline" id="add-owner-form">
+        <input type="text" name="ownerName" class="form-control" placeholder="User or organization" />
+        <button type="submit" class="btn btn-default">Add owner</button>
+    </form>
+
+    <h2>Versions</h2>
+    <p class="text-muted">
+        Deleting needs the Delete permission and ownership. A deleted version's files are removed for good; a release number can be deployed again.
+        Confirm with your password in the danger zone below first.
+    </p>
+    <table class="table table-condensed" id="maven-versions">
+        <thead><tr><th>Version</th><th>Stored</th><th>Files</th><th>Builds</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var version in info.Versions)
+            {
+                <tr data-version="@version.Version" class="@(version.Version == selected?.Summary.Version ? "active" : "")">
+                    <td>@version.Version @(version.IsSnapshot ? "(snapshot)" : "")</td>
+                    <td>@version.Modified.ToString("yyyy-MM-dd HH:mm") UTC</td>
+                    <td>@version.FileCount</td>
+                    <td>@(version.IsSnapshot ? version.Builds.ToString() : "")</td>
+                    <td>
+                        <a asp-controller="MavenManage" asp-action="Index" asp-route-group="@info.GroupId" asp-route-artifact="@info.ArtifactId" asp-route-version="@version.Version" class="btn btn-default btn-xs">Files</a>
+                        <button type="submit" form="confirm-form" name="version" value="@version.Version" asp-controller="MavenManage" asp-action="Index" asp-route-group="@info.GroupId" asp-route-artifact="@info.ArtifactId" asp-route-handler="DeleteVersion"
+                                class="btn btn-danger btn-xs"
+                                onclick="return confirm('Delete @version.Version with all its files? This cannot be undone. Enter your password in the danger zone below first.')">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (selected != null)
+    {
+        <h2 id="maven-files-heading">Files of @selected.Summary.Version</h2>
+        <table class="table table-condensed" id="maven-files">
+            <thead><tr><th>File</th><th>Size</th><th>SHA-1</th><th></th></tr></thead>
+            <tbody>
+                @foreach (var file in selected.Files)
+                {
+                    <tr data-file="@file.FileName">
+                        <td>@file.FileName</td>
+                        <td>@file.Size.ToString("N0") bytes</td>
+                        <td><code>@file.Sha1</code></td>
+                        <td>
+                            <button type="submit" form="confirm-form" name="fileName" value="@file.FileName" asp-controller="MavenManage" asp-action="Index" asp-route-group="@info.GroupId" asp-route-artifact="@info.ArtifactId" asp-route-version="@selected.Summary.Version" asp-route-handler="DeleteFile"
+                                    class="btn btn-danger btn-xs"
+                                    onclick="return confirm('Delete @file.FileName? This cannot be undone. Enter your password in the danger zone below first.')">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (selected.Summary.IsSnapshot)
+        {
+            <h3>Clean up snapshot builds</h3>
+            <p class="text-muted">@selected.Summary.Builds timestamped build@(selected.Summary.Builds == 1 ? "" : "s") stored. Older builds beyond the number kept are deleted with all their files.</p>
+            <form method="post" id="maven-cleanup-form" asp-controller="MavenManage" asp-action="Index" asp-route-group="@info.GroupId" asp-route-artifact="@info.ArtifactId" asp-route-handler="Cleanup" class="form-inline">
+                <input type="hidden" name="version" value="@selected.Summary.Version" />
+                <input type="number" name="keep" min="1" value="1" class="form-control" style="width: 6em" aria-label="Builds to keep" />
+                @if (Model.HasPassword)
+                {
+                    <input type="password" name="password" class="form-control" autocomplete="current-password" placeholder="Your password" aria-label="Your password" />
+                }
+                <button type="submit" class="btn btn-default" id="maven-cleanup">Keep the newest builds</button>
+            </form>
+        }
+    }
+
+    <h2>Danger zone</h2>
+    <form method="post" id="confirm-form" asp-route-group="@info.GroupId" asp-route-artifact="@info.ArtifactId" asp-route-version="@selected?.Summary.Version">
+        <p>Deleting removes files for good. Confirm it is you.</p>
+        @if (Model.HasPassword)
+        {
+            <div class="form-group">
+                <label for="deletePassword">Your password</label>
+                <input id="deletePassword" name="password" type="password" class="form-control" autocomplete="current-password" />
+            </div>
+        }
+        else
+        {
+            <partial name="~/Views/Shared/_Reauthenticate.cshtml" model="@(new ReauthenticateView(Model.Reauthenticated, Model.CanReauthenticate, Url.Action("Index", "MavenManage", new { group = info.GroupId, artifact = info.ArtifactId }) ?? string.Empty))" />
+        }
+
+        <button type="submit" asp-controller="MavenManage" asp-action="Index" asp-route-group="@info.GroupId" asp-route-artifact="@info.ArtifactId" asp-route-handler="DeleteArtifact" class="btn btn-danger" id="maven-delete-artifact"
+                onclick="return confirm('Delete @info.Name with every version? This cannot be undone.')">Delete the whole artifact</button>
+    </form>
+</div>

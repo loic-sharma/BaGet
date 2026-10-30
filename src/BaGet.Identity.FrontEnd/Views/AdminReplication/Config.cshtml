@@ -1,0 +1,127 @@
+@using BaGet.Frontend.Controllers.Base
+@model BaGet.Identity.Application.Models.Policies.ReplicationConfigViewModel
+@{
+    var config = Model.View!.Config;
+    ViewData["Title"] = "Replication " + config.Name;
+    var running = Model.Running;
+}
+
+<div class="col-sm-12">
+    <h1>@config.Name</h1>
+    <hr class="breadcrumb-divider" />
+    <p><a href="@Url.Action("Index", "AdminReplication")">All replications</a></p>
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-success" role="alert" id="replication-message">@Model.Message</div>
+    }
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert" id="replication-error">@Model.Error</div>
+    }
+    @if (Model.Test != null)
+    {
+        <div class="alert @(Model.Test.Ok ? "alert-success" : "alert-danger")" role="alert" id="replication-test-result">@Model.Test.Message (@Model.Test.ElapsedMilliseconds ms)</div>
+    }
+
+    <p id="replication-summary">
+        @ReplicationControllerBase.Describe(config):
+        repository <strong>@(Model.View.Repository ?? "(gone)")</strong>
+        @(config.Direction == BaGet.Core.ReplicationDirection.Push ? "to" : "from")
+        <strong>@config.PeerUrl</strong> repository <strong>@config.PeerRepository</strong>.
+        @(config.Enabled ? "Enabled." : "Disabled.")
+        @(Model.View.HasApiKey ? "A peer API key is stored." : "No peer API key is stored.")
+        @if (Model.LocalItems is int items) { <span id="replication-local-items">The local repository holds @items item(s).</span> }
+    </p>
+
+    <h2>Run</h2>
+    <div class="row">
+        <div class="col-sm-4">
+            <form method="post" asp-controller="AdminReplication" asp-action="Config" asp-route-key="@Model.Key" asp-route-handler="Run" id="replication-run-form">
+                <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("replication-run-password")" />
+                <button type="submit" class="btn btn-danger" disabled="@running">Run now</button>
+                <span class="help-block">Copies what the target lacks. Skips what it holds.</span>
+            </form>
+        </div>
+        <div class="col-sm-4">
+            @if (Model.Resumable != null)
+            {
+                <form method="post" asp-controller="AdminReplication" asp-action="Config" asp-route-key="@Model.Key" asp-route-handler="Resume" id="replication-resume-form">
+                    <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("replication-resume-password")" />
+                    <button type="submit" class="btn btn-warning" disabled="@running">Resume run @Model.Resumable.Key</button>
+                    <span class="help-block">Run @Model.Resumable.Key ended @Model.Resumable.Status.ToString().ToLowerInvariant(); a new run continues from what is in place.</span>
+                </form>
+            }
+        </div>
+        <div class="col-sm-4">
+            <form method="post" asp-controller="AdminReplication" asp-action="Config" asp-route-key="@Model.Key" asp-route-handler="Stop" id="replication-stop-form">
+                <button type="submit" class="btn btn-default" disabled="@(!running)">Stop</button>
+                <span class="help-block">The run ends as interrupted and can be resumed.</span>
+            </form>
+        </div>
+    </div>
+    @if (Model.Job?.Refusal != null)
+    {
+        <div class="alert alert-warning" role="alert" id="replication-job-refusal">@Model.Job.Refusal</div>
+    }
+
+    <h2>Log</h2>
+    <table class="table table-condensed" id="replication-log">
+        <thead>
+            <tr><th>Run</th><th>Started</th><th>Trigger</th><th>Status</th><th>Examined</th><th>Copied</th><th>Skipped</th><th>Deleted</th><th>Conflicts</th><th>Failed</th><th>Bytes</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var run in Model.Runs)
+            {
+                <tr data-run="@run.Key" data-status="@run.Status">
+                    <td>@run.Key@(run.ResumedFrom is int from ? " (continues " + from + ")" : "")</td>
+                    <td>@run.Started.ToString("u")@(run.Finished is DateTime done ? " to " + done.ToString("u") : "")</td>
+                    <td>@run.Trigger@(run.Actor != null ? " by " + run.Actor : "")</td>
+                    <td>@run.Status</td>
+                    <td>@run.Examined</td>
+                    <td>@run.Transferred</td>
+                    <td>@run.Skipped</td>
+                    <td>@run.Deleted</td>
+                    <td>@run.Conflicts</td>
+                    <td>@run.Failures</td>
+                    <td>@BaGet.Core.RetentionReport.FormatBytes(run.Bytes)</td>
+                </tr>
+                @if (run.Error != null || run.Detail != null)
+                {
+                    <tr class="replication-detail" data-run="@run.Key">
+                        <td></td>
+                        <td colspan="10">
+                            @if (run.Error != null) { <div class="text-danger">@run.Error</div> }
+                            @if (run.Detail != null) { <pre>@run.Detail</pre> }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    @if (!Model.Runs.Any())
+    {
+        <p id="replication-log-empty">It has not run yet.</p>
+    }
+
+    <h2>Settings</h2>
+    <form method="post" asp-controller="AdminReplication" asp-action="Config" asp-route-key="@Model.Key" asp-route-handler="Save" id="replication-edit-form" autocomplete="off">
+        <partial name="~/Views/Shared/_ReplicationFields.cshtml" model="@(new ReplicationFieldsView(Model.Form, Model.Repositories, "edit", Model.View.HasApiKey))" />
+        <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("replication-edit-password")" />
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-default" asp-controller="AdminReplication" asp-action="Config" asp-route-key="@Model.Key" asp-route-handler="Test" id="replication-test-button">Test connection</button>
+        <span class="help-block">Test connection uses the values typed above (a stored key only while the peer address is unchanged) and saves nothing.</span>
+    </form>
+
+    <h2>Delete the replication</h2>
+    <form method="post" asp-controller="AdminReplication" asp-action="Config" asp-route-key="@Model.Key" asp-route-handler="Delete" id="replication-delete-form">
+        <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("replication-delete-password")" />
+        <button type="submit" class="btn btn-danger">Delete replication</button>
+        <span class="help-block">Its log and its record of what it copied go; what it copied stays where it is.</span>
+    </form>
+</div>
+
+@if (running)
+{
+    <script>setTimeout(function () { location.reload(); }, 3000);</script>
+}

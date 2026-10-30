@@ -6,11 +6,14 @@ on:
       releaseVersion:
         description: 'Release version'
         required: true
-        default: '1.0.0-preview1'
+        default: '1.0.0'
       packageSource:
         description: 'Package source'
         required: true
         default: 'https://api.nuget.org/v3/index.json'
+
+permissions:
+  contents: read
 
 env:
   Version: ${{ github.event.inputs.releaseVersion }}
@@ -22,13 +25,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v7
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v6
       with:
-        dotnet-version: 3.1.x
+        dotnet-version: 10.0.x
+    # nuget.config lists ./Packages as a package source; it does not exist in a clean checkout.
+    - name: Create the local package source
+      run: mkdir -p Packages
     - name: Test
-      run: dotnet test --verbosity normal
+      run: dotnet test BaGet.sln --verbosity normal -p:GeneratePackageOnBuild=false
 
   release_zip:
     needs: verify
@@ -36,15 +42,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v7
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v6
       with:
-        dotnet-version: 3.1.x
+        dotnet-version: 10.0.x
+    - name: Create the local package source
+      run: mkdir -p Packages
     - name: Publish
-      run: dotnet publish src/BaGet --configuration Release --output artifacts
+      run: dotnet publish src/BaGet --configuration Release --output artifacts -p:GeneratePackageOnBuild=false
     - name: Upload
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v7
       with:
         name: BaGet
         path: artifacts
@@ -55,36 +63,48 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v7
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v6
       with:
-        dotnet-version: 3.1.x
+        dotnet-version: 10.0.x
+    - name: Create the local package source
+      run: mkdir -p Packages
+    # Packing on build as well would pack every project twice.
     - name: Pack
-      run: dotnet pack --configuration Release --output artifacts
+      run: dotnet pack BaGet.sln --configuration Release --output artifacts -p:GeneratePackageOnBuild=false
+    # Inputs and secrets go through the environment, never into the script text. A .nupkg push
+    # also pushes its .snupkg, so the symbol packages are not listed separately.
     - name: Push
-      run: dotnet nuget push "*" -s ${{ github.event.inputs.packageSource }} -k ${{secrets.NUGET_API_KEY}}
+      run: dotnet nuget push "*.nupkg" --source "$PACKAGE_SOURCE" --api-key "$NUGET_API_KEY" --skip-duplicate
       working-directory: artifacts
+      env:
+        PACKAGE_SOURCE: ${{ github.event.inputs.packageSource }}
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
 
   release_docker_image:
     needs: verify
     name: Release Docker image to Docker Hub
     runs-on: ubuntu-latest
+    env:
+      # Repository variable DOCKER_IMAGE (e.g. "myorg/baget"); defaults to "<DOCKER_USERNAME>/baget".
+      IMAGE: ${{ vars.DOCKER_IMAGE || format('{0}/baget', secrets.DOCKER_USERNAME) }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v7
 
     - name: Log in to Docker Hub
-      uses: docker/login-action@v1
+      uses: docker/login-action@v4
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build and push Docker image
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@v7
       with:
         context: .
         push: true
+        labels: org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
         tags: |
-          loicsharma/baget:latest
-          loicsharma/baget:${{ github.event.inputs.releaseVersion }}
+          ${{ env.IMAGE }}:latest
+          ${{ env.IMAGE }}:${{ github.event.inputs.releaseVersion }}

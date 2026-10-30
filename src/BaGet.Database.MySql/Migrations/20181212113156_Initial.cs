@@ -8,6 +8,8 @@ namespace BaGet.Database.MySql.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            // The eight 4000-character columns of Packages are longtext: as varchar(4000) in utf8mb4 they
+            // total over MySQL's 65,535-byte row limit, and a strict-mode server (the default since 5.7) refuses the table.
             migrationBuilder.CreateTable(
                 name: "Packages",
                 columns: table => new
@@ -15,8 +17,8 @@ namespace BaGet.Database.MySql.Migrations
                     Key = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Id = table.Column<string>(maxLength: 128, nullable: false),
-                    Authors = table.Column<string>(maxLength: 4000, nullable: true),
-                    Description = table.Column<string>(maxLength: 4000, nullable: true),
+                    Authors = table.Column<string>(type: "longtext", maxLength: 4000, nullable: true),
+                    Description = table.Column<string>(type: "longtext", maxLength: 4000, nullable: true),
                     Downloads = table.Column<long>(nullable: false),
                     HasReadme = table.Column<bool>(nullable: false),
                     Language = table.Column<string>(maxLength: 20, nullable: true),
@@ -24,14 +26,14 @@ namespace BaGet.Database.MySql.Migrations
                     MinClientVersion = table.Column<string>(maxLength: 44, nullable: true),
                     Published = table.Column<DateTime>(nullable: false),
                     RequireLicenseAcceptance = table.Column<bool>(nullable: false),
-                    Summary = table.Column<string>(maxLength: 4000, nullable: true),
+                    Summary = table.Column<string>(type: "longtext", maxLength: 4000, nullable: true),
                     Title = table.Column<string>(maxLength: 256, nullable: true),
-                    IconUrl = table.Column<string>(maxLength: 4000, nullable: true),
-                    LicenseUrl = table.Column<string>(maxLength: 4000, nullable: true),
-                    ProjectUrl = table.Column<string>(maxLength: 4000, nullable: true),
-                    RepositoryUrl = table.Column<string>(maxLength: 4000, nullable: true),
+                    IconUrl = table.Column<string>(type: "longtext", maxLength: 4000, nullable: true),
+                    LicenseUrl = table.Column<string>(type: "longtext", maxLength: 4000, nullable: true),
+                    ProjectUrl = table.Column<string>(type: "longtext", maxLength: 4000, nullable: true),
+                    RepositoryUrl = table.Column<string>(type: "longtext", maxLength: 4000, nullable: true),
                     RepositoryType = table.Column<string>(maxLength: 100, nullable: true),
-                    Tags = table.Column<string>(maxLength: 4000, nullable: true),
+                    Tags = table.Column<string>(type: "longtext", maxLength: 4000, nullable: true),
                     RowVersion = table.Column<DateTime>(rowVersion: true, nullable: true),
                     Version = table.Column<string>(maxLength: 64, nullable: false)
                 },

@@ -1,0 +1,56 @@
+@model StatisticsViewModel
+
+@{
+    ViewData["Title"] = "Statistics";
+}
+
+<div class="col-sm-12">
+    <h1>Statistics</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Statistics == null)
+    {
+        <p>This feed's database cannot report statistics.</p>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-sm-4"><h2 id="stat-ids">@Model.Statistics.PackageIds.ToString("N0")</h2><p>packages</p></div>
+            <div class="col-sm-4"><h2 id="stat-versions">@Model.Statistics.PackageVersions.ToString("N0")</h2><p>package versions</p></div>
+            <div class="col-sm-4"><h2 id="stat-downloads">@Model.Statistics.Downloads.ToString("N0")</h2><p>downloads</p></div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <h2>Most downloaded</h2>
+                <table class="table">
+                    <thead><tr><th>Package</th><th>Downloads</th></tr></thead>
+                    <tbody>
+                        @foreach (var package in Model.Statistics.TopPackages??[])
+                        {
+                            <tr>
+                                <td><a asp-controller="Package" asp-action="Show" asp-route-id="@package.Id">@package.Id</a></td>
+                                <td>@package.Downloads.ToString("N0")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-6">
+                <h2>Recently published</h2>
+                <table class="table">
+                    <thead><tr><th>Package</th><th>Published</th></tr></thead>
+                    <tbody>
+                        @foreach (var package in Model.Statistics.RecentVersions??[])
+                        {
+                            <tr>
+                                <td><a asp-controller="Package" asp-action="Show" asp-route-id="@package.Id" asp-route-version="@package.Version">@package.Id @package.Version</a></td>
+                                <td>@package.Published?.ToString("yyyy-MM-dd")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,132 @@
+@using BaGet.Frontend.Mvc.Screens
+@model BaGet.Identity.Application.Models.Access.GroupDetailViewModel
+@{
+    ViewData["Title"] = "Group " + Model.Name;
+    var group = Model.Group?.Group;
+}
+
+<div class="col-sm-12">
+    <h1>Group @group?.Name</h1>
+    <hr class="breadcrumb-divider" />
+
+    <p><a asp-controller="AdminGroups" asp-action="Index">Back to groups</a></p>
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-success" role="alert" id="group-message">@Model.Message</div>
+    }
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert" id="group-error">@Model.Error</div>
+    }
+
+    <p>@group?.Description</p>
+
+    @if (group?.IsBuiltIn == true)
+    {
+        <div class="alert alert-info" role="alert" id="group-builtin">
+            Built-in group. Its members are implicit
+            (@(group.Name == BaGet.Core.BuiltInNames.Everyone ? "every caller, anonymous ones included" : "every caller with valid credentials")),
+            and it can be neither renamed nor deleted.
+        </div>
+    }
+    else
+    {
+        <section id="group-section-members">
+            <h2>Members (@Model.Group?.Members.Count)</h2>
+            <p class="help-block">Adding and removing members asks for your password again.</p>
+            <form method="post" id="members-form">
+                <table class="table" id="group-members">
+                    <thead><tr><th>User</th><th></th></tr></thead>
+                    <tbody>
+                        @foreach (var member in Model.Group!.Members)
+                        {
+                            <tr>
+                                <td><a href="@Url.Action("Detail", "AdminUsers", new { name = member.UserName })">@member.UserName</a></td>
+                                <td><button type="submit" class="btn btn-danger btn-xs" asp-controller="AdminGroups" asp-action="Detail" asp-route-name="@Model.Name" asp-route-handler="RemoveMember" name="userId" value="@member.UserId">Remove</button></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                @if (Model.Group.Members.Count == 0)
+                {
+                    <p>The group has no members.</p>
+                }
+                <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("membersPassword")" />
+            </form>
+
+            <h3>Add members</h3>
+            <form method="get" class="form-inline" id="member-search-form">
+                <input type="text" name="q" value="@Model.Q" class="form-control" placeholder="Part of a user name" autocomplete="off" />
+                <button type="submit" class="btn btn-default">Search users</button>
+            </form>
+            @if (!string.IsNullOrWhiteSpace(Model.Q))
+            {
+                if (Model.Found.Count == 0)
+                {
+                    <p id="member-search-empty">No user matches (or all of them are members already).</p>
+                }
+                else
+                {
+                    <form method="post" id="add-member-form">
+                        <table class="table" id="member-search-results">
+                            <tbody>
+                                @foreach (var user in Model.Found)
+                                {
+                                    <tr>
+                                        <td>@user.UserName</td>
+                                        <td><button type="submit" class="btn btn-primary btn-xs" asp-controller="AdminGroups" asp-action="Detail" asp-route-name="@Model.Name" asp-route-handler="AddMember" name="userId" value="@user.UserId">Add</button></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("addMemberPassword")" />
+                    </form>
+                }
+            }
+        </section>
+
+        <section id="group-section-rename">
+            <h2>Rename</h2>
+            <form method="post" class="form-inline" id="rename-form">
+                <input type="text" name="newName" value="@group?.Name" class="form-control" maxlength="@BaGet.Core.AccessNames.MaxLength" />
+                <button type="submit" class="btn btn-default" asp-controller="AdminGroups" asp-action="Detail" asp-route-name="@Model.Name" asp-route-handler="Rename">Rename</button>
+            </form>
+        </section>
+    }
+
+    <section id="group-section-grants">
+        <h2>Grants</h2>
+        @if (Model.Group?.Grants.Count == 0)
+        {
+            <p>No permission target names this group.</p>
+        }
+        else
+        {
+            <table class="table" id="group-grants">
+                <thead><tr><th>Permission target</th><th>Actions</th></tr></thead>
+                <tbody>
+                    @foreach (var grant in Model.Group!.Grants)
+                    {
+                        <tr>
+                            <td><a href="@Url.Action("Detail", "AdminPermissions", new { name = grant.Target })">@grant.Target</a></td>
+                            <td>@AccessSupport.Words(grant.Actions)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </section>
+
+    @if (group?.IsBuiltIn == false)
+    {
+        <section id="group-section-delete">
+            <h2>Delete</h2>
+            <p class="help-block">Removes the group, its members and every grant and project role that names it.</p>
+            <form method="post" id="delete-form">
+                <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("deletePassword")" />
+                <button type="submit" class="btn btn-danger" asp-controller="AdminGroups" asp-action="Detail" asp-route-name="@Model.Name" asp-route-handler="Delete">Delete group</button>
+            </form>
+        </section>
+    }
+</div>

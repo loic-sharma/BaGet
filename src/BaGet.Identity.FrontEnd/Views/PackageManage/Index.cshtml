@@ -1,0 +1,322 @@
+@using BaGet.Identity.Extensions
+@model BaGet.Identity.Models.Packages.ManageViewModel
+@{
+    ViewData["Title"] = $"Manage {Model.Id}";
+}
+
+<div class="col-sm-12">
+    <h1>Manage @Model.Id</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-info" role="alert" id="manage-message">@Model.Message</div>
+    }
+
+    @if (Model.ActingAsAdministrator)
+    {
+        <div class="alert alert-warning" role="alert" id="manage-as-administrator">
+            You are managing this package as an administrator.
+        </div>
+    }
+
+    @if (Model.IsReadOnlyMode)
+    {
+        @* The buttons stay on the page but do nothing: every handler here is refused while
+           the server is read-only, exactly as the push and metadata endpoints are. *@
+        <div class="alert alert-warning" role="alert" id="manage-read-only">
+            This server is in read-only mode. Nothing on this page can be changed - owners,
+            listing, deprecation and deletion are all refused - until that is turned off.
+        </div>
+    }
+
+    @if (Model.HasValidation)
+    {
+        <p id="manage-validation">
+            <a href="@Url.RepositoryContent("packages/" + Model.Id + "/validation")">Validation status of the submissions</a>
+        </p>
+    }
+
+    <h2>Owners</h2>
+    <table class="table">
+        <tbody>
+            @foreach (var owner in Model.Owners)
+            {
+                <tr>
+                    <td><a href="@Url.RepositoryContent("profiles/" + owner.OwnerName)">@owner.OwnerName</a>@(owner.IsVerified ? " (verified)" : "")</td>
+                    <td>
+                        <form method="post" asp-controller="PackageManage" asp-action="Index" asp-route-handler="RemoveOwner">
+                            <input type="hidden" name="ownerName" value="@owner.OwnerName" />
+                            <button type="submit" class="btn btn-default btn-xs" disabled="@Model.IsReadOnlyMode">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <form method="post" asp-controller="PackageManage" asp-action="Index" asp-route-handler="AddOwner" class="form-inline">
+        <input type="text" name="ownerName" class="form-control" placeholder="User or organization" />
+        <button type="submit" class="btn btn-primary" disabled="@Model.IsReadOnlyMode">Add owner</button>
+    </form>
+
+    <p id="manage-verified">
+        This ID is <strong>@(Model.IsVerified ? "verified" : "not verified")</strong>.
+        @if (Model.IsAdministrator)
+        {
+            <form method="post" asp-controller="PackageManage" asp-action="Index" asp-route-handler="SetVerified" style="display:inline">
+                <input type="hidden" name="verified" value="@(Model.IsVerified ? "false" : "true")" />
+                <button type="submit" class="btn btn-default btn-xs" disabled="@Model.IsReadOnlyMode">@(Model.IsVerified ? "Clear verified flag" : "Mark as verified")</button>
+            </form>
+        }
+        else
+        {
+            <span class="help-block">Only an administrator can change this.</span>
+        }
+    </p>
+
+    <h2>Versions</h2>
+    <p id="manage-upload">
+        <a asp-controller="Upload" asp-action="Index" asp-route-id="@Model.Id">Upload new version</a>
+    </p>
+    <p class="help-block" id="manage-delete-caption">
+        @Model.DeleteLabel: @Model.DeleteCaption
+        @if (!Model.DeletionIsPermanent)
+        {
+            <text>It is the same operation as the Unlist button beside each version.</text>
+        }
+    </p>
+    <table class="table">
+        <thead><tr><th>Version</th><th>Downloads</th><th>Listed</th><th>Deprecation</th><th></th><th></th></tr></thead>
+        <tbody>
+            @foreach (var package in Model.Versions)
+            {
+                var version = package.NormalizedVersionString;
+                <tr>
+                    <td><a href="@Url.RepositoryContent("packages/" + Model.Id + "/" + version)">@version</a></td>
+                    <td>@package.Downloads.ToString("N0")</td>
+                    <td>
+                        @(package.Listed ? "Yes" : "No")
+                        <form method="post" asp-controller="PackageManage" asp-action="Index" asp-route-handler="@(package.Listed ? "Unlist" : "Relist")" style="display:inline">
+                            <input type="hidden" name="version" value="@version" />
+                            <button type="submit" class="btn btn-default btn-xs" disabled="@Model.IsReadOnlyMode">@(package.Listed ? "Unlist" : "Relist")</button>
+                        </form>
+                    </td>
+                    <td>
+                        @if (package.Deprecation != null)
+                        {
+                            @string.Join(", ", package.Deprecation.Reasons ?? Array.Empty<string>())
+                            <form method="post" asp-controller="PackageManage" asp-action="Index" asp-route-handler="Undeprecate" style="display:inline">
+                                <input type="hidden" name="version" value="@version" />
+                                <button type="submit" class="btn btn-default btn-xs" disabled="@Model.IsReadOnlyMode">Remove</button>
+                            </form>
+                        }
+                    </td>
+                    <td>
+                        <form method="post" asp-controller="PackageManage" asp-action="Index" asp-route-handler="Deprecate" class="form-inline">
+                            <input type="hidden" name="version" value="@version" />
+                            @foreach (var reason in PackageDeprecation.KnownReasons)
+                            {
+                                <label><input type="checkbox" name="reasons" value="@reason" /> @reason</label>
+                            }
+                            <input type="text" name="message" class="form-control input-sm" placeholder="Message" />
+                            <input type="text" name="alternatePackageId" class="form-control input-sm" placeholder="Alternate package" />
+                            <input type="text" name="alternateVersionRange" class="form-control input-sm" placeholder="Alternate range, e.g. [2.0.0, )" />
+                            <button type="submit" class="btn btn-warning btn-xs" disabled="@Model.IsReadOnlyMode">Deprecate</button>
+                        </form>
+                    </td>
+                    <td>
+                        @* Labelled from the configured behaviour: on a server that unlists,
+                           this button must not claim to delete. *@
+                        <form method="post" asp-controller="PackageManage" asp-action="Index" asp-route-handler="Delete" style="display:inline">
+                            <input type="hidden" name="version" value="@version" />
+                            <button type="submit"
+                                    class="@(Model.DeletionIsPermanent ? "btn btn-danger btn-xs" : "btn btn-default btn-xs")"
+                                    onclick="return confirm('@Model.DeleteLabel @version? @Model.DeleteCaption')"
+                                    disabled="@Model.IsReadOnlyMode">
+                                @Model.DeleteLabel
+                            </button>
+                        </form>
+                        @if (Model.IsAdministrator && !Model.DeletionIsPermanent)
+                        {
+                            @* The server only unlists; an administrator may still remove the version.
+                               The password is in the danger zone's form, which this button submits. *@
+                            <button type="submit" form="hard-delete-form" asp-controller="PackageManage" asp-action="Index" asp-route-handler="HardDelete"
+                                    name="version" value="@version" class="btn btn-danger btn-xs"
+                                    onclick="return confirm('Delete @version permanently? This cannot be undone. Enter your password in the Danger zone below first.')"
+                                    disabled="@Model.IsReadOnlyMode">
+                                Delete permanently
+                            </button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h2>Vulnerabilities</h2>
+    <p class="help-block">
+        Advisories listed in the registration metadata, which NuGet clients use to warn about a version
+        (low, moderate, high or critical). The version range is optional.
+    </p>
+    <table class="table" id="manage-vulnerabilities">
+        <thead><tr><th>Version</th><th>Advisory</th><th>Severity</th><th>Range</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var package in Model.Versions)
+            {
+                var version = package.NormalizedVersionString;
+                foreach (var vulnerability in package.Vulnerabilities ?? new List<PackageVulnerability>())
+                {
+                    <tr>
+                        <td>@version</td>
+                        <td><a href="@vulnerability.AdvisoryUrl" rel="noopener noreferrer">@vulnerability.AdvisoryUrl</a></td>
+                        <td>@(vulnerability.Severity >= 0 && vulnerability.Severity < Model.SeverityNames.Count ? Model.SeverityNames[vulnerability.Severity] : vulnerability.Severity.ToString())</td>
+                        <td>@vulnerability.VersionRange</td>
+                        <td>
+                            @if (vulnerability.Source == null)
+                            {
+                                <form method="post" asp-controller="PackageManage" asp-action="Index" asp-route-handler="RemoveVulnerability">
+                                    <input type="hidden" name="version" value="@version" />
+                                    <input type="hidden" name="key" value="@vulnerability.Key" />
+                                    <button type="submit" class="btn btn-default btn-xs" disabled="@Model.IsReadOnlyMode">Remove</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <span class="text-muted">found by the @vulnerability.Source scan</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <form method="post" asp-controller="PackageManage" asp-action="Index" asp-route-handler="AddVulnerability" class="form-inline" id="manage-add-vulnerability">
+        <select name="version" class="form-control input-sm">
+            @foreach (var package in Model.Versions)
+            {
+                <option value="@package.NormalizedVersionString">@package.NormalizedVersionString</option>
+            }
+        </select>
+        <input type="text" name="advisoryUrl" class="form-control input-sm" placeholder="Advisory URL (https://...)" />
+        <select name="severity" class="form-control input-sm">
+            @for (var i = 0; i < Model.SeverityNames.Count; i++)
+            {
+                <option value="@i">@Model.SeverityNames[i]</option>
+            }
+        </select>
+        <input type="text" name="versionRange" class="form-control input-sm" placeholder="Version range (optional)" />
+        <button type="submit" class="btn btn-warning btn-xs" disabled="@Model.IsReadOnlyMode">Add vulnerability</button>
+    </form>
+
+    <h2>Symbols</h2>
+    @if (!Model.SymbolsSupported)
+    {
+        <p class="help-block" id="manage-symbols-unsupported">
+            The configured database cannot record which package version symbols belong to, so they cannot be listed or deleted here.
+        </p>
+    }
+    else
+    {
+        <p class="help-block" id="manage-symbols-note">
+            PDBs from symbol packages (.snupkg) indexed since this list was introduced. Symbols are stored by file
+            and key, not by package, so earlier ones are still served but cannot be listed or deleted here.
+        </p>
+        @if (Model.Symbols.Count == 0)
+        {
+            <p id="manage-symbols-empty">No symbols are recorded for any version.</p>
+        }
+        else
+        {
+            <table class="table" id="manage-symbols">
+                <thead><tr><th>Version</th><th>PDBs</th><th></th></tr></thead>
+                <tbody>
+                    @foreach (var package in Model.Versions)
+                    {
+                        var version = package.NormalizedVersionString;
+                        if (!Model.Symbols.TryGetValue(package.Version.ToNormalizedString(), out var pdbs)) continue;
+                        <tr>
+                            <td>@version</td>
+                            <td>
+                                @foreach (var pdb in pdbs)
+                                {
+                                    <div><code>@pdb.FileName</code> <small>@pdb.Key</small></div>
+                                }
+                            </td>
+                            <td>
+                                <form method="post" asp-controller="PackageManage" asp-action="Index" asp-route-handler="DeleteSymbols">
+                                    <input type="hidden" name="version" value="@version" />
+                                    <button type="submit" class="btn btn-danger btn-xs"
+                                            onclick="return confirm('Delete the symbols of @version? Debuggers can no longer download them.')"
+                                            disabled="@Model.IsReadOnlyMode">
+                                        Delete symbols
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    }
+
+    <h2>Abuse reports</h2>
+    @if (Model.Reports.Count == 0)
+    {
+        <p>There are no open reports.</p>
+    }
+    else
+    {
+        <table class="table">
+            <thead><tr><th>Version</th><th>Reason</th><th>Details</th><th>Reporter</th><th></th></tr></thead>
+            <tbody>
+                @foreach (var report in Model.Reports)
+                {
+                    <tr>
+                        <td>@report.PackageVersion</td>
+                        <td>@report.Reason</td>
+                        <td>@report.Details</td>
+                        <td>@report.ReporterEmail</td>
+                        <td>
+                            <form method="post" asp-controller="PackageManage" asp-action="Index" asp-route-handler="ResolveReport">
+                                <input type="hidden" name="key" value="@report.Key" />
+                                <button type="submit" class="btn btn-default btn-xs" disabled="@Model.IsReadOnlyMode">Resolve</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    @if (Model.IsAdministrator)
+    {
+        <div class="panel panel-danger" id="danger-zone">
+            <div class="panel-heading"><h3 class="panel-title">Danger zone</h3></div>
+            <div class="panel-body">
+                <p>
+                    Deleting permanently removes the database rows and the files from storage, whatever
+                    the server's deletion setting says. It cannot be undone. Deleting every version also
+                    removes the owners, so the ID can be claimed again.
+                </p>
+                <form method="post" id="hard-delete-form">
+                    @if (Model.HasPassword)
+                    {
+                        <div class="form-group">
+                            <label for="hardDeletePassword">Your password</label>
+                            <input id="hardDeletePassword" name="password" type="password" class="form-control" autocomplete="current-password" />
+                        </div>
+                    }
+                    else
+                    {
+                        <partial name="~/Views/Shared/_Reauthenticate.cshtml" model="@(new ReauthenticateView(Model.Reauthenticated, Model.CanReauthenticate, Url.Action("Index", "PackageManage", new { id = Model.Id }) ?? string.Empty))" />
+                    }
+                    <button type="submit" asp-controller="PackageManage" asp-action="Index" asp-route-handler="HardDeleteAll" class="btn btn-danger"
+                            onclick="return confirm('Delete every version of @Model.Id permanently? This cannot be undone.')"
+                            disabled="@Model.IsReadOnlyMode">
+                        Delete all versions permanently
+                    </button>
+                </form>
+            </div>
+        </div>
+    }
+</div>

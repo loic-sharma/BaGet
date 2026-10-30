@@ -1,0 +1,47 @@
+@model BaGet.Identity.Application.Models.Policies.PatternFieldsView
+
+<div class="form-group">
+    <label for="repositoryPatterns">Repositories</label>
+    <textarea id="repositoryPatterns" name="repositoryPatterns" class="form-control" rows="2">@Model.Repositories</textarea>
+    <span class="help-block">Repository names or globs, one per line: <code>*</code> is every repository, <code>second</code> one, <code>team-*</code> a family.</span>
+</div>
+<div class="form-group">
+    <label for="includePatterns">Include packages</label>
+    <textarea id="includePatterns" name="includePatterns" class="form-control" rows="2">@Model.Include</textarea>
+    <span class="help-block">Package ID globs, one per line, e.g. <code>Contoso.*</code>. Empty means every package.</span>
+</div>
+<div class="form-group">
+    <label for="excludePatterns">Exclude packages</label>
+    <textarea id="excludePatterns" name="excludePatterns" class="form-control" rows="2">@Model.Exclude</textarea>
+    <span class="help-block">Package ID globs the target leaves out, whatever the include patterns say.</span>
+</div>
+<div class="form-group form-inline">
+    <label for="testPackage">Test a package ID</label>
+    <input id="testPackage" name="testPackage" type="text" class="form-control" value="@Model.TestPackage" placeholder="Contoso.Lib" autocomplete="off" />
+    <button type="submit" class="btn btn-default" asp-route-handler="Preview" id="preview-button">Preview</button>
+</div>
+
+@if (Model.Preview != null)
+{
+    <div class="well" id="pattern-preview">
+        <p>
+            <strong>Repositories matched:</strong>
+            @if (Model.Preview.Repositories.Count == 0)
+            {
+                <span id="preview-repositories-none">none</span>
+            }
+            else
+            {
+                <span id="preview-repositories">@string.Join(", ", Model.Preview.Repositories)</span>
+            }
+        </p>
+        @if (Model.Preview.Test != null)
+        {
+            <p id="preview-test" data-matches="@Model.Preview.Test.Matches.ToString().ToLowerInvariant()">
+                <code>@Model.Preview.TestPackage</code>
+                <strong>@(Model.Preview.Test.Matches ? "matches" : "does not match")</strong>
+                (@Model.Preview.Test.Explanation).
+            </p>
+        }
+    </div>
+}

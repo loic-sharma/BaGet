@@ -1,0 +1,159 @@
+@model BaGet.Identity.Application.Models.Packages.NpmManageViewModel
+@{
+    ViewData["Title"] = "Manage " + Model.Id;
+    ViewData["HideSearchBar"] = true;
+}
+
+@if (Model.Package == null)
+{
+    @* A refused write (read-only mode) shows its message even where there is nothing to list. *@
+    @if (Model.Message != null)
+    {
+        <div class="col-sm-12"><div class="alert alert-danger" role="alert" id="manage-message">@Model.Message</div></div>
+    }
+
+    return;
+}
+
+@{
+    var package = Model.Package;
+    var window = Model.UnpublishWindow;
+}
+
+<div class="col-sm-12" id="npm-manage" data-package="@package.Name">
+    <h1>Manage <a asp-controller="NpmBrowse" asp-action="Package" asp-route-id="@package.Name">@package.Name</a></h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Message != null)
+    {
+        <div class="alert @(Model.Failed ? "alert-danger" : "alert-success")" role="alert" id="manage-message">@Model.Message</div>
+    }
+
+    @if (Model.ActingAsAdministrator)
+    {
+        <p class="alert alert-info" id="manage-as-admin">You are not an owner of this package; you manage it as an administrator. Your changes are logged.</p>
+    }
+
+    <h2>Owners</h2>
+    <table class="table table-condensed" id="npm-owners">
+        <tbody>
+            @foreach (var owner in Model.Owners)
+            {
+                <tr data-owner="@owner.OwnerName">
+                    <td>@owner.OwnerName</td>
+                    <td>
+                        <form method="post" asp-controller="NpmManage" asp-action="Index" asp-route-id="@package.Name" asp-route-handler="RemoveOwner" class="form-inline">
+                            <input type="hidden" name="ownerName" value="@owner.OwnerName" />
+                            <button type="submit" class="btn btn-default btn-xs">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            @if (Model.Owners.Count == 0)
+            {
+                <tr><td colspan="2">No owner: only an administrator may change this package.</td></tr>
+            }
+        </tbody>
+    </table>
+    <form method="post" asp-controller="NpmManage" asp-action="Index" asp-route-id="@package.Name" asp-route-handler="AddOwner" class="form-inline" id="add-owner-form">
+        <input type="text" name="ownerName" class="form-control" placeholder="User or organization" />
+        <button type="submit" class="btn btn-default">Add owner</button>
+    </form>
+
+    <h2>Dist-tags</h2>
+    <table class="table table-condensed" id="npm-dist-tags">
+        <thead><tr><th>Tag</th><th>Version</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var tag in package.DistTags.OrderBy(t => t.Key, StringComparer.Ordinal))
+            {
+                <tr data-tag="@tag.Key">
+                    <td><code>@tag.Key</code></td>
+                    <td>@tag.Value</td>
+                    <td>
+                        <form method="post" asp-controller="NpmManage" asp-action="Index" asp-route-id="@package.Name" asp-route-handler="RemoveTag" class="form-inline">
+                            <input type="hidden" name="tag" value="@tag.Key" />
+                            <button type="submit" class="btn btn-default btn-xs">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <form method="post" asp-controller="NpmManage" asp-action="Index" asp-route-id="@package.Name" asp-route-handler="SetTag" class="form-inline" id="set-tag-form">
+        <input type="text" name="tag" class="form-control" placeholder="Tag (next, beta...)" />
+        <select name="version" class="form-control">
+            @foreach (var version in package.Versions.Reverse())
+            {
+                <option value="@version.Version">@version.Version</option>
+            }
+        </select>
+        <button type="submit" class="btn btn-default">Point the tag at the version</button>
+    </form>
+
+    <h2>Versions</h2>
+    <p class="text-muted">
+        @if (window > TimeSpan.Zero)
+        {
+            <text>The owner may unpublish a version within @window.TotalHours.ToString("0.##") hours of publishing it; later, unpublishing needs the Delete permission. </text>
+        }
+        else
+        {
+            <text>Unpublishing needs the Delete permission. </text>
+        }
+        An unpublished version's tarball is deleted and its number can be published again.
+    </p>
+    <table class="table table-condensed" id="npm-versions">
+        <thead><tr><th>Version</th><th>Published</th><th>Deprecation</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var version in package.Versions.Reverse())
+            {
+                <tr data-version="@version.Version">
+                    <td>@version.Version</td>
+                    <td>@version.Published.ToString("yyyy-MM-dd HH:mm") UTC</td>
+                    <td>
+                        @if (version.Deprecated != null)
+                        {
+                            <span class="label label-warning">Deprecated</span> @version.Deprecated
+                            <form method="post" asp-controller="NpmManage" asp-action="Index" asp-route-id="@package.Name" asp-route-handler="Undeprecate" class="form-inline">
+                                <input type="hidden" name="version" value="@version.Version" />
+                                <button type="submit" class="btn btn-default btn-xs">Remove the deprecation</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form method="post" asp-controller="NpmManage" asp-action="Index" asp-route-id="@package.Name" asp-route-handler="Deprecate" class="form-inline">
+                                <input type="hidden" name="version" value="@version.Version" />
+                                <input type="text" name="message" class="form-control input-sm" placeholder="Deprecation message" />
+                                <button type="submit" class="btn btn-default btn-xs">Deprecate</button>
+                            </form>
+                        }
+                    </td>
+                    <td>
+                        <button type="submit" form="unpublish-form" name="version" value="@version.Version" asp-controller="NpmManage" asp-action="Index" asp-route-id="@package.Name" asp-route-handler="Unpublish"
+                                class="btn btn-danger btn-xs"
+                                onclick="return confirm('Unpublish @version.Version? This cannot be undone. Enter your password in the danger zone below first.')">Unpublish</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h2>Danger zone</h2>
+    <form method="post" id="unpublish-form" asp-route-id="@package.Name">
+        <p>Unpublishing deletes tarballs for good. Confirm it is you.</p>
+        @if (Model.HasPassword)
+        {
+            <div class="form-group">
+                <label for="unpublishPassword">Your password</label>
+                <input id="unpublishPassword" name="password" type="password" class="form-control" autocomplete="current-password" />
+            </div>
+        }
+        else
+        {
+            <partial name="~/Views/Shared/_Reauthenticate.cshtml" model="@(new ReauthenticateView(Model.Reauthenticated, Model.CanReauthenticate, Url.Action("Index", "NpmManage", new { id = Model.Id }) ?? string.Empty))" />
+        }
+
+        <button type="submit" asp-controller="NpmManage" asp-action="Index" asp-route-id="@package.Name" asp-route-handler="UnpublishAll" class="btn btn-danger" id="unpublish-all"
+                onclick="return confirm('Unpublish every version of @package.Name? This cannot be undone.')">Unpublish the whole package</button>
+    </form>
+</div>

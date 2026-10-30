@@ -1,0 +1,28 @@
+<header>
+  <a routerLink="/packages" class="brand">BaGet</a>
+  <nav>
+    <a routerLink="/packages" routerLinkActive="active">Packages</a>
+    @if (session.isSignedIn()) {
+      <a routerLink="/admin/users" routerLinkActive="active">Users (admin)</a>
+    }
+  </nav>
+  <span class="spacer"></span>
+  @if (session.isSignedIn()) {
+    <span>{{ session.userName() ?? 'signed in' }}</span>
+    <button type="button" (click)="signOut(false)">Sign out</button>
+    <button type="button" (click)="signOut(true)" title="Ends every session and token of the account">Sign out everywhere</button>
+  } @else {
+    <a routerLink="/sign-in">Sign in</a>
+    <a routerLink="/register">Register</a>
+  }
+</header>
+
+<main>
+  @if (flash.message(); as message) {
+    <p class="notice" role="status">{{ message }} <button type="button" class="link" (click)="flash.clear()">dismiss</button></p>
+  }
+  @if (flash.error(); as error) {
+    <p class="error" role="alert">{{ error }} <button type="button" class="link" (click)="flash.clear()">dismiss</button></p>
+  }
+  <router-outlet />
+</main>

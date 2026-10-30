@@ -1,0 +1,64 @@
+@model BaGet.Identity.Application.Models.Access.AuditViewModel
+@{
+    ViewData["Title"] = "Access audit";
+}
+
+<div class="col-sm-12">
+    <h1>Access audit</h1>
+    <hr class="breadcrumb-divider" />
+
+    <p class="help-block">
+        Every change to groups, memberships, permission targets, grants, projects, a repository's project and its anonymous-read
+        switch, newest first (at most @AdminAuditUseCase.PageSize). Times are UTC.
+    </p>
+
+    @if (Model.FilterError != null)
+    {
+        <div class="alert alert-warning" role="alert" id="audit-filter-error">@Model.FilterError</div>
+    }
+
+    <form method="get" class="form-inline" id="audit-filter">
+        <div class="form-group">
+            <label for="audit-actor">Actor</label>
+            <input id="audit-actor" name="actor" type="text" class="form-control" value="@Model.ActorFilter" autocomplete="off" />
+        </div>
+        <div class="form-group">
+            <label for="audit-subject">Subject</label>
+            <input id="audit-subject" name="subject" type="text" class="form-control" value="@Model.Subject" autocomplete="off" />
+        </div>
+        <div class="form-group">
+            <label for="audit-from">From</label>
+            <input id="audit-from" name="from" type="text" class="form-control" value="@Model.From" placeholder="yyyy-MM-dd" autocomplete="off" />
+        </div>
+        <div class="form-group">
+            <label for="audit-to">To</label>
+            <input id="audit-to" name="to" type="text" class="form-control" value="@Model.To" placeholder="yyyy-MM-dd" autocomplete="off" />
+        </div>
+        <button type="submit" class="btn btn-default">Filter</button>
+    </form>
+
+    @if (Model.Entries.Count == 0)
+    {
+        <p id="audit-empty">No entries.</p>
+    }
+    else
+    {
+        <table class="table" id="audit-table">
+            <thead>
+                <tr><th>When (UTC)</th><th>Actor</th><th>Action</th><th>Subject</th><th>Details</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var entry in Model.Entries)
+                {
+                    <tr>
+                        <td>@entry.Created.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                        <td>@(entry.Actor ?? "server")</td>
+                        <td><code>@entry.Action</code></td>
+                        <td>@entry.Subject</td>
+                        <td><code>@entry.Details</code></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

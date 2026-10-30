@@ -1,0 +1,87 @@
+@model BaGet.Identity.Application.Models.Operations.ValidationViewModel
+@{
+    ViewData["Title"] = "Validation";
+}
+
+<div class="col-sm-12">
+    <h1>Validation queue</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-success" role="alert" id="validation-message">@Model.Message</div>
+    }
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert" id="validation-error">@Model.Error</div>
+    }
+
+    @if (!Model.IsSupported)
+    {
+        <div class="alert alert-warning" role="alert" id="validation-unsupported">Validation is not available with the configured database.</div>
+    }
+    else if (!Model.Submissions.Any())
+    {
+        <p id="validation-empty">No submission is pending or quarantined.</p>
+    }
+    else
+    {
+        <p class="help-block">
+            A quarantined package is staged but not served. <strong>Release</strong> indexes it although validation failed (logged and audited);
+            <strong>Reject</strong> deletes it (also a submission stuck pending); <strong>Retry</strong> validates it again. Release and reject need your password.
+        </p>
+
+        <form method="post" id="validation-actions">
+            <div class="form-group">
+                @if (Model.HasPassword)
+                {
+                    <label for="adminPassword">Your password (release and reject)</label>
+                    <input id="adminPassword" name="password" type="password" class="form-control" autocomplete="current-password" />
+                }
+                else
+                {
+                    <partial name="~/Views/Shared/_Reauthenticate.cshtml" model="@(new ReauthenticateView(Model.Reauthenticated, Model.CanReauthenticate, "/admin/validation"))" />
+                }
+            </div>
+
+            <table class="table" id="validation-table">
+                <thead>
+                    <tr><th>Package</th><th>Repository</th><th>State</th><th>Submitted</th><th>Why</th><th></th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var submission in Model.Submissions)
+                    {
+                        <tr data-submission="@submission.SubmissionId" data-repository="@submission.Repository">
+                            <td>@submission.PackageId @submission.PackageVersion</td>
+                            <td>@submission.Repository</td>
+                            <td>@submission.State</td>
+                            <td>@submission.Created.ToString("u")</td>
+                            <td>
+                                @foreach (var message in submission.FailureMessages)
+                                {
+                                    <div>@message</div>
+                                }
+                            </td>
+                            <td>
+                                <button type="submit" class="btn btn-default btn-xs" name="submissionId" value="@submission.SubmissionId" formaction="@Url.Action("Validation", "AdminOperations", new { handler = "Retry" })">Retry</button>
+                                @if (submission.State == BaGet.Core.ValidationSubmissionState.Quarantined)
+                                {
+                                    <button type="submit" class="btn btn-warning btn-xs" name="submissionId" value="@submission.SubmissionId" formaction="@Url.Action("Validation", "AdminOperations", new { handler = "Release" })"
+                                            onclick="return confirm('Index this package although validation failed?');">Release</button>
+                                    <button type="submit" class="btn btn-danger btn-xs" name="submissionId" value="@submission.SubmissionId" formaction="@Url.Action("Validation", "AdminOperations", new { handler = "Reject" })"
+                                            onclick="return confirm('Delete this package? This cannot be undone.');">Reject</button>
+                                }
+                                else
+                                {
+                                    @* A submission whose validation keeps failing stays pending: it can be rejected too. *@
+                                    <button type="submit" class="btn btn-danger btn-xs" name="submissionId" value="@submission.SubmissionId" formaction="@Url.Action("Validation", "AdminOperations", new { handler = "Reject" })"
+                                            onclick="return confirm('Delete this package? This cannot be undone.');">Reject</button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </form>
+    }
+</div>

@@ -1,7 +1,11 @@
-namespace BaGet.Core
+namespace BaGet.Core;
+
+[RestartRequired]
+public class StorageOptions
 {
-    public class StorageOptions
-    {
-        public string Type { get; set; }
-    }
+    /// <summary>
+    /// The package storage backend.
+    /// </summary>
+    [AllowedSettingValues("AliyunOss", "AwsS3", "AzureBlobStorage", "Filesystem", "GoogleCloud", "Null")]
+    public string? Type { get; set; }
 }

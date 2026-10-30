@@ -1,33 +1,38 @@
 using System;
 using BaGet.Core;
 using BaGet.Database.SqlServer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
-namespace BaGet
+namespace BaGet;
+
+public static class SqlServerApplicationExtensions
 {
-    public static class SqlServerApplicationExtensions
+    public static BaGetApplication AddSqlServerDatabase(this BaGetApplication app)
     {
-        public static BaGetApplication AddSqlServerDatabase(this BaGetApplication app)
+        app.Services.AddBaGetDbContextProvider<SqlServerContext>("SqlServer", (provider, options) =>
         {
-            app.Services.AddBaGetDbContextProvider<SqlServerContext>("SqlServer", (provider, options) =>
-            {
-                var databaseOptions = provider.GetRequiredService<IOptionsSnapshot<DatabaseOptions>>();
+            var databaseOptions = provider.GetRequiredService<IOptionsSnapshot<DatabaseOptions>>();
 
-                options.UseSqlServer(databaseOptions.Value.ConnectionString);
-            });
+            SqlServerDatabaseContextFactory.Configure(
+                options,
+                databaseOptions.Value.ConnectionString,
+                databaseOptions.Value.MySqlServerVersion);
+        });
 
-            return app;
-        }
+        app.Services.TryAddEnumerable(
+            ServiceDescriptor.Singleton<IDatabaseContextFactory, SqlServerDatabaseContextFactory>());
 
-        public static BaGetApplication AddSqlServerDatabase(
-            this BaGetApplication app,
-            Action<DatabaseOptions> configure)
-        {
-            app.AddSqlServerDatabase();
-            app.Services.Configure(configure);
-            return app;
-        }
+        return app;
+    }
+
+    public static BaGetApplication AddSqlServerDatabase(
+        this BaGetApplication app,
+        Action<DatabaseOptions> configure)
+    {
+        app.AddSqlServerDatabase();
+        app.Services.Configure(configure);
+        return app;
     }
 }

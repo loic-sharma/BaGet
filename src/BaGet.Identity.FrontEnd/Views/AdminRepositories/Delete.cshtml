@@ -1,0 +1,53 @@
+@model BaGet.Identity.Application.Models.Repositories.RepositoryDeleteViewModel
+@{
+    ViewData["Title"] = "Delete " + Model.Name;
+}
+
+<div class="col-sm-12">
+    <h1>Delete @Model.Name</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert" id="delete-repository-error">@Model.Error</div>
+    }
+
+    @if (Model.Repository?.IsDefault == true)
+    {
+        <div class="alert alert-warning" role="alert" id="delete-repository-default">
+            The <code>default</code> repository is served at the root and cannot be deleted.
+        </div>
+    }
+    else if (Model.ReferencedBy.Count > 0)
+    {
+        <div class="alert alert-warning" role="alert" id="delete-repository-referenced">
+            @Model.Name is a member of the virtual repositor@(Model.ReferencedBy.Count == 1 ? "y" : "ies")
+            @foreach (var referenced in Model.ReferencedBy)
+            {
+                <a href="@Url.Action("Edit", "AdminRepositories", new { name = referenced })">@referenced</a>@(referenced == Model.ReferencedBy[^1] ? "" : ", ")
+            }.
+            Remove it there first.
+        </div>
+    }
+    else if (Model.Repository?.PackageCount > 0)
+    {
+        <div class="alert alert-warning" role="alert" id="delete-repository-not-empty">
+            @if (Model.Repository.Kind == BaGet.Core.RepositoryKind.Remote)
+            {
+                <text>@Model.Name holds @Model.Repository.PackageCount cached package version(s). Purge its cache first, on <a href="@Url.Action("Edit", "AdminRepositories", new { name = Model.Name })">its page</a>.</text>
+            }
+            else
+            {
+                <text>@Model.Name holds @Model.Repository.PackageCount package version(s). Delete them first.</text>
+            }
+        </div>
+    }
+    else
+    {
+        <p>@Model.Name holds no packages. Deleting it removes the repository, its feed address, its history (catalog entries, owners, validations, abuse reports, API keys limited to it alone) and its files in storage (symbols, catalog files); this cannot be undone.</p>
+        <form method="post">
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Delete this repository? This cannot be undone.');">Delete @Model.Name</button>
+            <a class="btn btn-default" href="@Url.Action("Index", "AdminRepositories")">Cancel</a>
+        </form>
+    }
+</div>

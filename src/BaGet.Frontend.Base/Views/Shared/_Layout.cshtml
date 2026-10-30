@@ -1,0 +1,281 @@
+@using BaGet.Frontend.Mvc.Attributes
+@using Microsoft.Extensions.DependencyInjection
+@using BaGet.Identity.Application.Screens
+@inject Microsoft.Extensions.Options.IOptions<BaGet.Core.AccountsOptions> Accounts
+@inject Microsoft.Extensions.Options.IOptionsSnapshot<BaGet.Core.SiteOptions> Site
+@inject BaGet.Core.IRepositoryContext RepositoryContext
+@inject BaGet.Core.IRepositoryAccess RepositoryAccess
+@inject Microsoft.Extensions.Options.IOptionsSnapshot<BaGet.Core.BaGetOptions> Options
+@{
+    var hideSearchBar = ViewData["HideSearchBar"] is true;
+    // Type-ahead for the search boxes: the repository's own V3 autocomplete resource (site.js fills the datalist).
+    var autocompleteUrl = Context.RequestServices.GetService<BaGet.Core.IUrlGenerator>()?.GetAutocompleteResourceUrl();
+
+    // No Upload entry where an upload is impossible (read-only, a closed maintenance gate, nothing to authenticate with).
+    var canUpload = BaGet.Web.Application.Services.UploadAvailability.IsPossible(
+        Options.Value, Accounts.Value, Context.RequestServices.GetService<BaGet.Core.MaintenanceGate>());
+
+    // The repository this page shows. Links in the header stay inside it ("r/{name}/" in front), and a page that acts
+    // on a repository ([RepositoryPage]) offers the switcher when more than one is readable. The list
+    // comes from IRepositoryAccess, the one place that decides who sees which repository.
+    var repository = RepositoryContext.Current;
+    var repositoryPrefix = repository.PathPrefix;
+    // An npm repository has its own pages ([RepositoryPage(Format = ...)]): the header leads to them.
+    var isNpm = repository.Format == BaGet.Core.RepositoryFormat.Npm;
+    var hasOwnPages = repository.Format != BaGet.Core.RepositoryFormat.NuGet;
+    // The path under the repository that lists its packages: the format's own browse page, or NuGet's (the front page when asked for the brand).
+    string BrowseSegment(BaGet.Core.RepositoryFormat format, string nuGet) => format switch
+    {
+        BaGet.Core.RepositoryFormat.Npm => "npm-packages",
+        BaGet.Core.RepositoryFormat.Maven => "maven-artifacts",
+        BaGet.Core.RepositoryFormat.Docker => "docker-images",
+        _ => nuGet,
+    };
+    // A repository page is a controller action marked [RepositoryPage].
+    var isRepositoryPage = ViewContext.ActionDescriptor.EndpointMetadata.OfType<RepositoryPageAttribute>().Any();
+    IReadOnlyList<BaGet.Core.RepositoryInfo> switchable = Array.Empty<BaGet.Core.RepositoryInfo>();
+    if (isRepositoryPage && RepositoryAccess.SupportsMultipleRepositories)
+    {
+        var readable = await RepositoryAccess.ReadableAsync(User, Context.RequestAborted);
+        if (readable.Count > 1) switchable = readable;
+    }
+
+    // The signed-in user's avatar, for the account menu. The service exists only while accounts are enabled.
+    string? headerAvatar = null;
+    var isAdministrator = false;
+    if (Accounts.Value.Enabled && User.Identity?.IsAuthenticated == true)
+    {
+        // Likewise the administrator check: read from the database, so a demotion shows at once.
+        var administrators = Context.RequestServices.GetService<AdministratorService>();
+        if (administrators != null)
+        {
+            isAdministrator = await administrators.IsAdministratorAsync(User, Context.RequestAborted);
+        }
+
+        var avatars = Context.RequestServices.GetService<AvatarService>();
+        if (avatars != null)
+        {
+#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
+            headerAvatar = (await avatars.GetUrlsAsync(new[] { User.Identity.Name }, 24, Context.RequestAborted))
+#pragma warning restore CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
+                .GetValueOrDefault(User.Identity.Name);
+        }
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="BaGet Extension">
+    <meta name="author" content="Loic Sharma">
+    
+    <link rel="shortcut icon" href="~/_content/BaGet.Web/favicon.ico">
+
+    <link rel="stylesheet" href="~/_content/BaGet.Web/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/_content/BaGet.Web/lib/office-ui-fabric-core/dist/css/fabric.min.css" />
+    <link rel="stylesheet" href="~/_content/BaGet.Web/css/site.css" />
+
+    <title>@ViewData["Title"]@(repository.IsDefault ? "" : " (" + repository.Name + ")") - BaGet Extension</title>
+</head>
+<body>
+    <header class="site-header">
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand brand" href="@Url.Content("~/" + repositoryPrefix + BrowseSegment(repository.Format, ""))" title="BaGet Extension">
+                        <svg class="brand-logo" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" focusable="false">
+                            <rect x="2" y="12" width="28" height="9" rx="4.5" transform="rotate(-30 16 16)" fill="#744010" />
+                            <path d="M9 19l4-7M14 16l4-7M19 13l4-7" stroke="#FBF1DF" stroke-width="1.6" stroke-linecap="round" fill="none" />
+                        </svg>
+                        <span class="brand-name">BaGet Extension</span>
+                    </a>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav" role="tablist">
+                        <li role="presentation"><a href="@Url.Content("~/" + repositoryPrefix + BrowseSegment(repository.Format, "packages"))" role="tab" nav-link><span>Packages</span></a></li>
+                        @* A Docker image is pushed with the Docker CLI: no upload page. *@
+                        @if (canUpload && repository.Format != BaGet.Core.RepositoryFormat.Docker)
+                        {
+                            var uploadScreen = isNpm ? ScreenCatalog.NpmUpload : repository.Format == BaGet.Core.RepositoryFormat.Maven ? ScreenCatalog.MavenUpload : ScreenCatalog.Upload;
+                            <li role="presentation"><a asp-area="" asp-controller="@uploadScreen.Controller" asp-action="@uploadScreen.Action" role="tab" nav-link><span>Upload</span></a></li>
+                        }
+                        @if (RepositoryContext.Current.Kind != BaGet.Core.RepositoryKind.Virtual && !hasOwnPages)
+                        {
+                            <li role="presentation"><a asp-area="" asp-controller="Statistics" asp-action="Index" role="tab" nav-link><span>Statistics</span></a></li>
+                        }
+                        <li role="presentation">
+                            <a role="tab" href="https://pieroviano.github.io/BaGet/" target="_blank" rel="noopener noreferrer">
+                                <span>Documentation</span>
+                            </a>
+                        </li>
+                    </ul>
+                    @if (switchable.Count > 0)
+                    {
+                        <ul class="nav navbar-nav" id="repository-switcher">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Repository">
+                                    <span>Repository: <strong id="current-repository">@repository.Name</strong></span> <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    @foreach (var option in switchable)
+                                    {
+                                        <li class="@(option.Key == repository.Key ? "active" : "")">
+                                            <a href="@Url.Content("~/" + option.PathPrefix + BrowseSegment(option.Format, ""))" data-repository="@option.Name">@option.Name</a>
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        </ul>
+                    }
+                    @if (Accounts.Value.Enabled)
+                    {
+                        <ul class="nav navbar-nav navbar-right account-area" role="tablist">
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                <li role="presentation" class="dropdown account-menu">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                        <partial name="_Avatar" model="new BaGet.Core.AvatarModel(User.Identity.Name ?? string.Empty, headerAvatar ?? string.Empty, 24)" />
+                                        <span>@User.Identity.Name</span> <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="@Url.Action("MyProfile", "AccountPackages")">Profile</a></li>
+                                        <li><a href="@Url.Action("Settings", "AccountSettings")">Account settings</a></li>
+                                        <li><a href="@Url.Action("ApiKeysIndex", "AccountSettings")">API keys</a></li>
+                                        <li><a href="@Url.Action("Packages", "AccountPackages")">My packages</a></li>
+                                        <li><a href="@Url.Action("Organizations", "AccountOrganizations")">Organizations</a></li>
+                                        <li><a href="@Url.Action("Access", "AccountPackages")">My access</a></li>
+                                        @if (canUpload)
+                                        {
+                                            <li><a href="@Url.Action("Index", "Upload")">Upload package</a></li>
+                                        }
+                                        @if (isAdministrator)
+                                        {
+                                            <li role="separator" class="divider"></li>
+                                            <li><a href="@Url.Action("Index", "AdminSettings")">Server settings</a></li>
+                                            <li><a href="@Url.Action("Index", "AdminUsers")">Users</a></li>
+                                            <li><a href="@Url.Action("Index", "AdminOrganizations")">Organizations</a></li>
+                                            <li><a href="@Url.Action("Index", "AdminPackages")">Packages</a></li>
+                                            <li><a href="@Url.Action("Index", "AdminRepositories")">Repositories</a></li>
+                                            <li><a href="@Url.Action("Formats", "AdminOperations")">Package formats</a></li>
+                                            <li><a href="@Url.Action("Index", "AdminGroups")">Groups</a></li>
+                                            <li><a href="@Url.Action("Index", "AdminPermissions")">Permission targets</a></li>
+                                            <li><a href="@Url.Action("Index", "AdminProjects")">Projects</a></li>
+                                            <li><a href="@Url.Action("Index", "AdminAudit")">Access audit</a></li>
+                                            <li><a href="@Url.Action("Index", "AdminOperations")">Operations</a></li>
+                                            <li><a href="@Url.Action("Cluster", "AdminOperations")">Cluster</a></li>
+                                            <li><a href="@Url.Action("Index", "AdminRetention")">Retention</a></li>
+                                            <li><a href="@Url.Action("Index", "AdminReplication")">Replication</a></li>
+                                            <li><a href="@Url.Action("Index", "AdminScanning")">Vulnerability scanning</a></li>
+                                            <li><a href="@Url.Action("Index", "ApiCatalog")">REST API</a></li>
+                                            <li><a href="@Url.Action("Validation", "AdminOperations")">Validation queue</a></li>
+                                            <li><a href="@Url.Action("Abuse", "AdminOperations")">Abuse reports</a></li>
+                                        }
+                                        <li role="separator" class="divider"></li>
+                                        <li><a href="@Url.Action("Logout", "Account")">Sign out</a></li>
+                                    </ul>
+                                </li>
+                            }
+                            else
+                            {
+                                <li role="presentation"><a href="@Url.Action("Login", "Account")" role="tab"><span>Sign in</span></a></li>
+                                @if (Accounts.Value.AllowRegistration)
+                                {
+                                    <li role="presentation"><a href="@Url.Action("Register", "Account")" role="tab"><span>Register</span></a></li>
+                                }
+                            }
+                        </ul>
+                    }
+                </div>
+            </div>
+        </nav>
+
+        @if (hideSearchBar)
+        {
+            IgnoreSection("SearchForm");
+        }
+        else
+        {
+            <div class="search-band">
+                <div class="container search-container">
+                    <form action="@Url.Action("Index", "Home")" method="get">
+                        <div class="input-group">
+                            <input type="text"
+                                   name="q"
+                                   value="@ViewData["SearchQuery"]"
+                                   class="form-control"
+                                   autoComplete="off"
+                                   list="package-suggestions"
+                                   data-autocomplete="@autocompleteUrl"
+                                   placeholder="Search packages..." />
+                            <datalist id="package-suggestions"></datalist>
+
+                            <span class="input-group-btn">
+                                <button type="submit"
+                                        class="btn btn-default"
+                                        title="Search for packages">
+                                    <span class="ms-Icon ms-Icon--Search" aria-hidden="true"></span>
+                                </button>
+                            </span>
+                        </div>
+
+                        @await RenderSectionAsync("SearchForm", required: false)
+                    </form>
+                </div>
+            </div>
+        }
+    </header>
+
+    @{
+        var maintenanceGate = Context.RequestServices.GetService<BaGet.Core.MaintenanceGate>();
+    }
+    @if (maintenanceGate != null && maintenanceGate.IsClosed)
+    {
+        <div class="container">
+            <div class="alert alert-warning maintenance-banner" role="status" id="maintenance-banner">
+                <strong>Read-only.</strong> Changes are refused for now: @maintenanceGate.Reason.
+                @if (maintenanceGate.IsClosedUntilRestart)
+                {
+                    <span>Restart the server to finish.</span>
+                }
+            </div>
+        </div>
+    }
+
+    <section role="main" class="container main-container">
+        @RenderBody()
+    </section>
+
+    <footer class="site-footer" role="contentinfo">
+        <div class="container">
+            <ul class="footer-links list-inline">
+                <li><a href="https://pieroviano.github.io/BaGet/" target="_blank" rel="noopener noreferrer">Documentation</a></li>
+                <li><a href="https://github.com/loic-sharma/BaGet" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+                @if (!string.IsNullOrWhiteSpace(Site.Value.TermsOfUsePath))
+                {
+                    <li><a href="@Url.Action("Terms", "Legal")" id="footer-terms">Terms of Use</a></li>
+                }
+                @if (!string.IsNullOrWhiteSpace(Site.Value.PrivacyPolicyPath))
+                {
+                    <li><a href="@Url.Action("Privacy", "Legal")" id="footer-privacy">Privacy Policy</a></li>
+                }
+            </ul>
+            <p class="footer-powered"><a href="https://pieroviano.github.io/BaGet/" target="_blank" rel="noopener noreferrer">BaGet Extension</a></p>
+        </div>
+    </footer>
+
+    <script src="~/_content/BaGet.Web/lib/alpinejs/dist/alpine.js"></script>
+
+    <script src="~/_content/BaGet.Web/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/_content/BaGet.Web/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/_content/BaGet.Web/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

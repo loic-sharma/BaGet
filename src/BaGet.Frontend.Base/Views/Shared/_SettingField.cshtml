@@ -1,0 +1,99 @@
+@model BaGet.Core.SettingState
+@{
+    var d = Model.Descriptor;
+    var id = d.Key.Replace(':', '_');
+    var name = SettingsForm.ValuePrefix + d.Key;
+    var mask = SettingPresentation.Mask;
+    var siblings = ViewData["Siblings"] as IEnumerable<SettingState> ?? Enumerable.Empty<SettingState>();
+    var dependsValue = SettingPresentation.DependsValue(d, siblings);
+    var example = SettingPresentation.ExampleFor(d, dependsValue);
+    var hasExamples = d.ExampleDependsOnKey != null && d.Examples != null && d.Examples.Count > 0;
+}
+
+<div class="form-group">
+    <label for="@id"><code>@d.Key</code></label>
+    @if (d.RequiresRestart) { <span class="label label-warning">Restart required</span> }
+    @if (Model.IsOverridden) { <span class="label label-info">Saved override</span> }
+    @if (Model.ShadowedBy != null) { <span class="label label-danger">Overridden by @Model.ShadowedBy</span> }
+
+    @switch (d.Kind)
+    {
+        case SettingKind.Boolean:
+            <div class="checkbox">
+                <label>
+                    <input type="hidden" name="@name" value="false" />
+                    <input type="checkbox" id="@id" name="@name" value="true" checked="@(string.Equals(Model.EffectiveValue, "true", StringComparison.OrdinalIgnoreCase))" /> Enabled
+                </label>
+            </div>
+            break;
+        case SettingKind.Integer:
+            <input type="number" id="@id" name="@name" value="@Model.EffectiveValue" step="1" class="form-control" />
+            break;
+        case SettingKind.Number:
+            <input type="number" id="@id" name="@name" value="@Model.EffectiveValue" step="any" class="form-control" />
+            break;
+        case SettingKind.Enum:
+            <select id="@id" name="@name" class="form-control">
+                @foreach (var choice in SettingPresentation.Choices(d, Model.EffectiveValue))
+                {
+                    <option value="@choice.Value" selected="@choice.Selected">@choice.Label</option>
+                }
+            </select>
+            break;
+        case SettingKind.StringList:
+            <textarea id="@id" name="@name" rows="3" class="form-control">@Model.EffectiveValue</textarea>
+            <p class="help-block">One entry per line.</p>
+            break;
+        case SettingKind.ReadOnly:
+            <pre>@(d.IsSensitive ? (Model.HasValue ? mask : string.Empty) : Model.EffectiveValue)</pre>
+            <p class="help-block">Edit the configuration file.</p>
+            break;
+        default:
+            if (d.IsSensitive)
+            {
+                <input type="password" id="@id" name="@name" value="" class="form-control" autocomplete="new-password" placeholder="@SettingPresentation.Placeholder(Model, dependsValue)" />
+                <div class="checkbox"><label><input type="checkbox" name="@(SettingsForm.ClearPrefix + d.Key)" value="true" /> Clear</label></div>
+            }
+            else
+            {
+                <input type="text" id="@id" name="@name" value="@Model.EffectiveValue" class="form-control" />
+            }
+            break;
+    }
+
+    @if (hasExamples)
+    {
+        @* The example is only a hint: a placeholder (when nothing is stored) and this line, never the value.
+           Settings.cshtml's script rewrites them when the selector changes, reading the data-examples JSON attribute (keyed by the lower-cased value, so no value can collide
+           with the data-example-source/-target/-stored control attributes).
+           A TagBuilder encodes every attribute value and text. *@
+        var line = new TagBuilder("p");
+        line.AddCssClass("help-block");
+        line.AddCssClass("setting-example");
+        line.Attributes["id"] = id + "_example";
+        line.Attributes["data-example-source"] = d.ExampleDependsOnKey!.Replace(':', '_');
+        line.Attributes["data-example-target"] = id;
+        line.Attributes["data-example-stored"] = Model.HasValue ? "true" : "false";
+        if (example == null) line.Attributes["hidden"] = "hidden";
+        line.Attributes["data-examples"] = SettingPresentation.ExamplesJson(d.Examples!);
+
+        var type = new TagBuilder("span");
+        type.Attributes["data-example-type"] = string.Empty;
+        type.InnerHtml.Append(dependsValue ?? string.Empty);
+        var text = new TagBuilder("code");
+        text.Attributes["data-example-text"] = string.Empty;
+        text.InnerHtml.Append(example ?? string.Empty);
+
+        line.InnerHtml.Append("Example for ");
+        line.InnerHtml.AppendHtml(type);
+        line.InnerHtml.Append(": ");
+        line.InnerHtml.AppendHtml(text);
+        @line
+    }
+    @if (!string.IsNullOrEmpty(d.Description)) { <p class="help-block">@d.Description</p> }
+    @if (Model.ShadowedBy != null) { <p class="help-block text-danger">The saved value has no effect while the @Model.ShadowedBy sets this key.</p> }
+    @if (Model.IsOverridden)
+    {
+        <div class="checkbox"><label><input type="checkbox" name="@(SettingsForm.ResetPrefix + d.Key)" value="true" /> Reset to default</label></div>
+    }
+</div>

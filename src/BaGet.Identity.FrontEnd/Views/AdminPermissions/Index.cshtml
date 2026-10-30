@@ -1,0 +1,90 @@
+@using BaGet.Frontend.Mvc.Screens
+@model BaGet.Identity.Application.Models.Access.PermissionsViewModel
+@{
+    ViewData["Title"] = "Permission targets";
+}
+
+<div class="col-sm-12">
+    <h1>Permission targets</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-success" role="alert" id="permissions-message">@Model.Message</div>
+    }
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert" id="permissions-error">@Model.Error</div>
+    }
+
+    <p class="help-block">
+        A target says which repositories and package IDs its grants apply to. A grant gives a user, a
+        <a asp-controller="AdminGroups" asp-action="Index">group</a> or an organization some of Read, Annotate, Deploy, Delete and Manage.
+        Package ownership still applies inside Deploy, Delete, Annotate and Manage. Server administrators hold every action.
+    </p>
+
+    <table class="table" id="targets-table">
+        <thead>
+            <tr><th>Name</th><th>Repositories</th><th>Packages</th><th>Project</th><th>Grants</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var target in Model.Targets)
+            {
+                <tr data-target="@target.Name">
+                    <td>
+                        <a href="@Url.Action("Detail", "AdminPermissions", new { name = target.Name })">@target.Name</a>
+                        @if (target.IsBuiltIn)
+                        {
+                            <span class="label label-info">Built-in</span>
+                        }
+                    </td>
+                    <td><code>@AccessSupport.Join(target.RepositoryPatterns)</code></td>
+                    <td>
+                        <code>@(BaGet.Core.AccessPatterns.DescribeScope(target.IncludePatterns, target.ExcludePatterns) ?? "*")</code>
+                    </td>
+                    <td>
+                        @if (target.ProjectName != null)
+                        {
+                            <a href="@Url.Action("Detail", "AdminProjects", new { name = target.ProjectName })">@target.ProjectName</a>
+                        }
+                    </td>
+                    <td>@target.GrantCount</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h2>New permission target</h2>
+    <form method="post" id="target-create-form">
+        <div class="form-group">
+            <label for="target-name">Name</label>
+            <input id="target-name" name="name" type="text" class="form-control" value="@Model.Name" maxlength="@BaGet.Core.AccessNames.MaxLength" autocomplete="off" />
+        </div>
+        <partial name="~/Views/Shared/_PatternFields.cshtml" model="@Model.Fields" />
+        @if (Model.Projects.Count > 0)
+        {
+            <div class="form-group">
+                <label for="target-project">Project (optional)</label>
+                <select id="target-project" name="project" class="form-control">
+                    <option value="">None</option>
+                    @foreach (var project in Model.Projects)
+                    {
+                        <option value="@project.Name" selected="@(project.Name == Model.Project)">@project.Name</option>
+                    }
+                </select>
+                <span class="help-block">A project target applies only to the project's repositories, and the project's administrators manage its grants.</span>
+            </div>
+        }
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+
+    <h2>Defaults</h2>
+    <p class="help-block">
+        The upgrade created <em>Anyone reads every repository</em> and <em>Authenticated users deploy</em>, which keep the behaviour of
+        a server without an access model. If you deleted them, this brings back the missing ones.
+    </p>
+    <form method="post" id="restore-form">
+        <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("restorePassword")" />
+        <button type="submit" class="btn btn-default" asp-controller="AdminPermissions" asp-action="Index" asp-route-handler="RestoreBuiltIns">Restore built-in groups and targets</button>
+    </form>
+</div>

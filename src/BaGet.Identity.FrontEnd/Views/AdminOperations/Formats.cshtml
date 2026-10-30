@@ -1,0 +1,33 @@
+@model BaGet.Identity.Application.Models.Repositories.FormatsViewModel
+@{
+    ViewData["Title"] = "Package formats";
+}
+
+<div class="col-sm-12">
+    <h1>Package formats</h1>
+    <hr class="breadcrumb-divider" />
+
+    <p class="help-block">
+        The formats this server can host. A repository has one format; its clients are configured with the feed address below.
+        Repositories are created on the <a href="@Url.Action("Index", "AdminRepositories")">Repositories</a> page.
+    </p>
+
+    <table class="table" id="formats-table">
+        <thead>
+            <tr><th>Format</th><th>Feed address</th><th>Repository kinds</th><th>Storage folders</th><th>Capabilities</th><th>Repositories</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var row in Model.Rows)
+            {
+                <tr data-format="@row.Module.Format">
+                    <td>@row.Module.DisplayName</td>
+                    <td><code>@(row.Module.RoutePrefix.Length == 0 ? "/" : "/" + row.Module.RoutePrefix + "/")</code> (<code>@row.Module.FeedPath</code>)</td>
+                    <td>@string.Join(", ", row.Module.CreatableKinds.Concat(row.Module.SupportsVirtual ? new[] { BaGet.Core.RepositoryKind.Virtual } : System.Array.Empty<BaGet.Core.RepositoryKind>()))</td>
+                    <td>@string.Join(", ", row.Module.StorageFolders)</td>
+                    <td>@(row.Capabilities.Count == 0 ? "-" : string.Join(", ", row.Capabilities))</td>
+                    <td>@row.Repositories</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

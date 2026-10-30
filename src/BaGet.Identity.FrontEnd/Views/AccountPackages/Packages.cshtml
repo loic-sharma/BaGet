@@ -1,0 +1,105 @@
+@using BaGet.Identity.Extensions
+@model BaGet.Identity.Application.Models.Packages.AccountPackagesViewModel
+@{
+    ViewData["Title"] = "My packages";
+}
+
+<div class="col-sm-12">
+    <h1>My packages</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.IsEmpty)
+    {
+        <p id="my-packages-empty">
+            You do not own any package yet. <a asp-controller="Upload" asp-action="Index">Upload one</a>, or push with
+            <code>dotnet nuget push</code> - the ID you push first becomes yours.
+        </p>
+    }
+    else
+    {
+        @foreach (var group in Model.Groups)
+        {
+            <div data-repository="@group.Repository.Name">
+                @if (Model.ShowRepositoryNames)
+                {
+                    <h2>Repository: @group.Repository.Name</h2>
+                }
+                <table class="table" id="my-packages@(group.Repository.IsDefault ? "" : "-" + group.Repository.Name)">
+                    <thead>
+                        <tr><th>Package</th><th>Latest version</th><th>Versions</th><th>Downloads</th><th></th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var package in group.Packages)
+                        {
+                            var isNpm = group.Repository.Format == BaGet.Core.RepositoryFormat.Npm;
+                            <tr>
+                                @if (isNpm)
+                                {
+                                    <td><a href="@Url.RepositoryContent(group.Repository, "npm-packages/" + package.Id)">@package.Id</a></td>
+                                    <td>
+                                        @if (package.LatestVersion == null)
+                                        {
+                                            <text>None</text>
+                                        }
+                                        else
+                                        {
+                                            <a href="@(Url.RepositoryContent(group.Repository, "npm-packages/" + package.Id) + "?version=" + Uri.EscapeDataString(package.LatestVersion))">@package.LatestVersion</a>
+                                        }
+                                    </td>
+                                    <td>@package.VersionCount</td>
+                                    <td>@package.Downloads.ToString("N0")</td>
+                                    <td>
+                                        <a href="@Url.RepositoryContent(group.Repository, "npm-manage/" + package.Id)">Manage</a> ·
+                                        <a href="@Url.RepositoryContent(group.Repository, "npm-upload")">Upload new version</a>
+                                    </td>
+                                }
+                                else if (group.Repository.Format == BaGet.Core.RepositoryFormat.Maven)
+                                {
+                                    var mavenPath = string.Join("/", (package.Id ?? string.Empty).Split(':').Select(Uri.EscapeDataString));
+                                    <td><a href="@Url.RepositoryContent(group.Repository, "maven-artifacts/" + mavenPath)">@package.Id</a></td>
+                                    <td>
+                                        @if (package.LatestVersion == null)
+                                        {
+                                            <text>None</text>
+                                        }
+                                        else
+                                        {
+                                            <a href="@Url.RepositoryContent(group.Repository, "maven-artifacts/" + mavenPath + "/" + Uri.EscapeDataString(package.LatestVersion))">@package.LatestVersion</a>
+                                        }
+                                    </td>
+                                    <td>@package.VersionCount</td>
+                                    <td>@package.Downloads.ToString("N0")</td>
+                                    <td>
+                                        <a href="@Url.RepositoryContent(group.Repository, "maven-manage/" + mavenPath)">Manage</a> &middot;
+                                        <a href="@Url.RepositoryContent(group.Repository, "maven-upload")">Upload new version</a>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td><a href="@Url.RepositoryContent(group.Repository, "packages/" + package.Id)">@package.Id</a></td>
+                                    <td>
+                                        @if (package.LatestVersion == null)
+                                        {
+                                            <text>None</text>
+                                        }
+                                        else
+                                        {
+                                            <a href="@Url.RepositoryContent(group.Repository, "packages/" + package.Id + "/" + package.LatestVersion)">@package.LatestVersion</a>
+                                            @(package.LatestVersionIsListed ? "" : " (unlisted)")
+                                        }
+                                    </td>
+                                    <td>@package.VersionCount</td>
+                                    <td>@package.Downloads.ToString("N0")</td>
+                                    <td>
+                                        <a href="@Url.RepositoryContent(group.Repository, "packages/" + package.Id + "/manage")">Manage</a> ·
+                                        <a href="@(Url.RepositoryContent(group.Repository, "upload") + "?id=" + Uri.EscapeDataString(package.Id ?? string.Empty))">Upload new version</a>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    }
+</div>

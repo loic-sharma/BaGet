@@ -1,0 +1,17 @@
+@model BaGet.Identity.Application.Models.Account.ReauthenticateView
+
+<div class="form-group">
+    @if (Model.Done)
+    {
+        <p class="text-success">You signed in again with your provider. This lasts a few minutes.</p>
+    }
+    else if (Model.Available)
+    {
+        <p class="help-block">This account has no password. Confirm it is you by signing in again with your provider.</p>
+        <button type="submit" class="btn btn-default" formaction="@Url.Action("Reauthenticate", "Account", new { returnUrl = Model.ReturnUrl })">Sign in again</button>
+    }
+    else
+    {
+        <p class="help-block">This account has no password and no provider is available to confirm it is you. Ask an administrator to reset the password.</p>
+    }
+</div>

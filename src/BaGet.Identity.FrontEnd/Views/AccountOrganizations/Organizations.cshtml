@@ -1,0 +1,55 @@
+@model BaGet.Identity.Application.Models.Organizations.OrganizationsViewModel
+@{
+    ViewData["Title"] = "Organizations";
+}
+
+<div class="col-sm-12">
+    <h1>Organizations</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-info" role="alert" id="organizations-message">@Model.Message</div>
+    }
+
+    @foreach (var organization in Model.Organizations)
+    {
+        <h2><a href="~/profiles/@organization.Name">@organization.Name</a></h2>
+        <table class="table">
+            <tbody>
+                @foreach (var member in organization.Members ?? [])
+                {
+                    <tr>
+                        <td>@member.UserName@(member.IsAdmin ? " (administrator)" : "")</td>
+                        <td>
+                            @if (organization.IsAdmin || member.UserName == User.Identity?.Name)
+                            {
+                                <form method="post" asp-controller="AccountOrganizations" asp-action="Organizations" asp-route-handler="RemoveMember">
+                                    <input type="hidden" name="organization" value="@organization.Name" />
+                                    <input type="hidden" name="userName" value="@member.UserName" />
+                                    <button type="submit" class="btn btn-default btn-xs">Remove</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (organization.IsAdmin)
+        {
+            <form method="post" asp-controller="AccountOrganizations" asp-action="Organizations" asp-route-handler="AddMember" class="form-inline">
+                <input type="hidden" name="organization" value="@organization.Name" />
+                <input type="text" name="userName" class="form-control" placeholder="User name" />
+                <label><input type="checkbox" name="isAdmin" value="true" /> Administrator</label>
+                <button type="submit" class="btn btn-primary">Add member</button>
+            </form>
+        }
+    }
+
+    <h2>Create an organization</h2>
+    <form method="post" asp-controller="AccountOrganizations" asp-action="Organizations" asp-route-handler="Create" class="form-inline">
+        <input type="text" name="name" class="form-control" placeholder="Name" />
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+</div>

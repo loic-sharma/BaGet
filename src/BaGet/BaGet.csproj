@@ -1,13 +1,43 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+
+    <!-- Enable the old RID graph to resolve NETSDK1206 warning for Microsoft.Azure.DocumentDB.Core -->
+    <!-- This is necessary because BaGet.Azure references Microsoft.Azure.Cosmos.Table which has -->
+    <!-- a transitive dependency on Microsoft.Azure.DocumentDB.Core with deprecated win7-x64 RID -->
+    <UseRidGraph>true</UseRidGraph>
+
+    <!-- src/Directory.Build.props turns publishing off for every project; the host is the one
+         deployable. Without this, "dotnet publish" copies nothing and then fails writing web.config. -->
+    <IsPublishable>true</IsPublishable>
+    <Nullable>enable</Nullable>
+    <NoWarn>$(NoWarn);NU5119;NU5104</NoWarn>
+    <PackageId>Extension.$(MSBuildProjectName).Site</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.5.0" />
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="5.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="$(MicrosoftAspNetCorePackageVersion)" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="$(MicrosoftEntityFrameworkCorePackageVersion)" />
+    <PackageReference Include="Microsoft.Rest.ClientRuntime" Version="2.3.24" />
+    <PackageReference Include="Serilog.AspNetCore" Version="$(SerilogAspNetCorePackageVersion)" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="$(SerilogSettingsConfigurationPackageVersion)" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="$(SerilogSinksConsolePackageVersion)" />
+    <PackageReference Include="Serilog.Sinks.File" Version="$(SerilogSinksFilePackageVersion)" />
+    <PackageReference Include="Serilog.Sinks.EventLog" Version="$(SerilogSinksEventLogPackageVersion)" />
+    <PackageReference Include="Serilog.Sinks.OpenTelemetry" Version="$(SerilogSinksOpenTelemetryPackageVersion)" />
+    <PackageReference Include="StackExchange.Redis" Version="$(StackExchangeRedisPackageVersion)" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="$(OpenTelemetryPackageVersion)" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="$(OpenTelemetryPackageVersion)" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="$(OpenTelemetryPackageVersion)" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="$(OpenTelemetryPackageVersion)" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="$(OpenTelemetryPackageVersion)" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="$(OpenTelemetryEntityFrameworkCorePackageVersion)" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
+    <PackageReference Include="Microsoft.Build.Tasks.Git" Version="10.0.402" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="$(MicrosoftEntityFrameworkCorePackageVersion)" PrivateAssets="all" />
+    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,8 +50,31 @@
     <ProjectReference Include="..\BaGet.Database.Sqlite\BaGet.Database.Sqlite.csproj" />
     <ProjectReference Include="..\BaGet.Database.SqlServer\BaGet.Database.SqlServer.csproj" />
     <ProjectReference Include="..\BaGet.Gcp\BaGet.Gcp.csproj" />
-    <ProjectReference Include="..\BaGet.Web\BaGet.Web.csproj" />
+    <ProjectReference Include="..\BaGet.Web.V3\BaGet.Web.V3.csproj" />
+    <ProjectReference Include="..\BaGet.Web.FrontEnd\BaGet.Web.FrontEnd.csproj" />
     <ProjectReference Include="..\BaGet.Protocol\BaGet.Protocol.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- LibMan's restore manifest is a development file. BaGet.Web has one too, and publishing
+         both to the same path fails with NETSDK1152. -->
+    <Content Update="libman.json" CopyToPublishDirectory="Never" Pack="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The UI's static files, at "wwwroot/" in this package, for hosts that embed BaGet without the
+         Web SDK's static web assets (e.g. a worker service): they serve them from wwwroot/_content/BaGet.Web. -->
+    <None Include="wwwroot\**\*" Pack="true" PackagePath="wwwroot" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="BaGet.Tests" Key="$(BaGetPublicKey)" />
+    <InternalsVisibleTo Include="BaGet.Telemetry.Tests" Key="$(BaGetPublicKey)" />
+    <InternalsVisibleTo Include="BaGet.Ha.Tests" Key="$(BaGetPublicKey)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="logs\" />
   </ItemGroup>
 
 </Project>

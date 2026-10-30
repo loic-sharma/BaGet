@@ -1,21 +1,25 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace BaGet.Aliyun
+using BaGet.Core;
+
+namespace BaGet.Aliyun;
+
+[RestartRequired]
+public class AliyunStorageOptions
 {
-    public class AliyunStorageOptions
-    {
-        [Required]
-        public string AccessKey { get; set; }
+    [Required]
+    [SensitiveSetting]
+    public string? AccessKey { get; set; }
 
-        [Required]
-        public string AccessKeySecret { get; set; }
+    [Required]
+    [SensitiveSetting]
+    public string? AccessKeySecret { get; set; }
 
-        [Required]
-        public string Endpoint { get; set; }
+    [Required]
+    public string? Endpoint { get; set; }
 
-        [Required]
-        public string Bucket { get; set; }
+    [Required]
+    public string? Bucket { get; set; }
 
-        public string Prefix { get; set; }
-    }
+    public string? Prefix { get; set; }
 }

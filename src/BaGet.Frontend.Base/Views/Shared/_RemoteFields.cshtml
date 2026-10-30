@@ -1,0 +1,116 @@
+@model BaGet.Identity.Application.Models.Repositories.RemoteFormModel
+
+@* The upstream fields of a remote repository; rendered with <partial for="Remote"> so the names carry the prefix. *@
+<div class="form-group">
+    <label asp-for="Url">Upstream URL</label>
+    @if (Model.EndpointFromMirror)
+    {
+        <input asp-for="Url" class="form-control" readonly="readonly" />
+        <p class="help-block">Set by the <code>Mirror:PackageSource</code>, <code>Mirror:Legacy</code> and <code>Mirror:PackageDownloadTimeoutSeconds</code> settings while <code>Mirror:Enabled</code> is on; change them on the Settings page.</p>
+    }
+    else
+    {
+        @if (Model.Format == BaGet.Core.RepositoryFormat.Npm)
+        {
+            <input asp-for="Url" class="form-control" placeholder="https://registry.npmjs.org/" autocomplete="off" maxlength="@BaGet.Core.RemoteRepositorySettings.MaxUrlLength" />
+            <p class="help-block">The base URL of an npm registry (packages are at <code>{url}/{name}</code>). Put credentials in the fields below, not in the URL.</p>
+        }
+        else if (Model.Format == BaGet.Core.RepositoryFormat.Docker)
+        {
+            <input asp-for="Url" class="form-control" placeholder="https://registry-1.docker.io" autocomplete="off" maxlength="@BaGet.Core.RemoteRepositorySettings.MaxUrlLength" />
+            <p class="help-block">The address of a Docker registry (the root, not <code>/v2</code>): Docker Hub is <code>https://registry-1.docker.io</code> (an official image such as <code>nginx</code> is asked for as <code>library/nginx</code>), GitHub is <code>https://ghcr.io</code>, Quay is <code>https://quay.io</code>. Put credentials in the fields below, not in the URL.</p>
+        }
+        else if (Model.Format == BaGet.Core.RepositoryFormat.Maven)
+        {
+            <input asp-for="Url" class="form-control" placeholder="https://repo.maven.apache.org/maven2/" autocomplete="off" maxlength="@BaGet.Core.RemoteRepositorySettings.MaxUrlLength" />
+            <p class="help-block">The root of a Maven repository (files are at <code>{url}/{group/as/folders}/{artifact}/{version}/{file}</code>); Maven Central is <code>https://repo.maven.apache.org/maven2/</code>. Put credentials in the fields below, not in the URL.</p>
+        }
+        else
+        {
+            <input asp-for="Url" class="form-control" placeholder="https://api.nuget.org/v3/index.json" autocomplete="off" maxlength="@BaGet.Core.RemoteRepositorySettings.MaxUrlLength" />
+            <p class="help-block">A V3 <code>index.json</code> URL or a V2 feed URL (for npm, the registry's base URL). Put credentials in the fields below, not in the URL.</p>
+        }
+    }
+</div>
+@if (Model.Format == BaGet.Core.RepositoryFormat.Npm)
+{
+    <input type="hidden" asp-for="Protocol" value="V3" />
+    <p class="help-block" id="remote-protocol-npm">Protocol: the npm registry protocol.</p>
+}
+else if (Model.Format == BaGet.Core.RepositoryFormat.Maven)
+{
+    <input type="hidden" asp-for="Protocol" value="V3" />
+    <p class="help-block" id="remote-protocol-maven">Protocol: the Maven 2 repository layout.</p>
+}
+else if (Model.Format == BaGet.Core.RepositoryFormat.Docker)
+{
+    <input type="hidden" asp-for="Protocol" value="V3" />
+    <p class="help-block" id="remote-protocol-docker">Protocol: the Docker registry API (OCI Distribution), with the registry's token authentication.</p>
+}
+else
+{
+<div class="form-group">
+    <label asp-for="Protocol">Protocol (NuGet)</label>
+    @if (Model.EndpointFromMirror)
+    {
+        <input type="hidden" asp-for="Protocol" />
+        <select class="form-control" disabled="disabled">
+            <option>@Model.Protocol</option>
+        </select>
+    }
+    else
+    {
+        <select asp-for="Protocol" class="form-control" asp-items="Html.GetEnumSelectList<BaGet.Core.RemoteProtocol>().Where(i => i.Value != ((int)BaGet.Core.RemoteProtocol.Npm).ToString())"></select>
+    }
+</div>
+}
+<div class="form-group">
+    <label asp-for="Username">User name</label>
+    <input asp-for="Username" class="form-control" autocomplete="off" maxlength="256" />
+</div>
+<div class="form-group">
+    <label asp-for="Password">Password or token</label>
+    <input asp-for="Password" type="password" value="" class="form-control" autocomplete="new-password" maxlength="4096" />
+    <p class="help-block">
+        Sent as HTTP Basic to the upstream's own host only (an npm upstream with no user name gets it as a bearer token, npm's <code>_authToken</code>; a Maven upstream gets Basic, like <code>settings.xml</code>'s <code>&lt;server&gt;</code>; a Docker registry gets the pair at its token service, as <code>docker login</code> does, or a password with no user name as a bearer token - leave both blank for anonymous pulls, which Docker Hub allows with a rate limit). Stored protected (ASP.NET Core data protection), never shown again, never logged.
+        @if (Model.HasPassword)
+        {
+            <text>A password is stored; leave blank to keep it.</text>
+        }
+    </p>
+    @if (Model.HasPassword)
+    {
+        <div class="checkbox">
+            <label><input asp-for="ClearPassword" /> Remove the stored password</label>
+        </div>
+    }
+</div>
+<div class="form-group">
+    <label asp-for="MetadataTtlSeconds">Metadata cache period (seconds)</label>
+    <input asp-for="MetadataTtlSeconds" type="number" min="0" max="@BaGet.Core.RemoteRepositorySettings.MaxTtlSeconds" class="form-control" />
+    <p class="help-block">How long the upstream's version lists and metadata are reused. 0 asks the upstream every time. An expired answer is still served while the upstream is down.</p>
+</div>
+<div class="form-group">
+    <label asp-for="NegativeTtlSeconds">Negative cache period (seconds)</label>
+    <input asp-for="NegativeTtlSeconds" type="number" min="0" max="@BaGet.Core.RemoteRepositorySettings.MaxTtlSeconds" class="form-control" />
+    <p class="help-block">How long "the upstream does not have it" (404) is remembered. A failure to reach the upstream is never remembered as "not found".</p>
+</div>
+<div class="form-group">
+    <label asp-for="DownloadTimeoutSeconds">Download timeout (seconds)</label>
+    @if (Model.EndpointFromMirror)
+    {
+        <input asp-for="DownloadTimeoutSeconds" type="number" class="form-control" readonly="readonly" />
+    }
+    else
+    {
+        <input asp-for="DownloadTimeoutSeconds" type="number" min="1" max="86400" class="form-control" />
+    }
+</div>
+<div class="checkbox">
+    <label><input asp-for="StoreLocally" /> Store artifacts locally</label>
+    <p class="help-block">On: packages (Maven: files; Docker: manifests and layers, which are kept while they stream to the client) are kept (database and files) the first time they are requested and served from there afterwards, also while the upstream is down. Off: pass-through; metadata and downloads come from the upstream each time and nothing is kept (search and package pages stay empty).</p>
+</div>
+<div class="checkbox">
+    <label><input asp-for="Offline" /> Offline mode</label>
+    <p class="help-block">Never contact the upstream: only stored packages and remembered answers are served.</p>
+</div>

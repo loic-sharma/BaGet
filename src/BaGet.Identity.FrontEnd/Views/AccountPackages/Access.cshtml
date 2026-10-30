@@ -1,0 +1,60 @@
+@model BaGet.Identity.Application.Models.Account.AccountAccessViewModel
+@{
+    ViewData["Title"] = "My access";
+}
+
+<div class="col-sm-12">
+    <h1>My access</h1>
+    <hr class="breadcrumb-divider" />
+
+    <p class="help-block">
+        What you may do in each repository, and which permission targets or project roles say so. Changing an existing package
+        ID also needs you to own it; that is not shown here. Repositories where you hold nothing are not listed.
+    </p>
+
+    @if (!Model.ModelAvailable)
+    {
+        <div class="alert alert-info" role="alert" id="access-no-model">
+            The configured database has no access model: everyone reads and any signed-in user writes, subject to package ownership.
+        </div>
+    }
+
+    <form method="get" class="form-inline" id="access-package-form">
+        <div class="form-group">
+            <label for="access-package">Package ID</label>
+            <input id="access-package" name="package" type="text" class="form-control" value="@Model.Package" placeholder="Contoso.Lib" autocomplete="off" />
+        </div>
+        <button type="submit" class="btn btn-default">Evaluate</button>
+        <span class="help-block">Optional: shows how include and exclude patterns apply to one package.</span>
+    </form>
+
+    @if (Model.AdministeredProjects.Count > 0)
+    {
+        <p id="access-projects">
+            You administer
+            @foreach (var project in Model.AdministeredProjects)
+            {
+                <a href="@Url.Action("Detail", "AdminProjects", new { name = project })" class="access-project">@project</a>
+            }
+        </p>
+    }
+
+    @if (Model.Rows.Count == 0)
+    {
+        <p id="access-empty">You hold no action in any repository.</p>
+    }
+
+    @foreach (var row in Model.Rows)
+    {
+        <section class="access-repository" data-repository="@row.Repository.Name">
+            <h2>
+                @row.Repository.Name
+                @if (row.Repository.IsDefault)
+                {
+                    <span class="label label-info">Default</span>
+                }
+            </h2>
+            <partial name="~/Views/Shared/_Explanation.cshtml" model="@row.Explanation" />
+        </section>
+    }
+</div>

@@ -1,0 +1,60 @@
+@model ReportAbuseViewModel
+
+@{
+    ViewData["Title"] = "Report abuse";
+}
+
+<div class="col-sm-12">
+    <h1>Report abuse</h1>
+    <hr class="breadcrumb-divider" />
+
+    <p>
+        You are reporting
+        <a asp-controller="Package" asp-action="Show" asp-route-id="@Model.Id" asp-route-version="@Model.Version">@Model.Id @Model.Version</a>.
+    </p>
+
+    @if (Model.Submitted)
+    {
+        <div class="alert alert-success" role="alert" id="report-submitted">
+            Thank you. The report has been recorded for the package's owners and the
+            feed's administrator, who can unlist or delete the package.
+        </div>
+    }
+    else if (!Model.CanReport)
+    {
+        <p>
+            This feed cannot record reports. Contact whoever administers it, quoting the
+            package ID and version above, and they can unlist or delete the package.
+        </p>
+    }
+    else
+    {
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Reason"></label>
+                <select asp-for="Reason" class="form-control">
+                    <option value="">Choose a reason</option>
+                    @foreach (var reason in AbuseReport.Reasons)
+                    {
+                        <option value="@reason">@reason</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Details"></label>
+                <textarea asp-for="Details" class="form-control" rows="6"></textarea>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReporterEmail"></label>
+                <input asp-for="ReporterEmail" class="form-control" autocomplete="email" />
+            </div>
+            <button type="submit" class="btn btn-danger">Report</button>
+        </form>
+    }
+
+    <p>
+        If the package was mirrored from an upstream feed, report it there as well:
+        removing it here does not remove it upstream.
+    </p>
+</div>

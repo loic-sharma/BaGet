@@ -1,51 +1,58 @@
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Protocol.Models;
 
-namespace BaGet.Core
+namespace BaGet.Core;
+
+/// <summary>
+/// The service used to search for packages.
+/// 
+/// See https://docs.microsoft.com/en-us/nuget/api/search-query-service-resource
+/// </summary>
+public interface ISearchService
 {
     /// <summary>
-    /// The service used to search for packages.
-    /// 
-    /// See https://docs.microsoft.com/en-us/nuget/api/search-query-service-resource
+    /// The orders this provider can apply on the server. A provider that cannot sort
+    /// reports only <see cref="SearchSort.Relevance"/> and ignores <see cref="SearchRequest.SortBy"/>:
+    /// sorting one page in memory would be wrong, so the UI hides its sort control instead.
     /// </summary>
-    public interface ISearchService
-    {
-        /// <summary>
-        /// Perform a search query.
-        /// See: https://docs.microsoft.com/en-us/nuget/api/search-query-service-resource#search-for-packages
-        /// </summary>
-        /// <param name="request">The search request.</param>
-        /// <param name="cancellationToken">A token to cancel the task.</param>
-        /// <returns>The search response.</returns>
-        Task<SearchResponse> SearchAsync(SearchRequest request, CancellationToken cancellationToken);
+    IReadOnlyCollection<SearchSort> SupportedSorts => new[] { SearchSort.Relevance };
 
-        /// <summary>
-        /// Perform an autocomplete query.
-        /// See: https://docs.microsoft.com/en-us/nuget/api/search-autocomplete-service-resource#search-for-package-ids
-        /// </summary>
-        /// <param name="request">The autocomplete request.</param>
-        /// <param name="cancellationToken">A token to cancel the task.</param>
-        /// <returns>The autocomplete response.</returns>
-        Task<AutocompleteResponse> AutocompleteAsync(AutocompleteRequest request, CancellationToken cancellationToken);
+    /// <summary>
+    /// Perform a search query.
+    /// See: https://docs.microsoft.com/en-us/nuget/api/search-query-service-resource#search-for-packages
+    /// </summary>
+    /// <param name="request">The search request.</param>
+    /// <param name="cancellationToken">A token to cancel the task.</param>
+    /// <returns>The search response.</returns>
+    Task<SearchResponse> SearchAsync(SearchRequest request, CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Enumerate listed package versions.
-        /// See: https://docs.microsoft.com/en-us/nuget/api/search-autocomplete-service-resource#enumerate-package-versions
-        /// </summary>
-        /// <param name="request">The autocomplete request.</param>
-        /// <param name="cancellationToken">A token to cancel the task.</param>
-        /// <returns>The package versions that matched the request.</returns>
-        Task<AutocompleteResponse> ListPackageVersionsAsync(VersionsRequest request, CancellationToken cancellationToken);
+    /// <summary>
+    /// Perform an autocomplete query.
+    /// See: https://docs.microsoft.com/en-us/nuget/api/search-autocomplete-service-resource#search-for-package-ids
+    /// </summary>
+    /// <param name="request">The autocomplete request.</param>
+    /// <param name="cancellationToken">A token to cancel the task.</param>
+    /// <returns>The autocomplete response.</returns>
+    Task<AutocompleteResponse> AutocompleteAsync(AutocompleteRequest request, CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Find the packages that depend on a given package.
-        /// </summary>
-        /// <param name="packageId">The package whose dependents should be found.</param>
-        /// <param name="cancellationToken">A token to cancel the task.</param>
-        /// <returns>The dependents response.</returns>
-        Task<DependentsResponse> FindDependentsAsync(
-            string packageId,
-            CancellationToken cancellationToken);
-    }
+    /// <summary>
+    /// Enumerate listed package versions.
+    /// See: https://docs.microsoft.com/en-us/nuget/api/search-autocomplete-service-resource#enumerate-package-versions
+    /// </summary>
+    /// <param name="request">The autocomplete request.</param>
+    /// <param name="cancellationToken">A token to cancel the task.</param>
+    /// <returns>The package versions that matched the request.</returns>
+    Task<AutocompleteResponse> ListPackageVersionsAsync(VersionsRequest request, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Find the packages that depend on a given package.
+    /// </summary>
+    /// <param name="packageId">The package whose dependents should be found.</param>
+    /// <param name="cancellationToken">A token to cancel the task.</param>
+    /// <returns>The dependents response.</returns>
+    Task<DependentsResponse> FindDependentsAsync(
+        string? packageId,
+        CancellationToken cancellationToken);
 }

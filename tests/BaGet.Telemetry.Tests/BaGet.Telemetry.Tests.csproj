@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <UseRidGraph>true</UseRidGraph>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Jaeger (traces) and an OpenTelemetry Collector (metrics, logs) in Docker; the tests skip without a daemon. -->
+    <PackageReference Include="Testcontainers" Version="$(TestcontainersPackageVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.13" />
+    <PackageReference Include="NuGet.Protocol" Version="7.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\BaGet\BaGet.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The real-host harness and package builder, shared with BaGet.Tests. -->
+    <Compile Include="..\BaGet.Tests\Support\BaGetApplication.cs" Link="Shared\BaGetApplication.cs" />
+    <Compile Include="..\BaGet.Tests\Support\ForwardingRemoteHttpClientFactory.cs" Link="Shared\ForwardingRemoteHttpClientFactory.cs" />
+    <Compile Include="..\BaGet.Tests\Support\CapturingEmailSender.cs" Link="Shared\CapturingEmailSender.cs" />
+    <Compile Include="..\BaGet.Tests\Support\TestPackages.cs" Link="Shared\TestPackages.cs" />
+    <Compile Include="..\BaGet.Tests\Support\XunitLogger.cs" Link="Shared\XunitLogger.cs" />
+    <Compile Include="..\BaGet.Tests\Support\XunitLoggerProvider.cs" Link="Shared\XunitLoggerProvider.cs" />
+  </ItemGroup>
+
+</Project>

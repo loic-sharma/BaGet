@@ -2,9 +2,9 @@
 
 You can store packages to [Alibaba(Aliyun) OSS](https://www.alibabacloud.com/product/oss).
 
-## Configure BaGet
+## Configure BaGet Extension
 
-You can modify BaGet's configurations by editing the `appsettings.json` file. For the full list of configurations, please refer to [BaGet's configuration](../configuration.md) guide.
+You can modify BaGet Extension's configurations by editing the `appsettings.json` file. For the full list of configurations, please refer to [BaGet Extension's configuration](../configuration.md) guide.
 
 ### Aliyun OSS Storage
 

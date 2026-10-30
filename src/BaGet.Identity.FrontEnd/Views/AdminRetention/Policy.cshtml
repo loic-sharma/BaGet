@@ -1,0 +1,127 @@
+@using BaGet.Frontend.Controllers.Base
+@model BaGet.Identity.Application.Models.Policies.RetentionPolicyViewModel
+@{
+    var policy = Model.View!.Policy;
+    ViewData["Title"] = "Retention policy " + policy.Name;
+    var status = Model.Status;
+    var report = status?.Report;
+}
+
+<div class="col-sm-12">
+    <h1>@policy.Name</h1>
+    <hr class="breadcrumb-divider" />
+    <p><a href="@Url.Action("Index", "AdminRetention")">All policies</a> | <a href="@Url.Action("Holds", "AdminRetention")">Legal holds</a></p>
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-success" role="alert" id="retention-message">@Model.Message</div>
+    }
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert" id="retention-error">@Model.Error</div>
+    }
+
+    <p id="policy-summary">
+        @RetentionControllerBase.Describe(policy) on
+        @if (Model.View.Repository != null) { <span>repository <strong>@Model.View.Repository</strong></span> }
+        else { <span>project <strong>@Model.View.Project</strong> (@Model.View.Targets repositories)</span> }.
+        @(policy.Enabled ? "Enabled." : "Disabled.")
+        @if (policy.LastRun is DateTime last) { <span>Last run @last.ToString("u"): @policy.LastResult</span> }
+    </p>
+
+    <h2>Run</h2>
+    <div class="row">
+        <div class="col-sm-6">
+            <form method="post" asp-controller="AdminRetention" asp-action="Policy" asp-route-key="@Model.Key" asp-route-handler="DryRun" id="retention-dry-run-form">
+                <button type="submit" class="btn btn-default" disabled="@Model.Running">Dry run</button>
+                <span class="help-block">Lists what a run would delete. Deletes nothing.</span>
+            </form>
+        </div>
+        <div class="col-sm-6">
+            <form method="post" asp-controller="AdminRetention" asp-action="Policy" asp-route-key="@Model.Key" asp-route-handler="Run" id="retention-run-form">
+                <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("retention-run-password")" />
+                <button type="submit" class="btn btn-danger" disabled="@Model.Running">Run now</button>
+                <span class="help-block">Deletes the selected versions for good.</span>
+            </form>
+        </div>
+    </div>
+
+    @if (status != null)
+    {
+        <div id="retention-status">
+            <h3>@(status.DryRun ? "Dry run" : "Run") @status.State.ToString().ToLowerInvariant()</h3>
+            <p>started @status.Started.ToString("u")@(status.Actor != null ? " by " + status.Actor : "")@(status.Finished is DateTime done ? ", finished " + done.ToString("u") : "")</p>
+            @if (status.Error != null)
+            {
+                <div class="alert alert-danger" role="alert" id="retention-job-error">@status.Error</div>
+            }
+        </div>
+    }
+    @if (report != null)
+    {
+        <div id="retention-report">
+            <p class="retention-summary"><strong>@report.Summary</strong></p>
+            @foreach (var part in report.Repositories)
+            {
+                <h4 data-repository="@part.Repository">@part.Repository <small>@part.Format; examined @part.Examined, @(report.DryRun ? "to delete" : "deleted") @(report.DryRun ? part.Selected : part.Deleted), held @part.Held@(part.Failed > 0 ? ", failed " + part.Failed : "")</small></h4>
+                @if (part.Error != null)
+                {
+                    <div class="alert alert-danger" role="alert">@part.Error</div>
+                }
+                @foreach (var note in part.Notes)
+                {
+                    <p class="text-muted">@note</p>
+                }
+                @if (part.GarbageCollection != null)
+                {
+                    <p class="retention-gc">Garbage collection: @part.GarbageCollection.Summary</p>
+                }
+                @if (part.Items.Count > 0)
+                {
+                    <table class="table table-condensed retention-items">
+                        <thead>
+                            <tr><th>Artifact</th><th>Version</th><th>Published</th><th>Last download</th><th>Size</th><th>Why</th><th>Outcome</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in part.Items)
+                            {
+                                <tr data-outcome="@item.Outcome">
+                                    <td>@item.Name</td>
+                                    <td>@item.Version</td>
+                                    <td>@item.Published.ToString("u")</td>
+                                    <td>@(item.LastDownloaded?.ToString("u") ?? "never recorded")</td>
+                                    <td>@(item.Size is long size ? BaGet.Core.RetentionReport.FormatBytes(size) : "unknown")</td>
+                                    <td>@item.Rules</td>
+                                    <td>@item.Outcome@(item.Error != null ? ": " + item.Error : "")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    @if (part.ItemsTruncated)
+                    {
+                        <p class="text-muted">Only the first @BaGet.Core.RetentionRepositoryReport.MaxItems versions are listed; the counts are complete.</p>
+                    }
+                }
+            }
+        </div>
+    }
+
+    <h2>Rules</h2>
+    <form method="post" asp-controller="AdminRetention" asp-action="Policy" asp-route-key="@Model.Key" asp-route-handler="Save" id="retention-edit-form">
+        <partial name="~/Views/Shared/_RetentionPolicyFields.cshtml" model="@(new RetentionFieldsView(Model.Form, Model.Repositories, Model.ProjectNames, "edit"))" />
+        <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("retention-edit-password")" />
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+
+    <h2>Delete the policy</h2>
+    <form method="post" asp-controller="AdminRetention" asp-action="Policy" asp-route-key="@Model.Key" asp-route-handler="Delete" id="retention-delete-form">
+        <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("retention-delete-password")" />
+        <button type="submit" class="btn btn-danger">Delete policy</button>
+        <span class="help-block">Versions it already deleted stay deleted.</span>
+    </form>
+</div>
+
+@if (Model.Running)
+{
+    <script>setTimeout(function () { location.reload(); }, 3000);</script>
+}

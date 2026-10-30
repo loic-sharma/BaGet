@@ -1,0 +1,66 @@
+@* The folder name would make the generated namespace BaGet.Web.V3.ApiCatalog, which hides the ApiCatalog type. *@
+@namespace BaGet.Web.V3.ApiCatalogViews
+@model ApiCatalogViewModel
+@{
+    ViewData["Title"] = "REST API";
+}
+
+<div class="col-sm-12">
+    <h1>REST API</h1>
+    <hr class="breadcrumb-divider" />
+
+    <p class="help-block">
+        Everything on the administration pages can be done over HTTP at <code id="api-base">@Model.ApiBase</code>, for scripts and
+        automation. The OpenAPI 3 description is at <a id="api-openapi" href="@Model.OpenApiUrl"><code>@Model.OpenApiUrl</code></a>; the documents of the UI API and of the package protocols are at
+        <code>/openapi/ui.json</code> and <code>/openapi/protocols.json</code>, and <code id="api-scalar">/scalar</code> browses all three (administrators only).
+    </p>
+
+    <h3>Authenticate</h3>
+    <ul>
+        <li>
+            Send an <strong>administrator's API key with the <code>admin:api</code> scope</strong> as <code>Authorization: Bearer &lt;key&gt;</code>
+            (or the key as the Basic password, or <code>X-NuGet-ApiKey</code>). Create one under
+            <a href="@Url.Action("ApiKeysIndex", "AccountSettings")">API keys</a>; the scope is offered to administrators only, the key must not be limited to
+            repositories, and it stops working the moment its owner is no longer an administrator.
+        </li>
+        <li>Or the server's global <code>ApiKey</code>, when one is configured.</li>
+        <li>The browser session is never accepted.</li>
+    </ul>
+
+    <h3>Confirmation</h3>
+    <p>
+        Where the page asks for your password again (marked <em>password</em> below), send the key owner's password in
+        <code id="api-confirm-header">@Model.ConfirmHeader</code>. The global key is its own confirmation. Writes answer
+        <code>503</code> with <code>Retry-After</code> while the server is read-only. Errors are <code>application/problem+json</code>;
+        lists take <code>?page=</code> and <code>?pageSize=</code> (at most 200).
+    </p>
+
+    <h3>Operations</h3>
+    <table class="table" id="api-table">
+        <thead>
+            <tr><th>Method</th><th>Path</th><th>What it does</th><th>Confirmation</th><th>Same on the page</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var endpoint in Model.Endpoints)
+            {
+                <tr data-path="@endpoint.Path" data-method="@endpoint.Method">
+                    <td><code>@endpoint.Method</code></td>
+                    <td><code>@endpoint.Path</code></td>
+                    <td>@endpoint.Summary</td>
+                    <td>@(endpoint.Confirm ? "password" : "-")</td>
+                    <td>
+                        @{ var link = Url.Action(endpoint.UiScreen.Action, endpoint.UiScreen.Controller); }
+                        @if (link != null)
+                        {
+                            <a href="@link">@endpoint.UiScreen.Controller/@endpoint.UiScreen.Action</a>
+                        }
+                        else
+                        {
+                            <code>@endpoint.UiScreen.Controller/@endpoint.UiScreen.Action</code>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,25 @@
+@model BaGet.Identity.Application.Models.Account.RecoveryCodeLoginViewModel
+@{
+    ViewData["Title"] = "Recovery code";
+}
+
+<div class="col-sm-6">
+    <h1>Recovery code</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert">@Model.Error</div>
+    }
+
+    <p>Enter one of the recovery codes you saved when you turned on two-factor authentication.</p>
+    <form method="post">
+        <input type="hidden" asp-for="ReturnUrl" />
+        <div class="form-group">
+            <label asp-for="RecoveryCode"></label>
+            <input asp-for="RecoveryCode" class="form-control" autocomplete="off" />
+            <span asp-validation-for="RecoveryCode" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Sign in</button>
+    </form>
+</div>

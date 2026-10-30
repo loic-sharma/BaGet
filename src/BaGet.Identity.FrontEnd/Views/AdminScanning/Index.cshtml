@@ -1,0 +1,87 @@
+@model BaGet.Identity.Application.Models.Policies.ScanningViewModel
+@{
+    ViewData["Title"] = "Vulnerability scanning";
+}
+
+<div class="col-sm-12" id="scanning">
+    <h1>Vulnerability scanning</h1>
+    <hr class="breadcrumb-divider" />
+
+    <section id="scanning-status">
+        @if (!Model.Options.Enabled)
+        {
+            <div class="alert alert-warning" role="alert" id="scanning-disabled">
+                Scanning is turned off. Turn on <code>Scanning:Enabled</code> in the <a asp-controller="AdminSettings" asp-action="Index">server settings</a> to scan artifacts, show findings and enforce policies. Scanning calls OSV.dev (or reads an offline copy of its data), so it is off by default.
+            </div>
+        }
+        else
+        {
+            <p id="scanning-engines">
+                NuGet, npm and Maven artifacts: @(string.IsNullOrWhiteSpace(Model.Options.OsvOfflinePath) ? "OSV.dev (" + Model.Options.OsvUrl + ")" : "an offline copy of the OSV data (" + Model.Options.OsvOfflinePath + ")").<br />
+                Container images: @(Model.TrivyConfigured ? "Trivy" : "not scanned (Trivy is not configured: set Scanning:TrivyPath and Scanning:TrivyRegistryHost)").<br />
+                Scan on deploy: @(Model.Options.ScanOnDeploy ? "yes" : "no"); rescan every @(Model.Options.RescanInterval > TimeSpan.Zero ? Model.Options.RescanInterval.ToString() : "- (never, only on demand)").
+            </p>
+        }
+        <p class="help-block">
+            Advisory data comes from <a href="https://osv.dev" rel="noopener noreferrer" target="_blank">OSV.dev</a> and is licensed per source (mostly CC-BY 4.0, such as the GitHub Advisory Database); every advisory in the pages links to its source. Container image findings come from Trivy. The options are in the <a asp-controller="AdminSettings" asp-action="Index">server settings</a>.
+        </p>
+    </section>
+
+    <section id="scanning-repositories">
+        <h2>Repositories</h2>
+        <table class="table" id="scanning-table">
+            <thead>
+                <tr><th>Repository</th><th>Format</th><th>Artifacts</th><th>Critical</th><th>High</th><th>Moderate</th><th>Low</th><th>Not scanned</th><th>Policy</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var row in Model.Repositories)
+                {
+                    <tr data-repository="@row.Repository.Name">
+                        <td><a asp-controller="AdminScanning" asp-action="Repository" asp-route-name="@row.Repository.Name">@row.Repository.Name</a></td>
+                        <td>@row.Repository.Format (@row.Repository.Kind)</td>
+                        @if (!row.Summary.Engine.Available)
+                        {
+                            <td colspan="6" class="text-muted scanning-unavailable">@row.Summary.Engine.Reason</td>
+                        }
+                        else
+                        {
+                            <td>@row.Summary.Artifacts</td>
+                            <td>@row.Summary.BySeverity[3]</td>
+                            <td>@row.Summary.BySeverity[2]</td>
+                            <td>@row.Summary.BySeverity[1]</td>
+                            <td>@row.Summary.BySeverity[0]</td>
+                            <td>@row.Summary.Unscanned</td>
+                        }
+                        <td>
+                            @if (row.Policy.From == null)
+                            {
+                                <span class="text-muted">none</span>
+                            }
+                            else
+                            {
+                                @:@row.Policy.From @row.Policy.Name
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </section>
+
+    <section id="scanning-projects">
+        <h2>Projects</h2>
+        @if (Model.Projects.Count == 0)
+        {
+            <p id="scanning-no-projects">There are no projects. A project groups repositories and can give them one policy.</p>
+        }
+        else
+        {
+            <ul id="scanning-project-list">
+                @foreach (var project in Model.Projects)
+                {
+                    <li data-project="@project.Project.Name"><a asp-controller="AdminScanning" asp-action="Project" asp-route-name="@project.Project.Name">@project.Project.Name</a> @(project.HasPolicy ? "(policy set)" : "(no policy)")</li>
+                }
+            </ul>
+        }
+    </section>
+</div>

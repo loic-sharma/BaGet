@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <PackageTags>NuGet</PackageTags>
+    <Description>BaGet Extension's shared base of the web APIs: the /api/ui twin controllers' bases, the screen-naming attributes and the API-key principal resolver.</Description>
+    <!-- Keeps the namespaces the types had in BaGet.Frontend.Base (BaGet.Frontend.*). -->
+    <RootNamespace>BaGet.Frontend</RootNamespace>
+    <Nullable>enable</Nullable>
+    <PackageId>Extension.$(MSBuildProjectName)</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Build.Tasks.Git" Version="10.0.402" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BaGet.Identity.Application\BaGet.Identity.Application.csproj" />
+    <ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="BaGet.Tests" Key="$(BaGetPublicKey)" />
+    <InternalsVisibleTo Include="BaGet.Frontend.Base" Key="$(BaGetPublicKey)" />
+    <InternalsVisibleTo Include="BaGet.Identity.Api" Key="$(BaGetPublicKey)" />
+    <InternalsVisibleTo Include="BaGet.Web.V3" Key="$(BaGetPublicKey)" />
+  </ItemGroup>
+
+</Project>

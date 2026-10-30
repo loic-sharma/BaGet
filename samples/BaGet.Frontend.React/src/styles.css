@@ -1,0 +1,25 @@
+:root { font-family: system-ui, sans-serif; color: #1c2430; background: #f6f7f9; }
+body { margin: 0; }
+header { display: flex; gap: 1rem; align-items: center; padding: .6rem 1.2rem; background: #1f3a5f; color: #fff; }
+header a { color: #fff; text-decoration: none; }
+header nav { display: flex; gap: 1rem; }
+.brand { font-weight: 700; font-size: 1.2rem; }
+.spacer { flex: 1; }
+main { max-width: 56rem; margin: 1.5rem auto; padding: 0 1rem; }
+.card { display: grid; gap: .8rem; max-width: 24rem; padding: 1rem; background: #fff; border: 1px solid #d8dde4; border-radius: 6px; }
+.field { display: grid; gap: .25rem; }
+.field input, input { padding: .4rem; border: 1px solid #aab3bf; border-radius: 4px; }
+.field input[aria-invalid='true'] { border-color: #b3261e; }
+button { padding: .4rem .8rem; cursor: pointer; }
+button.link { background: none; border: 0; color: #1f5fbf; text-decoration: underline; }
+.errors, .error, .refusal { color: #b3261e; }
+.errors { margin: 0; padding-left: 1.2rem; }
+.refusal { padding: 1rem; background: #fdecea; border-radius: 6px; }
+.notice { padding: .6rem; background: #e7f3ea; border-radius: 4px; }
+.muted { color: #67707d; }
+.list { list-style: none; padding: 0; }
+.list li { padding: .6rem 0; border-bottom: 1px solid #e2e6eb; }
+.pager { display: flex; gap: .5rem; margin-top: 1rem; }
+table { border-collapse: collapse; width: 100%; background: #fff; }
+th, td { text-align: left; padding: .4rem .6rem; border-bottom: 1px solid #e2e6eb; }
+pre { padding: .6rem; background: #eef1f5; overflow: auto; }

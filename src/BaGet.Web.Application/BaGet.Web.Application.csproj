@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <PackageTags>NuGet</PackageTags>
+    <Description>BaGet Extension's web use cases: the data of the browse, upload and legal screens as plain DTOs, with no MVC or Razor dependency.</Description>
+    <RootNamespace>BaGet.Web.Application</RootNamespace>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Markdig" Version="1.4.1" />
+    <PackageReference Include="Microsoft.Build.Tasks.Git" Version="10.0.402" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
+    <ProjectReference Include="..\BaGet.Catalog\BaGet.Catalog.csproj" />
+    <ProjectReference Include="..\BaGet.Validation\BaGet.Validation.csproj" />
+    <ProjectReference Include="..\BaGet.Identity.Application\BaGet.Identity.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="BaGet.Web.V3" Key="$(BaGetPublicKey)" />
+    <InternalsVisibleTo Include="BaGet.Frontend.Base" Key="$(BaGetPublicKey)" />
+    <InternalsVisibleTo Include="BaGet.Web.FrontEnd" Key="$(BaGetPublicKey)" />
+    <InternalsVisibleTo Include="BaGet.Tests" Key="$(BaGetPublicKey)" />
+    <InternalsVisibleTo Include="BaGet.Web.Tests" Key="$(BaGetPublicKey)" />
+  </ItemGroup>
+
+</Project>

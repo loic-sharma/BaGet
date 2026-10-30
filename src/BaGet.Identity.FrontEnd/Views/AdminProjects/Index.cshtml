@@ -1,0 +1,56 @@
+@model BaGet.Identity.Application.Models.Access.ProjectsViewModel
+@{
+    ViewData["Title"] = "Projects";
+}
+
+<div class="col-sm-12">
+    <h1>Projects</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-success" role="alert" id="projects-message">@Model.Message</div>
+    }
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert" id="projects-error">@Model.Error</div>
+    }
+
+    <p class="help-block">
+        A project groups repositories and gives its members a role on all of them: Viewer (Read), Developer (Read, Annotate,
+        Deploy) or Admin (every action, and the project's members and permission targets).
+    </p>
+
+    <table class="table" id="projects-table">
+        <thead>
+            <tr><th>Name</th><th>Display name</th><th>Repositories</th><th>Members</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var project in Model.Projects)
+            {
+                <tr data-project="@project.Name">
+                    <td><a href="@Url.Action("Detail", "AdminProjects", new { name = project.Name })">@project.Name</a></td>
+                    <td>@project.DisplayName</td>
+                    <td>@project.RepositoryCount</td>
+                    <td>@project.MemberCount</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (Model.IsServerAdministrator)
+    {
+        <h2>New project</h2>
+        <form method="post" class="form-inline" id="project-create-form">
+            <div class="form-group">
+                <label for="project-name">Name</label>
+                <input id="project-name" name="name" type="text" class="form-control" value="@Model.Name" maxlength="@BaGet.Core.AccessNames.MaxLength" autocomplete="off" />
+            </div>
+            <div class="form-group">
+                <label for="project-display">Display name</label>
+                <input id="project-display" name="displayName" type="text" class="form-control" value="@Model.DisplayName" autocomplete="off" />
+            </div>
+            <button type="submit" class="btn btn-primary">Create</button>
+        </form>
+    }
+</div>

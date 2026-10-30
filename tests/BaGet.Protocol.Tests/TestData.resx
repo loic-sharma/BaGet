@@ -395,17 +395,17 @@
   "version": "1.0.0",
   "dependencyGroups": [
     {
-      "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0",
+      "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.net10.0",
       "@type": "PackageDependencyGroup",
       "dependencies": [
         {
-          "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0/test.dependency",
+          "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.net10.0/test.dependency",
           "@type": "PackageDependency",
           "id": "Test.Dependency",
           "range": "[2.0.0, )"
         }
       ],
-      "targetFramework": ".NETStandard2.0"
+      "targetFramework": ".net10.0"
     }
   ],
   "packageEntries": [
@@ -418,10 +418,10 @@
       "name": "Test.Package.nuspec"
     },
     {
-      "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#lib/netstandard2.0/Test.Package.dll",
+      "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#lib/net10.0/Test.Package.dll",
       "@type": "PackageEntry",
       "compressedLength": 100,
-      "fullName": "lib/netstandard2.0/Test.Package.dll",
+      "fullName": "lib/net10.0/Test.Package.dll",
       "length": 100,
       "name": "Test.Package.dll"
     }
@@ -504,20 +504,20 @@
             "authors": "Test Author",
             "dependencyGroups": [
               {
-                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0",
+                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.net10.0",
                 "@type": "PackageDependencyGroup",
                 "dependencies": [
                   {
-                    "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0/test.dependency",
+                    "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.net10.0/test.dependency",
                     "@type": "PackageDependency",
                     "id": "Test.Dependency",
                     "range": "[2.0.0, )"
                   }
                 ],
-                "targetFramework": ".NETStandard2.0"
+                "targetFramework": ".net10.0"
               },
               {
-                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0",
+                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.net10.0",
                 "@type": "PackageDependencyGroup",
                 "targetFramework": ".NETFramework4.8"
               }
@@ -568,20 +568,20 @@
             "authors": "Test Author",
             "dependencyGroups": [
               {
-                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.2.0.0.json#dependencygroup/.netstandard2.0",
+                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.2.0.0.json#dependencygroup/.net10.0",
                 "@type": "PackageDependencyGroup",
                 "dependencies": [
                   {
-                    "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.2.0.0.json#dependencygroup/.netstandard2.0/test.dependency",
+                    "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.2.0.0.json#dependencygroup/.net10.0/test.dependency",
                     "@type": "PackageDependency",
                     "id": "Test.Dependency",
                     "range": "[2.0.0, )"
                   }
                 ],
-                "targetFramework": ".NETStandard2.0"
+                "targetFramework": ".net10.0"
               },
               {
-                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.2.0.0.json#dependencygroup/.netstandard2.0",
+                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.2.0.0.json#dependencygroup/.net10.0",
                 "@type": "PackageDependencyGroup",
                 "targetFramework": ".NETFramework4.8"
               }
@@ -620,20 +620,20 @@
             "authors": "Test Author",
             "dependencyGroups": [
               {
-                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.3.0.0.json#dependencygroup/.netstandard2.0",
+                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.3.0.0.json#dependencygroup/.net10.0",
                 "@type": "PackageDependencyGroup",
                 "dependencies": [
                   {
-                    "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.3.0.0.json#dependencygroup/.netstandard2.0/test.dependency",
+                    "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.3.0.0.json#dependencygroup/.net10.0/test.dependency",
                     "@type": "PackageDependency",
                     "id": "Test.Dependency",
                     "range": "[2.0.0, )"
                   }
                 ],
-                "targetFramework": ".NETStandard2.0"
+                "targetFramework": ".net10.0"
               },
               {
-                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.3.0.0.json#dependencygroup/.netstandard2.0",
+                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.3.0.0.json#dependencygroup/.net10.0",
                 "@type": "PackageDependencyGroup",
                 "targetFramework": ".NETFramework4.8"
               }
@@ -898,20 +898,20 @@
         "authors": "Package Authors",
         "dependencyGroups": [
           {
-            "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0",
+            "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.net10.0",
             "@type": "PackageDependencyGroup",
             "dependencies": [
               {
-                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0/test.dependency",
+                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.net10.0/test.dependency",
                 "@type": "PackageDependency",
                 "id": "Test.Dependency",
                 "range": "[2.0.0, )"
               }
             ],
-            "targetFramework": ".NETStandard2.0"
+            "targetFramework": ".net10.0"
           },
           {
-            "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0",
+            "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.net10.0",
             "@type": "PackageDependencyGroup",
             "targetFramework": ".NETFramework4.8"
           }
@@ -950,20 +950,20 @@
         "authors": "Package Authors",
         "dependencyGroups": [
           {
-            "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0",
+            "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.net10.0",
             "@type": "PackageDependencyGroup",
             "dependencies": [
               {
-                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0/test.dependency",
+                "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.net10.0/test.dependency",
                 "@type": "PackageDependency",
                 "id": "Test.Dependency",
                 "range": "[2.0.0, )"
               }
             ],
-            "targetFramework": ".NETStandard2.0"
+            "targetFramework": ".net10.0"
           },
           {
-            "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.netstandard2.0",
+            "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/test.package.1.0.0.json#dependencygroup/.net10.0",
             "@type": "PackageDependencyGroup",
             "targetFramework": ".NETFramework4.8"
           }
@@ -1089,5 +1089,166 @@
   </data>
   <data name="ServiceIndexUrl" xml:space="preserve">
     <value>https://test.example/v3/index.json</value>
+  </data>
+  <data name="AutocompleteVersions" xml:space="preserve">
+    <value>{
+  "@context": {
+    "@vocab": "http://schema.nuget.org/schema#"
+  },
+  "totalHits": 3,
+  "data": [
+    "1.0.0",
+    "2.0.0",
+    "3.0.0"
+  ]
+}</value>
+  </data>
+  <data name="AutocompleteVersionsUrl" xml:space="preserve">
+    <value>https://test.example/v3/autocomplete?prerelease=True&amp;semVerLevel=2.0.0&amp;id=Test.Package</value>
+  </data>
+  <data name="PackageContentNupkg" xml:space="preserve">
+    <value>Test.Package 1.0.0 package content</value>
+  </data>
+  <data name="PackageContentNupkgUrl" xml:space="preserve">
+    <value>https://test.example/v3/content/test.package/1.0.0/test.package.1.0.0.nupkg</value>
+  </data>
+  <data name="PackageContentNuspec" xml:space="preserve">
+    <value>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd"&gt;
+  &lt;metadata&gt;
+    &lt;id&gt;Test.Package&lt;/id&gt;
+    &lt;version&gt;1.0.0&lt;/version&gt;
+    &lt;authors&gt;Test Author&lt;/authors&gt;
+    &lt;description&gt;Package description&lt;/description&gt;
+  &lt;/metadata&gt;
+&lt;/package&gt;</value>
+  </data>
+  <data name="PackageContentNuspecUrl" xml:space="preserve">
+    <value>https://test.example/v3/content/test.package/1.0.0/test.package.nuspec</value>
+  </data>
+  <data name="PagedPackageContentVersionList" xml:space="preserve">
+    <value>{
+  "versions": [
+    "1.0.0",
+    "2.0.0",
+    "3.0.0"
+  ]
+}</value>
+  </data>
+  <data name="PagedPackageContentVersionListUrl" xml:space="preserve">
+    <value>https://test.example/v3/content/paged.package/index.json</value>
+  </data>
+  <data name="RegistrationPageDeprecated" xml:space="preserve">
+    <value>{
+  "@id": "https://test.example/v3/metadata/deprecated.package/page/1.0.0/1.0.0.json",
+  "@type": "catalog:CatalogPage",
+  "commitId": "c088ef83-7dd6-4d24-86e8-85e3089d2c3b",
+  "commitTimeStamp": "2010-01-05T00:00:00.000Z",
+  "count": 1,
+  "lower": "1.0.0",
+  "parent": "https://test.example/v3/metadata/deprecated.package/index.json",
+  "upper": "1.0.0",
+  "items": [
+    {
+      "@id": "https://test.example/v3/metadata/deprecated.package/1.0.0.json",
+      "@type": "Package",
+      "commitId": "c088ef83-7dd6-4d24-86e8-85e3089d2c3b",
+      "commitTimeStamp": "2010-01-05T00:00:00.000Z",
+      "catalogEntry": {
+        "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/deprecated.package.1.0.0.json",
+        "@type": "PackageDetails",
+        "authors": "Package Authors",
+        "description": "Package Description",
+        "deprecation": {
+          "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/deprecated.package.1.0.0.json#deprecation",
+          "@type": "deprecation",
+          "reasons": [
+            "Legacy",
+            "CriticalBugs"
+          ],
+          "message": "This package is deprecated, use the alternate package instead.",
+          "alternatePackage": {
+            "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/deprecated.package.1.0.0.json#deprecation/alternatePackage",
+            "@type": "AlternatePackage",
+            "id": "Test.Package",
+            "range": "[2.0.0, )"
+          }
+        },
+        "iconUrl": "https://test.example/icon.png",
+        "id": "Deprecated.Package",
+        "language": "Package language",
+        "licenseExpression": "Package license",
+        "licenseUrl": "https://test.example/license",
+        "listed": true,
+        "minClientVersion": "",
+        "packageContent": "https://test.example/v3/content/deprecated.package/1.0.0/deprecated.package.1.0.0.nupkg",
+        "projectUrl": "https://test.example/project",
+        "published": "2010-01-05T00:00:00.000Z",
+        "requireLicenseAcceptance": false,
+        "summary": "Package summary",
+        "tags": [
+          "Test",
+          "Package"
+        ],
+        "title": "Deprecated.Package",
+        "version": "1.0.0"
+      },
+      "packageContent": "https://test.example/v3/content/deprecated.package/1.0.0/deprecated.package.1.0.0.nupkg",
+      "registration": "https://test.example/v3/metadata/deprecated.package/index.json"
+    }
+  ]
+}</value>
+  </data>
+  <data name="RegistrationPageDeprecatedUrl" xml:space="preserve">
+    <value>https://test.example/v3/metadata/deprecated.package/page/1.0.0/1.0.0.json</value>
+  </data>
+  <data name="RegistrationPageFirst" xml:space="preserve">
+    <value>{
+  "@id": "https://test.example/v3/metadata/paged.package/page/1.0.0/1.0.0.json",
+  "@type": "catalog:CatalogPage",
+  "commitId": "c088ef83-7dd6-4d24-86e8-85e3089d2c3b",
+  "commitTimeStamp": "2010-01-05T00:00:00.000Z",
+  "count": 1,
+  "lower": "1.0.0",
+  "parent": "https://test.example/v3/metadata/paged.package/index.json",
+  "upper": "1.0.0",
+  "items": [
+    {
+      "@id": "https://test.example/v3/metadata/paged.package/1.0.0.json",
+      "@type": "Package",
+      "commitId": "c088ef83-7dd6-4d24-86e8-85e3089d2c3b",
+      "commitTimeStamp": "2010-01-05T00:00:00.000Z",
+      "catalogEntry": {
+        "@id": "https://test.example/v3/catalog/2010.01.05.00.00.00/paged.package.1.0.0.json",
+        "@type": "PackageDetails",
+        "authors": "Package Authors",
+        "description": "Package Description",
+        "iconUrl": "https://test.example/icon.png",
+        "id": "Paged.Package",
+        "language": "Package language",
+        "licenseExpression": "Package license",
+        "licenseUrl": "https://test.example/license",
+        "listed": true,
+        "minClientVersion": "",
+        "packageContent": "https://test.example/v3/content/paged.package/1.0.0/paged.package.1.0.0.nupkg",
+        "projectUrl": "https://test.example/project",
+        "published": "2010-01-05T00:00:00.000Z",
+        "requireLicenseAcceptance": false,
+        "summary": "Package summary",
+        "tags": [
+          "Test",
+          "Package"
+        ],
+        "title": "Paged.Package",
+        "version": "1.0.0"
+      },
+      "packageContent": "https://test.example/v3/content/paged.package/1.0.0/paged.package.1.0.0.nupkg",
+      "registration": "https://test.example/v3/metadata/paged.package/index.json"
+    }
+  ]
+}</value>
+  </data>
+  <data name="RegistrationPageFirstUrl" xml:space="preserve">
+    <value>https://test.example/v3/metadata/paged.package/page/1.0.0/1.0.0.json</value>
   </data>
 </root>

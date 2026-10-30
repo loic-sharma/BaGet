@@ -1,0 +1,81 @@
+@model BaGet.Web.Application.Models.Npm.NpmUploadViewModel
+@inject IRepositoryContext _repositoryContext
+
+@{
+    ViewData["Title"] = "Upload npm package";
+    ViewData["HideSearchBar"] = true;
+}
+
+<div class="col-sm-12" id="npm-upload">
+    <h1>Upload</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Message != null)
+    {
+        <div class="alert @(Model.Failed ? "alert-danger" : "alert-success")" role="alert" id="upload-message">
+            @Model.Message
+
+            @if (Model.PublishedName != null)
+            {
+                <a asp-controller="NpmBrowse" asp-action="Package" asp-route-id="@Model.PublishedName">View it</a><text>.</text>
+            }
+        </div>
+    }
+
+    @if (Model.IsReadOnlyMode)
+    {
+        <p id="upload-read-only">
+            This server is in read-only mode. Nothing can be uploaded, through the browser or with <code>npm publish</code>, until that is turned off.
+        </p>
+    }
+    else if (Model.NothingCanAuthenticate)
+    {
+        <p id="upload-no-api-key">
+            This server has no API key configured and no accounts, so there is nothing to tell one visitor from another and nothing
+            to authenticate an upload with. Set "ApiKey", or enable "Accounts:Enabled", to upload through the browser.
+        </p>
+    }
+    else if (Model.AccountsEnabled && !Model.SignedIn)
+    {
+        <p id="upload-sign-in">
+            <a href="~/account/login?returnUrl=@Uri.EscapeDataString(Url.Action("Upload", "NpmBrowse") ?? string.Empty)">Sign in</a>
+            to upload a package through the browser. You can publish with the commands below at any time, with an API key.
+        </p>
+    }
+    else
+    {
+        <form method="post" enctype="multipart/form-data" id="npm-upload-form">
+            <p>
+                Publishes to <strong>@_repositoryContext.Current.Name</strong>@if (Context.Items[BaGet.Web.V3.Routing.RepositoryPageGate.RequestedVirtualItemKey] is BaGet.Core.RepositoryInfo requestedVirtual)
+                {
+                    <text> (the deploy repository of the virtual repository <strong>@requestedVirtual.Name</strong>)</text>
+                }. The name and the version are read from the
+                <code>package.json</code> inside the tarball, as <code>npm publish</code> reads them.
+            </p>
+            <div class="form-group">
+                <label for="package">Tarball (.tgz)</label>
+                <input type="file" id="package" name="package" class="form-control" accept=".tgz,.tar.gz,application/gzip" />
+            </div>
+            <div class="form-group">
+                <label for="tag">Dist-tag</label>
+                <input type="text" id="tag" name="tag" class="form-control" value="latest" />
+                <span class="help-block">The first version of a package is always <code>latest</code>.</span>
+            </div>
+            @if (Model.NeedsApiKey)
+            {
+                <div class="form-group">
+                    <label for="apiKey">API key</label>
+                    <input type="password" id="apiKey" name="apiKey" class="form-control" autocomplete="off" />
+                </div>
+            }
+            <button type="submit" class="btn btn-primary">Publish</button>
+        </form>
+    }
+
+    <h2>With the npm client</h2>
+    <div class="script">
+        <span class="script-prefix" aria-hidden="true">&gt;</span>
+        <pre class="snippet" id="npm-publish-commands">@string.Join("\n", Model.PublishLines)</pre>
+    </div>
+    <p>Sign in with your user name and password, or put an API key in <code>.npmrc</code>: see a package's page for the lines.</p>
+</div>

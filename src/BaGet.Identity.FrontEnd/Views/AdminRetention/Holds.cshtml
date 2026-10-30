@@ -1,0 +1,97 @@
+@model BaGet.Identity.Application.Models.Policies.RetentionHoldsViewModel
+@{
+    ViewData["Title"] = "Legal holds";
+}
+
+<div class="col-sm-12">
+    <h1>Legal holds</h1>
+    <hr class="breadcrumb-divider" />
+    <p><a href="@Url.Action("Index", "AdminRetention")">Retention policies</a></p>
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-success" role="alert" id="holds-message">@Model.Message</div>
+    }
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert" id="holds-error">@Model.Error</div>
+    }
+
+    <p class="help-block">
+        A hold keeps an artifact, or one version of it, out of every retention policy, however old or unused. It governs
+        retention only: someone allowed to delete a version still can. Docker holds name the image and, optionally, a tag or digest.
+    </p>
+
+    <form method="get" class="form-inline" id="holds-filter-form">
+        <div class="form-group">
+            <label for="holds-filter">Repository</label>
+            <select id="holds-filter" name="repository" class="form-control">
+                <option value="">all</option>
+                @foreach (var repository in Model.Repositories)
+                {
+                    <option value="@repository.Name" selected="@(repository.Name == Model.Repository)">@repository.Name</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-default">Show</button>
+    </form>
+
+    <table class="table" id="holds-table">
+        <thead>
+            <tr><th>Repository</th><th>Artifact</th><th>Version</th><th>Reason</th><th>Placed</th><th></th></tr>
+        </thead>
+        <tbody>
+            @foreach (var hold in Model.Holds)
+            {
+                <tr data-hold="@hold.Key" data-repository="@hold.Repository" data-name="@hold.Name">
+                    <td>@hold.Repository</td>
+                    <td>@hold.Name</td>
+                    <td>@(hold.Version.Length == 0 ? "every version" : hold.Version)</td>
+                    <td>@hold.Reason</td>
+                    <td>@hold.Created.ToString("u")@(hold.CreatedBy != null ? " by " + hold.CreatedBy : "")</td>
+                    <td>
+                        <form method="post" asp-controller="AdminRetention" asp-action="Holds" asp-route-handler="Remove">
+                            <input type="hidden" name="key" value="@hold.Key" />
+                            <input type="hidden" name="repository" value="@Model.Repository" />
+                            <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("hold-password-" + hold.Key)" />
+                            <button type="submit" class="btn btn-default btn-xs">Lift hold</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (!Model.Holds.Any())
+    {
+        <p id="holds-empty">No hold is placed.</p>
+    }
+
+    <h2>Place a hold</h2>
+    <form method="post" asp-controller="AdminRetention" asp-action="Holds" asp-route-handler="Add" id="hold-add-form">
+        <input type="hidden" name="repository" value="@Model.Repository" />
+        <div class="form-group">
+            <label for="hold-repository">Repository</label>
+            <select id="hold-repository" name="HoldRepository" class="form-control">
+                @foreach (var repository in Model.Repositories)
+                {
+                    <option value="@repository.Name" selected="@(repository.Name == (Model.HoldRepository ?? Model.Repository))">@repository.Name (@repository.Format)</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="hold-name">Artifact</label>
+            <input id="hold-name" name="HoldName" type="text" class="form-control" value="@Model.HoldName" autocomplete="off" />
+            <span class="help-block">Package id, npm name, Maven <code>group:artifact</code> or Docker image.</span>
+        </div>
+        <div class="form-group">
+            <label for="hold-version">Version (optional)</label>
+            <input id="hold-version" name="HoldVersion" type="text" class="form-control" value="@Model.HoldVersion" autocomplete="off" />
+            <span class="help-block">Empty holds every version, including ones published later.</span>
+        </div>
+        <div class="form-group">
+            <label for="hold-reason">Reason (optional)</label>
+            <input id="hold-reason" name="Reason" type="text" class="form-control" value="@Model.Reason" autocomplete="off" maxlength="@BaGet.Core.RetentionLimits.MaxReasonLength" />
+        </div>
+        <button type="submit" class="btn btn-primary">Place hold</button>
+    </form>
+</div>

@@ -50,4 +50,5 @@
 *.dbproj text=auto
 *.sln text=auto eol=crlf
 
-*.sh eol=lf
+*.sh eol=lf# UI contract snapshots are compared as text with LF line ends
+tests/BaGet.Tests/Contracts/*.txt text eol=lf

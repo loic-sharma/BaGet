@@ -1,0 +1,59 @@
+@model BaGet.Identity.Application.Models.Access.GroupsViewModel
+@{
+    ViewData["Title"] = "Groups";
+}
+
+<div class="col-sm-12">
+    <h1>Groups</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-success" role="alert" id="groups-message">@Model.Message</div>
+    }
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert" id="groups-error">@Model.Error</div>
+    }
+
+    <p class="help-block">
+        A group is a set of users. <a asp-controller="AdminPermissions" asp-action="Index">Permission targets</a> and
+        <a asp-controller="AdminProjects" asp-action="Index">project roles</a> grant access to groups instead of to each user.
+    </p>
+
+    <table class="table" id="groups-table">
+        <thead>
+            <tr><th>Name</th><th>Description</th><th>Members</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var group in Model.Groups)
+            {
+                <tr data-group="@group.Name">
+                    <td>
+                        <a href="@Url.Action("Detail", "AdminGroups", new { name = group.Name })">@group.Name</a>
+                        @if (group.IsBuiltIn)
+                        {
+                            <span class="label label-info">Built-in</span>
+                        }
+                    </td>
+                    <td>@group.Description</td>
+                    <td>@(group.IsBuiltIn ? "implicit" : group.MemberCount.ToString())</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h2>New group</h2>
+    <form method="post" class="form-inline" id="group-create-form">
+        <div class="form-group">
+            <label for="group-name">Name</label>
+            <input id="group-name" name="name" type="text" class="form-control" value="@Model.Name" maxlength="@BaGet.Core.AccessNames.MaxLength" autocomplete="off" />
+        </div>
+        <div class="form-group">
+            <label for="group-description">Description</label>
+            <input id="group-description" name="description" type="text" class="form-control" value="@Model.Description" autocomplete="off" />
+        </div>
+        <button type="submit" class="btn btn-primary">Create</button>
+        <p class="help-block">Letters, digits, spaces, <code>-</code>, <code>.</code> and <code>_</code>, up to @BaGet.Core.AccessNames.MaxLength characters.</p>
+    </form>
+</div>

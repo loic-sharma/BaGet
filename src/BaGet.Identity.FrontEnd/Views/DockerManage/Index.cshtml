@@ -1,0 +1,102 @@
+@model BaGet.Identity.Application.Models.Packages.DockerManageViewModel
+@{
+    ViewData["Title"] = "Manage " + Model.Image;
+    ViewData["HideSearchBar"] = true;
+}
+
+@if (Model.Info == null)
+{
+    @* A refused write (read-only mode) shows its message even where there is nothing to list. *@
+    @if (Model.Message != null)
+    {
+        <div class="col-sm-12"><div class="alert alert-danger" role="alert" id="manage-message">@Model.Message</div></div>
+    }
+
+    return;
+}
+
+@{
+    var info = Model.Info;
+}
+
+<div class="col-sm-12" id="docker-manage" data-package="@info.Name">
+    <h1>Manage <a asp-controller="DockerBrowse" asp-action="Image" asp-route-image="@info.Name">@info.Name</a></h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Message != null)
+    {
+        <div class="alert @(Model.Failed ? "alert-danger" : "alert-success")" role="alert" id="manage-message">@Model.Message</div>
+    }
+
+    <p class="text-muted">
+        Deleting needs the Delete permission on the image and your password (type it in the danger zone below first). A deleted
+        manifest cannot be pulled any more; its layers stay until no manifest of the repository needs them and they are pruned.
+    </p>
+
+    <h2>Tags</h2>
+    <table class="table table-condensed" id="docker-tags">
+        <thead><tr><th>Tag</th><th>Manifest</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var tag in info.Tags)
+            {
+                <tr data-tag="@tag.Name">
+                    <td><code>@tag.Name</code></td>
+                    <td><a asp-controller="DockerBrowse" asp-action="Image" asp-route-image="@info.Name" asp-route-digest="@tag.Digest"><code>@tag.Digest.Substring(0, 19)...</code></a></td>
+                    <td>
+                        <button type="submit" form="confirm-form" name="tag" value="@tag.Name" asp-controller="DockerManage" asp-action="Index" asp-route-image="@info.Name" asp-route-handler="DeleteTag"
+                                class="btn btn-danger btn-xs"
+                                onclick="return confirm('Delete the tag @tag.Name? The manifest stays. Enter your password in the danger zone below first.')">Delete tag</button>
+                    </td>
+                </tr>
+            }
+            @if (info.Tags.Count == 0)
+            {
+                <tr><td colspan="3">No tag.</td></tr>
+            }
+        </tbody>
+    </table>
+
+    <h2>Manifests</h2>
+    <table class="table table-condensed" id="docker-manifests">
+        <thead><tr><th>Digest</th><th>Type</th><th>Platform</th><th>Tags</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var manifest in info.Manifests)
+            {
+                <tr data-digest="@manifest.Digest">
+                    <td><a asp-controller="DockerBrowse" asp-action="Image" asp-route-image="@info.Name" asp-route-digest="@manifest.Digest"><code>@manifest.Digest.Substring(0, 19)...</code></a></td>
+                    <td>@(manifest.IsIndex ? "index" : "image")</td>
+                    <td>@(manifest.Platform ?? "")</td>
+                    <td>@string.Join(", ", manifest.Tags)</td>
+                    <td>
+                        <button type="submit" form="confirm-form" name="digest" value="@manifest.Digest" asp-controller="DockerManage" asp-action="Index" asp-route-image="@info.Name" asp-route-handler="DeleteManifest"
+                                class="btn btn-danger btn-xs"
+                                onclick="return confirm('Delete this manifest and its tags? This cannot be undone. Enter your password in the danger zone below first.')">Delete manifest</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h2>Unused layers</h2>
+    <p id="docker-unreferenced">@info.UnreferencedBlobs layer@(info.UnreferencedBlobs == 1 ? "" : "s") of this image are used by no manifest. Those uploaded more than an hour ago can be removed.</p>
+
+    <h2>Danger zone</h2>
+    <form method="post" id="confirm-form" asp-route-image="@info.Name">
+        <p>Deleting removes content for good. Confirm it is you.</p>
+        @if (Model.HasPassword)
+        {
+            <div class="form-group">
+                <label for="deletePassword">Your password</label>
+                <input id="deletePassword" name="password" type="password" class="form-control" autocomplete="current-password" />
+            </div>
+        }
+        else
+        {
+            <partial name="~/Views/Shared/_Reauthenticate.cshtml" model="@(new ReauthenticateView(Model.Reauthenticated, Model.CanReauthenticate, Url.Action("Index", "DockerManage", new { image = info.Name }) ?? string.Empty))" />
+        }
+
+        <button type="submit" asp-controller="DockerManage" asp-action="Index" asp-route-image="@info.Name" asp-route-handler="Prune" class="btn btn-default" id="docker-prune">Remove unused layers</button>
+        <button type="submit" asp-controller="DockerManage" asp-action="Index" asp-route-image="@info.Name" asp-route-handler="DeleteImage" class="btn btn-danger" id="docker-delete-image"
+                onclick="return confirm('Delete @info.Name with every manifest and tag? This cannot be undone.')">Delete the whole image</button>
+    </form>
+</div>

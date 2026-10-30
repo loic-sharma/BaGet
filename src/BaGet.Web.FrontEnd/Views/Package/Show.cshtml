@@ -1,0 +1,408 @@
+@* The folder name would make the generated namespace BaGet.Web.V3.Package, which hides the Package type. *@
+@namespace BaGet.Web.V3.PackageViews
+@using BaGet.Identity.Extensions
+@model PackageViewModel
+@inject Microsoft.Extensions.Options.IOptions<BaGet.Core.EmailOptions> EmailOptions
+@inject BaGet.Core.IRepositoryContext RepositoryContext
+
+@{
+    // A virtual repository has no abuse reports of its own (the package's page in the member that holds it has the link).
+    var isVirtualRepository = RepositoryContext.Current.Kind == BaGet.Core.RepositoryKind.Virtual;
+    ViewData["Title"] = Model.Found
+        ? Model.Package?.Id + " " + Model.Package?.NormalizedVersionString
+        : Model.Package?.Id;
+}
+
+@if (!Model.Found)
+{
+    <div>
+        <h2>Oops, package not found...</h2>
+        <p>Could not find package '@Model.Package?.Id'.</p>
+        <p>You can try searching on <a href="https://www.nuget.org/packages?q=@Uri.EscapeDataString(Model.Package?.Id ?? string.Empty)" target="_blank" rel="noopener noreferrer">nuget.org</a> package.</p>
+        <p>Think there's a problem? Consider taking a look at our <a href="https://pieroviano.github.io/BaGet/" target="_blank" rel="noopener noreferrer">documentation</a> or asking for help on our <a href="https://github.com/loic-sharma/BaGet/issues" target="_blank" rel="noopener noreferrer">GitHub project</a></p>
+    </div>
+}
+else
+{
+    <div class="row display-package">
+        <aside class="col-sm-1 package-icon">
+            <img src="@(Model.IconUrl ?? Url.Content("~/_content/BaGet.Web/images/default-package-icon-256x256.png"))"
+                 class="img-responsive"
+                 onerror="this.src='@Url.Content("~/_content/BaGet.Web/images/default-package-icon-256x256.png")'"
+                 alt="The package icon" />
+        </aside>
+
+        <article class="col-sm-8 package-details-main">
+            <div class="package-title">
+                <h1>
+                    @Model.Package?.Id
+
+                    <small class="text-nowrap">@Model.Package?.NormalizedVersionString</small>
+                </h1>
+            </div>
+
+            <partial name="_ScanFindings" model="new ScanFindingsView(Model.Package!.Id!, Model.Package.NormalizedVersionString!)" />
+
+            @* Every install pane is rendered by the server. Without JavaScript they stack and the tab links jump to them. *@
+            <div class="tabbed-info" x-data="{ active: 0 }">
+                <ul class="nav">
+                    @for (var i = 0; i < Model.InstallTabs.Count; i++)
+                    {
+                        <li x-bind:class="{ active: active === @i }">
+                            <a href="#install-@i" @@click.prevent="active = @i">@Model.InstallTabs[i].Name</a>
+                        </li>
+                    }
+                </ul>
+
+                @for (var i = 0; i < Model.InstallTabs.Count; i++)
+                {
+                    var snippet = Model.InstallTabs[i];
+
+                    <div class="content install-pane" id="install-@i" x-show="active === @i">
+                        <div class="script">
+                            @if (!string.IsNullOrEmpty(snippet.Prefix))
+                            {
+                                <span class="script-prefix" aria-hidden="true">@snippet.Prefix</span>
+                            }
+                            <pre class="snippet" data-snippet="@snippet.Name">@string.Join("\n", snippet.Lines ?? [])</pre>
+                        </div>
+
+                        <div class="copy-button">
+                            <button class="btn btn-default btn-warning"
+                                    type="button"
+                                    title="Copy to clipboard"
+                                    data-tottle="popover"
+                                    data-placement="bottom"
+                                    data-content="Copied"
+                                @@click="window.baget.copyTextToClipboard($event.currentTarget.closest('.install-pane').querySelector('pre.snippet').textContent, $event.currentTarget)">
+                                <i class="ms-Icon ms-Icon--Copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @* Every tab panel is rendered by the server too. Without JavaScript they stack and the tab links jump to them. *@
+            @{
+                var tabs = new List<(string Key, string Title)>
+                {
+                    ("readme", "README"),
+                    ("frameworks", "Frameworks"),
+                    ("dependencies", "Dependencies"),
+                };
+                if (!Model.IsDotnetTemplate && !Model.IsDotnetTool) tabs.Add(("usedby", "Used By"));
+                tabs.Add(("versions", "Versions"));
+                tabs.Add(("releasenotes", "Release Notes"));
+            }
+
+            @* Alpine 2 evaluates x-init as one expression, so the logic is a method of x-data. *@
+            <div class="package-tabs"
+                 x-data="{ tab: 'readme', keys: [@Html.Raw(string.Join(", ", tabs.Select(t => "'" + t.Key + "'")))], selectFromHash() { var key = location.hash.replace('#tab-', ''); if (this.keys.indexOf(key) >= 0) this.tab = key; } }"
+                 x-init="selectFromHash()">
+
+                <ul class="nav package-tab-list">
+                    @foreach (var tab in tabs)
+                    {
+                        <li x-bind:class="{ active: tab === '@tab.Key' }">
+                            <a href="#tab-@tab.Key" @@click.prevent="tab = '@tab.Key'; history.replaceState(null, '', '#tab-@tab.Key')">@tab.Title</a>
+                        </li>
+                    }
+                </ul>
+
+                <section id="tab-readme" class="tab-panel" x-show="tab === 'readme'">
+                    @if (Model.Readme == null)
+                    {
+                        <div class="package-description">@Model.Package?.Description</div>
+                    }
+                    else
+                    {
+                        <div class="package-readme">@Model.Readme</div>
+                    }
+                </section>
+
+                <section id="tab-frameworks" class="tab-panel package-frameworks" x-show="tab === 'frameworks'">
+                    @if (Model.FrameworkGroups.Count == 0)
+                    {
+                        <p>This package does not target a specific framework.</p>
+                    }
+                    else
+                    {
+                        <p class="text-muted">
+                            Frameworks the package targets are shown in blue. Frameworks it is also compatible with,
+                            computed from those, are shown in grey.
+                        </p>
+
+                        foreach (var group in Model.FrameworkGroups)
+                        {
+                            <div class="framework-group">
+                                <h4>@group.Name</h4>
+                                <ul class="list-inline">
+                                    @foreach (var moniker in group.Declared)
+                                    {
+                                        <li class="framework framework-declared" data-framework="@moniker" data-kind="declared"><span class="label label-primary">@moniker</span></li>
+                                    }
+                                    @foreach (var moniker in group.Computed)
+                                    {
+                                        <li class="framework framework-computed" data-framework="@moniker" data-kind="computed" title="Compatible, computed"><span class="label label-default">@moniker</span></li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                    }
+                </section>
+
+                <section id="tab-dependencies" class="tab-panel dependency-groups" x-show="tab === 'dependencies'">
+                    @if (!(Model.DependencyGroups?.Any() ?? false))
+                    {
+                        @:This package has no dependencies.
+                    }
+                    else
+                    {
+                        foreach (var group in Model.DependencyGroups)
+                        {
+                            <h4>
+                                <span>@group.Name</span>
+                            </h4>
+
+                            <ul class="list-unstyled dependency-group">
+                                @if (!(group.Dependencies?.Any() ?? false))
+                                {
+                                    <li>No dependencies.</li>
+                                }
+                                else
+                                {
+                                    @foreach (var dependency in group.Dependencies)
+                                    {
+                                        <li>
+                                            <a asp-controller="Package" asp-action="Show"
+                                               asp-route-id="@dependency.PackageId"
+                                               asp-route-version="@null">
+                                                @dependency.PackageId
+                                            </a>
+
+                                            <span> @dependency.VersionSpec</span>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        }
+                    }
+                </section>
+
+                @if (!Model.IsDotnetTemplate && !Model.IsDotnetTool)
+                {
+                    <section id="tab-usedby" class="tab-panel package-used-by" x-show="tab === 'usedby'">
+                        @if (!(Model.UsedBy?.Any() ?? false))
+                        {
+                            <p>No packages depend on @Model.Package?.Id.</p>
+                        }
+                        else
+                        {
+                            <p>Showing the top 20 packages that depend on @Model.Package?.Id.</p>
+                            <div>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th class="col-sm-10">Packages</th>
+                                            <th class="col-sm-2">Downloads</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var package in Model.UsedBy)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <a href="@Url.Action("Show", "Package", new { package.Id })">@package.Id</a>
+                                                    <div>@package.Description</div>
+                                                </td>
+                                                <td>
+                                                    <i class="ms-Icon ms-Icon--Download" aria-hidden="true"></i>
+                                                    <span>@package.TotalDownloads.ToString("N0")</span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </section>
+                }
+
+                <section id="tab-versions" class="tab-panel version-list" x-show="tab === 'versions'">
+                    <div x-data="{ showAll: false }">
+                        <table class="table borderless">
+                            <thead>
+                                <tr>
+                                    <th>Version</th>
+                                    <th>Downloads</th>
+                                    <th>Last updated</th>
+                                </tr>
+                            </thead>
+                            <tbody class="no-border">
+                                @for (var i = 0; i < Model.Versions?.Count; i++)
+                                {
+                                    var version = Model.Versions[i];
+                                    var alwaysShow = Json.Serialize(i < DefaultVisibleVersions);
+
+                                    <tr class="@(version.Selected ? "bg-info" : "")" x-show="showAll || @alwaysShow">
+                                        <td><a asp-controller="Package" asp-action="Show" asp-route-id="@Model.Package?.Id" asp-route-version="@version.Version">@version.Version?.ToNormalizedString()</a></td>
+                                        <td>@version.Downloads.ToString("N0")</td>
+                                        <td>@version.LastUpdated.ToShortDateString()</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                        @if (Model.Versions?.Count > DefaultVisibleVersions)
+                        {
+                            <button type="button" class="link-button" @@click="showAll = !showAll">
+                                <i class="ms-Icon" x-bind:class="{ 'ms-Icon--CalculatorAddition': !showAll, 'ms-Icon--CalculatorSubtract': showAll }"></i>
+                                <span x-text="showAll ? 'Show less' : 'Show more'"></span>
+                            </button>
+                        }
+                    </div>
+                </section>
+
+                <section id="tab-releasenotes" class="tab-panel" x-show="tab === 'releasenotes'">
+                    @if (string.IsNullOrEmpty(Model.Package?.ReleaseNotes))
+                    {
+                        <p>This package has no release notes.</p>
+                    }
+                    else
+                    {
+                        <div class="package-release-notes">@Model.Package.ReleaseNotes</div>
+                    }
+                </section>
+            </div>
+        </article>
+
+        <aside class="col-sm-3 package-details-info">
+            <div class="package-about">
+                <h2>About</h2>
+
+                <ul class="list-unstyled ms-Icon-ul">
+                    <li>
+                        <i class="ms-Icon ms-Icon--History" aria-hidden="true"></i>
+                        Last updated @Model.LastUpdated.Humanize()
+                    </li>
+
+                    @if (!string.IsNullOrEmpty(Model.Package?.ProjectUrlString))
+                    {
+                        <li>
+                            <i class="ms-Icon ms-Icon--Globe" aria-hidden="true"></i>
+                            <a href="@Model.Package.ProjectUrlString" rel="noopener noreferrer">Project website</a>
+                        </li>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.Package?.RepositoryUrlString))
+                    {
+                        <li>
+                            <img class="icon" aria-hidden="true" alt="" src="@Url.Content("~/_content/BaGet.Web/images/github-32x32.png")" />
+                            <a href="@Model.Package.RepositoryUrlString" rel="noopener noreferrer">Source repository</a>
+                        </li>
+                    }
+
+                    @if (Model.LicenseUrl != null)
+                    {
+                        <li>
+                            <i class="ms-Icon ms-Icon--Certificate" aria-hidden="true"></i>
+                            <a href="@Model.LicenseUrl" rel="noopener noreferrer">License</a>
+                        </li>
+                    }
+
+                    <li>
+                        <i class="ms-Icon ms-Icon--CloudDownload" aria-hidden="true"></i>
+                        <a href="@Model.PackageDownloadUrl">Download package</a>
+                    </li>
+
+                    <li class="package-explorer">
+                        <i class="ms-Icon ms-Icon--FabricFolderSearch" aria-hidden="true"
+                           title="nuget.info is a 3rd party website, not controlled by this server. It loads packages from nuget.org, so it only opens packages also published there."></i>
+                        <a href="@Model.PackageExplorerUrl" target="_blank" rel="nofollow noreferrer"
+                           aria-label="open in NuGet Package Explorer"
+                           title="nuget.info is a 3rd party website, not controlled by this server. It loads packages from nuget.org, so it only opens packages also published there.">Open in NuGet Package Explorer</a>
+                    </li>
+
+                    <li class="package-explorer-desktop">
+                        <i class="ms-Icon ms-Icon--Download" aria-hidden="true"></i>
+                        <a href="@Model.PackageDownloadUrl" download
+                           title="Downloads this version's .nupkg. With NuGet Package Explorer installed, opening the file opens it there. Works for packages only on this server.">Open in NuGet Package Explorer (desktop)</a>
+                    </li>
+
+                    @if (!isVirtualRepository)
+                    {
+                        <li>
+                            <i class="ms-Icon ms-Icon--Flag" aria-hidden="true"></i>
+                            <a asp-controller="ReportAbuse" asp-action="Show" asp-route-id="@Model.Package?.Id" asp-route-version="@Model.Package?.NormalizedVersionString">Report package</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+
+            <div>
+                <h2>Statistics</h2>
+
+                <ul class="list-unstyled ms-Icon-ul">
+                    <li>
+                        <i class="ms-Icon ms-Icon--Download"></i>
+                        @Model.TotalDownloads.ToString("N0") total downloads
+                    </li>
+
+                    <li>
+                        <i class="ms-Icon ms-Icon--Giftbox"></i>
+                        @Model.Package?.Downloads.ToString("N0") downloads of current version
+                    </li>
+                </ul>
+            </div>
+
+            @if (Model.Owners.Any() || User.Identity?.IsAuthenticated == true)
+            {
+                <div class="package-owners">
+                    <h2>Owners</h2>
+
+                    <ul class="list-unstyled ms-Icon-ul">
+                        @foreach (var owner in Model.Owners)
+                        {
+                            <li class="owner">
+                                <partial name="_Avatar" model="new AvatarModel(owner ?? string.Empty, Model.OwnerAvatars?.GetValueOrDefault(owner), 32)" />
+                                <a href="@Url.Action("Profile", "Profile", new { name = owner })">@owner</a>
+                            </li>
+                        }
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            @if (Model.ManageUrl != null)
+                            {
+                                <li>
+                                    <i class="ms-Icon ms-Icon--Settings" aria-hidden="true"></i>
+                                    <a href="@Model.ManageUrl">Manage package</a>
+                                </li>
+                            }
+                            @if (Model.Owners.Any() && EmailOptions.Value.IsConfigured)
+                            {
+                                <li>
+                                    <i class="ms-Icon ms-Icon--Mail" aria-hidden="true"></i>
+                                    <a href="@Url.RepositoryContent("packages/" + Model.Package?.Id + "/contact-owners")">Contact owners</a>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            }
+
+            @if (Model.Package?.Authors?.Any() ?? false)
+            {
+                <div>
+                    <h2>Authors</h2>
+
+                    <p>@string.Join(", ", Model.Package.Authors)</p>
+                </div>
+            }
+        </aside>
+    </div>
+}
+
+@functions {
+
+    private const int DefaultVisibleVersions = 5;
+
+}

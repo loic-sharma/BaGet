@@ -13,6 +13,9 @@ Steps to reproduce the behavior:
 3. With these arguments '....'
 4. See error
 
+### Configuration
+Database and storage provider, and `Accounts:Enabled`, `Feeds:EnableV2`, `Validation:Enabled` if not default.
+
 ### Expected behavior
 A clear and concise description of what you expected to happen.
 

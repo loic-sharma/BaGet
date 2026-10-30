@@ -1,0 +1,97 @@
+@model BaGet.Identity.Application.Models.Organizations.OrganizationDetailViewModel
+@{
+    ViewData["Title"] = Model.Organization?.Name ?? "Organization";
+}
+
+<div class="col-sm-12">
+    <h1>@Model.Organization?.Name</h1>
+    <hr class="breadcrumb-divider" />
+
+    <p><a asp-controller="AdminOrganizations" asp-action="Index">Back to organizations</a></p>
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-success" role="alert" id="organization-message">@Model.Message</div>
+    }
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert" id="organization-error">@Model.Error</div>
+    }
+
+    <p>Created @Model.Organization?.Created.ToString("yyyy-MM-dd"). It owns @Model.OwnedPackageIds package ID(s) across all repositories.</p>
+    <p class="help-block">Every action on this page asks for your password again.</p>
+
+    <section id="organization-section-members">
+        <h2>Members</h2>
+        <form method="post" id="members-form">
+            <table class="table" id="organization-members">
+                <thead>
+                    <tr><th>User</th><th>Role</th><th></th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var member in Model.Members)
+                    {
+                        <tr>
+                            <td><a href="@Url.Content("~/admin/users/" + Uri.EscapeDataString(member.UserName ?? string.Empty))">@member.UserName</a></td>
+                            <td>@(member.IsAdmin ? "Administrator" : "Member")</td>
+                            <td>
+                                @if (member.IsAdmin)
+                                {
+                                    <button type="submit" class="btn btn-default btn-xs" name="userName" value="@member.UserName"
+                                            formaction="@Url.Action("Detail", "AdminOrganizations", new { name = Model.Organization?.Name, isAdmin = false, handler = "SetAdmin" })">Make member</button>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-default btn-xs" name="userName" value="@member.UserName"
+                                            formaction="@Url.Action("Detail", "AdminOrganizations", new { name = Model.Organization?.Name, isAdmin = true, handler = "SetAdmin" })">Make administrator</button>
+                                }
+                                <button type="submit" class="btn btn-danger btn-xs" asp-controller="AdminOrganizations" asp-action="Detail" asp-route-handler="RemoveMember" name="userName" value="@member.UserName">Remove</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            @if (Model.Members.Count == 0)
+            {
+                <p>The organization has no members.</p>
+            }
+            <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("membersPassword")" />
+        </form>
+
+        <form method="post" id="add-member-form" class="form-inline">
+            <h3>Add a member</h3>
+            <input type="text" name="userName" class="form-control" placeholder="User name" />
+            <label class="checkbox-inline"><input type="checkbox" name="isAdmin" value="true" /> Administrator</label>
+            <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("addMemberPassword")" />
+            <button type="submit" class="btn btn-primary" asp-controller="AdminOrganizations" asp-action="Detail" asp-route-handler="AddMember">Add</button>
+        </form>
+    </section>
+
+    <section id="organization-section-rename">
+        <h2>Rename</h2>
+        <p class="help-block">
+            Package ownership follows in every repository, in one step. The name must not belong to a user or another organization.
+        </p>
+        <form method="post" id="rename-form" class="form-inline">
+            <input type="text" name="newName" value="@Model.Organization?.Name" class="form-control" />
+            <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("renamePassword")" />
+            <button type="submit" class="btn btn-default" asp-controller="AdminOrganizations" asp-action="Detail" asp-route-handler="Rename">Rename</button>
+        </form>
+    </section>
+
+    <section id="organization-section-delete">
+        <h2>Delete</h2>
+        @if (Model.OwnedPackageIds > 0)
+        {
+            <p id="organization-delete-blocked">It owns packages, so it cannot be deleted. Remove it as an owner of those packages first.</p>
+        }
+        else
+        {
+            <p class="help-block">Removes the organization and its memberships.</p>
+            <form method="post" id="delete-form">
+                <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@Model.Confirmation("deletePassword")" />
+                <button type="submit" class="btn btn-danger" asp-controller="AdminOrganizations" asp-action="Detail" asp-route-handler="Delete">Delete organization</button>
+            </form>
+        }
+    </section>
+</div>

@@ -1,0 +1,226 @@
+using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace BaGet.Database.Sqlite.Migrations
+{
+    /// <inheritdoc />
+    public partial class AddAccessControl : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "AccessAuditEntries",
+                columns: table => new
+                {
+                    Key = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Created = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Actor = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    Action = table.Column<string>(type: "TEXT", maxLength: 64, nullable: false),
+                    Subject = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    Details = table.Column<string>(type: "TEXT", maxLength: 4000, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccessAuditEntries", x => x.Key);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Groups",
+                columns: table => new
+                {
+                    Key = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
+                    Description = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    Created = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    IsBuiltIn = table.Column<bool>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Groups", x => x.Key);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PermissionTargets",
+                columns: table => new
+                {
+                    Key = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
+                    RepositoryPatterns = table.Column<string>(type: "TEXT", maxLength: 4000, nullable: true),
+                    IncludePatterns = table.Column<string>(type: "TEXT", maxLength: 4000, nullable: true),
+                    ExcludePatterns = table.Column<string>(type: "TEXT", maxLength: 4000, nullable: true),
+                    ProjectKey = table.Column<int>(type: "INTEGER", nullable: true),
+                    IsBuiltIn = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Created = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PermissionTargets", x => x.Key);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProjectMembers",
+                columns: table => new
+                {
+                    Key = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ProjectKey = table.Column<int>(type: "INTEGER", nullable: false),
+                    PrincipalType = table.Column<string>(type: "TEXT", maxLength: 16, nullable: false),
+                    PrincipalId = table.Column<string>(type: "TEXT", maxLength: 450, nullable: false),
+                    Role = table.Column<string>(type: "TEXT", maxLength: 16, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProjectMembers", x => x.Key);
+                    table.ForeignKey(
+                        name: "FK_ProjectMembers_Projects_ProjectKey",
+                        column: x => x.ProjectKey,
+                        principalTable: "Projects",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GroupMembers",
+                columns: table => new
+                {
+                    Key = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    GroupKey = table.Column<int>(type: "INTEGER", nullable: false),
+                    UserId = table.Column<string>(type: "TEXT", maxLength: 450, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupMembers", x => x.Key);
+                    table.ForeignKey(
+                        name: "FK_GroupMembers_Groups_GroupKey",
+                        column: x => x.GroupKey,
+                        principalTable: "Groups",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PermissionGrants",
+                columns: table => new
+                {
+                    Key = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    TargetKey = table.Column<int>(type: "INTEGER", nullable: false),
+                    PrincipalType = table.Column<string>(type: "TEXT", maxLength: 16, nullable: false),
+                    PrincipalId = table.Column<string>(type: "TEXT", maxLength: 450, nullable: false),
+                    Actions = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PermissionGrants", x => x.Key);
+                    table.ForeignKey(
+                        name: "FK_PermissionGrants_PermissionTargets_TargetKey",
+                        column: x => x.TargetKey,
+                        principalTable: "PermissionTargets",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            // The upgrade defaults: what the server did before the access model existed. Everyone reads every
+            // repository; every authenticated caller deploys, annotates, deletes and manages (package ownership is
+            // still applied inside those actions). Explicit keys, so the grants below can name them.
+            var seeded = DateTime.UtcNow;
+
+            migrationBuilder.InsertData(
+                table: "Groups",
+                columns: new[] { "Key", "Name", "Description", "Created", "IsBuiltIn" },
+                values: new object[,]
+                {
+                    { 1, "Everyone", "Every caller, anonymous ones included.", seeded, true },
+                    { 2, "Authenticated", "Every caller that presented valid credentials.", seeded, true },
+                });
+
+            migrationBuilder.InsertData(
+                table: "PermissionTargets",
+                columns: new[] { "Key", "Name", "RepositoryPatterns", "IncludePatterns", "ExcludePatterns", "IsBuiltIn", "Created" },
+                values: new object[,]
+                {
+                    { 1, "Anyone reads every repository", "[\"*\"]", "[\"*\"]", "[]", true, seeded },
+                    { 2, "Authenticated users deploy", "[\"*\"]", "[\"*\"]", "[]", true, seeded },
+                });
+
+            // Actions: Read = 1; Annotate | Deploy | Delete | Manage = 2 + 4 + 8 + 16 = 30.
+            migrationBuilder.InsertData(
+                table: "PermissionGrants",
+                columns: new[] { "Key", "TargetKey", "PrincipalType", "PrincipalId", "Actions" },
+                values: new object[,]
+                {
+                    { 1, 1, "Group", "1", 1 },
+                    { 2, 2, "Group", "2", 30 },
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AccessAuditEntries_Created",
+                table: "AccessAuditEntries",
+                column: "Created");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupMembers_GroupKey_UserId",
+                table: "GroupMembers",
+                columns: new[] { "GroupKey", "UserId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupMembers_UserId",
+                table: "GroupMembers",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Groups_Name",
+                table: "Groups",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PermissionGrants_TargetKey_PrincipalType_PrincipalId",
+                table: "PermissionGrants",
+                columns: new[] { "TargetKey", "PrincipalType", "PrincipalId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PermissionTargets_Name",
+                table: "PermissionTargets",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProjectMembers_ProjectKey_PrincipalType_PrincipalId",
+                table: "ProjectMembers",
+                columns: new[] { "ProjectKey", "PrincipalType", "PrincipalId" },
+                unique: true);
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "AccessAuditEntries");
+
+            migrationBuilder.DropTable(
+                name: "GroupMembers");
+
+            migrationBuilder.DropTable(
+                name: "PermissionGrants");
+
+            migrationBuilder.DropTable(
+                name: "ProjectMembers");
+
+            migrationBuilder.DropTable(
+                name: "Groups");
+
+            migrationBuilder.DropTable(
+                name: "PermissionTargets");
+        }
+    }
+}

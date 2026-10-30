@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <!-- Enable the old RID graph to resolve NETSDK1206 warning for Microsoft.Azure.DocumentDB.Core -->
+    <!-- This is necessary because BaGet.Azure references Microsoft.Azure.Cosmos.Table which has -->
+    <!-- a transitive dependency on Microsoft.Azure.DocumentDB.Core with deprecated win7-x64 RID -->
+    <UseRidGraph>true</UseRidGraph>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Rest.ClientRuntime" Version="2.3.24" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\BaGet.Azure\BaGet.Azure.csproj" />
+  </ItemGroup>
+
+</Project>

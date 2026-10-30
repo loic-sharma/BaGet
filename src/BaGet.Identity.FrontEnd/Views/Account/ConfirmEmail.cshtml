@@ -1,0 +1,25 @@
+@model BaGet.Identity.Application.Models.Account.ConfirmEmailViewModel
+@{
+    ViewData["Title"] = "Confirm email";
+}
+
+<div class="col-sm-6">
+    <h1>Confirm email</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Succeeded)
+    {
+        <div class="alert alert-success" role="alert">
+            @(Model.EmailChanged ? "Your email address has been changed." : "Thank you, your email address is confirmed.")
+        </div>
+        @if (Model.PendingApproval)
+        {
+            <p id="confirm-awaiting-approval">An administrator must still enable your account before you can sign in.</p>
+        }
+        <p><a asp-controller="Account" asp-action="Login">Sign in</a></p>
+    }
+    else
+    {
+        <div class="alert alert-danger" role="alert">This link is invalid, expired or already used.</div>
+    }
+</div>

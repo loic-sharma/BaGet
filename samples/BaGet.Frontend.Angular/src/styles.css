@@ -1,0 +1,21 @@
+body { font-family: system-ui, sans-serif; margin: 0; color: #222; background: #fafafa; }
+header { display: flex; gap: 1rem; align-items: center; padding: .6rem 1rem; background: #1f2937; color: #fff; }
+header a { color: #cbd5e1; text-decoration: none; }
+header a.active, header a.brand { color: #fff; font-weight: 600; }
+header nav { display: flex; gap: 1rem; }
+.spacer { flex: 1; }
+main { max-width: 56rem; margin: 1rem auto; padding: 0 1rem; }
+form { display: grid; gap: .6rem; max-width: 24rem; }
+label { display: grid; gap: .2rem; font-weight: 600; }
+input, select { padding: .4rem; font: inherit; }
+button { padding: .4rem .8rem; font: inherit; cursor: pointer; }
+button.link { border: 0; background: none; color: #2563eb; padding: 0; text-decoration: underline; }
+.error { color: #b91c1c; }
+.notice { color: #166534; }
+small.error { display: block; font-weight: 400; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: .35rem .5rem; border-bottom: 1px solid #ddd; }
+ul.packages { list-style: none; padding: 0; display: grid; gap: .8rem; }
+ul.packages li { background: #fff; border: 1px solid #ddd; padding: .6rem .8rem; }
+.muted { color: #666; }
+.row { display: flex; gap: .5rem; align-items: end; flex-wrap: wrap; }

@@ -1,0 +1,10 @@
+@model BaGet.Core.AvatarModel
+@* A Gravatar when there is an address for it, otherwise (Site:UseGravatar off) the account's initial. *@
+@if (Model.Url != null)
+{
+    <img class="owner-avatar avatar-img" src="@Model.Url" width="@Model.Size" height="@Model.Size" alt="" data-owner="@Model.Name" />
+}
+else
+{
+    <span class="owner-avatar" style="width: @(Model.Size)px; height: @(Model.Size)px; line-height: @(Model.Size)px;" aria-hidden="true" data-owner="@Model.Name">@(string.IsNullOrEmpty(Model.Name) ? "?" : char.ToUpperInvariant(Model.Name[0]).ToString())</span>
+}

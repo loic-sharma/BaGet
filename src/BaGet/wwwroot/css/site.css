@@ -1,0 +1,760 @@
+/* BaGet site styles. Written for BaGet; the layout follows the conventions of nuget.org
+   (golden header band with dark text, Segoe UI, result cards, footer) without using any of its assets.
+   Palette: golden baguette. Text/background pairs are >= 4.5:1 (WCAG AA). */
+
+:root {
+    --brand: #8A5A12;
+    --brand-dark: #5C3A0A;
+    --brand-light: #FBF1DF;
+    --header-bg: #D99A32;
+    --header-fg: #2B1A0A;
+    --header-border: #B07A22;
+    --header-hover: rgba(43, 26, 10, 0.10);
+    --header-line: rgba(43, 26, 10, 0.25);
+    --footer-bg: #3B2508;
+    --accent: #f5a623;
+    --text: #333;
+    --muted: #666;
+    --border: #dbdbdb;
+    --band: #f5f5f5;
+}
+
+/* Layout
+-------------------------------------------------- */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    color: var(--text);
+    font-family: 'Segoe UI', "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+}
+
+.main-container {
+    flex: 1 0 auto;
+    width: 100%;
+}
+
+a {
+    color: var(--brand);
+}
+
+a:hover,
+a:focus {
+    color: var(--brand-dark);
+    text-decoration: underline;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: inherit;
+    font-weight: 300;
+    line-height: 1.1;
+    color: inherit;
+}
+
+h1, h2, h3, p {
+    margin-bottom: 24px;
+}
+
+h1 {
+    margin-top: 15px;
+}
+
+h2, h3 {
+    margin-top: 40px;
+}
+
+h4 {
+    margin-top: 11px;
+    margin-bottom: 11px;
+    font-size: 20px;
+}
+
+.img-responsive {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+.ms-Icon-ul {
+    margin-left: 24px;
+}
+
+.ms-Icon-ul li {
+    position: relative;
+}
+
+.ms-Icon-ul li i.ms-Icon {
+    position: absolute;
+    left: -24px;
+}
+
+.alert {
+    padding: 8px 8px;
+    border: 1px solid transparent;
+    border-radius: 0;
+}
+
+.alert-warning {
+    color: #000;
+    background-color: #fff4ce;
+    border-color: #fff4ce;
+}
+
+.legal-page {
+    max-width: 52em;
+}
+
+/* Header
+-------------------------------------------------- */
+.site-header {
+    flex: 0 0 auto;
+}
+
+.site-header .navbar {
+    margin-bottom: 0;
+    border-radius: 0;
+    border: 0;
+    border-bottom: 1px solid var(--header-border);
+}
+
+.navbar-inverse {
+    background-color: var(--header-bg);
+    border-color: var(--header-border);
+}
+
+.navbar-brand.brand {
+    display: flex;
+    align-items: center;
+    height: auto;
+    padding-top: 11px;
+    padding-bottom: 11px;
+    color: var(--header-fg);
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.navbar-brand.brand:hover,
+.navbar-brand.brand:focus {
+    color: var(--header-fg);
+    text-decoration: none;
+}
+
+.brand-logo {
+    margin-right: 8px;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    font-weight: 400;
+    color: var(--header-fg);
+}
+
+.navbar-nav > li > a {
+    line-height: 22px;
+}
+
+.navbar-inverse .navbar-nav > li > a:hover,
+.navbar-inverse .navbar-nav > li > a:focus,
+.navbar-inverse .navbar-nav .open > a,
+.navbar-inverse .navbar-nav .open > a:hover,
+.navbar-inverse .navbar-nav .open > a:focus {
+    color: var(--header-fg);
+    background-color: var(--header-hover);
+}
+
+.navbar-inverse .navbar-nav a.active,
+.navbar-inverse .navbar-nav a.active:hover,
+.navbar-inverse .navbar-nav a.active:focus {
+    color: var(--header-fg);
+    background-color: transparent;
+}
+
+.navbar-inverse .navbar-nav a.active span {
+    padding: 5px 0;
+    border-bottom: 2px solid var(--header-fg);
+}
+
+.navbar-inverse .navbar-toggle {
+    border-color: var(--header-line);
+}
+
+.navbar-inverse .navbar-toggle:hover,
+.navbar-inverse .navbar-toggle:focus {
+    background-color: var(--header-hover);
+}
+
+.navbar-inverse .navbar-toggle .icon-bar {
+    background-color: var(--header-fg);
+}
+
+.navbar-inverse .navbar-collapse {
+    border-color: var(--header-line);
+}
+
+/* Focus ring: dark, visible on the gold band (and on white). */
+.site-header a:focus,
+.site-header button:focus,
+.site-header a:focus-visible,
+.site-header button:focus-visible {
+    outline: 2px solid var(--header-fg);
+    outline-offset: -2px;
+}
+
+.account-area .dropdown-menu {
+    border-radius: 0;
+}
+
+.nav > li {
+    position: relative;
+    display: block;
+}
+
+.nav > li > a {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+}
+
+/* The search bar under the header, on every page but the front page. */
+.search-band {
+    background-color: var(--band);
+    border-bottom: 1px solid var(--border);
+}
+
+.search-container {
+    padding-top: 14px;
+    padding-bottom: 14px;
+}
+
+.search-container .form-control,
+.home-search .form-control {
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.search-container button,
+.home-search button {
+    height: 34px;
+    color: #fff;
+    background-color: var(--brand);
+    border-color: var(--brand-dark);
+    border-radius: 0;
+}
+
+.home-search button {
+    height: 46px;
+}
+
+.search-container button:active,
+.search-container button:active:focus,
+.search-container button:active:hover,
+.search-container button:focus,
+.search-container button:hover,
+.home-search button:hover,
+.home-search button:focus {
+    color: #fff;
+    background-color: var(--brand-dark);
+    border-color: var(--brand-dark);
+}
+
+.link-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline;
+    margin: 0;
+    padding: 0;
+    color: var(--brand);
+}
+
+.link-button:hover,
+.link-button:focus {
+    outline: none;
+    text-decoration: underline;
+    color: var(--brand-dark);
+}
+
+/* Footer
+-------------------------------------------------- */
+.site-footer {
+    flex: 0 0 auto;
+    margin-top: 40px;
+    padding: 20px 0 8px;
+    color: var(--brand-light);
+    background-color: var(--footer-bg);
+}
+
+.site-footer a {
+    color: #fff;
+}
+
+.site-footer .footer-links {
+    margin-bottom: 6px;
+}
+
+.site-footer .footer-links > li + li {
+    margin-left: 12px;
+}
+
+.site-footer .footer-powered {
+    margin-bottom: 8px;
+    font-size: 13px;
+    opacity: 0.8;
+}
+
+/* Front page
+-------------------------------------------------- */
+.home-hero {
+    max-width: 44em;
+    margin: 40px auto 30px;
+    text-align: center;
+}
+
+.home-hero h1 {
+    margin-bottom: 28px;
+    font-size: 40px;
+    color: var(--brand);
+}
+
+.home-links {
+    margin-top: 14px;
+    margin-bottom: 0;
+}
+
+.home-links a {
+    margin: 0 6px;
+}
+
+.home-totals {
+    margin-top: 30px;
+    padding: 24px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.home-totals .total-number {
+    font-size: 36px;
+    font-weight: 300;
+    color: var(--brand);
+}
+
+.home-totals .total-label {
+    color: var(--muted);
+}
+
+/* Search results
+-------------------------------------------------- */
+.search-options {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.search-options span.ms-Checkbox-text {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.search-options .form-group {
+    margin-right: 10px;
+}
+
+.search-options select, .search-options #prerelease {
+    margin-left: 10px;
+}
+
+.search-dropdown {
+    margin-left: 5px;
+    display: inline-block;
+    width: auto;
+    vertical-align: middle;
+}
+
+.search-options .dropdown-toggle {
+    border-radius: 0;
+}
+
+.package-card {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    padding: 16px;
+    background-color: #fff;
+    border: 1px solid var(--border);
+}
+
+.package-card:hover {
+    border-color: var(--brand);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.package-card .card-icon {
+    flex: 0 0 64px;
+    width: 64px;
+    margin-right: 16px;
+}
+
+.package-card .card-body {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0;
+}
+
+.package-card .card-heading {
+    overflow-wrap: break-word;
+}
+
+.search-result .package-title {
+    margin-right: 6px;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.search-result .card-owners {
+    color: var(--muted);
+}
+
+.search-result .badge-deprecated,
+.search-result .badge-verified {
+    margin-left: 6px;
+    font-size: 11px;
+    vertical-align: middle;
+}
+
+.search-result .info {
+    padding-left: 0;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    list-style: none;
+    line-height: 20px;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.search-result .info li {
+    display: inline-block;
+    margin-right: 14px;
+}
+
+.search-result .info li + li {
+    padding-left: 14px;
+    border-left: 1px solid var(--border);
+}
+
+.search-result .ms-Icon {
+    position: relative;
+    top: 2px;
+    margin-right: 2px;
+}
+
+.search-result .tags {
+    overflow-wrap: anywhere;
+}
+
+.search-result .card-description {
+    color: var(--text);
+    overflow-wrap: break-word;
+}
+
+/* Tabbed instructions, used on upload and package page
+-------------------------------------------------- */
+.tabbed-info {
+    font-size: 0.8em;
+    margin-top: 15px;
+}
+
+.tabbed-info ul {
+    margin-left: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    list-style: none;
+    border: 0;
+    width: 750px;
+}
+
+.tabbed-info li {
+    padding: 0;
+    margin-right: 5px;
+    margin-bottom: 0;
+    float: left;
+    position: relative;
+    display: block;
+}
+
+.tabbed-info li a {
+    padding: 5px 10px;
+    margin: 0;
+    color: #000;
+    background-color: #eaeaea;
+    border: 0;
+    position: relative;
+    display: block;
+    text-decoration: none;
+}
+
+.tabbed-info li.active a {
+    font-weight: 600;
+    color: #fff;
+    text-decoration: underline;
+    background-color: var(--footer-bg);
+}
+
+.tabbed-info .content {
+    display: table;
+    height: 1px;
+}
+
+.tabbed-info .content .script {
+    display: table-cell;
+    width: 100%;
+    max-width: 1px;
+    padding: 0 10px 8px 10px;
+    font-family: Consolas, Menlo, Monaco, "Courier New", monospace;
+    line-height: 1.5;
+    color: #fff;
+    background-color: var(--footer-bg);
+    border-color: var(--footer-bg);
+    border-style: solid;
+    border-width: 1px 0 1px 1px;
+}
+
+.tabbed-info .content .script .script-line:before {
+    content: "> ";
+}
+
+.tabbed-info .content .copy-button {
+    display: table-cell;
+}
+
+.tabbed-info .content .copy-button button {
+    height: 100%;
+    min-height: 42px;
+    vertical-align: baseline;
+    border-radius: 0px;
+}
+
+/* Package page
+-------------------------------------------------- */
+.display-package .package-icon {
+    margin-top: 15px;
+}
+
+@media screen and (max-width: 768px) {
+  .display-package .package-icon img {
+    margin-left: auto;
+    margin-right: auto;
+    max-height: 60px;
+    max-width: 60px;
+  }
+}
+
+.display-package .package-title {
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.display-package h1 small {
+    margin-left: 10px;
+    font-size: 45%;
+}
+
+.display-package .tabbed-info {
+    margin-bottom: 20px;
+}
+
+.display-package .package-description {
+    white-space: pre-wrap;
+}
+
+.display-package .package-readme img {
+    max-width: 100%;
+}
+
+.display-package .package-release-notes {
+    white-space: pre-wrap;
+}
+
+.package-details-info {
+    margin-top: -25px;
+}
+
+.package-details-info .ms-Icon-ul li {
+    margin-bottom: 15px;
+}
+
+.package-details-info .icon {
+  position: absolute;
+  left: -24px;
+  width: 16px;
+  height: 16px;
+  margin-top: 3px;
+}
+
+.display-package .expandable-section h2 button {
+    color: #000;
+    text-decoration: none;
+}
+
+.display-package .expandable-section h2 .ms-Icon {
+    font-size: 0.6em;
+    position: relative;
+    top: -2px;
+    margin-right: 5px;
+}
+
+.display-package .package-used-by td, .display-package .package-used-by th {
+  padding: 8px 8px 8px 15px;
+}
+
+.display-package .package-used-by thead tr {
+  border-bottom: 2px solid #d3d3d3;
+}
+
+.display-package .package-used-by tbody tr {
+  border-bottom: 1px solid #d3d3d3;
+}
+
+.display-package .package-used-by td div {
+  margin-top: 4px;
+}
+
+.display-package .package-used-by td span {
+  margin-left: 3px;
+}
+
+.dependency-groups h4 {
+    line-height: 1.4;
+}
+
+.dependency-groups h4 > span {
+    border-bottom: 1px solid #d8d8d8;
+    margin-bottom: 3px;
+}
+
+.dependency-group li span {
+    color: #666;
+}
+
+.display-package .version-list .ms-Icon {
+    position: relative;
+    top: 2px;
+    margin-right: 5px;
+}
+
+/* Package page tabs, frameworks and owners
+-------------------------------------------------- */
+.tabbed-info .content .script {
+    white-space: normal;
+}
+
+.tabbed-info .content .script .script-prefix {
+    float: left;
+    margin-right: 6px;
+    padding-top: 8px;
+    user-select: none;
+}
+
+.tabbed-info .content .script pre.snippet {
+    margin: 0;
+    padding: 8px 0 0 0;
+    overflow-x: auto;
+    font: inherit;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    white-space: pre;
+}
+
+.package-tabs {
+    margin-top: 20px;
+}
+
+.package-tabs .package-tab-list {
+    margin: 0 0 15px 0;
+    padding: 0;
+    list-style: none;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.package-tabs .package-tab-list li a {
+    display: block;
+    padding: 8px 14px;
+    color: var(--brand);
+    text-decoration: none;
+    border-bottom: 3px solid transparent;
+}
+
+.package-tabs .package-tab-list li.active a {
+    font-weight: 600;
+    color: #000;
+    border-bottom-color: var(--brand);
+}
+
+.package-tabs .tab-panel {
+    margin-bottom: 20px;
+}
+
+.package-frameworks .framework-group h4 {
+    margin: 12px 0 6px 0;
+}
+
+.package-frameworks .framework {
+    margin-bottom: 4px;
+}
+
+.package-frameworks .framework .label {
+    display: inline-block;
+    padding: 4px 8px;
+    font-size: 0.9em;
+}
+
+.package-frameworks .framework-computed .label {
+    color: #555;
+    background-color: #e8e8e8;
+}
+
+.package-owners .owner {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.owner-avatar {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+    line-height: 32px;
+    vertical-align: middle;
+    text-align: center;
+    font-weight: 600;
+    color: #fff;
+    background-color: var(--brand);
+    border-radius: 50%;
+}
+
+.avatar-img {
+    background-color: #fff;
+    object-fit: cover;
+}
+
+.account-menu .owner-avatar {
+    margin-right: 6px;
+    font-size: 12px;
+}
+
+.settings-nav {
+    position: sticky;
+    top: 70px;
+}

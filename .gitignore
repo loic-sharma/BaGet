@@ -162,6 +162,11 @@ PublishScripts/
 **/packages/*
 # except build/, which is used as an MSBuild target.
 !**/packages/build/
+# ... and except BaGet's own package-management Razor Pages, which live in a folder called
+# Packages: the rule above matched them and left the Manage page untracked.
+!src/BaGet.Identity/Pages/Packages/**
+# ... and the Models/Packages folders of the Identity/Web projects (forms and view models).
+!src/**/Models/Packages/**
 # Uncomment if necessary however generally it will be regenerated when needed
 #!**/packages/repositories.config
 # NuGet v3's project.json files produces more ignoreable files
@@ -272,3 +277,13 @@ __pycache__/
 **/baget.db
 **/baget.db-shm
 **/baget.db-wal
+
+# BaGet host logs (Serilog file sink)
+logs/
+
+# BaGet host storage when Storage:Path is empty (the content root, e.g. src/BaGet under dotnet run / Visual Studio)
+src/BaGet/catalog/
+src/BaGet/symbols/
+src/BaGet/staging/
+src/BaGet/validation/
+src/BaGet/repos/

@@ -10,19 +10,27 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v7
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v6
       with:
-        dotnet-version: 3.1.x
+        dotnet-version: 10.0.x
+    # nuget.config lists ./Packages as a package source. Locally it is a symlink to a shared
+    # feed; in a clean checkout it does not exist, and restore fails with NU1301.
+    - name: Create the local package source
+      run: mkdir -p Packages
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore BaGet.sln
+    # Directory.Build.props packs every project on build; CI only needs the binaries.
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build BaGet.sln --no-restore -p:GeneratePackageOnBuild=false
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test BaGet.sln --no-build --verbosity normal

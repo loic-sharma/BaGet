@@ -1,0 +1,70 @@
+@model BaGet.Identity.Application.Models.Users.DeleteUserViewModel
+@{
+    ViewData["Title"] = "Delete " + Model.Name;
+}
+
+<div class="col-sm-12">
+    <h1>Delete @Model.Name</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert" id="delete-user-error">@Model.Error</div>
+    }
+
+    <h2>What goes</h2>
+    <ul id="delete-user-summary">
+        <li>@Model.Preview?.ApiKeys API key(s).</li>
+        <li>Ownership of @Model.Preview?.DirectPackageIds.Count package ID(s)@(Model.Preview?.DirectPackageIds.Count > 0 ? ": " + string.Join(", ", Model.Preview.DirectPackageIds) : "").</li>
+        @foreach (var organization in Model.Preview?.Organizations ?? [])
+        {
+            <li>Organization <strong>@organization.Name</strong>: @organization.Outcome</li>
+        }
+    </ul>
+
+    @if (Model.LastAdministrator)
+    {
+        <div class="alert alert-warning" role="alert" id="delete-user-last-admin">
+            @Model.Name is the only administrator and cannot be deleted. Promote another user first.
+        </div>
+    }
+    else
+    {
+        <form method="post">
+            @if (Model.Preview?.SoleOwnedPackages.Count > 0)
+            {
+                <h2>Packages only @Model.Name owns</h2>
+                <p id="sole-owned-packages">@string.Join(", ", Model.Preview.SoleOwnedPackages.Select(p => p.Label))</p>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="soleOwned" value="keep" checked="@(Model.SoleOwned != "delete")" />
+                        Leave them without owners. Only administrators and the global API key can manage them, like packages that predate accounts.
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="soleOwned" value="delete" checked="@(Model.SoleOwned == "delete")" disabled="@Model.IsReadOnlyMode" />
+                        Delete them permanently, with all their versions, in every repository they are in.
+                    </label>
+                </div>
+            }
+
+            <h2>Confirm</h2>
+            @if (Model.HasPassword)
+            {
+                <div class="form-group">
+                    <label for="adminPassword">Your password</label>
+                    <input id="adminPassword" name="password" type="password" class="form-control" autocomplete="current-password" />
+                </div>
+            }
+            else
+            {
+                <partial name="~/Views/Shared/_Reauthenticate.cshtml" model="@(new ReauthenticateView(Model.Reauthenticated, Model.CanReauthenticate, "/admin/users/" + Uri.EscapeDataString(Model.Name??string.Empty
+                    ) + "/delete"))" />
+            }
+
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Delete this account? This cannot be undone.');">Delete @Model.Name</button>
+            <a class="btn btn-default" href="@Url.Action("Index", "AdminUsers")">Cancel</a>
+        </form>
+    }
+</div>

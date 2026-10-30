@@ -1,0 +1,189 @@
+@model BaGet.Identity.Application.Models.Users.UserDetailViewModel
+@{
+    ViewData["Title"] = Model.Account?.UserName ?? "User";
+    var userUrl = Url.Content("~/admin/users/" + Uri.EscapeDataString(Model.Account?.UserName ?? string.Empty));
+}
+
+<div class="col-sm-12">
+    <h1>@Model.Account?.UserName</h1>
+    <hr class="breadcrumb-divider" />
+
+    <p><a asp-controller="AdminUsers" asp-action="Index">Back to users</a></p>
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-success" role="alert" id="user-message">@Model.Message</div>
+    }
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert" id="user-error">@Model.Error</div>
+    }
+
+    @* Each section is independent: add another by adding a block with its own user-section-* id. *@
+    <section id="user-section-account">
+        <h2>Account</h2>
+        <table class="table">
+            <tr><th>Email</th><td>@(Model.Account?.Email ?? "None")</td></tr>
+            <tr><th>Created</th><td>@Model.Account?.Created.ToString("yyyy-MM-dd")</td></tr>
+            <tr><th>Role</th><td>@(Model.Account?.IsAdministrator == true ? "Administrator" : "User")</td></tr>
+            <tr><th>Status</th><td id="user-status">@(Model.Account?.PendingApproval == true ? "Awaiting approval: cannot sign in" : "Active")</td></tr>
+            <tr><th>Packages</th><td>@Model.OwnedPackageIds owned (<a href="@(userUrl + "/packages")">list</a>)</td></tr>
+        </table>
+        @if (Model.Account?.PendingApproval == true)
+        {
+            <form method="post" id="approve-form" asp-controller="AdminUsers" asp-action="Detail" asp-route-handler="Approve">
+                @if (Model.HasPassword)
+                {
+                    <div class="form-group">
+                        <label for="approvePassword">Your password</label>
+                        <input id="approvePassword" name="password" type="password" class="form-control" autocomplete="current-password" />
+                        <span class="help-block">Approving asks for your password again.</span>
+                    </div>
+                }
+                else
+                {
+                    <partial name="~/Views/Shared/_Reauthenticate.cshtml" model="@(new ReauthenticateView(Model.Reauthenticated, Model.CanReauthenticate, "/Admin/UserDetail"))" />
+                }
+                <button type="submit" class="btn btn-primary">Approve</button>
+            </form>
+        }
+    </section>
+
+    <section id="user-section-organizations">
+        <h2>Organizations</h2>
+        @if (Model.Organizations.Count == 0)
+        {
+            <p>@Model.Account?.UserName belongs to no organization.</p>
+        }
+        else
+        {
+            <ul>
+                @foreach (var organization in Model.Organizations)
+                {
+                    <li><a href="@Url.Content("~/admin/organizations/" + Uri.EscapeDataString(organization.Name ?? string.Empty))">@organization.Name</a></li>
+                }
+            </ul>
+        }
+    </section>
+
+    <section id="user-section-keys">
+        <h2>API keys</h2>
+        @if (Model.Keys.Count == 0)
+        {
+            <p>@Model.Account?.UserName has no API keys.</p>
+        }
+        else
+        {
+            <form method="post" id="keys-form">
+                <table class="table" id="user-keys">
+                    <thead>
+                        <tr><th>Description</th><th>Scopes</th><th>Packages</th><th>Repositories</th><th>Created</th><th>Expires</th><th></th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var key in Model.Keys)
+                        {
+                            <tr>
+                                <td>@key.Description</td>
+                                <td>@string.Join(", ", key.Scopes)</td>
+                                <td><code>@key.PackageGlobPattern</code></td>
+                                <td>@key.Repositories</td>
+                                <td>@key.Created.ToString("yyyy-MM-dd")</td>
+                                <td>@(key.Expires?.ToString("yyyy-MM-dd") ?? "Never")</td>
+                                <td><button type="submit" class="btn btn-danger btn-xs" asp-controller="AdminUsers" asp-action="Detail" asp-route-handler="RevokeKey" name="key" value="@key.Key">Revoke</button></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                @if (Model.HasPassword)
+                {
+                    <div class="form-group">
+                        <label for="adminPassword">Your password</label>
+                        <input id="adminPassword" name="password" type="password" class="form-control" autocomplete="current-password" />
+                        <span class="help-block">Revoking asks for your password again.</span>
+                    </div>
+                }
+                else
+                {
+                    <partial name="~/Views/Shared/_Reauthenticate.cshtml" model="@(new ReauthenticateView(Model.Reauthenticated, Model.CanReauthenticate, "/Admin/UserDetail"))" />
+                }
+            </form>
+        }
+    </section>
+
+    @if (Model.ModelAvailable)
+    {
+        <section id="user-section-groups">
+            <h2>Groups</h2>
+            @if (Model.Groups.Count == 0)
+            {
+                <p>@Model.Account?.UserName is in no group (besides the implicit Everyone and Authenticated).</p>
+            }
+            else
+            {
+                <form method="post" id="groups-form">
+                    <table class="table" id="user-groups">
+                        <tbody>
+                            @foreach (var group in Model.Groups)
+                            {
+                                <tr>
+                                    <td><a href="@Url.Action("Detail", "AdminGroups", new { name = group })">@group</a></td>
+                                    <td><button type="submit" class="btn btn-danger btn-xs" asp-controller="AdminUsers" asp-action="Detail" asp-route-handler="RemoveGroup" name="group" value="@group">Remove</button></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@(new ConfirmPasswordView("groupsPassword", Model.HasPassword, Model.Reauthenticated, Model.CanReauthenticate, Context.Request.Path.ToString()))" />
+                </form>
+            }
+
+            <form method="post" class="form-inline" id="add-group-form">
+                <input type="text" name="group" class="form-control" placeholder="Group name" autocomplete="off" />
+                <partial name="~/Views/Shared/_ConfirmPassword.cshtml" model="@(new ConfirmPasswordView("addGroupPassword", Model.HasPassword, Model.Reauthenticated, Model.CanReauthenticate, Context.Request.Path.ToString()))" />
+                <button type="submit" class="btn btn-primary" asp-controller="AdminUsers" asp-action="Detail" asp-route-handler="AddGroup">Add to group</button>
+            </form>
+        </section>
+
+        <section id="user-section-projects">
+            <h2>Projects</h2>
+            @if (Model.ProjectRoles.Count == 0)
+            {
+                <p>@Model.Account?.UserName has no role in any project.</p>
+            }
+            else
+            {
+                <table class="table" id="user-projects">
+                    <tbody>
+                        @foreach (var role in Model.ProjectRoles)
+                        {
+                            <tr>
+                                <td><a href="@Url.Action("Detail", "AdminProjects", new { name = role.Project })">@role.Project</a></td>
+                                <td>@role.Role</td>
+                                <td>@role.Via</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </section>
+
+        <section id="user-section-access">
+            <h2>Effective permissions</h2>
+            <p class="help-block">
+                What @Model.Account?.UserName may do in each repository, and the permission targets or project roles that say so.
+                Changing an existing package ID also needs ownership.
+            </p>
+            <form method="get" class="form-inline" id="access-package-form">
+                <input type="text" name="package" value="@Model.Package" class="form-control" placeholder="Package ID (optional)" autocomplete="off" />
+                <button type="submit" class="btn btn-default">Evaluate</button>
+            </form>
+            @foreach (var row in Model.Access)
+            {
+                <div class="access-repository" data-repository="@row.Repository.Name">
+                    <h3>@row.Repository.Name</h3>
+                    <partial name="~/Views/Shared/_Explanation.cshtml" model="@row.Explanation" />
+                </div>
+            }
+        </section>
+    }
+</div>

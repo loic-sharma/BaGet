@@ -1,0 +1,11 @@
+@model BaGet.Web.V3.ViewModels.LegalViewModel
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="col-sm-12 legal-page">
+    <h1>@Model.Title</h1>
+    <hr class="breadcrumb-divider" />
+    @Model.Content
+</div>

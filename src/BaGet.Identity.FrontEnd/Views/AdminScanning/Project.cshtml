@@ -1,0 +1,41 @@
+@model BaGet.Identity.Application.Models.Policies.ScanProjectViewModel
+@{
+    ViewData["Title"] = "Scanning policy of " + Model.Name;
+}
+
+<div class="col-sm-12" id="scan-project" data-project="@Model.Name">
+    <h1>Scanning policy <small>project @Model.Name</small></h1>
+    <hr class="breadcrumb-divider" />
+
+    <p><a asp-controller="AdminScanning" asp-action="Index">Back to scanning</a> | <a asp-controller="AdminProjects" asp-action="Detail" asp-route-name="@Model.Name">The project</a></p>
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-success" role="alert" id="scan-project-message">@Model.Message</div>
+    }
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger" role="alert" id="scan-project-error">@Model.Error</div>
+    }
+
+    <p>This policy applies to the repositories of the project that have no scanning policy of their own:</p>
+    @if (Model.Project!.Repositories.Count == 0)
+    {
+        <p id="scan-project-no-repositories"><em>The project has no repositories.</em></p>
+    }
+    else
+    {
+        <ul id="scan-project-repositories">
+            @foreach (var repository in Model.Project.Repositories)
+            {
+                <li><a asp-controller="AdminScanning" asp-action="Repository" asp-route-name="@repository">@repository</a></li>
+            }
+        </ul>
+    }
+
+    <form method="post" asp-controller="AdminScanning" asp-action="Project" asp-route-name="@Model.Name" asp-route-handler="Policy" id="scan-project-form">
+        <partial name="~/Views/Shared/_ScanPolicyForm.cshtml" model="Model.PolicyForm" />
+        <button type="submit" class="btn btn-primary">Save the policy</button>
+    </form>
+    <p class="help-block">Saving asks for your password again. A policy with everything off removes it.</p>
+</div>

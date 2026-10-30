@@ -1,0 +1,73 @@
+@model BaGet.Identity.Application.Models.Operations.AbuseViewModel
+@{
+    ViewData["Title"] = "Abuse reports";
+}
+
+<div class="col-sm-12">
+    <h1>Abuse reports</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-success" role="alert" id="abuse-message">@Model.Message</div>
+    }
+
+    @if (!Model.IsSupported)
+    {
+        <div class="alert alert-warning" role="alert" id="abuse-unsupported">Abuse reports are not stored with the configured database.</div>
+    }
+    else
+    {
+        <p>
+            @if (Model.All)
+            {
+                <span>Showing all reports.</span> <a href="@Url.Action("Abuse", "AdminOperations")">Show unresolved only</a>
+            }
+            else
+            {
+                <span>Showing unresolved reports.</span> <a href="@Url.Action("Abuse", "AdminOperations", new { all = "true" })">Show all</a>
+            }
+        </p>
+
+        @if (!Model.Items.Any())
+        {
+            <p id="abuse-empty">No reports.</p>
+        }
+        else
+        {
+            <table class="table" id="abuse-table">
+                <thead>
+                    <tr><th>Package</th><th>Repository</th><th>Reason</th><th>Details</th><th>Reporter</th><th>Reported</th><th></th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var report in Model.Items)
+                    {
+                        <tr data-report="@report.Key" data-repository="@report.Repository">
+                            <td>
+                                @if (report.PackageId != null)
+                                {
+                                    <a href="@Url.Content(RepositoryPageLinks.Manage(report.Repository, report.PackageId))">@report.PackageId @report.PackageVersion</a>
+                                }
+                                else
+                                {
+                                    <span>@report.PackageId @report.PackageVersion</span>
+                                }
+                            </td>
+                            <td>@report.Repository</td>
+                            <td>@report.Reason</td>
+                            <td>@report.Details</td>
+                            <td>@report.ReporterEmail</td>
+                            <td>@report.Created.ToString("u")@(report.IsResolved ? " (resolved " + report.Resolved!.Value.ToString("u") + ")" : "")</td>
+                            <td>
+                                <form method="post" asp-controller="AdminOperations" asp-action="Abuse" asp-route-handler="@(report.IsResolved ? "Reopen" : "Resolve")" asp-route-all="@(Model.All ? "true" : null)">
+                                    <input type="hidden" name="key" value="@report.Key" />
+                                    <button type="submit" class="btn btn-default btn-xs">@(report.IsResolved ? "Reopen" : "Resolve")</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    }
+</div>

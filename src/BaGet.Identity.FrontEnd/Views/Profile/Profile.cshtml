@@ -1,0 +1,47 @@
+@using BaGet.Identity.Extensions
+@model BaGet.Identity.Application.Models.Account.ProfileViewModel
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="col-sm-12">
+    <h1 id="profile-name"><partial name="_Avatar" model="new BaGet.Core.AvatarModel(Model.Name ?? string.Empty, Model.AvatarUrl ?? string.Empty, 64)" /> @Model.Name</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (Model.IsOrganization)
+    {
+        <p>Organization with @Model.Members.Count member@(Model.Members.Count == 1 ? "" : "s"):
+            @foreach (var member in Model.Members)
+            {
+                <a href="@Url.RepositoryContent("profiles/" + member)">@member</a>
+            }
+        </p>
+    }
+
+    @if (Model.IsCurrentUser)
+    {
+        <p><a href="~/account/apikeys">API keys</a> · <a href="~/account/organizations">Organizations</a></p>
+    }
+
+    <h2>Packages</h2>
+    @if (Model.Packages.Count == 0)
+    {
+        <p>No packages.</p>
+    }
+    else
+    {
+        <table class="table">
+            <thead><tr><th>Package</th><th>Downloads</th><th></th></tr></thead>
+            <tbody>
+                @foreach (var package in Model.Packages)
+                {
+                    <tr>
+                        <td><a href="@Url.RepositoryContent("packages/" + package.Id)">@package.Id</a></td>
+                        <td>@package.Downloads.ToString("N0")</td>
+                        <td>@if (Model.IsCurrentUser || Model.IsOrganization) { <a href="@Url.RepositoryContent("packages/" + package.Id + "/manage")">Manage</a> }</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

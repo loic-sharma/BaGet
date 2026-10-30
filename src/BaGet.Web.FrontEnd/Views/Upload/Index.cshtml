@@ -1,0 +1,404 @@
+@model BaGet.Web.Application.Models.Upload.UploadViewModel
+@using BaGet.Identity.Extensions
+@using Microsoft.Extensions.Options
+@inject IUrlGenerator _url
+@inject IOptionsSnapshot<FeedsOptions> _feeds
+@inject IRepositoryAccess _repositoryAccess
+@inject IRepositoryContext _repositoryContext
+
+@{
+    ViewData["Title"] = "Upload package";
+
+    var baseUrl = Url.ActionLink("Index", "Home");
+    var publishUrl = _url.GetPackagePublishResourceUrl();
+    var serviceIndexUrl = _url.GetServiceIndexUrl();
+
+    // PowerShellGet speaks the V2 protocol, so its instructions are only shown when the
+    // V2 feed is being served.
+    var v2FeedUrl = _url.GetV2FeedUrl();
+    var showPowerShellGet = _feeds.Value.EnableV2;
+
+    var staged = Model.Staged;
+
+    // The repository this upload goes to is the one of the page's address (/upload, /r/{name}/upload): staging, the
+    // submission and the commands below all follow it. The picker only moves between those addresses, and is
+    // offered when there is a choice (IRepositoryAccess lists what the caller may publish to).
+    // For a virtual repository RepositoryPageGate has already moved the request to its deploy repository: 'target' is
+    // where the package is stored, 'requested' the repository the visitor chose.
+    var target = _repositoryContext.Current;
+    var requested = Context.Items[RepositoryPageGate.RequestedVirtualItemKey] as RepositoryInfo ?? target;
+    IReadOnlyList<RepositoryInfo> writable = Array.Empty<RepositoryInfo>();
+    if (!Model.IsReadOnlyMode && _repositoryAccess.SupportsMultipleRepositories)
+    {
+        // This page uploads .nupkg files: the repositories of other formats have their own upload pages (or none, like Docker's).
+        writable = (await _repositoryAccess.WritableAsync(User, Context.RequestAborted)).Where(r => r.Format == BaGet.Core.RepositoryFormat.NuGet).ToList();
+    }
+}
+
+<div class="col-sm-12">
+    <h1>Upload</h1>
+    <hr class="breadcrumb-divider" />
+
+    @if (writable.Count > 1)
+    {
+        <p id="upload-repository">
+            Repository:
+            @foreach (var option in writable)
+            {
+                @if (option.Key == requested.Key)
+                {
+                    <strong data-repository="@option.Name" class="upload-repository-current">@option.Name</strong>
+                }
+                else
+                {
+                    <a href="@Url.Action("Index", "Upload", new { repo = option.IsDefault ? null : option.Name, id = Model.Id })" data-repository="@option.Name">@option.Name</a>
+                }
+                @(option == writable[^1] ? "" : " | ")
+            }
+        </p>
+    }
+
+    @if (requested.Key != target.Key)
+    {
+        <p class="alert alert-info" id="upload-virtual-note">
+            @requested.Name is a virtual repository: what you upload is stored in <strong>@target.Name</strong>, its deploy repository,
+            and you need permission to deploy there. The commands below address @target.Name directly.
+        </p>
+    }
+
+    @if (Model.Message != null)
+    {
+        <div class="alert @(Model.Failed ? "alert-danger" : "alert-success")" role="alert" id="upload-message">
+            @Model.Message
+
+            @if (Model.Published != null && await _repositoryAccess.CanReadPackageAsync(User, target, Model.Published.Id!, Context.RequestAborted))
+            {
+                <a asp-controller="Package" asp-action="Show"
+                   asp-route-id="@Model.Published.Id"
+                   asp-route-version="@Model.Published.Version">View it</a><text>.</text>
+            }
+        </div>
+    }
+
+    @if (Model.IsReadOnlyMode)
+    {
+        <p id="upload-read-only">
+            This server is in read-only mode. Nothing can be uploaded, through the browser or
+            with <code>dotnet nuget push</code>, until that is turned off.
+        </p>
+    }
+    else if (Model.NothingCanAuthenticate)
+    {
+        @* Nothing here could tell one visitor from another, so a file picker would be a
+           publish button for anyone who found the page, and an API key box would accept
+           whatever was typed into it - including nothing. *@
+        <p id="upload-no-api-key">
+            @Model.NoApiKeyExplanation
+        </p>
+    }
+    else if (Model.AccountsEnabled && !Model.SignedIn)
+    {
+        <p id="upload-sign-in">
+            <a href="~/account/login?returnUrl=@Uri.EscapeDataString(Url.Action("Index", "Upload") ?? string.Empty)">Sign in</a>
+            to upload a package through the browser. You can push with the commands below at
+            any time, with an API key.
+        </p>
+    }
+    else if (Model.RetryToken != null)
+    {
+        <form method="post" asp-route-handler="Submit" id="upload-retry" x-data="{ accepted: false }">
+            <input type="hidden" name="token" value="@Model.RetryToken" />
+            <div class="form-group">
+                <label for="retryApiKey">API key</label>
+                <input type="password" id="retryApiKey" name="apiKey" class="form-control" autocomplete="off" />
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="acceptTerms" value="true" x-model="accepted" />
+                    I have the right to publish this.
+                </label>
+            </div>
+            <button type="submit" class="btn btn-primary" x-bind:disabled="!accepted">Publish</button>
+            <button type="submit" class="btn btn-default" formaction="@Url.Action("Index", "Upload", new { handler = "Cancel" })">
+                Discard this upload
+            </button>
+        </form>
+    }
+    else if (staged != null)
+    {
+        @* Step two: what was staged, and nothing is published until it is confirmed. *@
+        <h2 id="upload-preview">@staged.Id @staged.Version</h2>
+
+        @if (staged.IsSymbolPackage)
+        {
+            <p>
+                A symbol package. Its PDBs are served to debuggers for the package version it
+                belongs to; it is never a package of its own, and uploading it claims no
+                package ID.
+            </p>
+
+            @if (staged.TargetPackageMessage != null)
+            {
+                <div class="alert alert-warning" role="alert" id="upload-symbol-target">
+                    @staged.TargetPackageMessage
+                </div>
+            }
+
+            <h3>Symbols</h3>
+            @if (staged.SymbolFiles.Count == 0)
+            {
+                <p>This symbol package carries no PDB, so there is nothing to index.</p>
+            }
+            else
+            {
+                <ul>
+                    @foreach (var symbolFile in staged.SymbolFiles)
+                    {
+                        <li><code>@symbolFile</code></li>
+                    }
+                </ul>
+            }
+        }
+        else
+        {
+            <dl class="dl-horizontal">
+                <dt>Description</dt>
+                <dd>@(string.IsNullOrWhiteSpace(staged.Description) ? "None" : staged.Description)</dd>
+
+                <dt>Authors</dt>
+                <dd>@(staged.Authors.Count == 0 ? "None" : string.Join(", ", staged.Authors))</dd>
+
+                <dt>License</dt>
+                <dd>
+                    @if (staged.License != null)
+                    {
+                        @staged.License
+                    }
+                    else if (staged.LicenseUrl != null)
+                    {
+                        <a href="@staged.LicenseUrl" target="_blank" rel="noopener noreferrer nofollow">@staged.LicenseUrl</a>
+                    }
+                    else
+                    {
+                        <text>None declared</text>
+                    }
+                </dd>
+            </dl>
+
+            <h3>Dependencies</h3>
+            @if (staged.DependencyGroups.Count == 0)
+            {
+                <p>This package has no dependencies.</p>
+            }
+            else
+            {
+                foreach (var group in staged.DependencyGroups)
+                {
+                    <h4>@group.Name</h4>
+                    @if ((group.Dependencies?.Count ?? 0) == 0)
+                    {
+                        <p>No dependencies.</p>
+                    }
+                    else
+                    {
+                        <ul>
+                            @foreach (var dependency in group.Dependencies ?? [])
+                            {
+                                <li>@dependency.PackageId @dependency.VersionSpec</li>
+                            }
+                        </ul>
+                    }
+                }
+            }
+
+            @if (staged.Readme != null)
+            {
+                <h3>Readme</h3>
+                <div id="upload-readme">@staged.Readme</div>
+            }
+        }
+
+        <hr />
+
+        <form method="post" asp-route-handler="Submit" x-data="{ accepted: false }">
+            <input type="hidden" name="token" value="@staged.Token" />
+
+            @if (Model.NeedsApiKey)
+            {
+                <div class="form-group">
+                    <label for="confirmApiKey">API key</label>
+                    <input type="password"
+                           id="confirmApiKey"
+                           name="apiKey"
+                           class="form-control"
+                           autocomplete="off" />
+                    <p class="help-block">
+                        Entered again rather than carried in this page, so the key is never
+                        written into HTML.
+                    </p>
+                </div>
+            }
+
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="acceptTerms" value="true" x-model="accepted" />
+                    I have the right to publish this.
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary" x-bind:disabled="!accepted">
+                @(staged.IsSymbolPackage ? "Publish symbols" : "Publish")
+            </button>
+
+            @* In this same form, so that discarding is authenticated by the one API key
+               field above rather than a second copy of it: cancelling is owner-checked, as
+               publishing is. *@
+            <button type="submit" class="btn btn-default" formaction="@Url.Action("Index", "Upload", new { handler = "Cancel" })">
+                Discard this upload
+            </button>
+        </form>
+    }
+    else
+    {
+        @* Step one: stage a file, so it can be looked at before anything is published. *@
+        @if (!string.IsNullOrWhiteSpace(Model.Id))
+        {
+            <p id="upload-for-id">
+                A new version of <a href="@Url.RepositoryContent("packages/" + Model.Id)">@Model.Id</a>. The ID and the
+                version come from the file you choose, not from this link.
+            </p>
+        }
+
+        <form method="post" asp-route-handler="Stage" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="package">Package</label>
+                <input type="file" id="package" name="package" accept=".nupkg,.snupkg" required />
+                <p class="help-block">
+                    A <code>.nupkg</code>, or a <code>.snupkg</code> to add symbols to a
+                    version this server already has. Nothing is published until you have seen
+                    what the file contains and confirmed it.
+                </p>
+            </div>
+
+            @if (Model.NeedsApiKey)
+            {
+                <div class="form-group">
+                    <label for="apiKey">API key</label>
+                    <input type="password"
+                           id="apiKey"
+                           name="apiKey"
+                           class="form-control"
+                           autocomplete="off" />
+                    <p class="help-block">
+                        Accounts are disabled on this server, so an upload is authenticated
+                        with the same API key <code>dotnet nuget push</code> uses.
+                    </p>
+                </div>
+            }
+
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+    }
+
+    @* The push instructions are only shown where pushing is possible. In read-only mode the
+   push endpoint answers 401 just as the browser upload is refused, so copy-paste commands
+   there would be an invitation to a failure the page has already explained. *@
+    @if (!Model.IsReadOnlyMode)
+    {
+        <hr class="breadcrumb-divider" />
+
+        <div>You can push packages using the service index <code>@serviceIndexUrl</code>.</div>
+
+        @if (Model.AccountsEnabled)
+        {
+            <p id="upload-api-key-note">
+                Accounts are enabled, so a push must carry an API key: add
+                <code>-k &lt;your API key&gt;</code> to the command. Create one on the
+                <a href="@Url.Action("ApiKeysIndex", "AccountSettings")">API keys</a> page.
+            </p>
+        }
+
+        <div class="tabbed-info" x-data="{ tabs: tabs, active: tabs[0] }">
+            <ul class="nav">
+                <template x-for="tab in tabs" :key="tab.name">
+                    <li x-bind:class="{ 'active': active.name === tab.name }">
+                        <a href="#" x-text="tab.name" @@click="active = tab"></a>
+                    </li>
+                </template>
+            </ul>
+
+            <div class="content">
+                <div class="script">
+                    <template x-for="line in active.content">
+                        <div class="script-line" x-text="line"></div>
+                    </template>
+                </div>
+
+                <div class="copy-button">
+                    <button class="btn btn-default btn-warning"
+                            type="button"
+                            data-toggle="popover"
+                            data-placement="bottom"
+                            data-content="Copied"
+                        @@click="window.baget.copyTextToClipboard(active.content.join('\n'), $event.currentTarget)">
+                        <i class="ms-Icon ms-Icon--Copy"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="icon-text alert alert-warning">
+                For more information, please refer to
+                <a target="_blank"
+                   rel="noopener noreferrer"
+                   x-bind:href="active.documentation"
+                   x-text="`${active.name}'s documentation`">
+                </a>.
+            </div>
+        </div>
+    }
+</div>
+
+@if (!Model.IsReadOnlyMode)
+{
+    <script type="text/javascript">
+         let tabs = [
+             {
+                 name: ".NET CLI",
+                 content: ["dotnet nuget push -s @serviceIndexUrl @Html.Raw(Model.AccountsEnabled ? "-k <your API key> " : "")package.nupkg"],
+                 documentation: "https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-nuget-push",
+             },
+
+             {
+                 name: "NuGet",
+                 content: ["nuget push -Source @serviceIndexUrl @Html.Raw(Model.AccountsEnabled ? "-ApiKey <your API key> " : "")package.nupkg"],
+                 documentation: "https://docs.microsoft.com/en-us/nuget/tools/cli-ref-push",
+             },
+
+             {
+                 name: "Paket",
+                 content: ["paket push --url @baseUrl package.nupkg"],
+                 documentation: "https://fsprojects.github.io/Paket/paket-push.html",
+             },
+
+         ];
+
+         @* PowerShellGet reads the V2 protocol, not V3: pointing Register-PSRepository at the
+    service index fails, which is what the TODO here used to record. BaGet Extension now serves a
+    V2 feed, so the source location is that feed. The tab is omitted entirely when the
+       V2 feed is switched off, rather than advertising an address that would 404. *@
+         @if (showPowerShellGet)
+         {
+                     <text>
+                         tabs.push({
+                             name: "PowerShellGet",
+                             content: [
+                                 "Register-PSRepository -Name \"BaGet\" -SourceLocation \"@v2FeedUrl\" "
+                                   + "-PublishLocation \"@publishUrl\" -InstallationPolicy \"Trusted\"",
+                                 "Publish-Module -Name PS-Module -Repository BaGet"
+                             ],
+                             documentation: "https://docs.microsoft.com/en-us/powershell/module/powershellget/publish-module",
+                         });
+                     </text>
+         }
+    </script>
+}

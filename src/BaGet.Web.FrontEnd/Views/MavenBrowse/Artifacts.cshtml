@@ -1,0 +1,133 @@
+@model BaGet.Web.Application.Models.Maven.MavenArtifactsViewModel
+
+@{
+    ViewData["Title"] = "Maven artifacts";
+    ViewData["HideSearchBar"] = true;
+}
+
+<div class="col-sm-12" id="maven-artifacts">
+    <h1>Maven artifacts</h1>
+    <hr class="breadcrumb-divider" />
+
+    <form action="@Url.Action("Artifacts", "MavenBrowse")" method="get" class="home-search" id="maven-search-form">
+        <div class="input-group">
+            <input type="text" name="q" value="@Model.Query" class="form-control" autocomplete="off" placeholder="Search by group, artifact, name or description..." />
+            <span class="input-group-btn">
+                <button type="submit" class="btn btn-default" title="Search for artifacts">
+                    <span class="ms-Icon ms-Icon--Search" aria-hidden="true"></span>
+                </button>
+            </span>
+        </div>
+    </form>
+
+    <p id="maven-repository-url">
+        Repository: <code>@Model.RepositoryUrl</code>
+        @if (Model.Kind == BaGet.Core.RepositoryKind.Local)
+        {
+            <text>&middot; accepts <strong id="maven-policy">@(Model.Settings.Policy switch { BaGet.Core.MavenPolicy.Releases => "releases", BaGet.Core.MavenPolicy.Snapshots => "snapshots", _ => "releases and snapshots" })</strong>@(Model.Settings.AllowRedeploy ? ", releases may be redeployed" : "")
+            &middot; <a asp-controller="MavenBrowse" asp-action="Upload">Upload an artifact</a></text>
+        }
+        else if (Model.Kind == BaGet.Core.RepositoryKind.Remote)
+        {
+            <text>&middot; <strong id="maven-remote-note">caches an upstream repository</strong>: the artifacts below were requested through it; anything else is fetched on first use.</text>
+        }
+        else
+        {
+            <text>&middot; <strong id="maven-virtual-note">merges its member repositories</strong>, in the order set by the administrator.</text>
+        }
+    </p>
+
+    @if (Model.Result.Hits.Count == 0)
+    {
+        <div id="maven-no-results">
+            <h2>Oops, nothing here...</h2>
+            <p>
+                @(string.IsNullOrWhiteSpace(Model.Query) ? "This repository holds no artifact yet." : "No artifact matches that text.")
+                @if (Model.Kind == BaGet.Core.RepositoryKind.Local)
+                {
+                    <text>Deploy one with <code>mvn deploy</code> (see below), or <a asp-controller="MavenBrowse" asp-action="Upload">upload files</a>.</text>
+                }
+                else if (Model.Kind == BaGet.Core.RepositoryKind.Remote)
+                {
+                    <text>Resolve a dependency through it (see below) and it appears here.</text>
+                }
+            </p>
+        </div>
+    }
+    else
+    {
+        <p class="text-muted" id="maven-total">@Model.Result.Total artifact@(Model.Result.Total == 1 ? "" : "s")</p>
+
+        <div class="search-results">
+            @foreach (var hit in Model.Result.Hits)
+            {
+                <div class="search-result package-card" data-package="@hit.CoordinateName">
+                    <div class="card-body">
+                        <div class="card-heading">
+                            <a asp-controller="MavenBrowse" asp-action="Artifact" asp-route-group="@hit.GroupId" asp-route-artifact="@hit.ArtifactId" class="package-title">@hit.GroupId:@hit.ArtifactId</a>
+                        </div>
+                        <ul class="info">
+                            @if (hit.Version != null)
+                            {
+                                <li><span><i class="ms-Icon ms-Icon--Flag"></i> Latest version: @hit.Version</span></li>
+                            }
+                            <li>
+                                <span class="last-updated" title="@hit.Modified.ToString("u")">
+                                    <i class="ms-Icon ms-Icon--Calendar"></i> Last updated @hit.Modified.Humanize()
+                                </span>
+                            </li>
+                        </ul>
+                        <div class="card-description">@(hit.Name != null && hit.Description != null ? hit.Name + ": " + hit.Description : hit.Name ?? hit.Description)</div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @if (Model.PageIndex > 1 || Model.HasNext)
+        {
+            <nav aria-label="Search page navigation">
+                <ul class="pager">
+                    @if (Model.PageIndex > 1)
+                    {
+                        <li><a href="@Url.Action("Artifacts", "MavenBrowse", new { q = Model.Query, p = Model.PageIndex - 1 })">Previous</a></li>
+                    }
+
+                    @if (Model.HasNext)
+                    {
+                        <li><a href="@Url.Action("Artifacts", "MavenBrowse", new { q = Model.Query, p = Model.PageIndex + 1 })">Next</a></li>
+                    }
+                </ul>
+            </nav>
+        }
+    }
+
+    <h2>With Maven and Gradle</h2>
+    <p>
+        Maven sends the credentials of the <code>&lt;server&gt;</code> whose <code>id</code> is the repository's id (<code>@Model.RepositoryName</code>) after the repository asks for them. The password is an API key.
+    </p>
+    <div class="tabbed-info" x-data="{ active: 0 }">
+        <ul class="nav">
+            @for (var i = 0; i < Model.ConfigurationTabs.Count; i++)
+            {
+                <li x-bind:class="{ active: active === @i }">
+                    <a href="#configuration-@i" @@click.prevent="active = @i">@Model.ConfigurationTabs[i].Name</a>
+                </li>
+            }
+        </ul>
+
+        @for (var i = 0; i < Model.ConfigurationTabs.Count; i++)
+        {
+            var snippet = Model.ConfigurationTabs[i];
+
+            <div class="content install-pane" id="configuration-@i" x-show="active === @i">
+                <div class="script">
+                    <pre class="snippet" data-snippet="@snippet.Name">@string.Join("\n", snippet.Lines ?? [])</pre>
+                </div>
+            </div>
+        }
+    </div>
+    @if (Model.Kind != BaGet.Core.RepositoryKind.Remote)
+    {
+        <p>Then <code>@MavenSnippets.DeployCommand</code> deploys the project.</p>
+    }
+</div>

@@ -1,21 +1,23 @@
 <Project>
 
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
   <!-- Package properties -->
   <PropertyGroup>
-    <Authors>Loic Sharma</Authors>
-    <Copyright>Copyright (c) Loic Sharma 2021</Copyright>
-    <Product>BaGet</Product>
-
+    <Authors>Piero Viano</Authors>
+    <Copyright>Copyright (c) Piero Viano 2026</Copyright>
+    <Product>BaGet Extension</Product>
     <PackageIcon>packageIcon.png</PackageIcon>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageVersion Condition="'$(PackageVersion)' == ''">0.1.0-prerelease</PackageVersion>
-    <PackageProjectUrl>https://loic-sharma.github.io/BaGet/</PackageProjectUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Version>1.0.0.$([System.DateTime]::Now.ToString("yy"))$([System.DateTime]::Now.DayOfYear.ToString("000"))</Version>
+    <PackageVersion>1.0.0.$([System.DateTime]::Now.ToString("yy"))$([System.DateTime]::Now.DayOfYear.ToString("000"))</PackageVersion>
+    <PackageProjectUrl>https://pieroviano.github.io/BaGet/</PackageProjectUrl>
   </PropertyGroup>
 
   <!-- Compiler properties -->
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <LangVersion>7.2</LangVersion>
+    <LangVersion>latest</LangVersion>
 
     <!-- Don't warn if there are missing XMl comment for publicly visible type or member-->
     <NoWarn>$(NoWarn);1591</NoWarn>
@@ -37,18 +39,118 @@
 
   <!-- NuGet dependencies shared across projects -->
   <PropertyGroup>
-    <MicrosoftAspNetCorePackageVersion>3.1.18</MicrosoftAspNetCorePackageVersion>
-    <MicrosoftEntityFrameworkCorePackageVersion>3.1.18</MicrosoftEntityFrameworkCorePackageVersion>
-    <MicrosoftExtensionsPackageVersion>3.1.18</MicrosoftExtensionsPackageVersion>
-    <NuGetPackageVersion>5.10.0</NuGetPackageVersion>
+    <MicrosoftAspNetCorePackageVersion>10.0.13</MicrosoftAspNetCorePackageVersion>
+
+    <!--
+      Entity Framework 10. The MySQL provider is Microting.EntityFrameworkCore.MySql, a maintained fork of
+      Pomelo (which stalled at EF 9): 10.0.13 constrains Microsoft.EntityFrameworkCore.Relational to
+      [10.0.13, 10.0.999]. Every provider must move together, so each one reads its version from here
+      rather than pinning its own.
+    -->
+    <MicrosoftEntityFrameworkCorePackageVersion>10.0.13</MicrosoftEntityFrameworkCorePackageVersion>
+    <!-- Identity's EF stores depend on EF Core, so this tracks the EF version. -->
+    <MicrosoftAspNetCoreIdentityEntityFrameworkCorePackageVersion>10.0.13</MicrosoftAspNetCoreIdentityEntityFrameworkCorePackageVersion>
+    <NpgsqlEntityFrameworkCorePackageVersion>10.0.3</NpgsqlEntityFrameworkCorePackageVersion>
+    <MicrotingEntityFrameworkCoreMySqlPackageVersion>10.0.13</MicrotingEntityFrameworkCoreMySqlPackageVersion>
+
+    <!-- Entity Framework 10 depends on Microsoft.Extensions.* 10.0.x, so lower pins are a downgrade (NU1605). -->
+    <MicrosoftExtensionsPackageVersion>10.0.13</MicrosoftExtensionsPackageVersion>
+    <NuGetPackageVersion>6.10.0</NuGetPackageVersion>
+    <!-- SMTP client for BaGet.Identity's email sender; MIT. -->
+    <MailKitPackageVersion>4.18.1</MailKitPackageVersion>
+    <!-- Renders the two-factor setup QR code as SVG on the server; MIT. -->
+    <QRCoderPackageVersion>1.6.0</QRCoderPackageVersion>
+    <!-- Logging of the host (src/BaGet) only; libraries log through Microsoft.Extensions.Logging. -->
+    <SerilogAspNetCorePackageVersion>10.0.0</SerilogAspNetCorePackageVersion>
+    <SerilogSettingsConfigurationPackageVersion>10.0.1</SerilogSettingsConfigurationPackageVersion>
+    <SerilogSinksConsolePackageVersion>6.1.1</SerilogSinksConsolePackageVersion>
+    <SerilogSinksFilePackageVersion>7.0.0</SerilogSinksFilePackageVersion>
+    <SerilogSinksEventLogPackageVersion>4.0.0</SerilogSinksEventLogPackageVersion>
+    <!-- OpenTelemetry export in the host (src/BaGet) only. 1.20.x depends on Microsoft.Extensions.Options/Configuration 10.0.0, which
+         matches the EF 10 / Microsoft.Extensions 10.0.13 pins.
+         The 1.13 line avoids that but carries known vulnerabilities (NU1902). The EF Core instrumentation is prerelease only. -->
+    <OpenTelemetryPackageVersion>1.20.0</OpenTelemetryPackageVersion>
+    <OpenTelemetryEntityFrameworkCorePackageVersion>1.20.0-beta.1</OpenTelemetryEntityFrameworkCorePackageVersion>
+    <SerilogSinksOpenTelemetryPackageVersion>4.2.0</SerilogSinksOpenTelemetryPackageVersion>
+    <!-- Redis for cluster mode (Ha:Enabled), host only (src/BaGet/Ha). Depends on Microsoft.Extensions.Logging.Abstractions >= 6, which the
+         9.0.21 pins satisfy (checked: no NU1605/NU1608/NU1107). -->
+    <StackExchangeRedisPackageVersion>2.13.17</StackExchangeRedisPackageVersion>
+    <!-- OpenAPI documents (ui, v1, protocols) and the Scalar viewer, in BaGet.Web.V3. OpenApi 10.0.13 = the shared framework / EF pins (no NU1605);
+         Scalar 2.17.14 = latest 2.x published at least two weeks before it was chosen (2026-10-06). -->
+    <MicrosoftAspNetCoreOpenApiPackageVersion>10.0.13</MicrosoftAspNetCoreOpenApiPackageVersion>
+    <ScalarAspNetCorePackageVersion>2.17.14</ScalarAspNetCorePackageVersion>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(DOTNET_RUNNING_IN_CONTAINER)' == ''">
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All"/>
   </ItemGroup>
 
   <ItemGroup>
     <None Include="../packageIcon.png" Pack="true" PackagePath="" Visible="false" />
+    <None Include="$(MSBuildThisFileDirectory)../LICENSE" Pack="true" PackagePath="" Visible="false" />
+    <None Include="$(MSBuildThisFileDirectory)../Acknowledgments.md" Pack="true" PackagePath="" Visible="false" />
+    <!-- Each project's README.md is its package's readme on nuget.org. -->
+    <None Include="$(MSBuildProjectDirectory)/README.md" Pack="true" PackagePath="" Condition="Exists('$(MSBuildProjectDirectory)/README.md')" />
   </ItemGroup>
+
+  <PropertyGroup Condition="Exists('$(MSBuildProjectDirectory)/README.md')">
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageId>Extension.$(MSBuildProjectName)</PackageId>
+    <!--
+      A Razor class library serves its wwwroot under "_content/<PackageId>" by default, so the
+      package name would leak into every asset URL the pages reference. Pin the path to the
+      project name, so it stays the same however the projects are packaged.
+    -->
+    <StaticWebAssetBasePath>_content/$(MSBuildProjectName)</StaticWebAssetBasePath>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <IsPublishable>False</IsPublishable>
+    <PackageOutputPath>$(SolutionDir)Packages\</PackageOutputPath>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <!--
+    After a pack, so the next restore uses the package just built even when its version is unchanged: remove every version of it
+    from the global packages folder. MSBuild tasks only (no shell), so it works on Windows, Linux and macOS. The folder is
+    NUGET_PACKAGES / RestorePackagesPath as restore resolved it ($(NuGetPackageRoot)), else ~/.nuget/packages; NuGet names
+    package folders in lower case, which matters on case-sensitive file systems.
+  -->
+  <Target Name="DeleteOldPackage" AfterTargets="Pack">
+    <PropertyGroup>
+      <_BaGetPackageCacheRoot>$(NuGetPackageRoot)</_BaGetPackageCacheRoot>
+      <_BaGetPackageCacheRoot Condition="'$(_BaGetPackageCacheRoot)' == ''">$(NUGET_PACKAGES)</_BaGetPackageCacheRoot>
+      <_BaGetPackageCacheRoot Condition="'$(_BaGetPackageCacheRoot)' == ''">$([System.IO.Path]::Combine($([System.Environment]::GetFolderPath(SpecialFolder.UserProfile)), '.nuget', 'packages'))</_BaGetPackageCacheRoot>
+      <_BaGetCachedPackageFolder>$([System.IO.Path]::Combine('$(_BaGetPackageCacheRoot)', '$(PackageId.ToLowerInvariant())'))</_BaGetCachedPackageFolder>
+    </PropertyGroup>
+    <RemoveDir Directories="$(_BaGetCachedPackageFolder)" Condition="Exists('$(_BaGetCachedPackageFolder)')" ContinueOnError="WarnAndContinue" />
+  </Target>
+
+  <!--
+    After a pack, remove the older versions of the same package from $(PackageOutputPath) (the Packages folder): its .nupkg, .snupkg
+    and .symbols.nupkg files whose name is the package id followed by a version. The files this pack wrote (@(NuGetPackOutput),
+    named with NuGet's normalized version) are kept. The name must continue with ".<digit>" right after the id, so the package
+    Extension.BaGet never touches Extension.BaGet.Core. MSBuild tasks only, so it works on every OS.
+  -->
+  <Target Name="DeleteOlderGeneratedPackages" AfterTargets="Pack" Condition="'$(PackageOutputPath)' != '' and Exists('$(PackageOutputPath)')">
+    <PropertyGroup>
+      <_BaGetGeneratedPackagePattern>(?i)^$([System.Text.RegularExpressions.Regex]::Escape('$(PackageId)'))\.\d</_BaGetGeneratedPackagePattern>
+    </PropertyGroup>
+    <ItemGroup>
+      <_BaGetCurrentPackage Include="@(NuGetPackOutput->'%(FullPath)')" />
+      <_BaGetGeneratedPackage Include="$(PackageOutputPath)$(PackageId).*.nupkg;$(PackageOutputPath)$(PackageId).*.snupkg" />
+      <_BaGetOlderPackage Include="@(_BaGetGeneratedPackage->'%(FullPath)')" Exclude="@(_BaGetCurrentPackage)"
+                          Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(Filename)', '$(_BaGetGeneratedPackagePattern)'))" />
+    </ItemGroup>
+    <Delete Files="@(_BaGetOlderPackage)" ContinueOnError="WarnAndContinue" />
+    <Message Importance="normal" Text="Removed older package files: @(_BaGetOlderPackage)" Condition="'@(_BaGetOlderPackage)' != ''" />
+  </Target>
 
 </Project>
